@@ -26,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.animation.animateRotationAsState
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun PremiumHealthScore(
@@ -38,7 +36,7 @@ fun PremiumHealthScore(
     val animatedRotation by animateRotationAsState(
         targetRotation = (score / 100f) * 180f - 90f
     )
-    
+
     PremiumCard(
         variant = PremiumCardVariant.Glass,
         modifier = modifier
@@ -55,9 +53,9 @@ fun PremiumHealthScore(
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Box(
                 modifier = Modifier.size(200.dp),
                 contentAlignment = Alignment.Center
@@ -66,7 +64,7 @@ fun PremiumHealthScore(
                     val centerX = size.width / 2
                     val centerY = size.height / 2
                     val radius = size.minDimension / 2 - 20.dp.toPx()
-                    
+
                     drawArc(
                         brush = Brush.linearGradient(
                             colors = listOf(
@@ -81,7 +79,7 @@ fun PremiumHealthScore(
                         topLeft = Offset(centerX - radius, centerY - radius),
                         size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2)
                     )
-                    
+
                     val sweepAngle = (score / 100f) * 180f
                     drawArc(
                         brush = Brush.linearGradient(
@@ -97,12 +95,12 @@ fun PremiumHealthScore(
                         topLeft = Offset(centerX - radius, centerY - radius),
                         size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2)
                     )
-                    
+
                     rotate(animatedRotation, pivot = Offset(centerX, centerY)) {
                         val needleLength = radius - 10.dp.toPx()
                         val needleEndX = centerX
                         val needleEndY = centerY - needleLength
-                        
+
                         drawLine(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
@@ -116,7 +114,7 @@ fun PremiumHealthScore(
                             cap = StrokeCap.Round
                         )
                     }
-                    
+
                     drawCircle(
                         brush = Brush.radialGradient(
                             colors = listOf(
@@ -128,7 +126,7 @@ fun PremiumHealthScore(
                         center = Offset(centerX, centerY)
                     )
                 }
-                
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(top = 60.dp)
@@ -146,9 +144,9 @@ fun PremiumHealthScore(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text(
                 text = trend,
                 style = MaterialTheme.typography.bodyMedium,

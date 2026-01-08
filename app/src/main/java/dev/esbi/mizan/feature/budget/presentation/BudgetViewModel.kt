@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.budget.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.feature.budget.presentation.store.BudgetStore

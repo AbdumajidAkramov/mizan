@@ -1,9 +1,7 @@
 package dev.esbi.mizan.feature.budget.presentation.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -63,6 +61,7 @@ fun BudgetScreen(
                 is BudgetStore.Label.ShowError -> {
                     // Handle error display (e.g., Snackbar)
                 }
+
                 is BudgetStore.Label.ShowSuccess -> {
                     // Handle success display (e.g., Snackbar)
                 }
@@ -111,6 +110,7 @@ private fun BudgetContent(
             state.isLoading && state.budgetSummary == null -> {
                 LoadingContent(modifier = modifier.padding(paddingValues))
             }
+
             state.error != null && state.budgetSummary == null -> {
                 FadeInUpAnimation {
                     ErrorState(
@@ -122,6 +122,7 @@ private fun BudgetContent(
                     )
                 }
             }
+
             state.budgetSummary != null -> {
                 val summary = state.budgetSummary
 
@@ -192,7 +193,10 @@ private fun BudgetContent(
                         }
 
                         // Add More Categories Card
-                        StaggeredFadeInUp(index = 3 + summary.categoryBudgets.size, delayMillis = 60) {
+                        StaggeredFadeInUp(
+                            index = 3 + summary.categoryBudgets.size,
+                            delayMillis = 60
+                        ) {
                             PremiumCard(
                                 variant = PremiumCardVariant.Glass,
                                 onClick = { onIntent(BudgetStore.Intent.ShowAddDialog) },
@@ -223,7 +227,10 @@ private fun BudgetContent(
                         }
 
                         // Budget Tips Card
-                        StaggeredFadeInUp(index = 4 + summary.categoryBudgets.size, delayMillis = 60) {
+                        StaggeredFadeInUp(
+                            index = 4 + summary.categoryBudgets.size,
+                            delayMillis = 60
+                        ) {
                             PremiumCard(
                                 variant = PremiumCardVariant.Glass,
                                 modifier = Modifier.fillMaxWidth()

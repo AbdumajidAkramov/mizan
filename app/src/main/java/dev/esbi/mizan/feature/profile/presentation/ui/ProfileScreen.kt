@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.profile.presentation.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -70,9 +69,11 @@ fun ProfileScreen(
                 is ProfileStore.Label.ShowError -> {
                     // Handle error display
                 }
+
                 is ProfileStore.Label.NavigateToLogin -> {
                     // Handle navigation to login
                 }
+
                 is ProfileStore.Label.NavigateToSetting -> {
                     // Handle navigation to settings
                 }

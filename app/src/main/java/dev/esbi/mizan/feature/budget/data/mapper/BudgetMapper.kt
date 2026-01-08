@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.budget.data.mapper
 
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
-import dev.esbi.mizan.feature.budget.domain.model.BudgetStatus
 import dev.esbi.mizan.feature.budget.domain.model.CategoryBudget
 import dev.esbi.mizan.feature.budget.domain.model.calculateBudgetStatus
 
@@ -11,7 +10,7 @@ fun CategoryBudgetEntity.toDomain(): CategoryBudget {
     } else {
         0
     }
-    
+
     return CategoryBudget(
         categoryId = categoryId,
         categoryName = categoryName,

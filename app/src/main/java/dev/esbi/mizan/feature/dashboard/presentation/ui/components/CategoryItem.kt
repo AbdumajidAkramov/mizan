@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 @Composable
 fun CategoryItem(
@@ -29,7 +30,7 @@ fun CategoryItem(
 ) {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
     val color = try {
-        Color(android.graphics.Color.parseColor(colorHex))
+        Color(colorHex.toColorInt())
     } catch (e: Exception) {
         MaterialTheme.colorScheme.primary
     }

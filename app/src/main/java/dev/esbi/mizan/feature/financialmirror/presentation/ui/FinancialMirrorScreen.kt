@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +65,7 @@ fun FinancialMirrorScreen(
                 is FinancialMirrorStore.Label.ShowError -> {
                     // Handle error display
                 }
+
                 is FinancialMirrorStore.Label.NavigateToInvestment -> {
                     // Handle navigation
                 }
@@ -90,6 +90,7 @@ private fun FinancialMirrorContent(
         state.isLoading && state.financialMirrorData == null -> {
             LoadingContent(modifier = modifier)
         }
+
         state.error != null && state.financialMirrorData == null -> {
             FadeInUpAnimation {
                 ErrorState(
@@ -99,6 +100,7 @@ private fun FinancialMirrorContent(
                 )
             }
         }
+
         state.financialMirrorData != null -> {
             val data = state.financialMirrorData
             val numberFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
@@ -301,11 +303,13 @@ private fun NetWorthProjectionCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     val targetValue = when (selectedView) {
-                        FinancialMirrorStore.ProjectionView.CONSERVATIVE -> 
+                        FinancialMirrorStore.ProjectionView.CONSERVATIVE ->
                             projectionData.projections.lastOrNull()?.conservative ?: 0.0
-                        FinancialMirrorStore.ProjectionView.REALISTIC -> 
+
+                        FinancialMirrorStore.ProjectionView.REALISTIC ->
                             projectionData.projections.lastOrNull()?.realistic ?: 0.0
-                        FinancialMirrorStore.ProjectionView.OPTIMISTIC -> 
+
+                        FinancialMirrorStore.ProjectionView.OPTIMISTIC ->
                             projectionData.projections.lastOrNull()?.optimistic ?: 0.0
                     }
                     Text(
@@ -324,14 +328,17 @@ private fun NetWorthProjectionCard(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     val targetValue = when (selectedView) {
-                        FinancialMirrorStore.ProjectionView.CONSERVATIVE -> 
+                        FinancialMirrorStore.ProjectionView.CONSERVATIVE ->
                             projectionData.projections.lastOrNull()?.conservative ?: 0.0
-                        FinancialMirrorStore.ProjectionView.REALISTIC -> 
+
+                        FinancialMirrorStore.ProjectionView.REALISTIC ->
                             projectionData.projections.lastOrNull()?.realistic ?: 0.0
-                        FinancialMirrorStore.ProjectionView.OPTIMISTIC -> 
+
+                        FinancialMirrorStore.ProjectionView.OPTIMISTIC ->
                             projectionData.projections.lastOrNull()?.optimistic ?: 0.0
                     }
-                    val growthPercent = ((targetValue - projectionData.currentNetWorth) / projectionData.currentNetWorth * 100).toInt()
+                    val growthPercent =
+                        ((targetValue - projectionData.currentNetWorth) / projectionData.currentNetWorth * 100).toInt()
                     Text(
                         text = "+$growthPercent%",
                         fontSize = 18.sp,
@@ -590,7 +597,10 @@ private fun TimeMachineSection(
                                 }
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = stringResource(R.string.financial_mirror_in_timeline, scenario.timeline),
+                                    text = stringResource(
+                                        R.string.financial_mirror_in_timeline,
+                                        scenario.timeline
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -670,7 +680,10 @@ private fun InvestmentOpportunitiesSection(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    val typeColor = Color(opportunity.colorHex.toLongOrNull(16)?.toInt() ?: 0xFF667EEA.toInt())
+                                    val typeColor = Color(
+                                        opportunity.colorHex.toLongOrNull(16)?.toInt()
+                                            ?: 0xFF667EEA.toInt()
+                                    )
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(12.dp))
@@ -691,7 +704,10 @@ private fun InvestmentOpportunitiesSection(
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = stringResource(R.string.financial_mirror_min_amount, opportunity.minAmount),
+                                        text = stringResource(
+                                            R.string.financial_mirror_min_amount,
+                                            opportunity.minAmount
+                                        ),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -703,7 +719,10 @@ private fun InvestmentOpportunitiesSection(
                                     text = opportunity.apy,
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(opportunity.colorHex.toLongOrNull(16)?.toInt() ?: 0xFF667EEA.toInt())
+                                    color = Color(
+                                        opportunity.colorHex.toLongOrNull(16)?.toInt()
+                                            ?: 0xFF667EEA.toInt()
+                                    )
                                 )
                                 Text(
                                     text = stringResource(R.string.financial_mirror_apy),

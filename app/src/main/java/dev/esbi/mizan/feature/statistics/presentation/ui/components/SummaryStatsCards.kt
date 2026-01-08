@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -98,9 +97,16 @@ fun SummaryStatsCards(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "${if (comparison.incomeChangePercentage >= 0) "+" else ""}${String.format("%.1f", comparison.incomeChangePercentage)}%",
+                        text = "${if (comparison.incomeChangePercentage >= 0) "+" else ""}${
+                            String.format(
+                                "%.1f",
+                                comparison.incomeChangePercentage
+                            )
+                        }%",
                         fontSize = 11.sp,
-                        color = if (comparison.incomeChangePercentage >= 0) Color(0xFF00F2A0) else Color(0xFFFF6B6B)
+                        color = if (comparison.incomeChangePercentage >= 0) Color(0xFF00F2A0) else Color(
+                            0xFFFF6B6B
+                        )
                     )
                     Text(
                         text = stringResource(R.string.statistics_vs_last_period),
@@ -164,9 +170,16 @@ fun SummaryStatsCards(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "${if (comparison.expenseChangePercentage >= 0) "+" else ""}${String.format("%.1f", comparison.expenseChangePercentage)}%",
+                        text = "${if (comparison.expenseChangePercentage >= 0) "+" else ""}${
+                            String.format(
+                                "%.1f",
+                                comparison.expenseChangePercentage
+                            )
+                        }%",
                         fontSize = 11.sp,
-                        color = if (comparison.expenseChangePercentage < 0) Color(0xFF00F2A0) else Color(0xFFFF6B6B)
+                        color = if (comparison.expenseChangePercentage < 0) Color(0xFF00F2A0) else Color(
+                            0xFFFF6B6B
+                        )
                     )
                     Text(
                         text = stringResource(R.string.statistics_vs_last_period),

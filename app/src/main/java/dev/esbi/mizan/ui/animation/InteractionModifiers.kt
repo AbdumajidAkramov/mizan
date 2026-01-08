@@ -5,17 +5,15 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.State
 
 /**
  * Press scale animation matching design active:scale-95
@@ -27,16 +25,16 @@ fun Modifier.pressScale(
     enabled: Boolean = true
 ): Modifier = composed {
     if (!enabled) return@composed this
-    
+
     val source = interactionSource ?: remember { MutableInteractionSource() }
     val isPressed by source.collectIsPressedAsState()
-    
+
     val scale by animateFloatAsState(
         targetValue = if (isPressed) PremiumAnimationSpec.PRESS_SCALE else 1f,
         animationSpec = PremiumAnimationSpec.pressSpec(),
         label = "pressScale"
     )
-    
+
     this.graphicsLayer {
         scaleX = scale
         scaleY = scale
@@ -52,15 +50,15 @@ fun Modifier.hoverElevation(
     enabled: Boolean = true
 ): Modifier = composed {
     if (!enabled) return@composed this
-    
+
     var isHovered by remember { mutableStateOf(false) }
-    
+
     val translationY by animateFloatAsState(
         targetValue = if (isHovered) PremiumAnimationSpec.HOVER_ELEVATION.toFloat() else 0f,
         animationSpec = PremiumAnimationSpec.hoverSpec(),
         label = "hoverElevation"
     )
-    
+
     this
         .pointerInput(Unit) {
             detectTapGestures(
@@ -85,22 +83,22 @@ fun Modifier.cardInteraction(
     enabled: Boolean = true
 ): Modifier = composed {
     if (!enabled) return@composed this
-    
+
     val source = interactionSource ?: remember { MutableInteractionSource() }
     val isPressed by source.collectIsPressedAsState()
-    
+
     val scale by animateFloatAsState(
         targetValue = if (isPressed) PremiumAnimationSpec.PRESS_SCALE else 1f,
         animationSpec = PremiumAnimationSpec.pressSpec(),
         label = "cardScale"
     )
-    
+
     val translationY by animateFloatAsState(
         targetValue = if (isPressed) 0f else PremiumAnimationSpec.HOVER_ELEVATION.toFloat(),
         animationSpec = PremiumAnimationSpec.hoverSpec(),
         label = "cardTranslation"
     )
-    
+
     this.graphicsLayer {
         scaleX = scale
         scaleY = scale
@@ -146,7 +144,7 @@ fun Modifier.shimmerEffect(
     enabled: Boolean = true
 ): Modifier = composed {
     if (!enabled) return@composed this
-    
+
     // Shimmer is already implemented in LoadingSkeleton.kt
     // This is a placeholder for additional shimmer effects
     this

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,10 +37,10 @@ fun PremiumNetWorthCard(
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 0
     }
-    
+
     val isPositive = changeAmount >= 0
     val trendColor = if (isPositive) Color(0xFF00F2FE) else Color(0xFFFF6B6B)
-    
+
     PremiumCard(
         variant = PremiumCardVariant.Glass,
         modifier = modifier
@@ -56,9 +55,9 @@ fun PremiumNetWorthCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row(
                 verticalAlignment = Alignment.Bottom
             ) {
@@ -68,9 +67,9 @@ fun PremiumNetWorthCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                
+
                 Spacer(modifier = Modifier.width(12.dp))
-                
+
                 Column {
                     Text(
                         text = "${if (isPositive) "+" else ""}${numberFormat.format(changeAmount)}",
@@ -85,30 +84,30 @@ fun PremiumNetWorthCard(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp)
             ) {
                 if (trendData.size < 2) return@Canvas
-                
+
                 val width = size.width
                 val height = size.height
                 val maxValue = trendData.maxOrNull() ?: 1.0
                 val minValue = trendData.minOrNull() ?: 0.0
                 val range = maxValue - minValue
-                
+
                 val stepX = width / (trendData.size - 1)
-                
+
                 val path = Path().apply {
                     trendData.forEachIndexed { index, value ->
                         val x = index * stepX
                         val normalizedValue = if (range > 0) ((value - minValue) / range) else 0.5
                         val y = height - (normalizedValue * height * 0.8f).toFloat() - height * 0.1f
-                        
+
                         if (index == 0) {
                             moveTo(x, y)
                         } else {
@@ -116,18 +115,18 @@ fun PremiumNetWorthCard(
                         }
                     }
                 }
-                
+
                 drawPath(
                     path = path,
                     color = trendColor,
                     style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
                 )
-                
+
                 trendData.forEachIndexed { index, value ->
                     val x = index * stepX
                     val normalizedValue = if (range > 0) ((value - minValue) / range) else 0.5
                     val y = height - (normalizedValue * height * 0.8f).toFloat() - height * 0.1f
-                    
+
                     drawCircle(
                         color = trendColor,
                         radius = 4.dp.toPx(),
