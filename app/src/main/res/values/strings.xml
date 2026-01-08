@@ -1,0 +1,221 @@
+<resources>
+    <string name="app_name">Mizan</string>
+    
+    <!-- Global / Generic UI -->
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="action_try_again">Try Again</string>
+    <string name="error_failed_to_load_dashboard">Failed to load dashboard</string>
+    
+    <!-- Dashboard Header -->
+    <string name="dashboard_welcome_back">Welcome back,</string>
+    <string name="dashboard_greeting_emoji">👋</string>
+    
+    <!-- Balance Card -->
+    <string name="dashboard_total_balance">Total Balance</string>
+    <string name="dashboard_monthly_income">Monthly Income</string>
+    <string name="dashboard_monthly_expenses">Monthly Expenses</string>
+    
+    <!-- Financial Health Score -->
+    <string name="dashboard_financial_health">Financial Health</string>
+    <string name="dashboard_health_score_trend">+%1$d points this month</string>
+    <string name="dashboard_health_excellent">Excellent</string>
+    <string name="dashboard_health_good">Good</string>
+    <string name="dashboard_health_fair">Fair</string>
+    <string name="dashboard_health_poor">Poor</string>
+    
+    <!-- Net Worth Card -->
+    <string name="dashboard_net_worth">Net Worth</string>
+    <string name="dashboard_net_worth_change">+$%1$s (%2$.1f%%)</string>
+    <string name="dashboard_net_worth_change_negative">-$%1$s (%2$.1f%%)</string>
+    <string name="dashboard_this_month">This month</string>
+    
+    <!-- Cash Flow Card -->
+    <string name="dashboard_cash_flow">Cash Flow</string>
+    <string name="dashboard_income">Income</string>
+    <string name="dashboard_expenses">Expenses</string>
+    <string name="dashboard_net_income">Net: +$%1$s</string>
+    <string name="dashboard_net_loss">Net: -$%1$s</string>
+    
+    <!-- Emergency Fund -->
+    <string name="dashboard_emergency_fund">Emergency Fund</string>
+    <string name="dashboard_emergency_fund_progress">%1$d of %2$d months covered</string>
+    <string name="dashboard_emergency_fund_goal">Goal: %1$d months</string>
+    
+    <!-- Budget Status -->
+    <string name="dashboard_budget_used">Budget Used</string>
+    <string name="dashboard_budget_spent_of_limit">$%1$s of $%2$s</string>
+    
+    <!-- Savings -->
+    <string name="dashboard_savings">Savings</string>
+    <string name="dashboard_savings_this_month">This Month</string>
+    <string name="dashboard_savings_growth">+%1$.1f%% from last month</string>
+    
+    <!-- Spending Overview -->
+    <string name="dashboard_spending_overview">Spending Overview</string>
+    <string name="dashboard_details">Details</string>
+    
+    <!-- Categories -->
+    <string name="dashboard_top_categories">Top Categories</string>
+    <string name="dashboard_see_all">See all</string>
+    
+    <!-- AI Insights -->
+    <string name="dashboard_ai_insights">AI Insights</string>
+    
+    <!-- Recent Transactions -->
+    <string name="dashboard_recent_transactions">Recent Transactions</string>
+    
+    <!-- Category Names -->
+    <string name="category_food">Food &amp; Dining</string>
+    <string name="category_transport">Transport</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_bills">Bills &amp; Utilities</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_health">Health &amp; Fitness</string>
+    <string name="category_travel">Travel</string>
+    <string name="category_tech">Technology</string>
+    <string name="category_income">Income</string>
+    <string name="category_other">Other</string>
+    
+    <!-- Transaction Count -->
+    <string name="dashboard_transactions_count">%1$d transactions</string>
+    <string name="dashboard_percent_of_total">%1$d%% of total</string>
+    
+    <!-- Financial Mirror Screen -->
+    <string name="financial_mirror_title">Financial Mirror</string>
+    <string name="financial_mirror_subtitle">AI-powered insights into your financial future</string>
+    
+    <!-- Net Worth Projection -->
+    <string name="financial_mirror_net_worth_projection">Net Worth Projection</string>
+    <string name="financial_mirror_projection_subtitle">Your potential wealth growth over 5 years</string>
+    <string name="financial_mirror_conservative">Conservative</string>
+    <string name="financial_mirror_realistic">Realistic</string>
+    <string name="financial_mirror_optimistic">Optimistic</string>
+    <string name="financial_mirror_starting">Starting</string>
+    <string name="financial_mirror_five_year_target">5-Year Target</string>
+    <string name="financial_mirror_total_growth">Total Growth</string>
+    
+    <!-- Risk Assessment -->
+    <string name="financial_mirror_risk_assessment">Financial Risk Assessment</string>
+    <string name="financial_mirror_overall_risk_score">Overall Risk Score</string>
+    <string name="financial_mirror_risk_good">Good</string>
+    <string name="financial_mirror_risk_moderate">Moderate</string>
+    <string name="financial_mirror_risk_high">High</string>
+    <string name="financial_mirror_out_of_100">/ 100</string>
+    
+    <!-- Risk Categories -->
+    <string name="financial_mirror_risk_emergency_fund">Emergency Fund</string>
+    <string name="financial_mirror_risk_debt_to_income">Debt-to-Income</string>
+    <string name="financial_mirror_risk_diversification">Diversification</string>
+    <string name="financial_mirror_risk_insurance">Insurance Coverage</string>
+    
+    <!-- Time Machine -->
+    <string name="financial_mirror_time_machine">Time Machine</string>
+    <string name="financial_mirror_what_if">What If?</string>
+    <string name="financial_mirror_scenario_save_monthly">If you saved $500/month</string>
+    <string name="financial_mirror_scenario_cut_subscriptions">Cut subscriptions by 50%</string>
+    <string name="financial_mirror_scenario_invest_index">Invest $200/month in index</string>
+    <string name="financial_mirror_in_timeline">in %1$s</string>
+    
+    <!-- Investment Opportunities -->
+    <string name="financial_mirror_investment_opportunities">Investment Opportunities</string>
+    <string name="financial_mirror_ai_curated">AI Curated</string>
+    <string name="financial_mirror_high_yield_savings">High-Yield Savings</string>
+    <string name="financial_mirror_index_fund">Index Fund ETF</string>
+    <string name="financial_mirror_retirement_401k">Retirement 401(k)</string>
+    <string name="financial_mirror_low_risk">Low Risk</string>
+    <string name="financial_mirror_medium_risk">Medium Risk</string>
+    <string name="financial_mirror_high_risk">High Risk</string>
+    <string name="financial_mirror_long_term">Long-term</string>
+    <string name="financial_mirror_apy">APY</string>
+    <string name="financial_mirror_min_amount">Min: %1$s</string>
+    <string name="financial_mirror_learn_more">Learn More</string>
+    
+    <!-- AI Recommendation -->
+    <string name="financial_mirror_ai_recommendation">AI Recommendation</string>
+    <string name="financial_mirror_recommendation_intro">Based on your spending patterns and goals, we recommend:</string>
+    <string name="financial_mirror_recommendation_emergency">Increase emergency fund by $200/month</string>
+    <string name="financial_mirror_recommendation_invest">Start investing in index funds with $150/month</string>
+    <string name="financial_mirror_recommendation_subscriptions">Review and cancel unused subscriptions</string>
+    
+    <!-- Health Score -->
+    <string name="financial_mirror_health_score">Financial Health Score</string>
+    
+    <!-- Cash Flow -->
+    <string name="financial_mirror_cash_flow">Cash Flow</string>
+    <string name="financial_mirror_net_cash_flow">Net Cash Flow</string>
+    
+    <!-- Emergency Fund -->
+    <string name="financial_mirror_emergency_fund">Emergency Fund</string>
+    <string name="financial_mirror_current">Current</string>
+    <string name="financial_mirror_goal">Goal</string>
+    <string name="financial_mirror_funded">Funded</string>
+    <string name="financial_mirror_target_months">Target: %1$d months expenses</string>
+    
+    <!-- Budget Screen -->
+    <string name="budget_title">Budget</string>
+    <string name="budget_subtitle">Manage your spending limits</string>
+    <string name="budget_total_monthly">Total Monthly Budget</string>
+    <string name="budget_percentage_used">%1$d%% of budget used</string>
+    <string name="budget_remaining">Remaining</string>
+    <string name="budget_category_budgets">Category Budgets</string>
+    <string name="budget_over_budget">Over budget</string>
+    <string name="budget_near_limit">Near limit</string>
+    <string name="budget_edit">Edit</string>
+    <string name="budget_percentage_used_value">%1$d%% used</string>
+    <string name="budget_left">%1$s left</string>
+    <string name="budget_add_category">Add Budget for Category</string>
+    <string name="budget_tips_title">Budget Tips</string>
+    <string name="budget_tip_1">• Set realistic budgets based on your spending patterns</string>
+    <string name="budget_tip_2">• Review and adjust budgets monthly</string>
+    <string name="budget_tip_3">• Use the 50/30/20 rule: 50%% needs, 30%% wants, 20%% savings</string>
+    <string name="budget_create_success">Budget created successfully</string>
+    <string name="budget_update_success">Budget updated successfully</string>
+    <string name="budget_delete_success">Budget deleted successfully</string>
+    <string name="budget_error_create">Failed to create budget</string>
+    <string name="budget_error_update">Failed to update budget</string>
+    <string name="budget_error_delete">Failed to delete budget</string>
+    
+    <!-- Transactions Screen -->
+    <string name="transactions_title">Transactions</string>
+    <string name="transactions_search_placeholder">Search transactions…</string>
+    <string name="transactions_filter_all">All</string>
+    <string name="transactions_filter_expenses">Expenses</string>
+    <string name="transactions_filter_income">Income</string>
+    <string name="transactions_total_income">Total Income</string>
+    <string name="transactions_total_expense">Total Expense</string>
+    <string name="transactions_empty_title">No transactions found</string>
+    <string name="transactions_empty_subtitle">Try adjusting your search or filter</string>
+    
+    <!-- Statistics Screen -->
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_period_week">Week</string>
+    <string name="statistics_period_month">Month</string>
+    <string name="statistics_period_year">Year</string>
+    <string name="statistics_income">Income</string>
+    <string name="statistics_expenses">Expenses</string>
+    <string name="statistics_vs_last_period">vs last period</string>
+    <string name="statistics_spending_trend">Spending Trend</string>
+    <string name="statistics_spending_pattern">Spending pattern over time</string>
+    <string name="statistics_category_breakdown">Category Breakdown</string>
+    <string name="statistics_spending_by_category">Spending by category</string>
+    <string name="statistics_insights">Insights</string>
+    
+    <!-- Profile Screen -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_premium_member">Premium Member</string>
+    <string name="profile_member_since">Member since</string>
+    <string name="profile_transactions">Transactions</string>
+    <string name="profile_income">Income</string>
+    <string name="profile_expenses">Expenses</string>
+    <string name="profile_saved">Saved</string>
+    <string name="profile_logout">Log Out</string>
+    <string name="profile_app_version">Mizan v1.0.0</string>
+    <string name="profile_copyright">© 2026 All rights reserved</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_budget">Budget</string>
+    <string name="nav_statistics">Statistics</string>
+    <string name="nav_profile">Profile</string>
+</resources>
