@@ -66,7 +66,7 @@ val bottomNavItems = listOf(
         icon = Icons.ic_home
     ),
     BottomNavItem(
-        route = NavRoute.FinancialMirror,
+        route = NavRoute.Transactions,
         labelResId = R.string.nav_transactions,
         icon = Icons.ic_ai_insight
     ),
