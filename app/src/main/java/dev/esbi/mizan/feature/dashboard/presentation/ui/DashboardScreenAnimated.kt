@@ -65,6 +65,7 @@ fun DashboardScreenAnimated(
                 is DashboardStore.Label.NavigateToCategory -> {
                     onNavigateToCategory(label.categoryId)
                 }
+
                 is DashboardStore.Label.ShowError -> {
                 }
             }
@@ -88,6 +89,7 @@ private fun DashboardContentAnimated(
         state.isLoading && state.dashboardData == null -> {
             LoadingContentAnimated(modifier = modifier)
         }
+
         state.error != null && state.dashboardData == null -> {
             FadeInUpAnimation {
                 ErrorState(
@@ -97,9 +99,10 @@ private fun DashboardContentAnimated(
                 )
             }
         }
+
         state.dashboardData != null -> {
             val data = state.dashboardData
-            
+
             FadeInUpAnimation {
                 Column(
                     modifier = modifier
@@ -134,7 +137,7 @@ private fun DashboardContentAnimated(
                                     )
                                 }
                             }
-                            
+
                             Surface(
                                 modifier = Modifier
                                     .size(52.dp)
@@ -176,7 +179,7 @@ private fun DashboardContentAnimated(
                                 percentageUsed = data.budgetPercentageUsed
                             )
                         }
-                        
+
                         StaggeredFadeInUp(index = 3, modifier = Modifier.weight(1f)) {
                             PremiumCard(variant = PremiumCardVariant.Glass) {
                                 Column(
@@ -197,7 +200,10 @@ private fun DashboardContentAnimated(
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        text = stringResource(R.string.dashboard_savings_growth, 12.5),
+                                        text = stringResource(
+                                            R.string.dashboard_savings_growth,
+                                            12.5
+                                        ),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = Color(0xFF00F2FE)
                                     )
@@ -230,9 +236,9 @@ private fun DashboardContentAnimated(
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 }
-                                
+
                                 Spacer(modifier = Modifier.height(16.dp))
-                                
+
                                 LoadingSkeleton(height = 180)
                             }
                         }
@@ -257,9 +263,9 @@ private fun DashboardContentAnimated(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             PremiumCard(variant = PremiumCardVariant.Glass) {
                                 Column(
                                     modifier = Modifier
@@ -298,9 +304,9 @@ private fun DashboardContentAnimated(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             data.recentTransactions.forEachIndexed { index, transaction ->
                                 StaggeredFadeInUp(
                                     index = 7 + index,
@@ -334,9 +340,9 @@ private fun DashboardContentAnimated(
                                                 text = "$${transaction.amount}",
                                                 style = MaterialTheme.typography.bodyLarge,
                                                 fontWeight = FontWeight.SemiBold,
-                                                color = if (transaction.type.name == "INCOME") 
-                                                    Color(0xFF00F2FE) 
-                                                else 
+                                                color = if (transaction.type.name == "INCOME")
+                                                    Color(0xFF00F2FE)
+                                                else
                                                     MaterialTheme.colorScheme.onSurface
                                             )
                                         }
@@ -345,6 +351,8 @@ private fun DashboardContentAnimated(
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.size(width = 0.dp, height = 56.dp))
                 }
             }
         }

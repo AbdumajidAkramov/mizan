@@ -99,12 +99,7 @@ export function PremiumBalanceCard({
             border border-white/20
           ">
             <div className="flex items-center gap-[var(--premium-space-sm)] mb-[var(--premium-space-xs)]">
-              <div className="
-                w-[28px] h-[28px]
-                bg-[var(--premium-success)]
-                rounded-full
-                flex items-center justify-center
-              ">
+              <div className="w-[28px] h-[28px] bg-[rgb(4,119,80)] rounded-full flex items-center justify-center">
                 <TrendingUp size={14} className="text-white" />
               </div>
               <p className="body-sm text-white/70">Income</p>

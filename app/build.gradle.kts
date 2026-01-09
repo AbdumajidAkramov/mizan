@@ -81,7 +81,10 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    
+
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     

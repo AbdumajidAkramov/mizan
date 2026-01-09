@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModelFactory
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
+import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreenAnimated
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModelFactory
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
@@ -36,12 +37,18 @@ fun MizanNavHost(
         modifier = modifier
     ) {
         composable<NavRoute.Dashboard> {
-            DashboardScreenAnimated(
+            DashboardScreen(
                 viewModelFactory = dashboardViewModelFactory,
                 onNavigateToCategory = { categoryId ->
                     navController.navigate(NavRoute.CategoryDetail(categoryId))
                 }
             )
+//            DashboardScreenAnimated(
+//                viewModelFactory = dashboardViewModelFactory,
+//                onNavigateToCategory = { categoryId ->
+//                    navController.navigate(NavRoute.CategoryDetail(categoryId))
+//                }
+//            )
         }
         
         composable<NavRoute.FinancialMirror> {
