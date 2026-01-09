@@ -47,7 +47,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.esbi.mizan.R
+import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 data class BottomNavItem(
     val route: NavRoute,
@@ -60,28 +63,28 @@ val bottomNavItems = listOf(
     BottomNavItem(
         route = NavRoute.Dashboard,
         labelResId = R.string.nav_dashboard,
-        icon = R.drawable.ic_home
+        icon = Icons.ic_home
     ),
     BottomNavItem(
         route = NavRoute.Transactions,
         labelResId = R.string.nav_transactions,
-        icon = android.R.drawable.ic_menu_recent_history
+        icon = Icons.ic_ai_insight
     ),
     BottomNavItem(
         route = NavRoute.Budget,
         labelResId = R.string.nav_budget,
-        icon = android.R.drawable.ic_menu_add,
+        icon = Icons.ic_add,
         isSpecial = true
     ),
     BottomNavItem(
         route = NavRoute.Statistics,
         labelResId = R.string.nav_statistics,
-        icon = android.R.drawable.ic_menu_compass
+        icon = Icons.ic_trend_up
     ),
     BottomNavItem(
         route = NavRoute.Profile,
         labelResId = R.string.nav_profile,
-        icon = android.R.drawable.ic_menu_myplaces
+        icon = Icons.ic_profile
     )
 )
 
@@ -314,9 +317,9 @@ private fun PremiumFAB(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(android.R.drawable.ic_menu_add),
                     contentDescription = "Add Expense",
-                    modifier = Modifier.size(28.dp),
+                    icon = IconValue(Icons.ic_add),
+                    modifier = Modifier.size(24.dp),
                     tint = Color.White
                 )
             }

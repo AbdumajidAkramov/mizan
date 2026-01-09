@@ -57,6 +57,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -72,6 +73,7 @@ import dev.esbi.mizan.ui.components.ErrorState
 import dev.esbi.mizan.ui.components.LoadingSkeleton
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import kotlinx.coroutines.delay
 import java.text.NumberFormat
@@ -93,6 +95,7 @@ private val TextWhite = Color.White
 private val TextGray = Color(0xFFB8B8D1)
 private val TextMuted = Color(0xFF718096)
 private const val SLIDE_UP_DELAY_MS = 20
+
 @Composable
 fun DashboardScreen(
     viewModelFactory: DashboardViewModelFactory,
@@ -156,7 +159,14 @@ private fun DashboardScrollContent(data: DashboardSummary, onCategoryClick: (Str
         }
         item { AnimSection(visible, SLIDE_UP_DELAY_MS) { HealthCard(78, 5) } }
         item { AnimSection(visible, SLIDE_UP_DELAY_MS) { NetWorthCard(22450.0, 1245.0, 5.9) } }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { CashFlowCard(3850.0, data.monthlyExpenses) } }
+        item {
+            AnimSection(visible, SLIDE_UP_DELAY_MS) {
+                CashFlowCard(
+                    3850.0,
+                    data.monthlyExpenses
+                )
+            }
+        }
         item { AnimSection(visible, SLIDE_UP_DELAY_MS) { EmergencyCard(8500.0, 12000.0, 6) } }
         item {
             AnimSection(visible, SLIDE_UP_DELAY_MS) {
@@ -178,7 +188,12 @@ private fun DashboardScrollContent(data: DashboardSummary, onCategoryClick: (Str
             }
         }
         item { AnimSection(visible, SLIDE_UP_DELAY_MS) { InsightsSection() } }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { TransactionsSection(data.recentTransactions) } }
+        item {
+            AnimSection(
+                visible,
+                SLIDE_UP_DELAY_MS
+            ) { TransactionsSection(data.recentTransactions) }
+        }
     }
 }
 
@@ -192,7 +207,7 @@ private fun AnimSection(visible: Boolean, delayMs: Int, content: @Composable () 
     }
     AnimatedVisibility(
         show,
-        enter = fadeIn(tween(500)) + slideInVertically(tween(500)) { it / 4 }) { content() }
+        enter = fadeIn(tween(100)) + slideInVertically(tween(100)) { it / 4 }) { content() }
 }
 
 @Composable
@@ -641,10 +656,27 @@ private fun FlowItem(isIncome: Boolean, amount: Double) {
     }
 }
 
+@Preview
+@Composable
+private fun MiniBarChartPreview() {
+    MizanTheme {
+        MiniBarChart()
+    }
+}
+
 @Composable
 private fun MiniBarChart() {
-    val data = listOf(0.3f to 0.5f, 0.4f to 0.6f, 0.8f to 0.3f, 0.2f to 0.4f)
-    Row(Modifier.fillMaxWidth(), Arrangement.SpaceEvenly) {
+    val data = listOf(
+        0.3f to 0.5f,
+        0.4f to 0.6f,
+        0.7f to 0.3f,
+        0.8f to 0.4f,
+        0.9f to 0.4f,
+    )
+    Row(
+        modifier = Modifier.fillMaxWidth(), Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.Bottom
+    ) {
         data.forEach { (inc, exp) ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -668,6 +700,20 @@ private fun MiniBarChart() {
         }
     }
 }
+
+
+@Preview
+@Composable
+private fun EmergencyCardPreview() {
+    MizanTheme {
+        EmergencyCard(
+            current = 8500.0,
+            goal = 12000.0,
+            months = 6
+        )
+    }
+}
+
 
 @Composable
 private fun EmergencyCard(current: Double, goal: Double, months: Int) {
@@ -737,7 +783,7 @@ private fun EmergencyCard(current: Double, goal: Double, months: Int) {
                     .fillMaxWidth()
                     .height(8.dp)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(CardBg)
+                    .background(CardBorderColor)
             ) {
                 Box(
                     Modifier
@@ -871,6 +917,14 @@ private fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Doub
     }
 }
 
+@Preview
+@Composable
+private fun ChartCardPreview() {
+    MizanTheme {
+        ChartCard(data = emptyList())
+    }
+}
+
 @Composable
 private fun ChartCard(data: List<WeeklySpendingPoint>) {
     GlassCard {
@@ -944,7 +998,11 @@ private fun SpendingChart(data: List<WeeklySpendingPoint>, modifier: Modifier) {
                             path.cubicTo(px + (x - px) / 3, py, px + 2 * (x - px) / 3, y, x, y)
                         }
                     }
-                    drawPath(path, Purple, style = Stroke(3.dp.toPx(), cap = StrokeCap.Round))
+                    drawPath(
+                        path = path,
+                        color = Purple,
+                        style = Stroke(3.dp.toPx(), cap = StrokeCap.Round)
+                    )
                 }
             }
         }

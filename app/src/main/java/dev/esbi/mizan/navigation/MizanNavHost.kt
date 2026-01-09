@@ -10,7 +10,6 @@ import dev.esbi.mizan.feature.budget.presentation.BudgetViewModelFactory
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
-import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreenAnimated
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModelFactory
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
@@ -50,37 +49,37 @@ fun MizanNavHost(
 //                }
 //            )
         }
-        
+
         composable<NavRoute.FinancialMirror> {
             FinancialMirrorScreen(
                 viewModelFactory = financialMirrorViewModelFactory
             )
         }
-        
+
         composable<NavRoute.Budget> {
             BudgetScreen(
                 viewModelFactory = budgetViewModelFactory
             )
         }
-        
+
         composable<NavRoute.Transactions> {
             TransactionsScreen(
                 viewModelFactory = transactionsViewModelFactory
             )
         }
-        
+
         composable<NavRoute.Statistics> {
             StatisticsScreen(
                 viewModelFactory = statisticsViewModelFactory
             )
         }
-        
+
         composable<NavRoute.Profile> {
             ProfileScreen(
                 viewModelFactory = profileViewModelFactory
             )
         }
-        
+
         composable<NavRoute.CategoryDetail> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategoryDetail>()
             // TODO: Implement CategoryDetailScreen when needed
