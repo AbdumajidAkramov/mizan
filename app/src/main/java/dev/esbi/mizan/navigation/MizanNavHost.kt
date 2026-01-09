@@ -42,12 +42,6 @@ fun MizanNavHost(
                     navController.navigate(NavRoute.CategoryDetail(categoryId))
                 }
             )
-//            DashboardScreenAnimated(
-//                viewModelFactory = dashboardViewModelFactory,
-//                onNavigateToCategory = { categoryId ->
-//                    navController.navigate(NavRoute.CategoryDetail(categoryId))
-//                }
-//            )
         }
 
         composable<NavRoute.FinancialMirror> {
