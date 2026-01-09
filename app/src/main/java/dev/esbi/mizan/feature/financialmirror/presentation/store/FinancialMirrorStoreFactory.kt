@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialMirrorSummary
 import dev.esbi.mizan.feature.financialmirror.domain.usecase.ObserveFinancialMirrorUseCase
 import dev.esbi.mizan.feature.financialmirror.domain.usecase.RefreshFinancialMirrorUseCase
+import dev.esbi.mizan.feature.financialmirror.presentation.mock.mockFinancialMirrorState
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class FinancialMirrorStoreFactory @Inject constructor(
         object : FinancialMirrorStore,
             Store<FinancialMirrorStore.Intent, FinancialMirrorStore.State, FinancialMirrorStore.Label> by storeFactory.create(
                 name = "FinancialMirrorStore",
-                initialState = FinancialMirrorStore.State(),
+                initialState = mockFinancialMirrorState,
                 executorFactory = ::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}

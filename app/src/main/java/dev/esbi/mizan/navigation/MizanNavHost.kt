@@ -15,6 +15,7 @@ import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScr
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModelFactory
+import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.StatisticsScreen
 import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModelFactory
 import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
@@ -63,9 +64,10 @@ fun MizanNavHost(
         }
 
         composable<NavRoute.Statistics> {
-            StatisticsScreen(
-                viewModelFactory = statisticsViewModelFactory
-            )
+            PremiumStatisticsScreen()
+//            StatisticsScreen(
+//                viewModelFactory = statisticsViewModelFactory
+//            )
         }
 
         composable<NavRoute.Profile> {

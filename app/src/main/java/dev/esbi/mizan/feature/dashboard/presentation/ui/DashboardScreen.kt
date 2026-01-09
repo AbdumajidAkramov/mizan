@@ -69,6 +69,7 @@ import dev.esbi.mizan.feature.dashboard.domain.model.WeeklySpendingPoint
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.header.HeaderSection
 import dev.esbi.mizan.ui.components.ErrorState
 import dev.esbi.mizan.ui.components.LoadingSkeleton
 import dev.esbi.mizan.ui.kit.icon.Icon
@@ -82,19 +83,19 @@ import java.util.Locale
 import kotlin.math.cos
 import kotlin.math.sin
 
-private val DarkBg = Color(0xFF0D0D1A)
-private val CardBg = Color(0xFF1A1A2E)
-private val CardBorderColor = Color.White.copy(alpha = 0.08f)
-private val Purple = Color(0xFF667EEA)
-private val Purple2 = Color(0xFF764BA2)
-private val Pink = Color(0xFFF5576C)
-private val Cyan = Color(0xFF00F2FE)
-private val Orange = Color(0xFFFFA34D)
-private val Red = Color(0xFFFF6B6B)
-private val TextWhite = Color.White
-private val TextGray = Color(0xFFB8B8D1)
-private val TextMuted = Color(0xFF718096)
-private const val SLIDE_UP_DELAY_MS = 20
+val DarkBg = Color(0xFF0D0D1A)
+val CardBg = Color(0xFF1A1A2E)
+val CardBorderColor = Color.White.copy(alpha = 0.08f)
+val Purple = Color(0xFF667EEA)
+val Purple2 = Color(0xFF764BA2)
+val Pink = Color(0xFFF5576C)
+val Cyan = Color(0xFF00F2FE)
+val Orange = Color(0xFFFFA34D)
+val Red = Color(0xFFFF6B6B)
+val TextWhite = Color.White
+val TextGray = Color(0xFFB8B8D1)
+val TextMuted = Color(0xFF718096)
+const val SLIDE_UP_DELAY_MS = 20
 
 @Composable
 fun DashboardScreen(
@@ -245,27 +246,6 @@ private fun GlassCard(
     }
 }
 
-@Composable
-private fun HeaderSection() {
-    Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
-        Column {
-            Text("Welcome back,", style = MaterialTheme.typography.bodyMedium, color = TextGray)
-            Spacer(Modifier.height(4.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("John Doe", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextWhite)
-                Text(" 👋", fontSize = 28.sp)
-            }
-        }
-        Box(
-            Modifier
-                .size(52.dp)
-                .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(Purple, Purple2))), Alignment.Center
-        ) {
-            Text("JD", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-        }
-    }
-}
 
 @Composable
 private fun BalanceCard(total: Double, income: Double, expenses: Double) {
