@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +52,11 @@ import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
+import dev.esbi.mizan.ui.theme.PremiumPrimary
+import dev.esbi.mizan.ui.theme.Typography
+import dev.esbi.mizan.ui.theme.utils.typography
+//import dev.esbi.mizan.ui.theme.utils.functionalColors
+//import dev.esbi.mizan.ui.theme.utils.typography
 import dev.esbi.mizan.ui.utils.Icons
 
 data class BottomNavItem(
@@ -121,6 +128,7 @@ private fun PremiumBottomBar(
     onNavigate: (NavRoute) -> Unit,
     onAddExpense: () -> Unit
 ) {
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.BottomCenter
@@ -130,11 +138,11 @@ private fun PremiumBottomBar(
                 .fillMaxWidth()
                 .border(
                     width = 1.dp,
-                    color = Color.White.copy(alpha = 0.1f),
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(32.dp)
                 ),
             shape = RoundedCornerShape(32.dp),
-            color = Color(0xFF1A1A2E).copy(alpha = 0.95f),
+            color = MaterialTheme.colorScheme.primary,
             shadowElevation = 16.dp
         ) {
             Box(
@@ -143,8 +151,8 @@ private fun PremiumBottomBar(
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.08f),
-                                Color.White.copy(alpha = 0.02f)
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.primary,
                             )
                         )
                     )
@@ -198,6 +206,7 @@ private fun BottomNavItemView(
 
     Column(
         modifier = modifier
+            .padding(horizontal = 4.dp)
             .clickable(
                 indication = ripple(
                     bounded = false,
@@ -217,20 +226,22 @@ private fun BottomNavItemView(
                 painter = painterResource(item.icon),
                 contentDescription = stringResource(item.labelResId),
                 modifier = Modifier.size(24.dp),
-                tint = if (isSelected) Color(0xFF667EEA) else Color(0xFF718096).copy(alpha = 0.7f)
+                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
-
         Text(
+            style = Typography.bodySmall.copy(
+                fontSize = 11.sp,
+                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             text = stringResource(item.labelResId),
-            fontSize = 10.sp,
-            color = if (isSelected) Color(0xFF667EEA) else Color(0xFF718096).copy(alpha = 0.7f),
             modifier = Modifier.drawBehind {
                 if (isSelected) {
                     drawCircle(
-                        color = Color(0xFF667EEA),
+                        color = PremiumPrimary,
                         radius = 2.dp.toPx(),
                         center = Offset(size.width / 2, size.height + 6.dp.toPx())
                     )
@@ -333,7 +344,7 @@ private fun PremiumBottomBarPreview() {
     MizanTheme {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-        Box(modifier = Modifier.background(color = Color.Blue)) {
+        Box(modifier = Modifier) {
             MizanBottomNavigation(
                 navController = navController,
                 modifier = Modifier.background(color = Color.Transparent),

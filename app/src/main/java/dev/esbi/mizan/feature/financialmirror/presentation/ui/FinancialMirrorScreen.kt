@@ -111,46 +111,42 @@ fun FinancialMirrorScreen(
             }
         }
     }
+    when {
+        state.isLoading && state.financialMirrorData == null -> LoadingContent()
+        state.error != null && state.financialMirrorData == null -> ErrorState(
+            message = state.error ?: "Unknown error",
+            onRetry = { viewModel.onIntent(FinancialMirrorStore.Intent.Retry) },
+            modifier = Modifier.fillMaxSize()
+        )
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(DarkBg)
-    ) {
-        when {
-            state.isLoading && state.financialMirrorData == null -> LoadingContent()
-            state.error != null && state.financialMirrorData == null -> ErrorState(
-                message = state.error ?: "Unknown error",
-                onRetry = { viewModel.onIntent(FinancialMirrorStore.Intent.Retry) },
-                modifier = Modifier.fillMaxSize()
-            )
-
-            state.financialMirrorData != null -> FinancialMirrorScrollContent(
-                data = state.financialMirrorData!!,
-                selectedView = state.selectedProjectionView,
-                onViewSelected = {
-                    viewModel.onIntent(
-                        FinancialMirrorStore.Intent.SelectProjectionView(
-                            it
-                        )
+        state.financialMirrorData != null -> FinancialMirrorScrollContent(
+            modifier = modifier,
+            data = state.financialMirrorData!!,
+            selectedView = state.selectedProjectionView,
+            onViewSelected = {
+                viewModel.onIntent(
+                    FinancialMirrorStore.Intent.SelectProjectionView(
+                        it
                     )
-                }
-            )
-        }
+                )
+            }
+        )
     }
+
 }
 
 @Composable
 private fun FinancialMirrorScrollContent(
     data: FinancialMirrorSummary,
     selectedView: FinancialMirrorStore.ProjectionView,
-    onViewSelected: (FinancialMirrorStore.ProjectionView) -> Unit
+    modifier: Modifier = Modifier,
+    onViewSelected: (FinancialMirrorStore.ProjectionView) -> Unit = {}
 ) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars),
         contentPadding = PaddingValues(16.dp, 16.dp, 16.dp, 120.dp),

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
  * Mizan Typography System
  * Based on Material 3 typography scale
  * Derived from material3-theme.css and premium-theme.css
- * 
+ *
  * Font Family: Inter (system default fallback)
  */
 
@@ -18,7 +18,7 @@ val Typography = Typography(
     // ==========================================
     // DISPLAY STYLES
     // ==========================================
-    
+
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -26,7 +26,7 @@ val Typography = Typography(
         lineHeight = 64.sp,
         letterSpacing = (-0.25).sp
     ),
-    
+
     displayMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -34,7 +34,7 @@ val Typography = Typography(
         lineHeight = 52.sp,
         letterSpacing = 0.sp
     ),
-    
+
     displaySmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -42,11 +42,11 @@ val Typography = Typography(
         lineHeight = 44.sp,
         letterSpacing = 0.sp
     ),
-    
+
     // ==========================================
     // HEADLINE STYLES
     // ==========================================
-    
+
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -54,7 +54,7 @@ val Typography = Typography(
         lineHeight = 40.sp,
         letterSpacing = 0.sp
     ),
-    
+
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -62,7 +62,7 @@ val Typography = Typography(
         lineHeight = 36.sp,
         letterSpacing = 0.sp
     ),
-    
+
     headlineSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -70,11 +70,11 @@ val Typography = Typography(
         lineHeight = 32.sp,
         letterSpacing = 0.sp
     ),
-    
+
     // ==========================================
     // TITLE STYLES
     // ==========================================
-    
+
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -82,7 +82,7 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
-    
+
     titleMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
@@ -90,7 +90,7 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
     ),
-    
+
     titleSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
@@ -98,11 +98,11 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
-    
+
     // ==========================================
     // BODY STYLES
     // ==========================================
-    
+
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -110,7 +110,7 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
-    
+
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -118,7 +118,7 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.25.sp
     ),
-    
+
     bodySmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -126,11 +126,11 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.4.sp
     ),
-    
+
     // ==========================================
     // LABEL STYLES
     // ==========================================
-    
+
     labelLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
@@ -138,7 +138,7 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.1.sp
     ),
-    
+
     labelMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
@@ -146,7 +146,7 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
-    
+
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,

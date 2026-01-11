@@ -91,7 +91,6 @@ val CategoryIncome = Color(0xFF00F2FE)
 // ==========================================
 // MATERIAL 3 COLORS - LIGHT THEME
 // ==========================================
-
 // Primary
 val M3PrimaryLight = Color(0xFF6750A4)
 val M3OnPrimaryLight = Color(0xFFFFFFFF)
@@ -275,3 +274,18 @@ object PremiumColors {
     val GradientWarm = dev.esbi.mizan.ui.theme.GradientWarm
     val GradientCool = dev.esbi.mizan.ui.theme.GradientCool
 }
+
+
+val DarkBg = Color(0xFF0D0D1A)
+val CardBg = Color(0xFF1A1A2E)
+val CardBorderColor = Color.White.copy(alpha = 0.08f)
+val Purple = Color(0xFF667EEA)
+val Purple2 = Color(0xFF764BA2)
+val Pink = Color(0xFFF5576C)
+val Cyan = Color(0xFF00F2FE)
+val Orange = Color(0xFFFFA34D)
+val Red = Color(0xFFFF6B6B)
+val TextWhite = Color.White
+val TextGray = Color(0xFFB8B8D1)
+val TextMuted = Color(0xFF718096)
+
