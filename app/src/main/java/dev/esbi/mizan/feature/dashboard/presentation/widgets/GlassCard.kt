@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.header.HeaderSection
 import dev.esbi.mizan.ui.theme.CardBorderColor
 import dev.esbi.mizan.ui.theme.MizanTheme
 

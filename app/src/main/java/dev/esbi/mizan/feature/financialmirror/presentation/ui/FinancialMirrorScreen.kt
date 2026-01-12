@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,9 +48,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.draw
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,26 +72,12 @@ import dev.esbi.mizan.ui.components.ErrorState
 import dev.esbi.mizan.ui.components.LoadingSkeleton
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import kotlinx.coroutines.delay
 import java.text.NumberFormat
 import java.util.Locale
 
-// Premium Dark Theme Colors
-private val DarkBg = Color(0xFF0D0D1A)
-private val CardBg = Color(0xFF1A1A2E)
-private val CardBorderColor = Color.White.copy(alpha = 0.08f)
-private val Purple = Color(0xFF667EEA)
-private val Purple2 = Color(0xFF764BA2)
-private val Pink = Color(0xFFF5576C)
-private val Cyan = Color(0xFF00F2FE)
-private val Orange = Color(0xFFFFA34D)
-private val Yellow = Color(0xFFFEE140)
-private val Red = Color(0xFFFF6B6B)
-private val TextWhite = Color.White
-private val TextGray = Color(0xFFB8B8D1)
-private val TextMuted = Color(0xFF718096)
-private val Blue = Color(0xFF4FACFE)
 private const val ANIM_DELAY_MS = 50
 
 @Composable
@@ -229,9 +214,13 @@ private fun GlassCard(
         Box(
             Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .background(CardBg.copy(0.95f))
-                .border(1.dp, CardBorderColor, RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+                .background(MizanTheme.premium.background.secondary.copy(0.95f))
+                .border(
+                    1.dp,
+                    MizanTheme.premium.glass.border,
+                    RoundedCornerShape(MizanTheme.premium.radius.xl)
+                )
         ) { content() }
     }
 }
@@ -241,19 +230,18 @@ private fun HeaderSection() {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("✨", fontSize = 28.sp)
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
             Text(
                 "Financial Mirror",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextWhite
+                style = MizanTheme.premium.typography.headingXl,
+                color = MizanTheme.premium.text.primary
             )
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
         Text(
             "AI-powered insights into your financial future",
-            style = MaterialTheme.typography.bodyMedium,
-            color = TextMuted
+            style = MizanTheme.premium.typography.bodyMd,
+            color = MizanTheme.premium.text.tertiary
         )
     }
 }
@@ -270,19 +258,18 @@ private fun NetWorthProjectionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(MizanTheme.premium.spacing.lg)
         ) {
             Text(
                 "Net Worth Projection",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextWhite
+                style = MizanTheme.premium.typography.headingMd,
+                color = MizanTheme.premium.text.primary
             )
-            Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
             Text(
                 "Your potential wealth growth over 5 years",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextMuted
+                style = MizanTheme.premium.typography.bodySm,
+                color = MizanTheme.premium.text.tertiary
             )
 
             Spacer(Modifier.height(20.dp))
@@ -290,7 +277,7 @@ private fun NetWorthProjectionCard(
             // Projection Toggle Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
             ) {
                 listOf(
                     FinancialMirrorStore.ProjectionView.CONSERVATIVE to "Conservative",
@@ -301,20 +288,24 @@ private fun NetWorthProjectionCard(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
                             .background(
-                                if (isSelected) Brush.horizontalGradient(listOf(Purple, Purple2))
-                                else Brush.horizontalGradient(listOf(CardBg, CardBg))
+                                if (isSelected) MizanTheme.premium.gradients.primary
+                                else Brush.horizontalGradient(
+                                    listOf(
+                                        MizanTheme.premium.background.secondary,
+                                        MizanTheme.premium.background.secondary
+                                    )
+                                )
                             )
                             .clickable { onViewSelected(view) }
-                            .padding(vertical = 12.dp),
+                            .padding(vertical = MizanTheme.premium.spacing.sm),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             label,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = if (isSelected) Color.White else TextGray
+                            style = MizanTheme.premium.typography.labelMd,
+                            color = if (isSelected) Color.White else MizanTheme.premium.text.secondary
                         )
                     }
                 }
@@ -353,41 +344,42 @@ private fun NetWorthProjectionCard(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Starting", style = MaterialTheme.typography.bodySmall, color = TextMuted)
-                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Starting",
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
+                    )
+                    Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                     Text(
                         "$${(projectionData.currentNetWorth / 1000).toInt()}k",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextWhite
+                        style = MizanTheme.premium.typography.headingMd,
+                        color = MizanTheme.premium.text.primary
                     )
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         "5-Year Target",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                     Text(
                         "$${(targetValue / 1000).toInt()}k",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Purple
+                        style = MizanTheme.premium.typography.headingMd,
+                        color = MizanTheme.premium.colors.primary
                     )
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         "Total Growth",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                     Text(
                         "+$growthPercent%",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Cyan
+                        style = MizanTheme.premium.typography.headingMd,
+                        color = MizanTheme.premium.colors.success
                     )
                 }
             }
@@ -432,6 +424,13 @@ private fun ProjectionChart(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
+            // Grid lines
+            val gridColor = MizanTheme.premium.glass.border
+            val colors = listOf(
+                MizanTheme.premium.colors.primary.copy(alpha = 0.3f),
+                MizanTheme.premium.colors.primary.copy(alpha = 0f)
+            )
+            val drawLineColor = MizanTheme.premium.colors.primary
             Canvas(Modifier.fillMaxSize()) {
                 val padLeft = 50.dp.toPx()
                 val padBottom = 30.dp.toPx()
@@ -442,8 +441,6 @@ private fun ProjectionChart(
                 val minVal = 0.0
                 val range = maxVal - minVal
 
-                // Grid lines
-                val gridColor = CardBorderColor
                 for (i in 0..4) {
                     val y = chartHeight * (1 - i / 4f)
                     drawLine(
@@ -495,7 +492,7 @@ private fun ProjectionChart(
                     drawPath(
                         path = fillPath,
                         brush = Brush.verticalGradient(
-                            colors = listOf(Purple.copy(alpha = 0.3f), Purple.copy(alpha = 0f)),
+                            colors = colors,
                             startY = 0f,
                             endY = chartHeight
                         )
@@ -504,7 +501,7 @@ private fun ProjectionChart(
                     // Draw line
                     drawPath(
                         path = linePath,
-                        color = Purple,
+                        color = drawLineColor,
                         style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
                     )
                 }
@@ -515,16 +512,15 @@ private fun ProjectionChart(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .height(170.dp)
-                    .padding(end = 8.dp),
+                    .padding(end = MizanTheme.premium.spacing.sm),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 val maxVal = values.maxOrNull() ?: 1.0
                 listOf(maxVal, maxVal * 0.75, maxVal * 0.5, maxVal * 0.25, 0.0).forEach { v ->
                     Text(
                         "$${(v / 1000).toInt()}k",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted,
-                        fontSize = 10.sp
+                        style = MizanTheme.premium.typography.bodyXs,
+                        color = MizanTheme.premium.text.tertiary
                     )
                 }
             }
@@ -540,9 +536,8 @@ private fun ProjectionChart(
             data.forEach { proj ->
                 Text(
                     proj.year,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted,
-                    fontSize = 11.sp
+                    style = MizanTheme.premium.typography.bodyXs,
+                    color = MizanTheme.premium.text.tertiary
                 )
             }
         }
@@ -555,45 +550,44 @@ private fun RiskAnalysisCard(riskAnalysis: RiskAnalysis) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(MizanTheme.premium.spacing.lg)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     Modifier
                         .size(28.dp)
                         .clip(CircleShape)
-                        .background(Yellow.copy(0.2f)),
+                        .background(MizanTheme.premium.colors.warning.copy(0.2f)),
                     Alignment.Center
                 ) {
                     Icon(
                         icon = IconValue(Icons.ic_shield),
                         modifier = Modifier.size(16.dp),
-                        tint = Yellow
+                        tint = MizanTheme.premium.colors.warning
                     )
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
                 Text(
                     "Financial Risk Assessment",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TextWhite
+                    style = MizanTheme.premium.typography.headingSm,
+                    color = MizanTheme.premium.text.primary
                 )
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.xl))
 
             riskAnalysis.riskFactors.forEach { risk ->
                 RiskFactorItem(risk)
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(MizanTheme.premium.spacing.md))
             }
 
             // Overall Risk Score
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(CardBg)
-                    .padding(16.dp)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    .background(MizanTheme.premium.background.secondary)
+                    .padding(MizanTheme.premium.spacing.md)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -603,22 +597,21 @@ private fun RiskAnalysisCard(riskAnalysis: RiskAnalysis) {
                     Column {
                         Text(
                             "Overall Risk Score",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextMuted
+                            style = MizanTheme.premium.typography.bodySm,
+                            color = MizanTheme.premium.text.tertiary
                         )
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                         Text(
                             "${riskAnalysis.overallScore}/100",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextWhite
+                            style = MizanTheme.premium.typography.headingXl,
+                            color = MizanTheme.premium.text.primary
                         )
                     }
 
                     val statusColor = when (riskAnalysis.overallStatus) {
-                        RiskStatus.GOOD -> Cyan
-                        RiskStatus.FAIR -> Blue
-                        RiskStatus.WARNING -> Yellow
+                        RiskStatus.GOOD -> MizanTheme.premium.colors.success
+                        RiskStatus.FAIR -> MizanTheme.premium.colors.primary
+                        RiskStatus.WARNING -> MizanTheme.premium.colors.warning
                     }
                     val statusLabel = when (riskAnalysis.overallStatus) {
                         RiskStatus.GOOD -> "Excellent"
@@ -627,14 +620,16 @@ private fun RiskAnalysisCard(riskAnalysis: RiskAnalysis) {
                     }
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                             .background(statusColor.copy(alpha = 0.2f))
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .padding(
+                                horizontal = MizanTheme.premium.spacing.md,
+                                vertical = MizanTheme.premium.spacing.sm
+                            )
                     ) {
                         Text(
                             statusLabel,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
+                            style = MizanTheme.premium.typography.labelMd,
                             color = statusColor
                         )
                     }
@@ -647,9 +642,9 @@ private fun RiskAnalysisCard(riskAnalysis: RiskAnalysis) {
 @Composable
 private fun RiskFactorItem(risk: RiskFactor) {
     val color = when (risk.status) {
-        RiskStatus.GOOD -> Cyan
-        RiskStatus.FAIR -> Blue
-        RiskStatus.WARNING -> Yellow
+        RiskStatus.GOOD -> MizanTheme.premium.colors.success
+        RiskStatus.FAIR -> MizanTheme.premium.colors.primary
+        RiskStatus.WARNING -> MizanTheme.premium.colors.warning
     }
 
     val animProgress = remember { Animatable(0f) }
@@ -666,39 +661,37 @@ private fun RiskFactorItem(risk: RiskFactor) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     risk.category,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = TextWhite
+                    style = MizanTheme.premium.typography.labelMd,
+                    color = MizanTheme.premium.text.primary
                 )
                 Text(
                     risk.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = MizanTheme.premium.text.tertiary
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     risk.score.toString(),
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MizanTheme.premium.typography.headingMd,
                     color = color
                 )
                 Text(
                     "/ 100",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = MizanTheme.premium.text.tertiary
                 )
             }
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
                 .clip(RoundedCornerShape(3.dp))
-                .background(CardBg)
+                .background(MizanTheme.premium.background.secondary)
         ) {
             Box(
                 modifier = Modifier
@@ -716,34 +709,35 @@ private fun TimeMachineSection(scenarios: List<TimeMachineScenario>) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("⏰", fontSize = 20.sp)
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
             Text(
                 "Time Machine",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextWhite
+                style = MizanTheme.premium.typography.headingSm,
+                color = MizanTheme.premium.text.primary
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Brush.horizontalGradient(listOf(Purple, Purple2)))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    .background(MizanTheme.premium.gradients.primary)
+                    .padding(
+                        horizontal = MizanTheme.premium.spacing.sm,
+                        vertical = MizanTheme.premium.spacing.xs
+                    )
             ) {
                 Text(
                     "What If?",
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
+                    style = MizanTheme.premium.typography.labelSm,
                     color = Color.White
                 )
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
         scenarios.forEach { scenario ->
             ScenarioCard(scenario)
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
         }
     }
 }
@@ -762,14 +756,14 @@ private fun ScenarioCard(scenario: TimeMachineScenario) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(MizanTheme.premium.spacing.xl),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Brush.linearGradient(listOf(Purple, Purple2))),
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    .background(MizanTheme.premium.gradients.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -779,41 +773,42 @@ private fun ScenarioCard(scenario: TimeMachineScenario) {
                 )
             }
 
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.md))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     scenario.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TextWhite
+                    style = MizanTheme.premium.typography.labelLg,
+                    color = MizanTheme.premium.text.primary
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                 Text(
                     scenario.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = MizanTheme.premium.text.tertiary
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Cyan.copy(alpha = 0.2f))
-                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                            .background(MizanTheme.premium.colors.success.copy(alpha = 0.2f))
+                            .padding(
+                                horizontal = MizanTheme.premium.spacing.sm,
+                                vertical = MizanTheme.premium.spacing.xs
+                            )
                     ) {
                         Text(
                             scenario.impact,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                            color = Cyan
+                            style = MizanTheme.premium.typography.labelSm,
+                            color = MizanTheme.premium.colors.success
                         )
                     }
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
                     Text(
                         "in ${scenario.timeline}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
                     )
                 }
             }
@@ -821,7 +816,7 @@ private fun ScenarioCard(scenario: TimeMachineScenario) {
             Icon(
                 icon = IconValue(Icons.ic_trend_up),
                 modifier = Modifier.size(20.dp),
-                tint = TextMuted
+                tint = MizanTheme.premium.text.tertiary
             )
         }
     }
@@ -832,34 +827,35 @@ private fun InvestmentOpportunitiesSection(opportunities: List<InvestmentOpportu
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("⚡", fontSize = 20.sp)
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
             Text(
                 "Investment Opportunities",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextWhite
+                style = MizanTheme.premium.typography.headingSm,
+                color = MizanTheme.premium.text.primary
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Yellow.copy(alpha = 0.3f))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    .background(MizanTheme.premium.colors.warning.copy(alpha = 0.3f))
+                    .padding(
+                        horizontal = MizanTheme.premium.spacing.sm,
+                        vertical = MizanTheme.premium.spacing.xs
+                    )
             ) {
                 Text(
                     "AI Curated",
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                    color = Yellow
+                    style = MizanTheme.premium.typography.labelSm,
+                    color = MizanTheme.premium.colors.warning
                 )
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
         opportunities.forEach { opportunity ->
             InvestmentCard(opportunity)
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
         }
     }
 }
@@ -867,10 +863,10 @@ private fun InvestmentOpportunitiesSection(opportunities: List<InvestmentOpportu
 @Composable
 private fun InvestmentCard(opportunity: InvestmentOpportunity) {
     val typeColor = when (opportunity.type) {
-        InvestmentType.LOW_RISK -> Cyan
-        InvestmentType.MEDIUM_RISK -> Blue
-        InvestmentType.HIGH_RISK -> Orange
-        InvestmentType.LONG_TERM -> Purple
+        InvestmentType.LOW_RISK -> MizanTheme.premium.colors.success
+        InvestmentType.MEDIUM_RISK -> MizanTheme.premium.colors.primary
+        InvestmentType.HIGH_RISK -> MizanTheme.premium.categories.shopping
+        InvestmentType.LONG_TERM -> MizanTheme.premium.colors.primary
     }
     val typeLabel = when (opportunity.type) {
         InvestmentType.LOW_RISK -> "Low Risk"
@@ -883,7 +879,7 @@ private fun InvestmentCard(opportunity: InvestmentOpportunity) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(MizanTheme.premium.spacing.xl)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -893,30 +889,31 @@ private fun InvestmentCard(opportunity: InvestmentOpportunity) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         opportunity.title,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextWhite
+                        style = MizanTheme.premium.typography.headingSm,
+                        color = MizanTheme.premium.text.primary
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
                                 .background(typeColor.copy(alpha = 0.2f))
-                                .padding(horizontal = 12.dp, vertical = 4.dp)
+                                .padding(
+                                    horizontal = MizanTheme.premium.spacing.sm,
+                                    vertical = MizanTheme.premium.spacing.xs
+                                )
                         ) {
                             Text(
                                 typeLabel,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Medium,
+                                style = MizanTheme.premium.typography.labelSm,
                                 color = typeColor
                             )
                         }
-                        Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
                         Text(
                             "Min: ${opportunity.minAmount}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextMuted
+                            style = MizanTheme.premium.typography.bodySm,
+                            color = MizanTheme.premium.text.tertiary
                         )
                     }
                 }
@@ -924,46 +921,44 @@ private fun InvestmentCard(opportunity: InvestmentOpportunity) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         opportunity.apy,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MizanTheme.premium.typography.headingLg,
                         color = typeColor
                     )
                     Text(
                         "APY",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
                     )
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
 
             Text(
                 opportunity.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = TextMuted
+                style = MizanTheme.premium.typography.bodyMd,
+                color = MizanTheme.premium.text.tertiary
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
             // Gradient Learn More Button
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Brush.horizontalGradient(listOf(Purple, Purple2)))
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    .background(MizanTheme.premium.gradients.primary)
                     .clickable { }
-                    .padding(vertical = 14.dp),
+                    .padding(vertical = MizanTheme.premium.spacing.sm),
                 contentAlignment = Alignment.Center
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "Learn More",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
+                        style = MizanTheme.premium.typography.labelMd,
                         color = Color.White
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
                     Icon(
                         icon = IconValue(Icons.ic_trend_up),
                         modifier = Modifier.size(18.dp),
@@ -980,42 +975,48 @@ private fun AIRecommendationCard(recommendation: AIRecommendation) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .background(
                 Brush.linearGradient(
-                    colors = listOf(Purple.copy(alpha = 0.15f), Purple2.copy(alpha = 0.15f))
+                    colors = listOf(
+                        MizanTheme.premium.colors.primary.copy(alpha = 0.15f),
+                        MizanTheme.premium.colors.secondary.copy(alpha = 0.15f)
+                    )
                 )
             )
-            .border(1.dp, CardBorderColor, RoundedCornerShape(24.dp))
+            .border(
+                1.dp,
+                MizanTheme.premium.glass.border,
+                RoundedCornerShape(MizanTheme.premium.radius.xl)
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(MizanTheme.premium.spacing.xl)
         ) {
             Text("🤖", fontSize = 32.sp)
-            Spacer(Modifier.width(16.dp))
+            Spacer(Modifier.width(MizanTheme.premium.spacing.md))
             Column {
                 Text(
                     "AI Recommendation",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TextWhite
+                    style = MizanTheme.premium.typography.headingSm,
+                    color = MizanTheme.premium.text.primary
                 )
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
                 Text(
                     "Based on your spending patterns and goals, we recommend:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextGray
+                    style = MizanTheme.premium.typography.bodyMd,
+                    color = MizanTheme.premium.text.secondary
                 )
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
                 recommendation.recommendations.forEach { rec ->
                     Text(
                         "• $rec",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextMuted
+                        style = MizanTheme.premium.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
                     )
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(MizanTheme.premium.spacing.xs))
                 }
             }
         }
@@ -1027,8 +1028,8 @@ private fun LoadingContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            .padding(MizanTheme.premium.spacing.md),
+        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
     ) {
         LoadingSkeleton(height = 200)
         LoadingSkeleton(height = 300)

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.dashboard.presentation.widgets.balancecard
+package dev.esbi.mizan.feature.dashboard.presentation.widgets
 
 
 import androidx.compose.foundation.background
@@ -30,12 +30,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.PressCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.SubCard
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Pink
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.Purple2
@@ -110,5 +110,13 @@ fun BalanceCard(total: Double, income: Double, expenses: Double) {
                 }
             }
         }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun BalanceCardPreview() {
+    MizanTheme {
+        BalanceCard(total = 12450.34, income = 11312.23, expenses = 5654.2)
     }
 }

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.dashboard.presentation.widgets.header
+package dev.esbi.mizan.feature.dashboard.presentation.widgets
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

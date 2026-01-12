@@ -32,8 +32,8 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.NetWorthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.balancecard.BalanceCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.header.HeaderSection
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.ui.components.ErrorState
 
 //import dev.esbi.mizan.ui.theme.utils.primitiveColors
