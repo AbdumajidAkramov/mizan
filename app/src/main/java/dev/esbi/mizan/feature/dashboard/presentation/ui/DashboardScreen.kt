@@ -38,7 +38,6 @@ import dev.esbi.mizan.ui.components.ErrorState
 
 //import dev.esbi.mizan.ui.theme.utils.primitiveColors
 
-const val SLIDE_UP_DELAY_MS = 20
 
 @Composable
 fun DashboardScreen(
@@ -91,8 +90,9 @@ private fun DashboardScrollContent(
     ) {
         item { AnimSection(visible, 0) { HeaderSection() } }
 
+
         item {
-            AnimSection(visible, SLIDE_UP_DELAY_MS) {
+            AnimSection(visible) {
                 BalanceCard(
                     data.totalBalance,
                     data.totalBalance - data.monthlyExpenses + data.monthlySavings,
@@ -100,19 +100,20 @@ private fun DashboardScrollContent(
                 )
             }
         }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { HealthCard(78, 5) } }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { NetWorthCard(22450.0, 1245.0, 5.9) } }
+
+        item { AnimSection(visible) { HealthCard(89, 10) } }
+        item { AnimSection(visible) { NetWorthCard(22450.0, 1245.0, 5.9) } }
         item {
-            AnimSection(visible, SLIDE_UP_DELAY_MS) {
+            AnimSection(visible) {
                 CashFlowCard(
                     3850.0,
                     data.monthlyExpenses
                 )
             }
         }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { EmergencyCard(8500.0, 12000.0, 6) } }
+        item { AnimSection(visible) { EmergencyCard(8500.0, 12000.0, 6) } }
         item {
-            AnimSection(visible, SLIDE_UP_DELAY_MS) {
+            AnimSection(visible) {
                 StatsRow(
                     data.budgetPercentageUsed,
                     data.monthlyExpenses,
@@ -121,22 +122,17 @@ private fun DashboardScrollContent(
                 )
             }
         }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { ChartCard(data.weeklySpending) } }
+        item { AnimSection(visible) { ChartCard(data.weeklySpending) } }
         item {
-            AnimSection(visible, SLIDE_UP_DELAY_MS) {
+            AnimSection(visible) {
                 CategoriesSection(
                     data.topCategories,
                     onCategoryClick
                 )
             }
         }
-        item { AnimSection(visible, SLIDE_UP_DELAY_MS) { InsightsSection() } }
-        item {
-            AnimSection(
-                visible,
-                SLIDE_UP_DELAY_MS
-            ) { TransactionsSection(data.recentTransactions) }
-        }
+        item { AnimSection(visible) { InsightsSection() } }
+        item { AnimSection(visible) { TransactionsSection(data.recentTransactions) } }
 
     }
 }

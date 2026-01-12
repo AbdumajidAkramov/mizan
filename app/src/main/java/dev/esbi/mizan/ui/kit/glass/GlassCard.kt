@@ -20,11 +20,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
-    cornerRadius: CornerBasedShape = dev.esbi.mizan.ui.theme.utils.cornerRadius.l,
+    cornerRadius: CornerBasedShape = RoundedCornerShape(MizanTheme.premium.radius.lg),
     content: @Composable () -> Unit
 ) {
     val interactionSource = MutableInteractionSource()

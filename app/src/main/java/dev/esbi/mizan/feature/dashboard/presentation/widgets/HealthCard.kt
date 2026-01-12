@@ -1,6 +1,7 @@
 package dev.esbi.mizan.feature.dashboard.presentation.widgets
 
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,14 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Cyan
+import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
@@ -36,6 +38,7 @@ fun HealthCard(score: Int, trend: Int) {
     GlassCard {
         Column(
             Modifier
+                .background(MizanTheme.premium.glass.bg)
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
@@ -53,9 +56,8 @@ fun HealthCard(score: Int, trend: Int) {
                     Spacer(Modifier.width(8.dp))
                     Text(
                         "Financial Health",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = TextWhite
+                        style = MizanTheme.typography.headingMd,
+                        color = MizanTheme.premium.text.primary
                     )
                 }
                 Box(
@@ -75,7 +77,7 @@ fun HealthCard(score: Int, trend: Int) {
                             "$trend%",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Cyan
+                            color = MizanTheme.premium.colors.success
                         )
                     }
                 }
@@ -85,8 +87,8 @@ fun HealthCard(score: Int, trend: Int) {
             Spacer(Modifier.height(16.dp))
             Text(
                 "Based on spending habits, savings rate, and budget adherence",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextMuted,
+                style = MizanTheme.typography.bodySm,
+                color = MizanTheme.premium.text.tertiary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -94,3 +96,30 @@ fun HealthCard(score: Int, trend: Int) {
     }
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+internal fun HealthCardPreviewDark() {
+    MizanTheme {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        ) {
+            HealthCard(87, 10)
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+internal fun HealthCardPreviewLight() {
+    MizanTheme {
+        Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(16.dp)
+        ) {
+            HealthCard(89, 10)
+        }
+    }
+}

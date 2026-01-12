@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimSection(visible: Boolean, delayMs: Int, content: @Composable () -> Unit) {
+fun AnimSection(visible: Boolean, delayMs: Int = 50, content: @Composable () -> Unit) {
     var show by remember { mutableStateOf(false) }
     LaunchedEffect(visible) {
         if (visible) {

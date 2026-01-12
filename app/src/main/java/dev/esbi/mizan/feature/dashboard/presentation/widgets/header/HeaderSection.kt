@@ -18,18 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.theme.GradientAvatar
 import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.Purple2
-//import dev.esbi.mizan.ui.theme.utils.functionalColors
-//import dev.esbi.mizan.ui.theme.utils.semanticColors
-
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun HeaderSection() {
@@ -42,7 +38,7 @@ fun HeaderSection() {
             Text(
                 "Welcome back,",
                 style = MaterialTheme.typography.bodyMedium,
-//                color = functionalColors.textTertiary
+                color = MizanTheme.premium.text.primary
             )
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -50,7 +46,7 @@ fun HeaderSection() {
                     text = "John Doe",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
-//                    color = functionalColors.textPrimary
+                    color = MizanTheme.premium.text.primary
                 )
                 Text(" 👋", fontSize = 28.sp)
             }
@@ -59,7 +55,8 @@ fun HeaderSection() {
             Modifier
                 .size(52.dp)
                 .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(Purple, Purple2))), Alignment.Center
+                .background(GradientAvatar),
+            contentAlignment = Alignment.Center
         ) {
             Text("JD", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
@@ -72,7 +69,7 @@ fun HeaderSection() {
 )
 @Composable
 private fun HeaderSectionPreview() {
-    MizanTheme(darkTheme = false) {
+    MizanTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()

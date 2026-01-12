@@ -123,6 +123,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                     style = MaterialTheme.typography.bodySmall,
                     color = Cyan
                 )
+                Spacer(Modifier.height(14.dp))
             }
         }
     }

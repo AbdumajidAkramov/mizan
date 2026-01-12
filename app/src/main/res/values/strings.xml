@@ -214,8 +214,10 @@
     
     <!-- Bottom Navigation -->
     <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_home">Home</string>
     <string name="nav_transactions">Transactions</string>
+    <string name="nav_mirror">Mirror</string>
     <string name="nav_budget">Budget</string>
-    <string name="nav_statistics">Statistics</string>
+    <string name="nav_statistics">Stats</string>
     <string name="nav_profile">Profile</string>
 </resources>

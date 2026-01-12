@@ -209,6 +209,10 @@ val GradientCool = Brush.linearGradient(
     colors = listOf(Color(0xFF30CFD0), Color(0xFF330867))
 )
 
+val GradientAvatar = Brush.linearGradient(
+    colors = listOf(Color(0xFF667EEA), Color(0xFF764BA2))
+)
+
 // ==========================================
 // PREMIUM COLORS OBJECT
 // ==========================================
@@ -218,44 +222,44 @@ object PremiumColors {
     val Primary = PremiumPrimary
     val PrimaryLight = PremiumPrimaryLight
     val PrimaryDark = PremiumPrimaryDark
-    
+
     val Secondary = PremiumSecondary
     val SecondaryLight = PremiumSecondaryLight
     val SecondaryDark = PremiumSecondaryDark
-    
+
     val Success = PremiumSuccess
     val SuccessLight = PremiumSuccessLight
     val SuccessDark = PremiumSuccessDark
-    
+
     val Warning = PremiumWarning
     val WarningLight = PremiumWarningLight
     val WarningDark = PremiumWarningDark
-    
+
     val Error = PremiumError
     val ErrorLight = PremiumErrorLight
     val ErrorDark = PremiumErrorDark
-    
+
     // Background (defaults to dark)
     val BgPrimary = PremiumBgPrimaryDark
     val BgSecondary = PremiumBgSecondaryDark
     val BgTertiary = PremiumBgTertiaryDark
-    
+
     // Text (defaults to dark)
     val TextPrimary = PremiumTextPrimaryDark
     val TextSecondary = PremiumTextSecondaryDark
     val TextTertiary = PremiumTextTertiaryDark
     val TextMuted = PremiumTextMutedDark
-    
+
     // Surface (defaults to dark)
     val Surface1 = PremiumSurface1Dark
     val Surface2 = PremiumSurface2Dark
     val Surface3 = PremiumSurface3Dark
     val Surface4 = PremiumSurface4Dark
-    
+
     // Glass Effect
     val GlassBg = PremiumGlassBgDark
     val GlassBorder = PremiumGlassBorderDark
-    
+
     // Categories
     val CategoryFood = dev.esbi.mizan.ui.theme.CategoryFood
     val CategoryTransport = dev.esbi.mizan.ui.theme.CategoryTransport
@@ -266,7 +270,7 @@ object PremiumColors {
     val CategoryTravel = dev.esbi.mizan.ui.theme.CategoryTravel
     val CategoryTech = dev.esbi.mizan.ui.theme.CategoryTech
     val CategoryIncome = dev.esbi.mizan.ui.theme.CategoryIncome
-    
+
     // Gradients
     val GradientPrimary = dev.esbi.mizan.ui.theme.GradientPrimary
     val GradientSecondary = dev.esbi.mizan.ui.theme.GradientSecondary

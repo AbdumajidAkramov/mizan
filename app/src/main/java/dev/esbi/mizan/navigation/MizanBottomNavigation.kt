@@ -1,12 +1,12 @@
 package dev.esbi.mizan.navigation
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -44,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -52,11 +50,7 @@ import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.PremiumPrimary
-import dev.esbi.mizan.ui.theme.Typography
-import dev.esbi.mizan.ui.theme.utils.typography
-//import dev.esbi.mizan.ui.theme.utils.functionalColors
-//import dev.esbi.mizan.ui.theme.utils.typography
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
 data class BottomNavItem(
@@ -69,18 +63,18 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(
         route = NavRoute.Dashboard,
-        labelResId = R.string.nav_dashboard,
+        labelResId = R.string.nav_home,
         icon = Icons.ic_home
     ),
     BottomNavItem(
         route = NavRoute.FinancialMirror,
-        labelResId = R.string.nav_transactions,
+        labelResId = R.string.nav_mirror,
         icon = Icons.ic_ai_insight
     ),
     BottomNavItem(
         route = NavRoute.Budget,
         labelResId = R.string.nav_budget,
-        icon = Icons.ic_add,
+        icon = Icons.ic_trend_up,
         isSpecial = true
     ),
     BottomNavItem(
@@ -134,56 +128,33 @@ private fun PremiumBottomBar(
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(32.dp)
-                ),
-            shape = RoundedCornerShape(32.dp),
-            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(MizanTheme.premium.radius.xxl),
+            color = MizanTheme.premium.glass.bg,
             shadowElevation = 16.dp
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.primary,
-                            )
-                        )
-                    )
-                    .padding(
-                        horizontal = 4.dp,
-                        vertical = 12.dp
-                    )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    bottomNavItems.forEachIndexed { index, item ->
-                        if (item.isSpecial) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        } else {
-                            val isSelected =
-                                currentRoute?.contains(item.route::class.simpleName ?: "") == true
-                            BottomNavItemView(
-                                modifier = Modifier.weight(1f),
-                                item = item,
-                                isSelected = isSelected,
-                                onClick = { onNavigate(item.route) }
-                            )
-                        }
+                bottomNavItems.forEachIndexed { index, item ->
+                    if (item.isSpecial) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    } else {
+                        val isSelected =
+                            currentRoute?.contains(item.route::class.simpleName ?: "") == true
+                        BottomNavItemView(
+                            modifier = Modifier.weight(1f),
+                            item = item,
+                            isSelected = isSelected,
+                            onClick = { onNavigate(item.route) }
+                        )
                     }
                 }
             }
         }
-
         PremiumFAB(
             onClick = onAddExpense,
             modifier = Modifier.offset(y = (-24).dp)
@@ -192,7 +163,7 @@ private fun PremiumBottomBar(
 }
 
 @Composable
-private fun BottomNavItemView(
+fun BottomNavItemView(
     modifier: Modifier,
     item: BottomNavItem,
     isSelected: Boolean,
@@ -203,9 +174,15 @@ private fun BottomNavItemView(
         animationSpec = tween(durationMillis = 200),
         label = "nav_item_scale"
     )
+    val color: Color = if (isSelected) {
+        MizanTheme.premium.colors.primary
+    } else {
+        MizanTheme.premium.text.tertiary.copy(alpha = 0.7f)
+    }
 
     Column(
         modifier = modifier
+            .height(64.dp)
             .padding(horizontal = 4.dp)
             .clickable(
                 indication = ripple(
@@ -226,14 +203,13 @@ private fun BottomNavItemView(
                 painter = painterResource(item.icon),
                 contentDescription = stringResource(item.labelResId),
                 modifier = Modifier.size(24.dp),
-                tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                tint = color
             )
         }
 
         Text(
-            style = Typography.bodySmall.copy(
-                fontSize = 11.sp,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+            style = MizanTheme.typography.bodyXs.copy(
+                color = color
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -241,7 +217,7 @@ private fun BottomNavItemView(
             modifier = Modifier.drawBehind {
                 if (isSelected) {
                     drawCircle(
-                        color = PremiumPrimary,
+                        color = color,
                         radius = 2.dp.toPx(),
                         center = Offset(size.width / 2, size.height + 6.dp.toPx())
                     )
@@ -338,18 +314,39 @@ private fun PremiumFAB(
     }
 }
 
-@Preview
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true
+)
 @Composable
-private fun PremiumBottomBarPreview() {
+private fun PremiumBottomBarPreviewLight() {
+    val navController = rememberNavController()
     MizanTheme {
-        val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
         Box(modifier = Modifier) {
             MizanBottomNavigation(
                 navController = navController,
                 modifier = Modifier.background(color = Color.Transparent),
                 onAddExpense = {
 
+                }
+            )
+        }
+    }
+}
+
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true
+)
+@Composable
+private fun PremiumBottomBarPreviewDark() {
+    val navController = rememberNavController()
+    MizanTheme {
+        Box(modifier = Modifier) {
+            MizanBottomNavigation(
+                navController = navController,
+                modifier = Modifier.background(color = Color.Transparent),
+                onAddExpense = {
                 }
             )
         }
