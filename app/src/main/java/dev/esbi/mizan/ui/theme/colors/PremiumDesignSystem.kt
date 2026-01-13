@@ -310,11 +310,15 @@ val LightPremiumDesignSystem = PremiumDesignSystem(
 // --- DARK THEME ---
 val DarkPremiumDesignSystem = LightPremiumDesignSystem.copy(
     background = PremiumBackgroundColors(
-        primary = Color(0xFF0F0F23), secondary = Color(0xFF1A1A2E), tertiary = Color(0xFF16213E)
+        primary = Color(0xFF0F0F23),
+        secondary = Color(0xFF1A1A2E),
+        tertiary = Color(0xFF16213E)
     ),
     text = PremiumTextColors(
-        primary = Color(0xFFFFFFFF), secondary = Color(0xFFA8B2D1),
-        tertiary = Color(0xFF7E8BA3), muted = Color(0xFF5A6478)
+        primary = Color(0xFFFFFFFF),
+        secondary = Color(0xFFA8B2D1),
+        tertiary = Color(0xFF7E8BA3),
+        muted = Color(0xFF5A6478)
     ),
     colors = LightColors.copy(
         surface1 = Color.White.copy(alpha = 0.02f), surface2 = Color.White.copy(alpha = 0.05f),

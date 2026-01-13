@@ -14,13 +14,14 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun AnimSection(visible: Boolean, delayMs: Int = 50, content: @Composable () -> Unit) {
-    var show by remember { mutableStateOf(false) }
-    LaunchedEffect(visible) {
-        if (visible) {
-            delay(delayMs.toLong()); show = true
-        }
-    }
-    AnimatedVisibility(
-        show,
-        enter = fadeIn(tween(100)) + slideInVertically(tween(100)) { it / 4 }) { content() }
+    content()
+//    var show by remember { mutableStateOf(false) }
+//    LaunchedEffect(visible) {
+//        if (visible) {
+//            delay(delayMs.toLong()); show = true
+//        }
+//    }
+//    AnimatedVisibility(
+//        show,
+//        enter = fadeIn(tween(100)) + slideInVertically(tween(100)) { it / 4 }) { content() }
 }

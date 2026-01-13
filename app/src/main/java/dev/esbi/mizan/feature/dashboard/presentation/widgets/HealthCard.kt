@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CardVariant
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCard
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Cyan
@@ -34,8 +36,11 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
-fun HealthCard(score: Int, trend: Int) {
-    GlassCard {
+fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
+    PremiumCard(
+        variant = CardVariant.Glass,
+        modifier = modifier // Clip kerak emas, PremiumCard o'zi clip qiladi
+    ) {
         Column(
             Modifier
                 .background(MizanTheme.premium.glass.bg)
@@ -84,6 +89,13 @@ fun HealthCard(score: Int, trend: Int) {
             }
             Spacer(Modifier.height(24.dp))
             GaugeView(score)
+            Spacer(Modifier.height(24.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(0.5.dp)
+                    .background(color = MizanTheme.premium.text.muted)
+            )
             Spacer(Modifier.height(16.dp))
             Text(
                 "Based on spending habits, savings rate, and budget adherence",

@@ -22,18 +22,20 @@ import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.AnimSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.CashFlowCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.CategoriesSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.ChartCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.EmergencyCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.NetWorthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.ChartDataPoint
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCashFlowCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumEmergencyFund
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumNetWorthCard
 import dev.esbi.mizan.ui.components.ErrorState
 
 //import dev.esbi.mizan.ui.theme.utils.primitiveColors
@@ -89,8 +91,6 @@ private fun DashboardScrollContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { AnimSection(visible, 0) { HeaderSection() } }
-
-
         item {
             AnimSection(visible) {
                 BalanceCard(
@@ -100,18 +100,45 @@ private fun DashboardScrollContent(
                 )
             }
         }
-
         item { AnimSection(visible) { HealthCard(89, 10) } }
-        item { AnimSection(visible) { NetWorthCard(22450.0, 1245.0, 5.9) } }
         item {
             AnimSection(visible) {
-                CashFlowCard(
-                    3850.0,
-                    data.monthlyExpenses
+                PremiumNetWorthCard(
+                    netWorth = 24500.00,
+                    change = 1250.00,
+                    changePercent = 5.4,
+                    chartData = listOf(
+                        ChartDataPoint(18500f),
+                        ChartDataPoint(19200f),
+                        ChartDataPoint(18800f),
+                        ChartDataPoint(22450f)
+                    )
                 )
             }
         }
-        item { AnimSection(visible) { EmergencyCard(8500.0, 12000.0, 6) } }
+        item {
+            AnimSection(visible) {
+                PremiumCashFlowCard(
+                    income = 4250.0,
+                    expenses = 2800.0,
+                    listOf(
+                        CashFlowDataPoint("Week 1", 950f, 520f),
+                        CashFlowDataPoint("Week 2", 1900f, 680f),
+                        CashFlowDataPoint("Week 3", 2900f, 720f),
+                        CashFlowDataPoint("Week 4", 1000f, 685f),
+                    )
+                )
+            }
+        }
+        item {
+            AnimSection(visible) {
+                PremiumEmergencyFund(
+                    current = 16000.0,
+                    goal = 16000.0,
+                    targetMonths = 12
+                )
+            }
+        }
         item {
             AnimSection(visible) {
                 StatsRow(
