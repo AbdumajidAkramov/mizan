@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange
 import dev.esbi.mizan.ui.theme.Purple2
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun InsightsSection() {
@@ -34,9 +34,8 @@ fun InsightsSection() {
             Text("✨", fontSize = 20.sp); Spacer(Modifier.width(8.dp))
             Text(
                 "AI Insights",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextWhite
+                style = MizanTheme.typography.headingMd.copy(fontSize = 18.sp),
+                color = MizanTheme.premium.text.primary
             )
             Spacer(Modifier.width(8.dp))
             Box(

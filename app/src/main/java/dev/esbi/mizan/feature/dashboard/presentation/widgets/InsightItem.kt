@@ -16,12 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCard
 import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun InsightItem(icon: String, title: String, sub: String, hl: String?, hlCol: Color) {
-    GlassCard(Modifier.width(280.dp)) {
+    PremiumCard(Modifier.width(280.dp)) {
         Column(Modifier.padding(16.dp)) {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Text(icon, fontSize = 24.sp)
@@ -33,7 +34,11 @@ fun InsightItem(icon: String, title: String, sub: String, hl: String?, hlCol: Co
                 )
             }
             Spacer(Modifier.height(12.dp))
-            Text(title, fontWeight = FontWeight.SemiBold, color = TextWhite)
+            Text(
+                title,
+                fontWeight = FontWeight.SemiBold,
+                color = MizanTheme.premium.text.primary
+            )
             Spacer(Modifier.height(4.dp))
             Text(sub, style = MaterialTheme.typography.bodySmall, color = TextMuted, maxLines = 2)
         }

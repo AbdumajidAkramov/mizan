@@ -1,6 +1,7 @@
 package dev.esbi.mizan.feature.dashboard.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
@@ -23,8 +25,6 @@ import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.AnimSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.CategoriesSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.ChartCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
@@ -32,10 +32,14 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CategorySpending
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.ChartDataPoint
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCashFlowCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumEmergencyFund
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumNetWorthCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumSpendingChart
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumTopCategories
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.SpendingPoint
 import dev.esbi.mizan.ui.components.ErrorState
 
 //import dev.esbi.mizan.ui.theme.utils.primitiveColors
@@ -149,13 +153,71 @@ private fun DashboardScrollContent(
                 )
             }
         }
-        item { AnimSection(visible) { ChartCard(data.weeklySpending) } }
         item {
             AnimSection(visible) {
-                CategoriesSection(
-                    data.topCategories,
-                    onCategoryClick
+                /*    val mockData = listOf(
+                        SpendingPoint("Mon", 120f),
+                        SpendingPoint("Tue", 300f),
+                        SpendingPoint("Wed", 240f),
+                        SpendingPoint("Thu", 450f),
+                        SpendingPoint("Fri", 200f),
+                        SpendingPoint("Sat", 380f),
+                        SpendingPoint("Sun", 150f)
+                    )
+
+                    Box {
+                        PremiumSpendingChart(data = mockData)
+                    }
+                */
+                val mockData = listOf(
+                    SpendingPoint(
+                        "Mon",
+                        185f
+                    ),
+                    SpendingPoint(
+                        "Tue",
+                        120f
+                    ),
+                    SpendingPoint(
+                        "Wed",
+                        120f
+                    ), // Flat qism
+                    SpendingPoint(
+                        "Thu",
+                        250f
+                    ), // Cho'qqi
+                    SpendingPoint(
+                        "Fri",
+                        20f
+                    ),  // Past
+                    SpendingPoint(
+                        "Sat",
+                        60f
+                    ),
+                    SpendingPoint(
+                        "Sun",
+                        170f
+                    )
                 )
+
+                Box {
+                    PremiumSpendingChart(data = mockData)
+                }
+//                ChartCard(data.weeklySpending)
+            }
+        }
+        item {
+            AnimSection(visible) {
+                val mockCategories = listOf(
+                    CategorySpending("Food", 850.0, Color(0xFFFF6B9D)),
+                    CategorySpending("Transport", 420.0, Color(0xFF4FACFE)),
+                    CategorySpending("Shopping", 340.0, Color(0xFFFFA34D)),
+                    CategorySpending("Bills", 240.0, Color(0xFF00D2FF)),
+                    CategorySpending("Others", 120.0, Color.Gray)
+                )
+                Box {
+                    PremiumTopCategories(data = mockCategories)
+                }
             }
         }
         item { AnimSection(visible) { InsightsSection() } }
