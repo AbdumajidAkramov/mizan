@@ -155,20 +155,6 @@ private fun DashboardScrollContent(
         }
         item {
             AnimSection(visible) {
-                /*    val mockData = listOf(
-                        SpendingPoint("Mon", 120f),
-                        SpendingPoint("Tue", 300f),
-                        SpendingPoint("Wed", 240f),
-                        SpendingPoint("Thu", 450f),
-                        SpendingPoint("Fri", 200f),
-                        SpendingPoint("Sat", 380f),
-                        SpendingPoint("Sun", 150f)
-                    )
-
-                    Box {
-                        PremiumSpendingChart(data = mockData)
-                    }
-                */
                 val mockData = listOf(
                     SpendingPoint(
                         "Mon",

@@ -23,13 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
 import dev.esbi.mizan.feature.dashboard.domain.model.TransactionType
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCard
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange
 import dev.esbi.mizan.ui.theme.Pink
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.Red
 import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -51,7 +52,7 @@ fun TxnItem(txn: Transaction) {
     val emoji = when (txn.category.lowercase()) {
         "food" -> "🍽️"; "transport" -> "🚗"; "shopping" -> "🛍️"; "income" -> "💰"; "entertainment" -> "🎬"; "bills" -> "📄"; else -> "💳"
     }
-    GlassCard {
+    PremiumCard {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -71,7 +72,7 @@ fun TxnItem(txn: Transaction) {
                     Text(
                         txn.description,
                         fontWeight = FontWeight.Medium,
-                        color = TextWhite,
+                        color = MizanTheme.premium.text.primary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, false)
@@ -83,19 +84,19 @@ fun TxnItem(txn: Transaction) {
                 Text(
                     dateFmt.format(txn.date),
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted
+                    color = MizanTheme.premium.text.tertiary
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     if (isInc) "+${fmt.format(txn.amount)}" else "-${fmt.format(txn.amount)}",
                     fontWeight = FontWeight.SemiBold,
-                    color = if (isInc) Cyan else Red
+                    color = if (isInc) MizanTheme.premium.colors.success else MizanTheme.premium.colors.error
                 )
                 Text(
                     txn.categoryLabel,
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextMuted
+                    color = MizanTheme.premium.text.muted
                 )
             }
         }

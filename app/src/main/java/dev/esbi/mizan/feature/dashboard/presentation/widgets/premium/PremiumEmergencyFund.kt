@@ -223,7 +223,7 @@ fun PremiumEmergencyFund(
             ) {
                 if (isComplete) {
                     Icon(
-                        icon = IconValue(Icons.svg_23), // Target icon
+                        icon = IconValue(Icons.ic_track_changes), // Target icon
                         contentDescription = null,
                         tint = MizanTheme.premium.colors.success,
                         modifier = Modifier

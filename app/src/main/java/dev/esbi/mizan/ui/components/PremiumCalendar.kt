@@ -34,8 +34,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.PremiumColors
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -43,10 +45,10 @@ import java.util.Locale
 
 @Composable
 fun PremiumCalendar(
+    modifier: Modifier = Modifier,
     selectedDate: Calendar = Calendar.getInstance(),
     onSelectDate: (Calendar) -> Unit,
-    transactionDates: List<Calendar> = emptyList(),
-    modifier: Modifier = Modifier
+    transactionDates: List<Calendar> = emptyList()
 ) {
     var currentMonth by remember { mutableStateOf(Calendar.getInstance()) }
     val daysOfWeek = listOf("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
@@ -85,7 +87,10 @@ fun PremiumCalendar(
                 }
 
                 Text(
-                    text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(currentMonth.time),
+                    text = SimpleDateFormat(
+                        "MMMM yyyy",
+                        Locale.getDefault()
+                    ).format(currentMonth.time),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = PremiumColors.TextPrimary
@@ -149,7 +154,7 @@ private fun CalendarGrid(
     onSelectDate: (Calendar) -> Unit
 ) {
     val days = getDaysInMonth(currentMonth)
-    
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -188,8 +193,20 @@ private fun CalendarDayCell(
                     isSelected -> Brush.horizontalGradient(
                         colors = listOf(Color(0xFF667EEA), Color(0xFF764BA2))
                     )
-                    isToday -> Brush.linearGradient(colors = listOf(PremiumColors.Surface3, PremiumColors.Surface3))
-                    else -> Brush.linearGradient(colors = listOf(Color.Transparent, Color.Transparent))
+
+                    isToday -> Brush.linearGradient(
+                        colors = listOf(
+                            PremiumColors.Surface3,
+                            PremiumColors.Surface3
+                        )
+                    )
+
+                    else -> Brush.linearGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Transparent
+                        )
+                    )
                 }
             )
             .clickable(onClick = onClick)
@@ -225,29 +242,29 @@ private fun CalendarDayCell(
 private fun getDaysInMonth(date: Calendar): List<Calendar?> {
     val year = date.get(Calendar.YEAR)
     val month = date.get(Calendar.MONTH)
-    
+
     val firstDay = Calendar.getInstance().apply {
         set(year, month, 1)
     }
     val lastDay = Calendar.getInstance().apply {
         set(year, month + 1, 0)
     }
-    
+
     val daysInMonth = lastDay.get(Calendar.DAY_OF_MONTH)
     val startingDayOfWeek = firstDay.get(Calendar.DAY_OF_WEEK) - 1
-    
+
     val days = mutableListOf<Calendar?>()
-    
+
     repeat(startingDayOfWeek) {
         days.add(null)
     }
-    
+
     for (i in 1..daysInMonth) {
         days.add(Calendar.getInstance().apply {
             set(year, month, i)
         })
     }
-    
+
     return days
 }
 
@@ -255,4 +272,15 @@ private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
             cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
             cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH)
+}
+
+@Preview
+@Composable
+fun PremiumCalendarPreview() {
+    MizanTheme {
+        PremiumCalendar(
+            selectedDate = Calendar.getInstance(),
+            onSelectDate = {}
+        )
+    }
 }

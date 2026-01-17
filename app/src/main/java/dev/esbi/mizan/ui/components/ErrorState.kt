@@ -26,8 +26,8 @@ import dev.esbi.mizan.R
 @Composable
 fun ErrorState(
     message: String,
-    onRetry: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRetry: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -48,17 +48,17 @@ fun ErrorState(
                 tint = MaterialTheme.colorScheme.onErrorContainer
             )
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Text(
             text = stringResource(R.string.error_something_went_wrong),
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         Text(
             text = message,
             style = MaterialTheme.typography.bodyMedium,
@@ -66,10 +66,10 @@ fun ErrorState(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(0.8f)
         )
-        
+
         if (onRetry != null) {
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Button(onClick = onRetry) {
                 Text(text = stringResource(R.string.action_try_again))
             }

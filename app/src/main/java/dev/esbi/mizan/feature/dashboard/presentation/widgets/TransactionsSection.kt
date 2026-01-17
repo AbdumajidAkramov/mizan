@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun TransactionsSection(txns: List<Transaction>) {
@@ -26,7 +27,7 @@ fun TransactionsSection(txns: List<Transaction>) {
                 "Recent Transactions",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = TextWhite
+                color = MizanTheme.premium.text.primary
             )
             Text("See all", style = MaterialTheme.typography.bodySmall, color = Purple)
         }
