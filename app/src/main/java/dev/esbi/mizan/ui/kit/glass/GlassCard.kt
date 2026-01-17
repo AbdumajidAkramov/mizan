@@ -30,11 +30,11 @@ fun GlassCard(
         Modifier
             .clip(cornerRadius)
             .background(MizanTheme.premium.background.secondary.copy(0.95f))
-            .border(
-                1.dp,
-                MizanTheme.premium.glass.border,
-                cornerRadius
-            )
+//            .border(
+//                1.dp,
+//                MizanTheme.premium.glass.border,
+//                cornerRadius
+//            )
             .then(modifier)
     ) { content() }
 }

@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.profile.data.repository
 
+import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
 import dev.esbi.mizan.feature.profile.domain.model.UserProfile
 import dev.esbi.mizan.feature.profile.domain.repository.ProfileRepository
@@ -14,7 +15,9 @@ import javax.inject.Singleton
  * Manages user profile and app settings
  */
 @Singleton
-class ProfileRepositoryImpl @Inject constructor() : ProfileRepository {
+class ProfileRepositoryImpl @Inject constructor(
+    private val settingsManager: AppSettingsManager
+) : ProfileRepository {
 
     private val _profile = MutableStateFlow(generateMockProfile())
     private val _settings = MutableStateFlow(AppSettings())
@@ -32,6 +35,7 @@ class ProfileRepositoryImpl @Inject constructor() : ProfileRepository {
     }
 
     override suspend fun toggleDarkMode() {
+        settingsManager.toggleDarkMode()
         _settings.value = _settings.value.copy(
             isDarkMode = !_settings.value.isDarkMode
         )

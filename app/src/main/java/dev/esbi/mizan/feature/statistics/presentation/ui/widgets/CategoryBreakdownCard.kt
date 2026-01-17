@@ -25,6 +25,7 @@ import dev.esbi.mizan.ui.components.PremiumDonutChart
 import dev.esbi.mizan.ui.components.PremiumDonutChartComponent
 import dev.esbi.mizan.ui.components.PremiumDonutChartComponent.Pie
 import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 
@@ -33,49 +34,51 @@ internal fun CategoryBreakdownCard(
     categories: List<CategoryData>,
     modifier: Modifier = Modifier
 ) {
-    val categoryData: List<CategoryData> = categories.take(3)
-    GlassCard {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .padding(20.dp)
-        ) {
-            Column {
-                Text(
-                    text = "Category Breakdown",
-                    style = MizanTheme.typography.headingMd,
-                    color = MizanTheme.premium.text.primary
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Spending by category",
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.tertiary
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    PremiumDonutChart(
-                        component = PremiumDonutChartComponent(
-                            data = categoryData.map { c ->
-                                Pie(
-                                    amount = c.amount.toDouble(),
-                                    color = c.color
-                                )
-                            },
-                        ),
-                        modifier = Modifier.size(120.dp),
+    val categoryData: List<CategoryData> = categories.take(4)
+    PressCard(modifier = modifier) {
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .padding(20.dp)
+            ) {
+                Column {
+                    Text(
+                        text = "Category Breakdown",
+                        style = MizanTheme.typography.headingMd,
+                        color = MizanTheme.premium.text.primary
                     )
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Spending by category",
+                        style = MizanTheme.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        categoryData.forEach { category ->
-                            CategoryItem(category = category)
+                        PremiumDonutChart(
+                            component = PremiumDonutChartComponent(
+                                data = categoryData.map { c ->
+                                    Pie(
+                                        amount = c.amount.toDouble(),
+                                        color = c.color
+                                    )
+                                },
+                            ),
+                            modifier = Modifier.size(120.dp),
+                        )
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            categoryData.forEach { category ->
+                                CategoryItem(category = category)
+                            }
                         }
                     }
                 }

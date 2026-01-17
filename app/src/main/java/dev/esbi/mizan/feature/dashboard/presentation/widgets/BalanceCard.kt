@@ -39,6 +39,8 @@ import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Pink
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.Purple2
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
@@ -50,6 +52,7 @@ fun BalanceCard(total: Double, income: Double, expenses: Double) {
     PressCard {
         Box(
             Modifier
+                .premiumShadow(MizanTheme.premium.shadows.md)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(28.dp))
                 .background(Brush.linearGradient(listOf(Purple, Purple2, Pink)))

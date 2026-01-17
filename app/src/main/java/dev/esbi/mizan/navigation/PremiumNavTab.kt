@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
@@ -67,6 +68,17 @@ fun PremiumBottomNav(
         contentAlignment = Alignment.BottomCenter
     ) {
         // Glass Container
+        Box(
+            modifier = Modifier
+                .widthIn(max = 500.dp) // max-w-lg
+                .fillMaxWidth()
+                .background(
+                    color = MizanTheme.premium.background.primary.copy(0.8f),
+                    shape = RoundedCornerShape(MizanTheme.premium.radius.xxl)
+                )
+                .height(88.dp)
+                .blur(30.dp),
+        )
         Row(
             modifier = Modifier
                 .widthIn(max = 500.dp) // max-w-lg

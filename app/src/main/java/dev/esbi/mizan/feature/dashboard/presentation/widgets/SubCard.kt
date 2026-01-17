@@ -37,7 +37,6 @@ fun SubCard(label: String, amount: Double, isIncome: Boolean, modifier: Modifier
         modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White.copy(0.15f))
-            .border(1.dp, Color.White.copy(0.2f), RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

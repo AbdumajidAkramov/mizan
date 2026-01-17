@@ -86,6 +86,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.datastore)
+    implementation(libs.datastore.core.okio)
+
     implementation(libs.coil)
     implementation(libs.coil.compose)
 

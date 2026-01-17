@@ -35,11 +35,11 @@ internal fun AIRecommendationCard(recommendation: AIRecommendation) {
                     )
                 )
             )
-            .border(
+            /*.border(
                 1.dp,
                 MizanTheme.premium.glass.border,
                 RoundedCornerShape(MizanTheme.premium.radius.xl)
-            )
+            )*/
     ) {
         Row(
             modifier = Modifier

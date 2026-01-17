@@ -14,6 +14,8 @@ data class SettingItem(
 )
 
 enum class SettingIcon {
+    BUDGET_MANAGEMENT,
+    FINANCIAL_GOALS,
     USER,
     MAIL,
     PHONE,
@@ -28,7 +30,9 @@ enum class SettingIcon {
     SHARE,
     STAR,
     DOLLAR,
-    TRENDING
+    TRENDING,
+    PRIVACY_POLICY,
+    TERMS_AND_SERVICE,
 }
 
 enum class SettingAction {
@@ -47,5 +51,6 @@ enum class SettingAction {
     SHARE_APP,
     RATE_APP,
     BUDGET_MANAGEMENT,
-    FINANCIAL_GOALS
+    FINANCIAL_GOALS,
+    TERMS_AND_SERVICE
 }

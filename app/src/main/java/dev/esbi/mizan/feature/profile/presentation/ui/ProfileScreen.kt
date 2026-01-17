@@ -1,8 +1,7 @@
 package dev.esbi.mizan.feature.profile.presentation.ui
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,14 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,10 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,15 +36,19 @@ import dev.esbi.mizan.feature.profile.domain.model.SettingItem
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
+import dev.esbi.mizan.feature.profile.presentation.ui.widgets.ProfileHeaderCard
+import dev.esbi.mizan.feature.profile.presentation.ui.widgets.SettingsSection
+import dev.esbi.mizan.feature.profile.presentation.ui.widgets.StatsGrid
 import dev.esbi.mizan.ui.animation.FadeInUpAnimation
 import dev.esbi.mizan.ui.animation.StaggeredFadeInUp
 import dev.esbi.mizan.ui.components.ErrorState
 import dev.esbi.mizan.ui.components.LoadingSkeleton
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
+import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.theme.PremiumColors
-import java.text.NumberFormat
-import java.util.Locale
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun ProfileScreen(
@@ -89,14 +84,11 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileContent(
+internal fun ProfileContent(
     state: ProfileStore.State,
     onIntent: (ProfileStore.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val numberFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
-        maximumFractionDigits = 0
-    }
 
     Scaffold { paddingValues ->
         when {
@@ -118,213 +110,99 @@ private fun ProfileContent(
 
             state.profile != null -> {
                 val profile = state.profile
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(paddingValues)
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 120.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    // Header
+                    Text(
+                        text = stringResource(R.string.profile_title),
+                        style = MizanTheme.typography.headingXl,
+                        color = MizanTheme.premium.text.primary,
+                    )
+                    ProfileHeaderCard(profile)
 
-                FadeInUpAnimation {
-                    Column(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(paddingValues)
-                            .padding(horizontal = 16.dp, vertical = 24.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    StatsGrid(profile)
+
+                    // Settings Sections
+                    val sections = getSettingsSections(profile, state.settings)
+                    sections.forEachIndexed { sectionIndex, section ->
+                        SettingsSection(
+                            title = section.first,
+                            items = section.second,
+                            isDarkMode = state.settings.isDarkMode,
+                            onToggleDarkMode = { onIntent(ProfileStore.Intent.ToggleDarkMode) },
+                            onItemClick = { action ->
+                                onIntent(ProfileStore.Intent.OnSettingClick(action))
+                            }
+                        )
+                    }
+
+                    // Logout Button
+                    PressCard(
+                        onClick = { onIntent(ProfileStore.Intent.Logout) },
                     ) {
-                        // Header
-                        StaggeredFadeInUp(index = 0) {
-                            Text(
-                                text = stringResource(R.string.profile_title),
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-
-                        // Profile Header Card
-                        StaggeredFadeInUp(index = 1) {
-                            Box(
+                        PremiumCard(
+                            variant = PremiumCardVariant.Glass,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 2.dp,
+                                    color = MizanTheme.premium.colors.primary,
+                                    shape = RoundedCornerShape(MizanTheme.premium.radius.full)
+                                )
+                        ) {
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(24.dp))
-                                    .background(
-                                        Brush.linearGradient(
-                                            colors = listOf(
-                                                Color(0xFF667EEA),
-                                                Color(0xFF764BA2),
-                                                Color(0xFFF5576C)
-                                            )
-                                        )
-                                    )
-                                    .padding(24.dp)
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Background orbs
-                                Box(
-                                    modifier = Modifier
-                                        .size(150.dp)
-                                        .align(Alignment.TopEnd)
-                                        .background(Color.White.copy(alpha = 0.1f), CircleShape)
-                                        .blur(50.dp)
+                                Icon(
+                                    painter = painterResource(Icons.ic_logout),
+                                    contentDescription = null,
+                                    tint = MizanTheme.premium.colors.primary,
+                                    modifier = Modifier.size(20.dp)
                                 )
-                                Box(
-                                    modifier = Modifier
-                                        .size(120.dp)
-                                        .align(Alignment.BottomStart)
-                                        .background(Color.Black.copy(alpha = 0.1f), CircleShape)
-                                        .blur(40.dp)
-                                )
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    // Avatar
-                                    Box(
-                                        modifier = Modifier
-                                            .size(80.dp)
-                                            .clip(CircleShape)
-                                            .background(Color.White.copy(alpha = 0.2f))
-                                            .padding(2.dp)
-                                            .clip(CircleShape)
-                                            .background(Color.White.copy(alpha = 0.3f)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = profile.avatarInitials,
-                                            fontSize = 28.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color.White
-                                        )
-                                    }
-
-                                    // Info
-                                    Column {
-                                        Text(
-                                            text = profile.name,
-                                            fontSize = 24.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color.White
-                                        )
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text = stringResource(R.string.profile_premium_member),
-                                            fontSize = 14.sp,
-                                            color = Color.White.copy(alpha = 0.8f)
-                                        )
-                                        Spacer(modifier = Modifier.height(12.dp))
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                        ) {
-                                            InfoBadge(
-                                                label = stringResource(R.string.profile_member_since),
-                                                value = profile.memberSince
-                                            )
-                                            InfoBadge(
-                                                label = stringResource(R.string.profile_transactions),
-                                                value = profile.totalTransactions.toString()
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Stats Grid
-                        StaggeredFadeInUp(index = 2) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                StatCard(
-                                    label = stringResource(R.string.profile_income),
-                                    value = numberFormat.format(profile.totalIncome),
-                                    gradient = listOf(Color(0xFF00F2FE), Color(0xFF4FACFE)),
-                                    icon = android.R.drawable.arrow_down_float,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                StatCard(
-                                    label = stringResource(R.string.profile_expenses),
-                                    value = numberFormat.format(profile.totalExpense),
-                                    gradient = listOf(Color(0xFFFF6B6B), Color(0xFFF5576C)),
-                                    icon = android.R.drawable.arrow_up_float,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                StatCard(
-                                    label = stringResource(R.string.profile_saved),
-                                    value = numberFormat.format(profile.totalSaved),
-                                    gradient = listOf(Color(0xFF667EEA), Color(0xFFF5576C)),
-                                    icon = android.R.drawable.star_on,
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-
-                        // Settings Sections
-                        val sections = getSettingsSections(profile, state.settings)
-                        sections.forEachIndexed { sectionIndex, section ->
-                            StaggeredFadeInUp(index = 3 + sectionIndex) {
-                                SettingsSection(
-                                    title = section.first,
-                                    items = section.second,
-                                    isDarkMode = state.settings.isDarkMode,
-                                    onToggleDarkMode = { onIntent(ProfileStore.Intent.ToggleDarkMode) },
-                                    onItemClick = { action ->
-                                        onIntent(ProfileStore.Intent.OnSettingClick(action))
-                                    }
-                                )
-                            }
-                        }
-
-                        // Logout Button
-                        StaggeredFadeInUp(index = 3 + sections.size) {
-                            PremiumCard(
-                                variant = PremiumCardVariant.Glass,
-                                onClick = { onIntent(ProfileStore.Intent.Logout) },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painter = painterResource(android.R.drawable.ic_menu_close_clear_cancel),
-                                        contentDescription = null,
-                                        tint = Color(0xFFFF6B6B),
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = stringResource(R.string.profile_logout),
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color(0xFFFF6B6B)
-                                    )
-                                }
-                            }
-                        }
-
-                        // App Version
-                        StaggeredFadeInUp(index = 4 + sections.size) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
+                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = stringResource(R.string.profile_app_version),
-                                    fontSize = 12.sp,
-                                    color = PremiumColors.TextMuted
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = stringResource(R.string.profile_copyright),
-                                    fontSize = 11.sp,
-                                    color = PremiumColors.TextMuted
+                                    text = stringResource(R.string.profile_logout),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MizanTheme.premium.colors.primary
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(40.dp))
                     }
+
+                    // App Version
+                    StaggeredFadeInUp(index = 4 + sections.size) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(R.string.profile_app_version),
+                                fontSize = 12.sp,
+                                color = PremiumColors.TextMuted
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = stringResource(R.string.profile_copyright),
+                                fontSize = 11.sp,
+                                color = PremiumColors.TextMuted
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
             }
         }
@@ -332,202 +210,7 @@ private fun ProfileContent(
 }
 
 @Composable
-private fun InfoBadge(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.2f))
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-    ) {
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            color = Color.White.copy(alpha = 0.7f)
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = value,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.White
-        )
-    }
-}
-
-@Composable
-private fun StatCard(
-    label: String,
-    value: String,
-    gradient: List<Color>,
-    icon: Int,
-    modifier: Modifier = Modifier
-) {
-    PremiumCard(
-        variant = PremiumCardVariant.Glass,
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(
-                        Brush.linearGradient(gradient),
-                        CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = label,
-                fontSize = 11.sp,
-                color = PremiumColors.TextMuted
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = value,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = PremiumColors.TextPrimary
-            )
-        }
-    }
-}
-
-@Composable
-private fun SettingsSection(
-    title: String,
-    items: List<SettingItem>,
-    isDarkMode: Boolean,
-    onToggleDarkMode: () -> Unit,
-    onItemClick: (SettingAction) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = title,
-            fontSize = 13.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = PremiumColors.TextSecondary,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items.forEach { item ->
-                SettingItemRow(
-                    item = item,
-                    isDarkMode = isDarkMode,
-                    onToggleDarkMode = onToggleDarkMode,
-                    onClick = { onItemClick(item.action) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SettingItemRow(
-    item: SettingItem,
-    isDarkMode: Boolean,
-    onToggleDarkMode: () -> Unit,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val isAppearance = item.action == SettingAction.APPEARANCE
-
-    PremiumCard(
-        variant = PremiumCardVariant.Glass,
-        onClick = if (!isAppearance) onClick else null,
-        modifier = modifier
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Icon
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(PremiumColors.Surface2, RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(getIconResource(item.icon)),
-                    contentDescription = null,
-                    tint = PremiumColors.TextSecondary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            // Content
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.label,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = PremiumColors.TextPrimary
-                )
-                if (item.description != null) {
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = item.description,
-                        fontSize = 12.sp,
-                        color = PremiumColors.TextTertiary
-                    )
-                }
-                if (item.value != null && !isAppearance) {
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = item.value,
-                        fontSize = 12.sp,
-                        color = PremiumColors.TextTertiary
-                    )
-                }
-            }
-
-            // Action
-            if (isAppearance) {
-                Switch(
-                    checked = isDarkMode,
-                    onCheckedChange = { onToggleDarkMode() },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFF667EEA),
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = PremiumColors.Surface3
-                    )
-                )
-            } else if (item.showChevron) {
-                Icon(
-                    painter = painterResource(android.R.drawable.arrow_down_float),
-                    contentDescription = null,
-                    tint = PremiumColors.TextMuted,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LoadingContent(modifier: Modifier = Modifier) {
+internal fun LoadingContent(modifier: Modifier = Modifier) {
     FadeInUpAnimation {
         Column(
             modifier = modifier
@@ -544,31 +227,51 @@ private fun LoadingContent(modifier: Modifier = Modifier) {
     }
 }
 
-private fun getIconResource(icon: SettingIcon): Int {
+internal fun getIconResource(icon: SettingIcon): Int {
     return when (icon) {
-        SettingIcon.USER -> R.drawable.outline_5g_24
-        SettingIcon.MAIL -> R.drawable.outline_5g_24
-        SettingIcon.PHONE -> R.drawable.outline_5g_24
-        SettingIcon.BELL -> R.drawable.outline_5g_24
-        SettingIcon.PALETTE -> R.drawable.outline_5g_24
-        SettingIcon.GLOBE -> R.drawable.outline_5g_24
-        SettingIcon.LOCK -> R.drawable.outline_5g_24
-        SettingIcon.SHIELD -> R.drawable.outline_5g_24
-        SettingIcon.DOWNLOAD -> R.drawable.outline_5g_24
-        SettingIcon.FILE -> R.drawable.outline_5g_24
-        SettingIcon.HELP -> R.drawable.outline_5g_24
-        SettingIcon.SHARE -> R.drawable.outline_5g_24
-        SettingIcon.STAR -> R.drawable.outline_5g_24
-        SettingIcon.DOLLAR -> R.drawable.outline_5g_24
-        SettingIcon.TRENDING -> R.drawable.outline_5g_24
+        SettingIcon.BUDGET_MANAGEMENT -> R.drawable.ic_dollar
+        SettingIcon.FINANCIAL_GOALS -> R.drawable.ic_trend_up
+        SettingIcon.USER -> R.drawable.ic_profile
+        SettingIcon.MAIL -> R.drawable.ic_mail
+        SettingIcon.PHONE -> R.drawable.ic_phone
+        SettingIcon.BELL -> R.drawable.ic_bell
+        SettingIcon.PALETTE -> R.drawable.ic_palette
+        SettingIcon.GLOBE -> R.drawable.ic_globe
+        SettingIcon.LOCK -> R.drawable.ic_lock
+        SettingIcon.SHIELD -> R.drawable.ic_shield
+        SettingIcon.DOWNLOAD -> R.drawable.ic_download
+        SettingIcon.FILE -> R.drawable.ic_file
+        SettingIcon.HELP -> R.drawable.ic_help
+        SettingIcon.SHARE -> R.drawable.ic_share
+        SettingIcon.STAR -> R.drawable.ic_star
+        SettingIcon.DOLLAR -> R.drawable.ic_dollar
+        SettingIcon.TRENDING -> R.drawable.ic_trend_up
+        SettingIcon.PRIVACY_POLICY -> R.drawable.ic_file
+        SettingIcon.TERMS_AND_SERVICE -> R.drawable.ic_file
     }
 }
 
-private fun getSettingsSections(
+internal fun getSettingsSections(
     profile: dev.esbi.mizan.feature.profile.domain.model.UserProfile,
     settings: dev.esbi.mizan.feature.profile.domain.model.AppSettings
 ): List<Pair<String, List<SettingItem>>> {
     return listOf(
+        "Finance" to listOf(
+            SettingItem(
+                id = "budget_management",
+                icon = SettingIcon.BUDGET_MANAGEMENT,
+                label = "Budget Management",
+                description = "Set and track category budgets",
+                action = SettingAction.BUDGET_MANAGEMENT
+            ),
+            SettingItem(
+                id = "financial_goals",
+                icon = SettingIcon.FINANCIAL_GOALS,
+                label = "Financial Goals",
+                description = "Track your savings goals",
+                action = SettingAction.FINANCIAL_GOALS
+            ),
+        ),
         "Account" to listOf(
             SettingItem(
                 id = "personal_info",
@@ -629,6 +332,27 @@ private fun getSettingsSections(
                 label = "Two-Factor Authentication",
                 value = if (settings.twoFactorEnabled) "Enabled" else "Disabled",
                 action = SettingAction.TWO_FACTOR
+            )
+        ),
+        "Data & Privacy" to listOf(
+            SettingItem(
+                id = "export_data",
+                icon = SettingIcon.LOCK,
+                label = "Export Data",
+                description = "Download your transaction history",
+                action = SettingAction.EXPORT_DATA
+            ),
+            SettingItem(
+                id = "privacy_policy",
+                icon = SettingIcon.PRIVACY_POLICY,
+                label = "Privacy Policy",
+                action = SettingAction.PRIVACY_POLICY
+            ),
+            SettingItem(
+                id = "terms_of_service",
+                icon = SettingIcon.TERMS_AND_SERVICE,
+                label = "Terms & Service",
+                action = SettingAction.TERMS_AND_SERVICE
             )
         ),
         "Support" to listOf(

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.ui.components.charts.AreaChart
 import dev.esbi.mizan.ui.components.charts.MizanAreaChart
 import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 // 1. Data Model
@@ -27,37 +28,39 @@ fun MonthlyTrendChart(
     data: List<ChartData>,
     modifier: Modifier = Modifier
 ) {
-    GlassCard {
-        Column(
-            modifier = modifier
+    PressCard(modifier = modifier) {
+        GlassCard(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(24.dp)
         ) {
-            // Sarlavha
-            Text(
-                text = "Monthly Trend",
-                color = MizanTheme.premium.text.primary,
-                style = MizanTheme.typography.headingMd,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Last 6 months spending pattern",
-                color = MizanTheme.premium.text.tertiary,
-                style = MizanTheme.typography.bodySm
-            )
-            Spacer(modifier = Modifier.height(32.dp))
+            Column {
+                // Sarlavha
+                Text(
+                    text = "Monthly Trend",
+                    color = MizanTheme.premium.text.primary,
+                    style = MizanTheme.typography.headingMd,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Last 6 months spending pattern",
+                    color = MizanTheme.premium.text.tertiary,
+                    style = MizanTheme.typography.bodySm
+                )
+                Spacer(modifier = Modifier.height(32.dp))
 
-            MizanAreaChart(
-                spendingData = data.map {
-                    AreaChart(
-                        dayLabel = it.month,
-                        totalAmount = it.amount
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-            )
+                MizanAreaChart(
+                    spendingData = data.map {
+                        AreaChart(
+                            dayLabel = it.month,
+                            totalAmount = it.amount
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                )
+            }
         }
     }
 }

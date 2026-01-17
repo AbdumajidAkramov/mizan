@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun PremiumThemeToggle(
@@ -61,8 +62,8 @@ fun PremiumThemeToggle(
         ) {
             Icon(
                 painter = painterResource(
-                    if (isDarkMode) android.R.drawable.ic_lock_idle_lock
-                    else android.R.drawable.ic_dialog_info
+                    if (isDarkMode) Icons.ic_dark_theme
+                    else Icons.ic_light_theme
                 ),
                 contentDescription = if (isDarkMode) "Dark mode" else "Light mode",
                 tint = if (isDarkMode) Color(0xFF667EEA) else Color(0xFFFA709A),

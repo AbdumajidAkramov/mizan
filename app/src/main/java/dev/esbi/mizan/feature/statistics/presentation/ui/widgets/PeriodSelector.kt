@@ -22,8 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.statistics.domain.model.TimePeriod
@@ -69,20 +70,25 @@ internal fun PeriodSelector(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-
+            val interactionSource = remember { MutableInteractionSource() }
             periods.forEach { period ->
+
                 Box(
                     modifier = Modifier
                         .width(120.dp)
                         .height(48.dp)
-                        .clickable { onPeriodSelected(period) },
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null,
+                            onClick = { onPeriodSelected(period) }
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = period.name.lowercase().capitalize(),
+                        text = period.name.lowercase().capitalize(Locale.current),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        color = if (period == selectedPeriod) Color.White else Color(0xFF6B6B7F)
+                        color = if (period == selectedPeriod) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary
                     )
                 }
             }

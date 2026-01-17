@@ -31,8 +31,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.ui.animation.hoverElevation
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 
 enum class CardVariant { Glass, Solid, Gradient }
 
@@ -62,11 +64,11 @@ fun PremiumCard(
     val backgroundModifier = when (variant) {
         CardVariant.Glass -> Modifier
             .background(MizanTheme.premium.glass.bg)
-            .border(1.dp, MizanTheme.premium.glass.border, shape)
+//            .border(1.dp, MizanTheme.premium.glass.border, shape)
 
         CardVariant.Solid -> Modifier
             .background(MizanTheme.premium.colors.surface3) // Yoki background.secondary
-            .border(1.dp, MizanTheme.premium.colors.surface4, shape)
+//            .border(1.dp, MizanTheme.premium.colors.surface4, shape)
 
         CardVariant.Gradient -> Modifier
             .background(
@@ -77,7 +79,7 @@ fun PremiumCard(
                     )
                 )
             )
-            .border(1.dp, MizanTheme.premium.glass.border, shape)
+//            .border(1.dp, MizanTheme.premium.glass.border, shape)
     }
 
     // Soyani sozlash (Design Systemdagi ShadowInfo dan foydalanamiz)
@@ -96,6 +98,7 @@ fun PremiumCard(
     PressCard(modifier, onClick) {
         Box(
             modifier = Modifier
+                .premiumShadow(MizanTheme.premium.shadows.md)
                 .graphicsLayer {
                     this.translationY = translationY.toPx()
                 }
@@ -153,7 +156,7 @@ fun PressCard(
     content: @Composable () -> Unit
 ) {
     var pressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (pressed) 0.97f else 1f, tween(150), label = "scale")
+    val scale by animateFloatAsState(if (pressed) 0.97f else 1f, tween(100), label = "scale")
     Box(
         modifier
             .graphicsLayer { scaleX = scale; scaleY = scale }

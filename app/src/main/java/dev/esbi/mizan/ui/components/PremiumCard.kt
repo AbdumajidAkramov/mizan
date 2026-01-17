@@ -1,7 +1,6 @@
 package dev.esbi.mizan.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,7 @@ fun PremiumCard(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = RoundedCornerShape(20.dp)
-    
+
     Box(
         modifier = modifier
             .clip(shape)
@@ -51,11 +50,11 @@ fun PremiumCard(
                         .background(
                             MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)
                         )
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
-                            shape = shape
-                        )
+//                        .border(
+//                            width = 1.dp,
+//                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f),
+//                            shape = shape
+//                        )
                     PremiumCardVariant.Gradient -> Modifier
                         .background(
                             Brush.linearGradient(
@@ -65,6 +64,7 @@ fun PremiumCard(
                                 )
                             )
                         )
+
                     PremiumCardVariant.Solid -> Modifier
                         .background(MaterialTheme.colorScheme.surface)
                 }
