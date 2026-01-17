@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.statistics.domain.model.TimePeriod
 import dev.esbi.mizan.ui.theme.PremiumColors
+/*
 
 @Composable
 fun PeriodSelector(
@@ -72,3 +73,4 @@ private fun PeriodButton(
             .padding(vertical = 10.dp)
     )
 }
+*/

@@ -28,9 +28,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R.drawable.ic_down_trend
 import dev.esbi.mizan.R.drawable.ic_trend_up
+import dev.esbi.mizan.ui.kit.glass.CardVariant
+import dev.esbi.mizan.ui.kit.glass.PremiumCard
+import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -68,8 +72,8 @@ fun PremiumNetWorthCard(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    dev.esbi.mizan.ui.kit.icon.Icon(
-                        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_attach_money),
+                    Icon(
+                        icon = IconValue(Icons.ic_attach_money),
                         contentDescription = null,
                         tint = Color.White, // Icon doim oq bo'lishi ma'qul gradient ustida
                         modifier = Modifier.size(20.dp)
@@ -106,7 +110,7 @@ fun PremiumNetWorthCard(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        dev.esbi.mizan.ui.kit.icon.Icon(
+                        Icon(
                             icon = IconValue(if (isPositive) ic_trend_up else ic_down_trend),
                             contentDescription = null,
                             tint = pillColor,

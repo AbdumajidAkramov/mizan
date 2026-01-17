@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
 import dev.esbi.mizan.feature.dashboard.domain.model.TransactionType
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCard
+import dev.esbi.mizan.ui.kit.glass.PremiumCard
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange
 import dev.esbi.mizan.ui.theme.Pink

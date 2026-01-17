@@ -23,8 +23,8 @@ import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.AnimSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.ChartCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
@@ -40,9 +40,8 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumNetW
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumSpendingChart
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumTopCategories
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.SpendingPoint
+import dev.esbi.mizan.ui.animation.AnimSection
 import dev.esbi.mizan.ui.components.ErrorState
-
-//import dev.esbi.mizan.ui.theme.utils.primitiveColors
 
 
 @Composable
@@ -95,6 +94,7 @@ private fun DashboardScrollContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { AnimSection(visible, 0) { HeaderSection() } }
+
         item {
             AnimSection(visible) {
                 BalanceCard(

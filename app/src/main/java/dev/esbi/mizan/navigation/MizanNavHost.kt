@@ -1,9 +1,7 @@
 package dev.esbi.mizan.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,7 +16,6 @@ import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModelFactory
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
-import dev.esbi.mizan.feature.statistics.presentation.ui.StatisticsScreen
 import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModelFactory
 import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
 
@@ -66,10 +63,7 @@ fun MizanNavHost(
         }
 
         composable<NavRoute.Statistics> {
-            PremiumStatisticsScreen()
-//            StatisticsScreen(
-//                viewModelFactory = statisticsViewModelFactory
-//            )
+            PremiumStatisticsScreen(statisticsViewModelFactory)
         }
 
         composable<NavRoute.Profile> {

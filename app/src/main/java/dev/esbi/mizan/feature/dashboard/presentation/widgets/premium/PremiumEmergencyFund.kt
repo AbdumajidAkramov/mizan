@@ -28,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R.drawable.ic_shield
 import dev.esbi.mizan.R.drawable.ic_trend_up
+import dev.esbi.mizan.ui.kit.glass.CardVariant
+import dev.esbi.mizan.ui.kit.glass.PremiumCard
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme

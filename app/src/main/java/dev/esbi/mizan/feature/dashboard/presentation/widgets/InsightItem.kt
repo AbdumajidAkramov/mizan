@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumCard
+import dev.esbi.mizan.ui.kit.glass.PremiumCard
 import dev.esbi.mizan.ui.theme.TextMuted
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 

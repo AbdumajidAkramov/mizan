@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.ui.animation.AnimSection
 import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialMirrorSummary
 import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStore
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.ANIM_DELAY_MS

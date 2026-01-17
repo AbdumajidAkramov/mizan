@@ -38,6 +38,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    bundle {
+        language.enableSplit = false
+    }
     buildFeatures {
         compose = true
     }
@@ -52,32 +56,32 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    
+
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
-    
+
     // MVIKotlin
     implementation(libs.mvikotlin.core)
     implementation(libs.mvikotlin.main)
     implementation(libs.mvikotlin.coroutines)
-    
+
     // Dagger2
     implementation(libs.dagger.core)
     ksp(libs.dagger.compiler)
-    
+
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-    
+
     // Vico Charts
     implementation(libs.vico.compose)
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
-    
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
@@ -87,7 +91,7 @@ dependencies {
 
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

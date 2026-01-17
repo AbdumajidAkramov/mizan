@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.CardBg
@@ -45,7 +46,7 @@ fun EmergencyCard(current: Double, goal: Double, months: Int) {
     val fmt = NumberFormat.getCurrencyInstance(Locale.US)
     val rem = goal - current;
     val monthly = rem / 12
-    GlassCard {
+    GlassCard() {
         Column(
             Modifier
                 .fillMaxWidth()

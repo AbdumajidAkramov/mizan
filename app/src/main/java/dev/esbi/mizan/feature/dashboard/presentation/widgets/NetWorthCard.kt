@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Cyan
@@ -36,7 +37,7 @@ import java.util.Locale
 @Composable
 fun NetWorthCard(worth: Double, change: Double, pct: Double) {
     val fmt = NumberFormat.getCurrencyInstance(Locale.US)
-    GlassCard {
+    GlassCard() {
         Column(
             Modifier
                 .fillMaxWidth()

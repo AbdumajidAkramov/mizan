@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.dashboard.domain.model.WeeklySpendingPoint
+import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.TextWhite
@@ -32,7 +33,7 @@ private fun ChartCardPreview() {
 
 @Composable
 fun ChartCard(data: List<WeeklySpendingPoint>) {
-    GlassCard {
+    GlassCard() {
         Column(
             Modifier
                 .fillMaxWidth()
