@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
 import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable

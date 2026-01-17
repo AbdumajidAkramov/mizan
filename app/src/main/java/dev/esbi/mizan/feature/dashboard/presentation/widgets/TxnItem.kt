@@ -29,7 +29,6 @@ import dev.esbi.mizan.ui.theme.Orange
 import dev.esbi.mizan.ui.theme.Pink
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.Red
-import dev.esbi.mizan.ui.theme.TextMuted
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
