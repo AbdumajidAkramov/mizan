@@ -22,20 +22,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumAccountSelector
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCategoryPicker
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.utils.annotatedString
 
 // ==========================================
 // 1. DETAILS STEP (Kategoriya yoki Akkaunt tanlash)
 // ==========================================
 
 @Composable
+internal fun DetailsStep(
+    state: AddTransactionStore.State,
+    accept: (AddTransactionStore.Intent) -> Unit,
+) {
+    DetailsStep(
+        amount = state.amountText,
+        currency = state.currency,
+        type = state.type,
+        selectedCategory = state.selectedCategory,
+        onSelectCategory = {
+            accept(AddTransactionStore.Intent.OnCategorySelect(it))
+        },
+        fromAccount = state.fromAccountId,
+        toAccount = state.toAccountId,
+        onSelectFromAccount = {
+            accept(AddTransactionStore.Intent.OnSelectFromAccount(it))
+        },
+        onSelectToAccount = {
+            accept(AddTransactionStore.Intent.OnSelectToAccount(it))
+        },
+        onNextTransfer = {
+            accept(AddTransactionStore.Intent.OnNextTransfer)
+        }
+
+    )
+}
+
+@Composable
 fun DetailsStep(
     amount: String,
+    currency: String,
     type: TransactionType,
     selectedCategory: String?,
     onSelectCategory: (String) -> Unit,
@@ -68,7 +99,7 @@ fun DetailsStep(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = "$$amount",
+                text = amount.annotatedString(currency = currency),
                 style = MizanTheme.typography.displaySm, // heading-2xl ga mos
                 color = MizanTheme.premium.text.primary
             )

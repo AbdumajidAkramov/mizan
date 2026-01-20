@@ -34,13 +34,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.feature.addtransaction.presentation.dialog.PremiumDatePickerDialog
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.utils.annotatedString
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -49,14 +53,43 @@ import java.time.format.DateTimeFormatter
 // ==========================================
 
 @Composable
-fun ConfirmStep(
+internal fun ConfirmStep(
+    state: AddTransactionStore.State,
+    accept: (AddTransactionStore.Intent) -> Unit,
+) {
+    ConfirmStep(
+        amount = state.amountText,
+        currency = state.currency,
+        type = state.type,
+        category = state.selectedCategory,
+        fromAccount = state.fromAccountId,
+        toAccount = state.toAccountId,
+        date = state.date,
+        notes = state.notes,
+        isFormValid = state.isFormValid,
+        onDateChange = {
+            accept(AddTransactionStore.Intent.OnDateChange(it))
+        },
+        onNotesChange = {
+            accept(AddTransactionStore.Intent.OnNoteChange(it))
+        },
+        onSave = {
+            accept(AddTransactionStore.Intent.OnSaveTransaction)
+        }
+    )
+}
+
+@Composable
+internal fun ConfirmStep(
     amount: String,
+    currency: String,
     type: TransactionType,
     category: String?,
     fromAccount: String?,
     toAccount: String?,
     date: LocalDate,
     notes: String,
+    isFormValid: Boolean,
     onDateChange: (LocalDate) -> Unit,
     onNotesChange: (String) -> Unit,
     onSave: () -> Unit
@@ -130,7 +163,7 @@ fun ConfirmStep(
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             Text(
-                                text = "$$amount",
+                                text = amount.annotatedString(currency = currency),
                                 style = MizanTheme.typography.displaySm, // heading-3xl
                                 color = MizanTheme.premium.text.primary
                             )
@@ -209,26 +242,15 @@ fun ConfirmStep(
                     }
                 }
 
-                // Calendar Expand Animation
-                AnimatedVisibility(visible = showDatePicker) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .background(
-                                MizanTheme.premium.colors.surface2,
-                                RoundedCornerShape(MizanTheme.premium.radius.lg)
-                            )
-                            .padding(16.dp)
-                    ) {
-                        /*PremiumCalendar(
-                            selectedDate = date,
-                            onSelectDate = {
-                                onDateChange(it)
-                                showDatePicker = false
-                            }
-                        )*/
-                    }
+                if (showDatePicker) {
+                    PremiumDatePickerDialog(
+                        initialDate = date, // Hozirgi tanlangan sana
+                        onDismissRequest = { showDatePicker = false }, // Yopish
+                        onDateSelected = { newDate ->
+                            onDateChange(newDate) // Sanani yangilash
+                            showDatePicker = false // Dialogni yopish
+                        }
+                    )
                 }
             }
 
@@ -272,6 +294,7 @@ fun ConfirmStep(
                         value = notes,
                         onValueChange = onNotesChange,
                         textStyle = MizanTheme.typography.bodyMd.copy(color = MizanTheme.premium.text.primary),
+                        cursorBrush = SolidColor(MizanTheme.premium.colors.primary),
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 80.dp),
@@ -291,9 +314,6 @@ fun ConfirmStep(
 
             // --- 4. SAVE BUTTON ---
             // Validatsiya logikasi
-            val isFormValid = amount.toFloatOrNull()?.let { it > 0 } == true &&
-                    (type != TransactionType.Transfer || (fromAccount != null && toAccount != null)) &&
-                    (type == TransactionType.Transfer || category != null)
 
             AnimatedVisibility(
                 visible = isFormValid,

@@ -10,6 +10,7 @@ enum class Keypad {
     MINUS,
     PLUS,
 
+    DOT,
     ONE,
     TWO,
     THREE,
@@ -26,6 +27,9 @@ enum class Keypad {
     UNKNOWN;
 
     companion object {
+        val operators: List<Keypad> = listOf(DIVIDE, MULTIPLY, MINUS, PLUS)
+        val numbers: List<Keypad> = listOf(ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ZERO_ZERO, ZERO_ZERO_ZERO)
+
         fun key(value: String): Keypad {
             return when (value) {
                 "C" -> CLEAR
@@ -35,6 +39,8 @@ enum class Keypad {
                 "*" -> MULTIPLY
                 "-" -> MINUS
                 "+" -> PLUS
+                "." -> DOT
+                "0" -> ZERO
                 "1" -> ONE
                 "2" -> TWO
                 "3" -> THREE
@@ -44,14 +50,13 @@ enum class Keypad {
                 "7" -> SEVEN
                 "8" -> EIGHT
                 "9" -> NINE
-                "0" -> ZERO
                 "00" -> ZERO_ZERO
                 "000" -> ZERO_ZERO_ZERO
                 else -> UNKNOWN
             }
         }
 
-        fun numberChar(key: Keypad): String? {
+        fun number(key: Keypad): String {
             return when (key) {
                 ONE -> "1"
                 TWO -> "2"
@@ -65,55 +70,20 @@ enum class Keypad {
                 ZERO -> "0"
                 ZERO_ZERO -> "00"
                 ZERO_ZERO_ZERO -> "000"
-                else -> null
+                else -> ""
             }
         }
 
-        fun numberInt(key: Keypad): Int? {
+        fun isNumber(key: Keypad): Boolean = key in numbers
+
+        fun isOperator(key: Keypad): Boolean = key in operators
+        fun operator(key: Keypad): String {
             return when (key) {
-                ONE -> 1
-                TWO -> 2
-                THREE -> 3
-                FOUR -> 4
-                FIVE -> 5
-                SIX -> 6
-                SEVEN -> 7
-                EIGHT -> 8
-                NINE -> 9
-                ZERO -> 0
-                ZERO_ZERO -> 100
-                ZERO_ZERO_ZERO -> 1000
-                else -> null
-            }
-        }
-
-        fun isNumber(key: Keypad): Boolean {
-            return when (key) {
-                ONE,
-                TWO,
-                THREE,
-                FOUR,
-                FIVE,
-                SIX,
-                SEVEN,
-                EIGHT,
-                NINE,
-                ZERO,
-                ZERO_ZERO,
-                ZERO_ZERO_ZERO -> true
-
-                else -> false
-            }
-        }
-
-        fun isOperator(key: Keypad): Boolean {
-            return when (key) {
-                DIVIDE,
-                MULTIPLY,
-                MINUS,
-                PLUS -> true
-
-                else -> false
+                DIVIDE -> "/"
+                MULTIPLY -> "*"
+                MINUS -> "-"
+                PLUS -> "+"
+                else -> ""
             }
         }
     }

@@ -15,14 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
@@ -30,6 +26,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.triple.getTypeConfig
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.utils.annotatedString
 
 
 @Composable
@@ -37,7 +34,6 @@ fun TransactionTypeStep(
     amount: String,
     onTypeSelect: (TransactionType) -> Unit
 ) {
-    var selectedType by remember { mutableStateOf(TransactionType.Expense) }
     Column(
         modifier = Modifier.padding(MizanTheme.premium.spacing.lg),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -48,7 +44,7 @@ fun TransactionTypeStep(
             color = MizanTheme.premium.text.tertiary
         )
         Text(
-            "$$amount",
+            amount.annotatedString(),
             style = MizanTheme.typography.displayMd,
             color = MizanTheme.premium.text.primary
         )
@@ -132,7 +128,7 @@ internal fun TransactionTypeItem(
 fun TransactionTypeStepPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme(darkTheme = true) {
         TransactionTypeStep(
-            amount = "123",
+            amount = "121233",
             onTypeSelect = {}
         )
     }

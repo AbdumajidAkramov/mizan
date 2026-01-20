@@ -27,9 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,48 +43,27 @@ import dev.esbi.mizan.feature.addtransaction.presentation.widgets.AmountInputSte
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import java.time.LocalDate
 
 
 @Composable
 internal fun PremiumAddTransactionScreen(
     viewModel: AddTransactionViewModel,
     onClose: () -> Unit,
-    onSave: (TransactionResult) -> Unit
+    onSave: () -> Unit
 ) {
     val state by viewModel.state.collectAsState(initial = AddTransactionStore.State())
 
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
             when (label) {
-                else -> Unit
+                is AddTransactionStore.Label.Close -> {
+                    onSave()
+                }
             }
         }
     }
 
-
-    // State Management
-//    var inputMode by remember { mutableStateOf(InputMode.Manual) }
-//    var flowState by remember { mutableStateOf(FlowState.Amount) }
-
     // Data States
-    var displayValue by remember { mutableStateOf("0") }
-    var transactionType by remember { mutableStateOf(TransactionType.Expense) }
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
-    var fromAccountId by remember { mutableStateOf<String?>(null) }
-    var toAccountId by remember { mutableStateOf<String?>(null) }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var notes by remember { mutableStateOf("") }
-
-    // UI Toggles
-    var showDatePicker by remember { mutableStateOf(false) }
-    var showNotesInput by remember { mutableStateOf(false) }
-
-    // Calculator Logikasi (Soddalashtirilgan)
-    fun handleNumberClick(num: String) {
-        if (displayValue == "0") displayValue = num
-        else if (displayValue.length < 12) displayValue += num
-    }
 
     Scaffold(
         containerColor = MizanTheme.premium.background.primary,
@@ -107,7 +83,7 @@ internal fun PremiumAddTransactionScreen(
                     if (state.flowState != FlowState.Amount) {
                         IconButton(
                             onClick = {
-                                viewModel.onIntent(AddTransactionStore.Intent.OnNext())
+                                viewModel.onIntent(AddTransactionStore.Intent.BackToPrev)
                             },
                             modifier = Modifier
                                 .clip(CircleShape)
@@ -125,7 +101,7 @@ internal fun PremiumAddTransactionScreen(
                         text = when (state.flowState) {
                             FlowState.Amount -> "New Transaction"
                             FlowState.Type -> "Transaction Type"
-                            FlowState.Details -> if (transactionType == TransactionType.Transfer) "Select Accounts" else "Choose Category"
+                            FlowState.Details -> if (state.type == TransactionType.Transfer) "Select Accounts" else "Choose Category"
                             FlowState.Confirm -> "Confirm & Save"
                         },
                         style = MizanTheme.typography.bodyMd,
@@ -149,12 +125,16 @@ internal fun PremiumAddTransactionScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
 /*
             TransactionTypeSelector(
-                selectedType = dev.esbi.mizan.feature.addtransaction.presentation.triple.TransactionType.Expense,
-                onTypeSelect = {}
+                selectedType = state.type,
+                onTypeSelect = {
+                    viewModel.onIntent(AddTransactionStore.Intent.OnTransactionTypeChange(it))
+                }
             )
 */
+
             // ANIMATED CONTENT SWITCHER
             AnimatedContent(
                 targetState = state.flowState,
@@ -166,76 +146,25 @@ internal fun PremiumAddTransactionScreen(
             ) { targetFlow ->
                 when (targetFlow) {
                     FlowState.Amount -> AmountInputStep(
-                        amount = state.amount,
-                        inputMode = state.inputMode,
-                        onModeChange = {
-                            viewModel.onIntent(
-                                AddTransactionStore.Intent.OnInputModeChange(
-                                    it
-                                )
-                            )
-                        },
-                        onNumberClick = {
-                            viewModel.onIntent(AddTransactionStore.Intent.OnKeypadClick(it))
-                        },
-                        onNext = {
-                            if ((displayValue.toFloatOrNull() ?: 0f) > 0f) {
-                                viewModel.onIntent(AddTransactionStore.Intent.OnNext(FlowState.Type))
-                            }
-                        }
+                        state = state,
+                        accept = viewModel::onIntent,
                     )
 
                     FlowState.Type -> TransactionTypeStep(
-                        amount = displayValue,
+                        amount = state.amountText,
                         onTypeSelect = {
-                            transactionType = it
-                            viewModel.onIntent(AddTransactionStore.Intent.OnNext(FlowState.Details))
+                            viewModel.onIntent(AddTransactionStore.Intent.OnTransactionTypeSelect(it))
                         }
                     )
 
                     FlowState.Details -> DetailsStep(
-                        amount = displayValue,
-                        type = transactionType,
-                        selectedCategory = selectedCategory,
-                        onSelectCategory = {
-                            selectedCategory = it
-                            viewModel.onIntent(AddTransactionStore.Intent.OnNext(FlowState.Confirm))
-                        },
-                        fromAccount = fromAccountId,
-                        toAccount = toAccountId,
-                        onSelectFromAccount = { fromAccountId = it },
-                        onSelectToAccount = { toAccountId = it },
-                        onNextTransfer = {
-                            if (fromAccountId != null && toAccountId != null) {
-                                viewModel.onIntent(AddTransactionStore.Intent.OnNext(FlowState.Confirm))
-                            }
-                        }
+                        state = state,
+                        accept = viewModel::onIntent,
                     )
 
                     FlowState.Confirm -> ConfirmStep(
-                        amount = displayValue,
-                        type = transactionType,
-                        category = selectedCategory,
-                        fromAccount = fromAccountId,
-                        toAccount = toAccountId,
-                        date = selectedDate,
-                        notes = notes,
-                        onDateChange = { selectedDate = it },
-                        onNotesChange = { notes = it },
-                        onSave = {
-                            onSave(
-                                TransactionResult(
-                                    amount = displayValue.toDoubleOrNull() ?: 0.0,
-                                    type = transactionType,
-                                    category = selectedCategory,
-                                    fromAccountId = fromAccountId,
-                                    toAccountId = toAccountId,
-                                    date = selectedDate,
-                                    notes = notes
-                                )
-                            )
-                            onClose()
-                        }
+                        state = state,
+                        accept = viewModel::onIntent,
                     )
                 }
             }

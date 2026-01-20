@@ -20,8 +20,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,24 +31,45 @@ import dev.esbi.mizan.R.drawable.ic_calculate
 import dev.esbi.mizan.R.drawable.ic_camera_alt
 import dev.esbi.mizan.R.drawable.ic_mic
 import dev.esbi.mizan.feature.addtransaction.domain.models.Keypad
+import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
-import dev.esbi.mizan.feature.addtransaction.presentation.utils.toCurrencyAnnotatedString
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.utils.annotatedString
 
 @Composable
-fun AmountInputStep(
-    amount: Double,
+internal fun AmountInputStep(
+    state: AddTransactionStore.State,
+    accept: (AddTransactionStore.Intent) -> Unit,
+) {
+    AmountInputStep(
+        amount = state.amountText,
+        displayText = state.displayText,
+        currency = state.currency,
+        inputMode = state.inputMode,
+        onModeChange = { accept(AddTransactionStore.Intent.OnInputModeChange(it)) },
+        onNumberClick = {
+            accept(AddTransactionStore.Intent.OnKeypadClick(it))
+        },
+        onNext = {
+            accept(AddTransactionStore.Intent.OnKeypadNext)
+        },
+    )
+}
+
+@Composable
+internal fun AmountInputStep(
+    amount: String,
+    displayText: String,
+    currency: String,
     inputMode: InputMode,
     onModeChange: (InputMode) -> Unit,
     onNumberClick: (Keypad) -> Unit,
     onNext: () -> Unit
 ) {
-    val calcText = remember { mutableStateOf("36+") }
-//    val amount: Double = displayValue.toDoubleOrNull() ?: 0.0
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -62,14 +81,14 @@ fun AmountInputStep(
         ) {
             // Text
             Text(
-                text = calcText.value,
+                text = displayText,
                 style = MizanTheme.typography.bodySm,
                 color = MizanTheme.premium.text.tertiary,
                 modifier = Modifier
             )
             // Display
             // Yangi holat (Double ga o'tkazib formatlaymiz):
-            val formattedAmount = amount.toCurrencyAnnotatedString()
+            val formattedAmount = amount.annotatedString(currency = currency)
             AutoResizingText(
                 text = formattedAmount,
                 style = MizanTheme.typography.displayXl,
@@ -146,7 +165,7 @@ fun AmountInputStep(
                                 .height(56.dp),
                             colors = ButtonDefaults
                                 .buttonColors(
-                                    containerColor = if (amount > 0) {
+                                    containerColor = if ((amount.toDoubleOrNull() ?: 0.0) > 0) {
                                         MizanTheme.premium.colors.emerald
                                     } else {
                                         MizanTheme.premium.colors.surface4
@@ -182,7 +201,9 @@ fun AmountInputStepPreview() {
         darkTheme = true
     ) {
         AmountInputStep(
-            amount = 0.0,
+            amount = "1",
+            displayText = "",
+            currency = "UZS",
             inputMode = InputMode.Manual,
             onModeChange = {},
             onNumberClick = {},
@@ -190,19 +211,3 @@ fun AmountInputStepPreview() {
         )
     }
 }
-/*
-
-@Preview(
-    name = "TransactionTypeStepPreview",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun TransactionTypeStepPreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme() {
-        TransactionTypeStep(
-            amount = "",
-            onSelectType = {})
-    }
-}
-*/

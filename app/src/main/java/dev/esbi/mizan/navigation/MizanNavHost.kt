@@ -76,8 +76,8 @@ internal fun MizanNavHost(
                 onClose = {
                     navController.popBackStack()
                 },
-                onSave = { transactionResult ->
-
+                onSave = {
+                    navController.popBackStack()
                 }
             )
         }

@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +53,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                         Icon(
                             icon = IconValue(Icons.ic_trend_up),
                             modifier = Modifier.size(16.dp),
-                            tint = Color.White
+                            tint = TextWhite
                         )
                     }
                     Spacer(Modifier.width(8.dp))
@@ -106,7 +105,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                         Icon(
                             icon = IconValue(Icons.ic_calendar_month),
                             modifier = Modifier.size(16.dp),
-                            tint = Color(0xFF003333)
+                            tint = TextWhite
                         )
                     }
                     Spacer(Modifier.width(8.dp))
