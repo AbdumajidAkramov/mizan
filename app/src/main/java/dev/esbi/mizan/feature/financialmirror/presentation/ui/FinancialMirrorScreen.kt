@@ -18,9 +18,9 @@ internal const val ANIM_DELAY_MS = 50
 
 @Composable
 fun FinancialMirrorScreen(
-    viewModelFactory: FinancialMirrorViewModelFactory, modifier: Modifier = Modifier
+ viewModel: FinancialMirrorViewModel,
+    modifier: Modifier = Modifier
 ) {
-    val viewModel: FinancialMirrorViewModel = viewModel(factory = viewModelFactory)
     val state by viewModel.state.collectAsState(initial = FinancialMirrorStore.State())
 
     LaunchedEffect(Unit) {

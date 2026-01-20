@@ -39,15 +39,13 @@ import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
+
     PremiumCard(
         variant = CardVariant.Glass,
         modifier = modifier // Clip kerak emas, PremiumCard o'zi clip qiladi
     ) {
         Column(
-            Modifier
-                .background(MizanTheme.premium.glass.bg)
-                .fillMaxWidth()
-                .padding(24.dp)
+            Modifier.padding(24.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

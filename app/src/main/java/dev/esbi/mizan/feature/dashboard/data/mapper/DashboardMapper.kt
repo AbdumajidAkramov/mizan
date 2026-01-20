@@ -56,6 +56,7 @@ fun TransactionEntity.toDomain(): Transaction {
         date = date,
         type = when (type) {
             "INCOME" -> TransactionType.INCOME
+            "TRANSFER" -> TransactionType.TRANSFER
             else -> TransactionType.EXPENSE
         },
         colorToken = colorToken

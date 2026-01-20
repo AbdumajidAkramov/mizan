@@ -4,28 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.rememberNavController
 import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModelFactory
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
-import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModelFactory
 import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModelFactory
-import dev.esbi.mizan.navigation.MizanNavHost
-import dev.esbi.mizan.navigation.PremiumBottomNav
+import dev.esbi.mizan.main.MainAppScreen
 import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,32 +23,18 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var dashboardViewModelFactory: DashboardViewModelFactory
-
-    @Inject
-    lateinit var financialMirrorViewModelFactory: FinancialMirrorViewModelFactory
-
-    @Inject
-    lateinit var budgetViewModelFactory: BudgetViewModelFactory
-
-    @Inject
-    lateinit var transactionsViewModelFactory: TransactionsViewModelFactory
-
-    @Inject
-    lateinit var statisticsViewModelFactory: StatisticsViewModelFactory
-
-    @Inject
-    lateinit var profileViewModelFactory: ProfileViewModelFactory
-
-    @Inject
     lateinit var settingsManager: AppSettingsManager
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory // MizanViewModelFactory keladi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (application as MizanApplication).appComponent.inject(this)
+        val appComponent = (application as MizanApplication).appComponent
+        appComponent.inject(this)
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
-
+//        val viewModelFactoryProvider = appComponent.viewModelFactoryProvider
         lifecycleScope.launch {
             settingsManager.settings.collect {
                 settingState.value = it
@@ -69,44 +45,31 @@ class MainActivity : ComponentActivity() {
         setContent {
             val state = settingState.collectAsState()
             MizanTheme(darkTheme = state.value.isDarkMode) {
-                val navController = rememberNavController()
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                ) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        MizanNavHost(
-                            modifier = Modifier.fillMaxSize(),
-                            navController = navController,
-                            dashboardViewModelFactory = dashboardViewModelFactory,
-                            financialMirrorViewModelFactory = financialMirrorViewModelFactory,
-                            budgetViewModelFactory = budgetViewModelFactory,
-                            transactionsViewModelFactory = transactionsViewModelFactory,
-                            statisticsViewModelFactory = statisticsViewModelFactory,
-                            profileViewModelFactory = profileViewModelFactory
-                        )
+                MainAppScreen(viewModelFactory = viewModelFactory)
 
-                        PremiumBottomNav(
-                            navController = navController,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .fillMaxWidth()
-                                .padding(bottom = MizanTheme.premium.spacing.md) // pb-[var(--premium-space-md)]
-                                .padding(horizontal = MizanTheme.premium.spacing.md), // px-[var(--premium-space-md)]
+                /*               val navController = rememberNavController()
+                               Scaffold(
+                                   modifier = Modifier.fillMaxSize(),
+                               ) { innerPadding ->
+                                   Box(modifier = Modifier.padding(innerPadding)) {
+                                       MizanNavHost(
+                                           modifier = Modifier.fillMaxSize(),
+                                           navController = navController,
+                                           viewModelFactoryProvider = viewModelFactoryProvider
+                                       )
 
-                        )
-                        /*  MizanBottomNavigation(
-                              navController = navController,
-                              modifier = Modifier
-                                  .fillMaxWidth()
-                                  .align(Alignment.BottomCenter)
-                                  .padding(
-                                      horizontal = 16.dp,
-                                      vertical = 16.dp
-                                  )
-                          )*/
-                    }
+                                       PremiumBottomNavigation(
+                                           navController = navController,
+                                           modifier = Modifier
+                                               .align(Alignment.BottomCenter)
+                                               .fillMaxWidth()
+                                               .padding(bottom = MizanTheme.premium.spacing.md) // pb-[var(--premium-space-md)]
+                                               .padding(horizontal = MizanTheme.premium.spacing.md), // px-[var(--premium-space-md)]
 
-                }
+                                       )
+                                   }
+                               }
+                */
             }
         }
     }

@@ -30,9 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.R
+import dev.esbi.mizan.feature.profile.domain.model.AppSettings
 import dev.esbi.mizan.feature.profile.domain.model.SettingAction
 import dev.esbi.mizan.feature.profile.domain.model.SettingIcon
 import dev.esbi.mizan.feature.profile.domain.model.SettingItem
+import dev.esbi.mizan.feature.profile.domain.model.UserProfile
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
@@ -52,10 +54,9 @@ import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun ProfileScreen(
-    viewModelFactory: ProfileViewModelFactory,
+    viewModel: ProfileViewModel,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: ProfileViewModel = viewModel(factory = viewModelFactory)
     val state by viewModel.state.collectAsState(initial = ProfileStore.State())
 
     LaunchedEffect(Unit) {
@@ -252,8 +253,8 @@ internal fun getIconResource(icon: SettingIcon): Int {
 }
 
 internal fun getSettingsSections(
-    profile: dev.esbi.mizan.feature.profile.domain.model.UserProfile,
-    settings: dev.esbi.mizan.feature.profile.domain.model.AppSettings
+    profile: UserProfile,
+    settings: AppSettings
 ): List<Pair<String, List<SettingItem>>> {
     return listOf(
         "Finance" to listOf(

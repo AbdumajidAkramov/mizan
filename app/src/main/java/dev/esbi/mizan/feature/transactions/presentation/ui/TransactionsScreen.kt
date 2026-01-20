@@ -51,10 +51,9 @@ import dev.esbi.mizan.ui.theme.PremiumColors
 
 @Composable
 fun TransactionsScreen(
-    viewModelFactory: TransactionsViewModelFactory,
+    viewModel: TransactionsViewModel,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: TransactionsViewModel = viewModel(factory = viewModelFactory)
     val state by viewModel.state.collectAsState(initial = TransactionsStore.State())
 
     LaunchedEffect(Unit) {

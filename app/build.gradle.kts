@@ -70,6 +70,7 @@ dependencies {
 
     // Dagger2
     implementation(libs.dagger.core)
+    implementation(libs.androidx.compose.foundation.layout)
     ksp(libs.dagger.compiler)
 
     // Room

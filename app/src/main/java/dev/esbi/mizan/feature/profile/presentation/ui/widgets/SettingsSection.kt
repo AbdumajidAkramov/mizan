@@ -135,7 +135,7 @@ internal fun SettingItemRow(
                     )
                 } else if (item.showChevron) {
                     Icon(
-                        painter = painterResource(Icons.ic_arrow_right),
+                        painter = painterResource(Icons.ic_chevron_right),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.muted,
                         modifier = Modifier.size(20.dp)

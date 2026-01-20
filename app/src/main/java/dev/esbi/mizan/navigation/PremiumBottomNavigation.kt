@@ -54,10 +54,22 @@ import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 
+/*
+
 @Composable
-fun PremiumBottomNav(
+fun PremiumBottomNavigation(
+    currentRoute: String? = null,
+    onNavigate: (String) -> Unit,
+    onAddClick: () -> Unit,
+) {
+
+}
+*/
+
+@Composable
+fun PremiumBottomNavigation(
     navController: NavController,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -133,7 +145,7 @@ fun PremiumBottomNav(
         // --- FLOATING ACTION BUTTON (Markazda alohida qatlamda) ---
         PremiumFab(
             onClick = {
-                //
+                navController.navigate(NavRoute.AddTransaction)
             },
             modifier = Modifier
                 .align(Alignment.Center)
@@ -264,7 +276,11 @@ private fun PremiumFab(
                     brush = MizanTheme.premium.gradients.primary,
                     shape = CircleShape
                 )
-                .clickable(onClick = onClick)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick
+                )
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -283,7 +299,7 @@ private fun PremiumFab(
     group = "Premium UI"
 )
 @Composable
-fun PreviewPremiumNavLight() {
+fun PreviewPremiumNavigationLight() {
     // Holatni (State) saqlash, shunda Previewda bosib ko'rsa bo'ladi
     var currentTab by remember { mutableStateOf("Dashboard") }
     val navController = rememberNavController()
@@ -303,7 +319,7 @@ fun PreviewPremiumNavLight() {
             )
 
             // Bizning komponent
-            PremiumBottomNav(
+            PremiumBottomNavigation(
                 navController = navController,
                 modifier = Modifier.background(color = Color.Transparent),
             )
@@ -318,7 +334,7 @@ fun PreviewPremiumNavLight() {
     group = "Premium UI"
 )
 @Composable
-fun PreviewPremiumNavDark() {
+fun PreviewPremiumNavigationDark() {
     var currentTab by remember { mutableStateOf("Profile") }
     val navController = rememberNavController()
     MizanTheme(darkTheme = true) {
@@ -334,7 +350,7 @@ fun PreviewPremiumNavDark() {
                 color = MizanTheme.premium.text.tertiary
             )
 
-            PremiumBottomNav(
+            PremiumBottomNavigation(
                 navController = navController,
                 modifier = Modifier.background(color = Color.Transparent),
             )

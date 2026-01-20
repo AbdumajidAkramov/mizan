@@ -42,10 +42,9 @@ import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun PremiumStatisticsScreen(
-    statisticsViewModelFactory: StatisticsViewModelFactory,
+    viewModel: StatisticsViewModel,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: StatisticsViewModel = viewModel(factory = statisticsViewModelFactory)
     val state by viewModel.state.collectAsState(initial = StatisticsStore.State())
 
     LaunchedEffect(Unit) {

@@ -49,10 +49,9 @@ import dev.esbi.mizan.ui.components.PremiumCardVariant
 
 @Composable
 fun BudgetScreen(
-    viewModelFactory: BudgetViewModelFactory,
+    viewModel: BudgetViewModel,
     modifier: Modifier = Modifier
 ) {
-    val viewModel: BudgetViewModel = viewModel(factory = viewModelFactory)
     val state by viewModel.state.collectAsState(initial = BudgetStore.State())
 
     LaunchedEffect(Unit) {

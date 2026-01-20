@@ -51,7 +51,8 @@ data class PremiumColors(
     val surface1: Color,
     val surface2: Color,
     val surface3: Color,
-    val surface4: Color
+    val surface4: Color,
+    val emerald: Color,
 )
 
 @Immutable
@@ -270,7 +271,8 @@ private val LightColors = PremiumColors(
     surface1 = Color.Black.copy(alpha = 0.02f),
     surface2 = Color.Black.copy(alpha = 0.04f),
     surface3 = Color.Black.copy(alpha = 0.08f),
-    surface4 = Color.Black.copy(alpha = 0.12f)
+    surface4 = Color.Black.copy(alpha = 0.12f),
+    emerald = Color(16, 185, 129),
 )
 
 val LightPremiumDesignSystem = PremiumDesignSystem(

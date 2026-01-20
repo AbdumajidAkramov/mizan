@@ -176,6 +176,7 @@
     <string name="budget_error_delete">Failed to delete budget</string>
     
     <!-- Transactions Screen -->
+    <string name="add_new_transactions">Add</string>
     <string name="transactions_title">Transactions</string>
     <string name="transactions_search_placeholder">Search transactions…</string>
     <string name="transactions_filter_all">All</string>

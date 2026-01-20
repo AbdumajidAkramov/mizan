@@ -103,7 +103,7 @@ internal fun ScenarioCard(scenario: TimeMachineScenario) {
             }
 
             Icon(
-                icon = IconValue(Icons.ic_right),
+                icon = IconValue(Icons.ic_arrow_right),
                 modifier = Modifier.size(20.dp),
                 tint = MizanTheme.premium.text.tertiary
             )

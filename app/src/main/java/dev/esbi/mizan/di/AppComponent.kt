@@ -16,18 +16,29 @@ import javax.inject.Singleton
         BudgetModule::class,
         TransactionsModule::class,
         StatisticsModule::class,
-        ProfileModule::class
+        ProfileModule::class,
+        ViewModelProviderModule::class,
+        ViewModelModule::class
     ]
 )
-interface AppComponent {
-    
+internal interface AppComponent {
+
     fun inject(activity: MainActivity)
-    
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
-        
-        fun build(): AppComponent
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            @BindsInstance application: Application
+        ): AppComponent
+    }
+
+    companion object {
+        operator fun invoke(
+            application: Application
+        ): AppComponent {
+            return DaggerAppComponent.factory().create(
+                application
+            )
+        }
     }
 }
