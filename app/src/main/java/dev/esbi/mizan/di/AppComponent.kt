@@ -17,7 +17,6 @@ import javax.inject.Singleton
         TransactionsModule::class,
         StatisticsModule::class,
         ProfileModule::class,
-        ViewModelProviderModule::class,
         ViewModelModule::class
     ]
 )

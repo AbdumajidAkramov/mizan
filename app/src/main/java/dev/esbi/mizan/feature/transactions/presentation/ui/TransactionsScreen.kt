@@ -33,10 +33,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModel
-import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModelFactory
 import dev.esbi.mizan.feature.transactions.presentation.store.TransactionsStore
 import dev.esbi.mizan.feature.transactions.presentation.ui.components.FilterChips
 import dev.esbi.mizan.feature.transactions.presentation.ui.components.MonthlySummaryCards
@@ -136,7 +134,7 @@ private fun TransactionsContent(
                                     Icon(
                                         painter = painterResource(android.R.drawable.ic_menu_search),
                                         contentDescription = null,
-                                        tint =  PremiumColors.TextTertiary,
+                                        tint = PremiumColors.TextTertiary,
                                         modifier = Modifier.size(20.dp)
                                     )
                                     TextField(

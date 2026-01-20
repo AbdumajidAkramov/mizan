@@ -18,13 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
-import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.ChartCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection

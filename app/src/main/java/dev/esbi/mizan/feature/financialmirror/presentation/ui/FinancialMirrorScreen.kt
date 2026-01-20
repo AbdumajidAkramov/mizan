@@ -6,9 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModel
-import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModelFactory
 import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStore
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.widgets.FinancialMirrorScrollContent
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.widgets.LoadingContent
@@ -18,7 +16,7 @@ internal const val ANIM_DELAY_MS = 50
 
 @Composable
 fun FinancialMirrorScreen(
- viewModel: FinancialMirrorViewModel,
+    viewModel: FinancialMirrorViewModel,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState(initial = FinancialMirrorStore.State())

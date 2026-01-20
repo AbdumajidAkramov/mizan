@@ -28,7 +28,20 @@ enum class Keypad {
 
     companion object {
         val operators: List<Keypad> = listOf(DIVIDE, MULTIPLY, MINUS, PLUS)
-        val numbers: List<Keypad> = listOf(ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ZERO_ZERO, ZERO_ZERO_ZERO)
+        val numbers: List<Keypad> = listOf(
+            ZERO,
+            ONE,
+            TWO,
+            THREE,
+            FOUR,
+            FIVE,
+            SIX,
+            SEVEN,
+            EIGHT,
+            NINE,
+            ZERO_ZERO,
+            ZERO_ZERO_ZERO
+        )
 
         fun key(value: String): Keypad {
             return when (value) {

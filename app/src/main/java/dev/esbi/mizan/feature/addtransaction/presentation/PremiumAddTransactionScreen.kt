@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionResult
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.steps.ConfirmStep
 import dev.esbi.mizan.feature.addtransaction.presentation.steps.DetailsStep

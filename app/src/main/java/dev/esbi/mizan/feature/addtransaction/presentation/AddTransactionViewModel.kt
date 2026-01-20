@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class AddTransactionViewModel @Inject constructor(
-    private val storeFactory: AddTransactionStoreFactory
+    storeFactory: AddTransactionStoreFactory
 ) : ViewModel() {
 
     private val store = storeFactory.create()

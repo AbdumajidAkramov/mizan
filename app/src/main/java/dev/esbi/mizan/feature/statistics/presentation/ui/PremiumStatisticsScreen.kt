@@ -19,14 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.statistics.domain.model.CategoryData
 import dev.esbi.mizan.feature.statistics.domain.model.ChartDataPoint
 import dev.esbi.mizan.feature.statistics.domain.model.StatisticsSummary
 import dev.esbi.mizan.feature.statistics.domain.model.TimePeriod
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModel
-import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModelFactory
 import dev.esbi.mizan.feature.statistics.presentation.store.StatisticsStore
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.CategoryBreakdownCard
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.ChartData

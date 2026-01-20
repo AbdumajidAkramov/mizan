@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
 import dev.esbi.mizan.feature.profile.domain.model.SettingAction
@@ -36,7 +35,6 @@ import dev.esbi.mizan.feature.profile.domain.model.SettingIcon
 import dev.esbi.mizan.feature.profile.domain.model.SettingItem
 import dev.esbi.mizan.feature.profile.domain.model.UserProfile
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
-import dev.esbi.mizan.feature.profile.presentation.ProfileViewModelFactory
 import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.ProfileHeaderCard
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.SettingsSection

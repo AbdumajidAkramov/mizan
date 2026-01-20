@@ -8,12 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.settings.AppSettingsManager
-import dev.esbi.mizan.feature.budget.presentation.BudgetViewModelFactory
-import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModelFactory
-import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModelFactory
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
-import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModelFactory
-import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModelFactory
 import dev.esbi.mizan.main.MainAppScreen
 import dev.esbi.mizan.ui.theme.MizanTheme
 import kotlinx.coroutines.flow.MutableStateFlow
