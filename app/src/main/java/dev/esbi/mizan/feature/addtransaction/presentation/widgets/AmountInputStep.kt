@@ -45,6 +45,8 @@ internal fun AmountInputStep(
     accept: (AddTransactionStore.Intent) -> Unit,
 ) {
     AmountInputStep(
+        state,
+        accept,
         amount = state.amountText,
         displayText = state.displayText,
         currency = state.currency,
@@ -61,6 +63,8 @@ internal fun AmountInputStep(
 
 @Composable
 internal fun AmountInputStep(
+    state: AddTransactionStore.State,
+    accept: (AddTransactionStore.Intent) -> Unit,
     amount: String,
     displayText: String,
     currency: String,
@@ -176,13 +180,15 @@ internal fun AmountInputStep(
                     }
                 }
 
-                InputMode.Voice -> PremiumEnhancedVoiceInput(
-                    isListening = true,
-                    onStartListening = {},
-                    onStopListening = {}
+                InputMode.Voice -> VoiceInputStep(
+                    state = state,
+                    accept = accept
                 )
 
-                InputMode.Scan -> PremiumScanInput(true, {}, {})
+                InputMode.Scan -> CameraInputStep(
+                    state = state,
+                    accept = accept
+                )
             }
         }
     }
@@ -199,7 +205,7 @@ fun AmountInputStepPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme(
         darkTheme = true
     ) {
-        AmountInputStep(
+        /*AmountInputStep(
             amount = "1",
             displayText = "",
             currency = "UZS",
@@ -207,6 +213,6 @@ fun AmountInputStepPreview() {
             onModeChange = {},
             onNumberClick = {},
             onNext = {},
-        )
+        )*/
     }
 }

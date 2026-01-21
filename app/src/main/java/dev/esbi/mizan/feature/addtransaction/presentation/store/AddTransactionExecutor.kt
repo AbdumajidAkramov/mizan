@@ -3,6 +3,7 @@ package dev.esbi.mizan.feature.addtransaction.presentation.store
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.feature.addtransaction.domain.usecase.AddTransactionUseCase
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.BackToPrev
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnCategorySelect
@@ -15,17 +16,27 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSaveTransaction
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeChange
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeSelect
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanError
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateFlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateInputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateLeftText
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateReceiptScanText
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateRecognizedAmount
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateRightText
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionNotes
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceListeningState
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionError
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionText
 import dev.esbi.mizan.utils.DOT
 import dev.esbi.mizan.utils.FRAC_LENGTH
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 
 internal class AddTransactionExecutor(
-    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher
+    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
+    private val addTransactionUseCase: AddTransactionUseCase
 ) : CoroutineExecutor<
         AddTransactionStore.Intent,
         AddTransactionStore.Action,
@@ -86,7 +97,121 @@ internal class AddTransactionExecutor(
             }
 
             is OnSaveTransaction -> {
-                publish(AddTransactionStore.Label.Close)
+                with(state()) {
+                    scope.launch {
+                        val result = addTransactionUseCase.execute(
+                            amount = amount,
+                            category = selectedCategory ?: "",
+                            note = notes
+                        )
+
+                        if (result.isSuccess) {
+                            publish(AddTransactionStore.Label.Close)
+                        }
+                    }
+                }
+            }
+
+            // Voice Recognition Intents
+            is AddTransactionStore.Intent.OnStartVoiceRecognition -> {
+                dispatch(UpdateVoiceListeningState(true))
+                dispatch(UpdateVoiceRecognitionError(null))
+
+                scope.launch {
+                    try {
+                        val result = addTransactionUseCase.startVoiceRecognition()
+                        if (result.isSuccess) {
+                            val voiceResult = result.getOrThrow()
+                            dispatch(UpdateVoiceRecognitionText(voiceResult.text))
+
+                            // Parse the voice input to extract amount and note
+                            val transactionData =
+                                addTransactionUseCase.parseVoiceInput(voiceResult.text)
+                            dispatch(UpdateLeftText(transactionData.amount.toString()))
+                            dispatch(UpdateTransactionNotes(transactionData.note))
+
+                            if (voiceResult.isFinal) {
+                                dispatch(UpdateVoiceListeningState(false))
+                            }
+                        } else {
+                            dispatch(UpdateVoiceRecognitionError("Failed to start voice recognition"))
+                            dispatch(UpdateVoiceListeningState(false))
+                        }
+                    } catch (e: Exception) {
+                        dispatch(
+                            UpdateVoiceRecognitionError(
+                                e.message ?: "Voice recognition error"
+                            )
+                        )
+                        dispatch(UpdateVoiceListeningState(false))
+                    }
+                }
+            }
+
+            is AddTransactionStore.Intent.OnStopVoiceRecognition -> {
+                scope.launch {
+                    try {
+                        addTransactionUseCase.stopVoiceRecognition()
+                        dispatch(UpdateVoiceListeningState(false))
+                    } catch (e: Exception) {
+                        dispatch(
+                            UpdateVoiceRecognitionError(
+                                e.message ?: "Failed to stop voice recognition"
+                            )
+                        )
+                    }
+                }
+            }
+
+            is AddTransactionStore.Intent.OnVoiceRecognitionResult -> {
+                dispatch(UpdateVoiceRecognitionText(intent.text))
+
+                scope.launch {
+                    val transactionData = addTransactionUseCase.parseVoiceInput(intent.text)
+                    dispatch(UpdateLeftText(transactionData.amount.toString()))
+                    dispatch(UpdateTransactionNotes(transactionData.note))
+
+                    if (intent.isFinal) {
+                        dispatch(UpdateVoiceListeningState(false))
+                    }
+                }
+            }
+
+            is AddTransactionStore.Intent.OnVoiceRecognitionError -> {
+                dispatch(UpdateVoiceRecognitionError(intent.error))
+                dispatch(UpdateVoiceListeningState(false))
+            }
+
+            // Camera Scan Intents
+            is AddTransactionStore.Intent.OnStartCameraScan -> {
+                dispatch(UpdateCameraScanningState(true))
+                dispatch(UpdateCameraScanError(null))
+            }
+
+            is AddTransactionStore.Intent.OnStopCameraScan -> {
+                dispatch(UpdateCameraScanningState(false))
+            }
+
+            is AddTransactionStore.Intent.OnReceiptScanResult -> {
+                dispatch(UpdateReceiptScanText(intent.text))
+
+                scope.launch {
+                    val amount = addTransactionUseCase.extractAmountFromReceipt(intent.text)
+                    if (amount > 0) {
+                        dispatch(UpdateLeftText(amount.toString()))
+                        dispatch(UpdateRecognizedAmount(amount))
+                    }
+                }
+            }
+
+            is AddTransactionStore.Intent.OnCameraScanError -> {
+                dispatch(UpdateCameraScanError(intent.error))
+                dispatch(UpdateCameraScanningState(false))
+            }
+
+            is AddTransactionStore.Intent.OnAmountExtracted -> {
+                dispatch(UpdateLeftText(intent.amount.toString()))
+                dispatch(UpdateRecognizedAmount(intent.amount))
             }
 
             else -> {}

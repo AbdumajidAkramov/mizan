@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
@@ -169,15 +168,4 @@ internal fun PremiumAddTransactionScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PremiumAddTransactionScreenPreview() {
-//    dev.esbi.mizan.ui.theme.MizanTheme() {
-//        PremiumAddTransactionScreen(
-//            onClose = {},
-//            onSave = {}
-//        )
-//    }
 }

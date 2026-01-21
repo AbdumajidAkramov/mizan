@@ -43,12 +43,10 @@ import dev.esbi.mizan.ui.components.ErrorState
 
 @Composable
 fun DashboardScreen(
-//    viewModelFactory: DashboardViewModelFactory,
     viewModel: DashboardViewModel,
     onNavigateToCategory: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-//    val viewModel: DashboardViewModel = viewModel(factory = viewModelFactory)
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {

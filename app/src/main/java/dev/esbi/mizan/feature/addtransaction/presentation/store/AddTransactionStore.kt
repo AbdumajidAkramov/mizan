@@ -27,6 +27,15 @@ internal interface AddTransactionStore :
 
         val date: LocalDate = LocalDate.now(),
         val notes: String = "",
+        
+        // Voice and Camera states
+        val isVoiceListening: Boolean = false,
+        val voiceRecognitionText: String = "",
+        val isCameraScanning: Boolean = false,
+        val receiptScanText: String = "",
+        val lastRecognizedAmount: Double = 0.0,
+        val voiceRecognitionError: String? = null,
+        val cameraScanError: String? = null
     ) {
 
         val isLeftNumberActive: Boolean = operator.isEmpty()
@@ -76,6 +85,19 @@ internal interface AddTransactionStore :
         class OnDateChange(val date: LocalDate) : Intent
         class OnNoteChange(val notes: String) : Intent
         data object OnSaveTransaction : Intent
+        
+        // Voice Recognition Intents
+        data object OnStartVoiceRecognition : Intent
+        data object OnStopVoiceRecognition : Intent
+        class OnVoiceRecognitionResult(val text: String, val confidence: Float, val isFinal: Boolean) : Intent
+        class OnVoiceRecognitionError(val error: String) : Intent
+        
+        // Camera Scan Intents
+        data object OnStartCameraScan : Intent
+        data object OnStopCameraScan : Intent
+        class OnReceiptScanResult(val text: String, val confidence: Float) : Intent
+        class OnCameraScanError(val error: String) : Intent
+        class OnAmountExtracted(val amount: Double) : Intent
     }
 
     sealed interface Label {
@@ -97,5 +119,16 @@ internal interface AddTransactionStore :
         class UpdateTransactionDate(val date: LocalDate) : Message
         class UpdateTransactionNotes(val notes: String) : Message
         data object ClearText : Message
+        
+        // Voice Recognition Messages
+        class UpdateVoiceListeningState(val isListening: Boolean) : Message
+        class UpdateVoiceRecognitionText(val text: String) : Message
+        class UpdateVoiceRecognitionError(val error: String?) : Message
+        
+        // Camera Scan Messages
+        class UpdateCameraScanningState(val isScanning: Boolean) : Message
+        class UpdateReceiptScanText(val text: String) : Message
+        class UpdateCameraScanError(val error: String?) : Message
+        class UpdateRecognizedAmount(val amount: Double) : Message
     }
 }

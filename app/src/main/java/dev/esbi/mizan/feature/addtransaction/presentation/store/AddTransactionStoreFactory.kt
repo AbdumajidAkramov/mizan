@@ -4,12 +4,14 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dev.esbi.mizan.di.MainDispatcher
+import dev.esbi.mizan.feature.addtransaction.domain.usecase.AddTransactionUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 internal class AddTransactionStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher
+    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
+    private val addTransactionUseCase: AddTransactionUseCase
 ) {
 
     fun create(): AddTransactionStore =
@@ -19,7 +21,7 @@ internal class AddTransactionStoreFactory @Inject constructor(
                 initialState = AddTransactionStore.State(),
                 bootstrapper = SimpleBootstrapper(AddTransactionStore.Action.Init),
                 executorFactory = {
-                    AddTransactionExecutor(mainDispatcher)
+                    AddTransactionExecutor(mainDispatcher, addTransactionUseCase)
                 },
                 reducer = AddTransactionReducer
             ) {}
