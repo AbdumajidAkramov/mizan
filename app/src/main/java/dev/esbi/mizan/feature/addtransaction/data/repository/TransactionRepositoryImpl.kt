@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalGetImage::class)
 package dev.esbi.mizan.feature.addtransaction.data.repository
 
 import android.content.Context
@@ -9,15 +8,17 @@ import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import dev.esbi.mizan.data.local.dao.TransactionsDao
+import dev.esbi.mizan.data.local.entity.TransactionEntity
 import dev.esbi.mizan.feature.addtransaction.domain.model.ReceiptScanResult
 import dev.esbi.mizan.feature.addtransaction.domain.model.TransactionData
 import dev.esbi.mizan.feature.addtransaction.domain.model.VoiceRecognitionResult
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TransactionRepository
-import kotlinx.coroutines.delay
+import java.util.Date
+import java.util.UUID
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.random.Random
 
 /**
  * Implementation of TransactionRepository
@@ -25,7 +26,7 @@ import kotlin.random.Random
  */
 @Singleton
 class TransactionRepositoryImpl @Inject constructor(
-    private val context: Context
+    private val transactionsDao: TransactionsDao
 ) : TransactionRepository {
 
     private val tag = "TransactionRepository"
@@ -62,13 +63,24 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun saveTransaction(transactionData: TransactionData): Result<Unit> {
         return try {
-            // TODO: Implement actual saving to Room database or DataStore
             Log.d(tag, "Saving transaction: $transactionData")
 
-            // For now, just simulate success
-            // In production, you would save to Room database:
-            // transactionDao.insert(transactionEntity)
+            // Convert domain model to database entity
+            val transactionEntity = TransactionEntity(
+                id = UUID.randomUUID().toString(),
+                amount = transactionData.amount,
+                category = transactionData.category ?: "Uncategorized",
+                categoryLabel = transactionData.category ?: "Uncategorized",
+                description = transactionData.note,
+                date = transactionData.date ?: Date(),
+                type = transactionData.type.name,
+                colorToken = transactionData.categoryColor ?: "blue"
+            )
 
+            // Save to Room database
+            transactionsDao.insertTransaction(transactionEntity)
+            
+            Log.d(tag, "Transaction saved successfully with ID: ${transactionEntity.id}")
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e(tag, "Failed to save transaction", e)
@@ -77,43 +89,18 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun startVoiceRecognition(): Result<VoiceRecognitionResult> {
-        delay(3000)
-        return try {
-            // TODO: Implement actual SpeechRecognizer integration
-            // For now, simulate voice recognition
-            Log.d(tag, "Starting voice recognition")
-
-            // In production, you would use SpeechRecognizer:
-            // speechRecognizer.startListening(intent)
-            val randomNumber = Random.nextInt(100,1000)
-            val mockResult = VoiceRecognitionResult(
-                text = "Lunch $${randomNumber}.50",
-                confidence = 0.95f,
-                isFinal = true
-            )
-
-            Result.success(mockResult)
-        } catch (e: Exception) {
-            Log.e(tag, "Failed to start voice recognition", e)
-            Result.failure(e)
-        }
+        return Result.failure(
+            UnsupportedOperationException("Voice recognition is now handled directly by VoiceSpeechRecognizer")
+        )
     }
 
     override suspend fun stopVoiceRecognition(): Result<Unit> {
-        return try {
-            // TODO: Implement actual SpeechRecognizer stopping
-            Log.d(tag, "Stopping voice recognition")
-
-            // In production:
-            // speechRecognizer.stopListening()
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Log.e(tag, "Failed to stop voice recognition", e)
-            Result.failure(e)
-        }
+        return Result.failure(
+            UnsupportedOperationException("Voice recognition is now handled directly by VoiceSpeechRecognizer")
+        )
     }
 
+    @OptIn(ExperimentalGetImage::class)
     override suspend fun scanReceipt(imageProxy: ImageProxy): Result<ReceiptScanResult> {
         return try {
             Log.d(tag, "Scanning receipt image")

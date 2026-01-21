@@ -3,6 +3,8 @@ package dev.esbi.mizan.feature.addtransaction.presentation.store
 import com.arkivanov.mvikotlin.core.store.Reducer
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.ClearText
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableAccounts
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableCategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanError
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateFlowState
@@ -16,6 +18,8 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionDate
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionNotes
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferDestination
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferSource
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceListeningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionError
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionText
@@ -38,6 +42,12 @@ internal object AddTransactionReducer :
             is UpdateTransactionType -> copy(type = msg.type)
             is UpdateTransactionDate -> copy(date = msg.date)
             is UpdateTransactionNotes -> copy(notes = msg.notes)
+            
+            // Dynamic Data Messages
+            is UpdateAvailableCategories -> copy(availableCategories = msg.categories)
+            is UpdateAvailableAccounts -> copy(availableAccounts = msg.accounts)
+            is UpdateTransferSource -> copy(transferSource = msg.account)
+            is UpdateTransferDestination -> copy(transferDestination = msg.account)
 
             // Voice Recognition Messages
             is UpdateVoiceListeningState -> copy(isVoiceListening = msg.isListening)

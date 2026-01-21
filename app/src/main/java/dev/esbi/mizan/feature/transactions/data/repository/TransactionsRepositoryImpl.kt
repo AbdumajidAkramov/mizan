@@ -24,16 +24,16 @@ class TransactionsRepositoryImpl @Inject constructor(
         searchQuery: String
     ): Flow<List<Transaction>> {
         val flow = when (filter) {
-            TransactionFilter.ALL -> transactionsDao.observeAllTransactions()
-            TransactionFilter.INCOME -> transactionsDao.observeTransactionsByType("income")
-            TransactionFilter.EXPENSE -> transactionsDao.observeTransactionsByType("expense")
+            TransactionFilter.ALL -> transactionsDao.observeAllTransactionDetails()
+            TransactionFilter.INCOME -> transactionsDao.observeTransactionDetailsByType("income")
+            TransactionFilter.EXPENSE -> transactionsDao.observeTransactionDetailsByType("expense")
         }
 
         return flow.map { entities ->
             if (entities.isEmpty()) {
                 // Generate and insert mock data
                 val mockData = generateMockTransactions()
-                transactionsDao.insertTransactions(mockData)
+                transactionsDao.insertTransactionDetails(mockData)
                 mockData.map { it.toDomain() }
                     .filter { matchesSearch(it, searchQuery) }
             } else {
@@ -44,7 +44,7 @@ class TransactionsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTransactionById(id: String): Transaction? {
-        return transactionsDao.getTransactionById(id)?.toDomain()
+        return transactionsDao.getTransactionDetailById(id)?.toDomain()
     }
 
     override suspend fun refreshTransactions() {

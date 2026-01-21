@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumAccountSelector
-import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCategoryPicker
+import dev.esbi.mizan.feature.addtransaction.presentation.widgets.DynamicAccountSelector
+import dev.esbi.mizan.feature.addtransaction.presentation.widgets.DynamicCategoryGrid
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -45,21 +45,22 @@ internal fun DetailsStep(
         currency = state.currency,
         type = state.type,
         selectedCategory = state.selectedCategory,
+        availableCategories = state.availableCategories,
+        availableAccounts = state.availableAccounts,
+        transferSource = state.transferSource,
+        transferDestination = state.transferDestination,
         onSelectCategory = {
             accept(AddTransactionStore.Intent.OnCategorySelect(it))
         },
-        fromAccount = state.fromAccountId,
-        toAccount = state.toAccountId,
-        onSelectFromAccount = {
-            accept(AddTransactionStore.Intent.OnSelectFromAccount(it))
+        onSelectFromAccount = { account ->
+            accept(AddTransactionStore.Intent.OnSelectFromAccount(account.id))
         },
-        onSelectToAccount = {
-            accept(AddTransactionStore.Intent.OnSelectToAccount(it))
+        onSelectToAccount = { account ->
+            accept(AddTransactionStore.Intent.OnSelectToAccount(account.id))
         },
         onNextTransfer = {
             accept(AddTransactionStore.Intent.OnNextTransfer)
         }
-
     )
 }
 
@@ -69,11 +70,13 @@ fun DetailsStep(
     currency: String,
     type: TransactionType,
     selectedCategory: String?,
+    availableCategories: List<dev.esbi.mizan.feature.addtransaction.domain.model.Category>,
+    availableAccounts: List<dev.esbi.mizan.feature.addtransaction.domain.model.Account>,
+    transferSource: dev.esbi.mizan.feature.addtransaction.domain.model.Account?,
+    transferDestination: dev.esbi.mizan.feature.addtransaction.domain.model.Account?,
     onSelectCategory: (String) -> Unit,
-    fromAccount: String?,
-    toAccount: String?,
-    onSelectFromAccount: (String) -> Unit,
-    onSelectToAccount: (String) -> Unit,
+    onSelectFromAccount: (dev.esbi.mizan.feature.addtransaction.domain.model.Account) -> Unit,
+    onSelectToAccount: (dev.esbi.mizan.feature.addtransaction.domain.model.Account) -> Unit,
     onNextTransfer: () -> Unit
 ) {
     Column(
@@ -110,22 +113,24 @@ fun DetailsStep(
             // TRANSFER UCHUN AKKAUNTLAR
             Column(verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xl)) {
 
-                PremiumAccountSelector(
-                    label = "From Account",
-                    selectedAccountId = fromAccount,
+                DynamicAccountSelector(
+                    accounts = availableAccounts,
+                    selectedAccount = transferSource,
                     onSelectAccount = onSelectFromAccount,
-                    excludeAccountId = toAccount
+                    label = "From Account",
+                    excludeAccount = transferDestination
                 )
 
-                PremiumAccountSelector(
-                    label = "To Account",
-                    selectedAccountId = toAccount,
+                DynamicAccountSelector(
+                    accounts = availableAccounts,
+                    selectedAccount = transferDestination,
                     onSelectAccount = onSelectToAccount,
-                    excludeAccountId = fromAccount
+                    label = "To Account",
+                    excludeAccount = transferSource
                 )
 
                 // Next Button
-                val isEnabled = fromAccount != null && toAccount != null
+                val isEnabled = transferSource != null && transferDestination != null
                 Button(
                     onClick = onNextTransfer,
                     enabled = isEnabled,
@@ -163,7 +168,8 @@ fun DetailsStep(
                     modifier = Modifier.padding(bottom = MizanTheme.premium.spacing.lg)
                 )
 
-                PremiumCategoryPicker(
+                DynamicCategoryGrid(
+                    categories = availableCategories,
                     selectedCategory = selectedCategory,
                     onSelectCategory = onSelectCategory
                 )

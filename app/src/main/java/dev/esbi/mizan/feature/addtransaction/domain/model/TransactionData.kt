@@ -1,5 +1,8 @@
 package dev.esbi.mizan.feature.addtransaction.domain.model
 
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import java.util.Date
+
 /**
  * Represents parsed transaction data from voice input or receipt scanning
  */
@@ -7,7 +10,10 @@ data class TransactionData(
     val amount: Double,
     val note: String,
     val category: String? = null,
-    val confidence: Float = 1.0f
+    val confidence: Float = 1.0f,
+    val type: TransactionType = TransactionType.Expense,
+    val date: Date? = null,
+    val categoryColor: String? = null
 )
 
 /**

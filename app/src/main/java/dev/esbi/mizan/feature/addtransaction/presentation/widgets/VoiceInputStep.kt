@@ -25,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,16 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import dev.esbi.mizan.R.drawable.ic_mic
 import dev.esbi.mizan.R.drawable.ic_stop
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.feature.addtransaction.presentation.utils.VoiceRecognitionEvent
+import dev.esbi.mizan.feature.addtransaction.presentation.utils.VoiceSpeechRecognizer
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -55,23 +59,78 @@ internal fun VoiceInputStep(
 ) {
     @OptIn(ExperimentalPermissionsApi::class)
     val recordAudioPermissionState = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
+    val context = LocalContext.current
+
+    // Initialize VoiceSpeechRecognizer
+    val voiceRecognizer = remember { VoiceSpeechRecognizer(context) }
+
+    // Collect voice recognition events
+    val voiceEvents by voiceRecognizer.events.collectAsStateWithLifecycle()
+    val isRecognizerListening by voiceRecognizer.isListening.collectAsStateWithLifecycle()
+
+    // Handle voice recognition events
+    LaunchedEffect(voiceEvents) {
+        voiceEvents?.let { event ->
+            when (event) {
+                is VoiceRecognitionEvent.OnReadyForSpeech -> {
+                    accept(AddTransactionStore.Intent.OnStartVoiceRecognition)
+                }
+
+                is VoiceRecognitionEvent.OnResults -> {
+                    val text = event.results?.firstOrNull() ?: ""
+                    if (text.isNotEmpty()) {
+                        accept(
+                            AddTransactionStore.Intent.OnVoiceRecognitionResult(
+                                text = text,
+                                confidence = 0.95f,
+                                isFinal = true
+                            )
+                        )
+                    }
+                }
+
+                is VoiceRecognitionEvent.OnError -> {
+                    accept(
+                        AddTransactionStore.Intent.OnVoiceRecognitionError(
+                            error = event.error.message
+                        )
+                    )
+                }
+
+                is VoiceRecognitionEvent.OnEndOfSpeech -> {
+                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+                }
+
+                else -> {}
+            }
+            voiceRecognizer.clearEvent()
+        }
+    }
+
+    // Cleanup when leaving the screen
+    LaunchedEffect(Unit) {
+        return@LaunchedEffect voiceRecognizer.destroy()
+    }
 
     PermissionHandler(
         permission = Manifest.permission.RECORD_AUDIO,
         permissionTitle = "Microphone Access",
-        permissionDescription = "Microphone permission is required to record voice input for transactions. This allows you to say things like \"Lunch $15\" to quickly add expenses.",
+        permissionDescription = "Microphone permission is required to record voice input for transactions. This allows you to say things like \"Lunch 15000\" to quickly add expenses.",
         onPermissionGranted = {
             VoiceInputStep(
-                isListening = state.isVoiceListening,
+                isListening = state.isVoiceListening || isRecognizerListening,
                 recognizedText = state.voiceRecognitionText,
                 error = state.voiceRecognitionError,
                 amount = state.amountText,
                 onStartListening = {
                     if (recordAudioPermissionState.status.isGranted) {
-                        accept(AddTransactionStore.Intent.OnStartVoiceRecognition)
+                        voiceRecognizer.startListening()
                     }
                 },
-                onStopListening = { accept(AddTransactionStore.Intent.OnStopVoiceRecognition) },
+                onStopListening = {
+                    voiceRecognizer.stopListening()
+                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+                },
                 onNext = { accept(AddTransactionStore.Intent.OnKeypadNext) }
             )
         },

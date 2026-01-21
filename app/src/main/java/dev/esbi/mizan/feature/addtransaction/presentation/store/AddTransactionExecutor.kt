@@ -3,8 +3,11 @@ package dev.esbi.mizan.feature.addtransaction.presentation.store
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.feature.addtransaction.domain.repository.AccountRepository
+import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.addtransaction.domain.usecase.AddTransactionUseCase
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.BackToPrev
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnCategorySelect
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnDateChange
@@ -13,9 +16,13 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnKeypadNext
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnNextTransfer
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnNoteChange
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSelectFromAccount
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSelectToAccount
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSaveTransaction
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeChange
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeSelect
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableAccounts
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableCategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanError
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateFlowState
@@ -26,6 +33,8 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateRightText
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionNotes
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferSource
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferDestination
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceListeningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionError
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionText
@@ -36,7 +45,9 @@ import kotlinx.coroutines.launch
 
 internal class AddTransactionExecutor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
-    private val addTransactionUseCase: AddTransactionUseCase
+    private val addTransactionUseCase: AddTransactionUseCase,
+    private val categoryRepository: CategoryRepository,
+    private val accountRepository: AccountRepository
 ) : CoroutineExecutor<
         AddTransactionStore.Intent,
         AddTransactionStore.Action,
@@ -61,6 +72,31 @@ internal class AddTransactionExecutor(
             is OnInputModeChange -> dispatch(UpdateInputMode(intent.inputMode))
             is OnTransactionTypeChange -> {
                 dispatch(UpdateTransactionType(intent.type))
+                
+                // Fetch data based on transaction type
+                scope.launch {
+                    when (intent.type) {
+                        TransactionType.Expense -> {
+                            val categories = categoryRepository.getCategoriesByType("EXPENSE")
+                            categories.collect { categoryList ->
+                                dispatch(UpdateAvailableCategories(categoryList))
+                            }
+                        }
+                        TransactionType.Income -> {
+                            val categories = categoryRepository.getCategoriesByType("INCOME")
+                            categories.collect { categoryList ->
+                                dispatch(UpdateAvailableCategories(categoryList))
+                            }
+                        }
+                        TransactionType.Transfer -> {
+                            // For transfers, load accounts instead of categories
+                            val accounts = accountRepository.getAllAccounts()
+                            accounts.collect { accountList ->
+                                dispatch(UpdateAvailableAccounts(accountList))
+                            }
+                        }
+                    }
+                }
             }
 
             is OnTransactionTypeSelect -> {
@@ -73,9 +109,19 @@ internal class AddTransactionExecutor(
             }
 
             is OnNextTransfer -> with(state()) {
-                if (fromAccountId != null && toAccountId != null) {
+                if (transferSource != null && transferDestination != null) {
                     dispatch(UpdateFlowState(FlowState.Confirm))
                 }
+            }
+
+            is OnSelectFromAccount -> {
+                val account = state().availableAccounts.find { it.id == intent.accountId }
+                dispatch(UpdateTransferSource(account))
+            }
+            
+            is OnSelectToAccount -> {
+                val account = state().availableAccounts.find { it.id == intent.accountId }
+                dispatch(UpdateTransferDestination(account))
             }
 
             is OnDateChange -> {
@@ -98,6 +144,22 @@ internal class AddTransactionExecutor(
 
             is OnSaveTransaction -> {
                 with(state()) {
+                    // Validation checks
+                    if (amount <= 0.0) {
+                        // TODO: Show error message to user - amount must be greater than 0
+                        return@with
+                    }
+                    
+                    if (type != TransactionType.Transfer && selectedCategory == null) {
+                        // TODO: Show error message to user - category is required
+                        return@with
+                    }
+                    
+                    if (type == TransactionType.Transfer && (transferSource == null || transferDestination == null)) {
+                        // TODO: Show error message to user - accounts are required for transfer
+                        return@with
+                    }
+                    
                     scope.launch {
                         val result = addTransactionUseCase.execute(
                             amount = amount,
@@ -107,6 +169,8 @@ internal class AddTransactionExecutor(
 
                         if (result.isSuccess) {
                             publish(AddTransactionStore.Label.Close)
+                        } else {
+                            // TODO: Handle save error - show error message to user
                         }
                     }
                 }
@@ -116,51 +180,10 @@ internal class AddTransactionExecutor(
             is AddTransactionStore.Intent.OnStartVoiceRecognition -> {
                 dispatch(UpdateVoiceListeningState(true))
                 dispatch(UpdateVoiceRecognitionError(null))
-
-                scope.launch {
-                    try {
-                        val result = addTransactionUseCase.startVoiceRecognition()
-                        if (result.isSuccess) {
-                            val voiceResult = result.getOrThrow()
-                            dispatch(UpdateVoiceRecognitionText(voiceResult.text))
-
-                            // Parse the voice input to extract amount and note
-                            val transactionData =
-                                addTransactionUseCase.parseVoiceInput(voiceResult.text)
-                            dispatch(UpdateLeftText(transactionData.amount.toString()))
-                            dispatch(UpdateTransactionNotes(transactionData.note))
-
-                            if (voiceResult.isFinal) {
-                                dispatch(UpdateVoiceListeningState(false))
-                            }
-                        } else {
-                            dispatch(UpdateVoiceRecognitionError("Failed to start voice recognition"))
-                            dispatch(UpdateVoiceListeningState(false))
-                        }
-                    } catch (e: Exception) {
-                        dispatch(
-                            UpdateVoiceRecognitionError(
-                                e.message ?: "Voice recognition error"
-                            )
-                        )
-                        dispatch(UpdateVoiceListeningState(false))
-                    }
-                }
             }
 
             is AddTransactionStore.Intent.OnStopVoiceRecognition -> {
-                scope.launch {
-                    try {
-                        addTransactionUseCase.stopVoiceRecognition()
-                        dispatch(UpdateVoiceListeningState(false))
-                    } catch (e: Exception) {
-                        dispatch(
-                            UpdateVoiceRecognitionError(
-                                e.message ?: "Failed to stop voice recognition"
-                            )
-                        )
-                    }
-                }
+                dispatch(UpdateVoiceListeningState(false))
             }
 
             is AddTransactionStore.Intent.OnVoiceRecognitionResult -> {

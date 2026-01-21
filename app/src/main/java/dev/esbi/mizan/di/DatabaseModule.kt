@@ -2,10 +2,15 @@ package dev.esbi.mizan.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.data.local.MizanDatabase
+import dev.esbi.mizan.data.local.MizanDatabaseCallback
+import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.BudgetDao
+import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
@@ -17,12 +22,25 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
+        val callback = MizanDatabaseCallback()
+        
         return Room.databaseBuilder(
             context,
             MizanDatabase::class.java,
             "mizan_database"
         )
             .fallbackToDestructiveMigration()
+            .addCallback(object : RoomDatabase.Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // Populate database on first creation
+                    callback.populateDatabase(context, Room.databaseBuilder(
+                        context,
+                        MizanDatabase::class.java,
+                        "mizan_database"
+                    ).build())
+                }
+            })
             .build()
     }
     
@@ -48,5 +66,17 @@ class DatabaseModule {
     @Singleton
     fun provideTransactionsDao(database: MizanDatabase): TransactionsDao {
         return database.transactionsDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideCategoryDao(database: MizanDatabase): CategoryDao {
+        return database.categoryDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideAccountDao(database: MizanDatabase): AccountDao {
+        return database.accountDao()
     }
 }

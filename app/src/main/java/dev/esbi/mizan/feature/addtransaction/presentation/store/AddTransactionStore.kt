@@ -2,6 +2,8 @@ package dev.esbi.mizan.feature.addtransaction.presentation.store
 
 import androidx.compose.ui.text.AnnotatedString
 import com.arkivanov.mvikotlin.core.store.Store
+import dev.esbi.mizan.feature.addtransaction.domain.model.Account
+import dev.esbi.mizan.feature.addtransaction.domain.model.Category
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
@@ -27,6 +29,12 @@ internal interface AddTransactionStore :
 
         val date: LocalDate = LocalDate.now(),
         val notes: String = "",
+        
+        // Dynamic Data Fields
+        val availableCategories: List<Category> = emptyList(),
+        val availableAccounts: List<Account> = emptyList(),
+        val transferSource: Account? = null,
+        val transferDestination: Account? = null,
         
         // Voice and Camera states
         val isVoiceListening: Boolean = false,
@@ -62,7 +70,7 @@ internal interface AddTransactionStore :
         val annotatedString: AnnotatedString get() = amountText.annotatedString(currency = currency)
 
         val isFormValid = amount > 0.0 &&
-                (type != TransactionType.Transfer || (fromAccountId != null && toAccountId != null)) &&
+                (type != TransactionType.Transfer || (transferSource != null && transferDestination != null)) &&
                 (type == TransactionType.Transfer || selectedCategory != null)
 
     }
@@ -119,6 +127,12 @@ internal interface AddTransactionStore :
         class UpdateTransactionDate(val date: LocalDate) : Message
         class UpdateTransactionNotes(val notes: String) : Message
         data object ClearText : Message
+        
+        // Dynamic Data Messages
+        class UpdateAvailableCategories(val categories: List<Category>) : Message
+        class UpdateAvailableAccounts(val accounts: List<Account>) : Message
+        class UpdateTransferSource(val account: Account?) : Message
+        class UpdateTransferDestination(val account: Account?) : Message
         
         // Voice Recognition Messages
         class UpdateVoiceListeningState(val isListening: Boolean) : Message
