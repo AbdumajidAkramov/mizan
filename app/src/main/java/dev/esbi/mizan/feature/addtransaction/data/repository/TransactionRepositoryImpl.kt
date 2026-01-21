@@ -1,6 +1,5 @@
 package dev.esbi.mizan.feature.addtransaction.data.repository
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -79,7 +78,7 @@ class TransactionRepositoryImpl @Inject constructor(
 
             // Save to Room database
             transactionsDao.insertTransaction(transactionEntity)
-            
+
             Log.d(tag, "Transaction saved successfully with ID: ${transactionEntity.id}")
             Result.success(Unit)
         } catch (e: Exception) {
@@ -105,10 +104,12 @@ class TransactionRepositoryImpl @Inject constructor(
         return try {
             Log.d(tag, "Scanning receipt image")
 
-            val image = imageProxy.image?.let { InputImage.fromMediaImage(
-                it,
-                imageProxy.imageInfo.rotationDegrees
-            ) }
+            val image = imageProxy.image?.let {
+                InputImage.fromMediaImage(
+                    it,
+                    imageProxy.imageInfo.rotationDegrees
+                )
+            }
 
             // Use ML Kit to recognize text
             image?.let {

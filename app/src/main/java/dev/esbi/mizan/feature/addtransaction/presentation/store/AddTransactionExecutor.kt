@@ -8,36 +8,38 @@ import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepositor
 import dev.esbi.mizan.feature.addtransaction.domain.usecase.AddTransactionUseCase
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Action
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.BackToPrev
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnBackToCategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnCategorySelect
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnDateChange
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnInputModeChange
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnKeypadClick
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnKeypadNext
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnManageCategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnNextTransfer
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnNoteChange
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnParentCategorySelect
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSaveTransaction
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSelectFromAccount
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSelectToAccount
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSaveTransaction
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnSubcategorySelect
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeChange
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Intent.OnTransactionTypeSelect
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableAccounts
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableCategories
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanError
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanningState
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableSubcategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateFlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateInputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateLeftText
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateReceiptScanText
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateRecognizedAmount
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateRightText
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionNotes
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateSelectedParentCategory
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateShowingSubcategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransactionType
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferSource
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferDestination
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateTransferSource
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceListeningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionError
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateVoiceRecognitionText
 import dev.esbi.mizan.utils.DOT
 import dev.esbi.mizan.utils.FRAC_LENGTH
 import kotlinx.coroutines.CoroutineDispatcher
@@ -56,8 +58,19 @@ internal class AddTransactionExecutor(
         AddTransactionStore.Label>(
     mainContext = mainDispatcher
 ) {
-    override fun executeAction(action: AddTransactionStore.Action) {
+    override fun executeAction(action: Action) {
         super.executeAction(action)
+        when (action) {
+            is Action.Init -> {
+                // Load initial categories based on default transaction type (Expense)
+                scope.launch {
+                    val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
+                    categories.collect { categoryList ->
+                        dispatch(UpdateAvailableCategories(categoryList))
+                    }
+                }
+            }
+        }
     }
 
     override fun executeIntent(intent: AddTransactionStore.Intent) {
@@ -72,22 +85,23 @@ internal class AddTransactionExecutor(
             is OnInputModeChange -> dispatch(UpdateInputMode(intent.inputMode))
             is OnTransactionTypeChange -> {
                 dispatch(UpdateTransactionType(intent.type))
-                
                 // Fetch data based on transaction type
                 scope.launch {
                     when (intent.type) {
                         TransactionType.Expense -> {
-                            val categories = categoryRepository.getCategoriesByType("EXPENSE")
+                            val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))
                             }
                         }
+
                         TransactionType.Income -> {
-                            val categories = categoryRepository.getCategoriesByType("INCOME")
+                            val categories = categoryRepository.getMainCategoriesByType("INCOME")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))
                             }
                         }
+
                         TransactionType.Transfer -> {
                             // For transfers, load accounts instead of categories
                             val accounts = accountRepository.getAllAccounts()
@@ -102,10 +116,68 @@ internal class AddTransactionExecutor(
             is OnTransactionTypeSelect -> {
                 dispatch(UpdateTransactionType(intent.type))
                 dispatch(UpdateFlowState(FlowState.Details))
+                // Fetch data based on transaction type
+                scope.launch {
+                    when (intent.type) {
+                        TransactionType.Expense -> {
+                            val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
+                            categories.collect { categoryList ->
+                                dispatch(UpdateAvailableCategories(categoryList))
+                            }
+                        }
+
+                        TransactionType.Income -> {
+                            val categories = categoryRepository.getMainCategoriesByType("INCOME")
+                            categories.collect { categoryList ->
+                                dispatch(UpdateAvailableCategories(categoryList))
+                            }
+                        }
+
+                        TransactionType.Transfer -> {
+                            // For transfers, load accounts instead of categories
+                            val accounts = accountRepository.getAllAccounts()
+                            accounts.collect { accountList ->
+                                dispatch(UpdateAvailableAccounts(accountList))
+                            }
+                        }
+                    }
+                }
             }
 
             is OnCategorySelect -> {
                 dispatch(AddTransactionStore.Message.UpdateTransactionCategory(intent.category))
+            }
+
+            is OnParentCategorySelect -> {
+                val parentCategory =
+                    state().availableCategories.find { it.name == intent.parentCategory }
+                if (parentCategory != null) {
+                    // Load subcategories for this parent
+                    scope.launch {
+                        val subcategories = categoryRepository.getSubcategories(parentCategory.id)
+                        subcategories.collect { subcategoryList ->
+                            dispatch(UpdateAvailableSubcategories(subcategoryList))
+                            dispatch(UpdateSelectedParentCategory(parentCategory.name))
+                            dispatch(UpdateShowingSubcategories(true))
+                        }
+                    }
+                }
+            }
+
+            is OnSubcategorySelect -> {
+                dispatch(AddTransactionStore.Message.UpdateTransactionCategory(intent.subcategory))
+                dispatch(UpdateFlowState(FlowState.Confirm))
+            }
+
+            is OnBackToCategories -> {
+                dispatch(UpdateShowingSubcategories(false))
+                dispatch(UpdateSelectedParentCategory(null))
+            }
+
+            is OnManageCategories -> {
+                // TODO: Navigate to Manage Categories screen
+                // For now, we can show a toast or log
+                android.util.Log.d("AddTransactionExecutor", "Manage Categories clicked")
             }
 
             is OnNextTransfer -> with(state()) {
@@ -118,7 +190,7 @@ internal class AddTransactionExecutor(
                 val account = state().availableAccounts.find { it.id == intent.accountId }
                 dispatch(UpdateTransferSource(account))
             }
-            
+
             is OnSelectToAccount -> {
                 val account = state().availableAccounts.find { it.id == intent.accountId }
                 dispatch(UpdateTransferDestination(account))
@@ -149,17 +221,17 @@ internal class AddTransactionExecutor(
                         // TODO: Show error message to user - amount must be greater than 0
                         return@with
                     }
-                    
+
                     if (type != TransactionType.Transfer && selectedCategory == null) {
                         // TODO: Show error message to user - category is required
                         return@with
                     }
-                    
+
                     if (type == TransactionType.Transfer && (transferSource == null || transferDestination == null)) {
                         // TODO: Show error message to user - accounts are required for transfer
                         return@with
                     }
-                    
+
                     scope.launch {
                         val result = addTransactionUseCase.execute(
                             amount = amount,
@@ -186,6 +258,8 @@ internal class AddTransactionExecutor(
                 dispatch(UpdateVoiceListeningState(false))
             }
 
+            // Voice Recognition Intents - TODO: Implement these intents in AddTransactionStore
+            /*
             is AddTransactionStore.Intent.OnVoiceRecognitionResult -> {
                 dispatch(UpdateVoiceRecognitionText(intent.text))
 
@@ -204,8 +278,10 @@ internal class AddTransactionExecutor(
                 dispatch(UpdateVoiceRecognitionError(intent.error))
                 dispatch(UpdateVoiceListeningState(false))
             }
+            */
 
-            // Camera Scan Intents
+            // Camera Scan Intents - TODO: Implement these intents in AddTransactionStore
+            /*
             is AddTransactionStore.Intent.OnStartCameraScan -> {
                 dispatch(UpdateCameraScanningState(true))
                 dispatch(UpdateCameraScanError(null))
@@ -217,14 +293,8 @@ internal class AddTransactionExecutor(
 
             is AddTransactionStore.Intent.OnReceiptScanResult -> {
                 dispatch(UpdateReceiptScanText(intent.text))
-
-                scope.launch {
-                    val amount = addTransactionUseCase.extractAmountFromReceipt(intent.text)
-                    if (amount > 0) {
-                        dispatch(UpdateLeftText(amount.toString()))
-                        dispatch(UpdateRecognizedAmount(amount))
-                    }
-                }
+                dispatch(UpdateCameraScanError(null))
+                dispatch(UpdateCameraScanningState(false))
             }
 
             is AddTransactionStore.Intent.OnCameraScanError -> {
@@ -234,8 +304,11 @@ internal class AddTransactionExecutor(
 
             is AddTransactionStore.Intent.OnAmountExtracted -> {
                 dispatch(UpdateLeftText(intent.amount.toString()))
+                dispatch(UpdateRightText(""))
+                dispatch(UpdateOperator(""))
                 dispatch(UpdateRecognizedAmount(intent.amount))
             }
+            */
 
             else -> {}
 

@@ -1,10 +1,7 @@
 package dev.esbi.mizan.feature.addtransaction.presentation.widgets
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,20 +30,30 @@ fun DynamicCategoryGrid(
     onSelectCategory: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    FlowRow(
-        maxItemsInEachRow = 3,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier.fillMaxWidth()
-    ) {
-        categories.forEach { category ->
-            CategoryItem(
-                category = category,
-                isSelected = selectedCategory == category.name,
-                onClick = { onSelectCategory(category.name) }
-            )
+    PremiumCategoryPicker(
+        modifier = modifier,
+        categories = categories,
+        selectedCategory = selectedCategory,
+        onSelectCategory = onSelectCategory,
+        onSelectParentCategory = { /* Handle parent category selection if needed */ }
+    )
+
+    /*
+        FlowRow(
+            maxItemsInEachRow = 3,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = modifier.fillMaxWidth()
+        ) {
+            categories.forEach { category ->
+                CategoryItem(
+                    category = category,
+                    isSelected = selectedCategory == category.name,
+                    onClick = { onSelectCategory(category.name) }
+                )
+            }
         }
-    }
+    */
 }
 
 @Composable
@@ -56,7 +63,66 @@ private fun CategoryItem(
     onClick: () -> Unit
 ) {
     val categoryColor = getCategoryColor(category.color)
-    
+    /*Box(
+        modifier = Modifier
+            .width(100.dp)
+            .aspectRatio(1f)
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
+            .background(if (isSelected) MizanTheme.premium.colors.surface3 else MizanTheme.premium.colors.surface2)
+            .clickable { onClick() }
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Category Icon
+            Icon(
+                icon = IconValue(getIconName(category.iconName)),
+                modifier = Modifier.size(32.dp),
+                tint = if (isSelected) Color.White else categoryColor
+            )
+
+            Spacer(Modifier.size(8.dp))
+
+            // Category Name
+            Text(
+                text = category.name,
+                style = MizanTheme.typography.bodySm,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                fontSize = 12.sp,
+                maxLines = 2
+            )
+        }
+*//*
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
+                    .background(categoryColor.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                // CategoryIcon(id) bu yerda chaqiriladi
+                Icon(
+                    icon = IconValue(Icons.ic_mic),
+                    modifier = Modifier.size(24.dp),
+                    tint = categoryColor
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = category.name,
+                style = MizanTheme.typography.bodySm,
+                color = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.secondary
+            )
+        }
+*//*
+    }*/
+
     Card(
         modifier = Modifier
             .clickable { onClick() }
@@ -82,9 +148,9 @@ private fun CategoryItem(
                 modifier = Modifier.size(32.dp),
                 tint = if (isSelected) Color.White else categoryColor
             )
-            
+
             Spacer(Modifier.size(8.dp))
-            
+
             // Category Name
             Text(
                 text = category.name,
@@ -97,7 +163,7 @@ private fun CategoryItem(
     }
 }
 
-private fun getCategoryColor(colorName: String): Color {
+fun getCategoryColor(colorName: String): Color {
     return when (colorName.lowercase()) {
         "red" -> Color(0xFFEF4444)
         "blue" -> Color(0xFF3B82F6)
@@ -114,7 +180,7 @@ private fun getCategoryColor(colorName: String): Color {
     }
 }
 
-private fun getIconName(iconName: String): String {
+fun getIconName(iconName: String): String {
     return when (iconName.lowercase()) {
         "restaurant" -> "restaurant"
         "car" -> "directions_car"

@@ -8,6 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import dev.esbi.mizan.feature.newtransaction.root.NewTransactionScreen
+import dev.esbi.mizan.feature.newtransaction.di.NewTransactionStoreProvider
+import dev.esbi.mizan.feature.newtransaction.domain.usecase.GetTransactionMetadataUseCase
+import dev.esbi.mizan.feature.newtransaction.domain.usecase.SaveNewTransactionUseCase
 import dev.esbi.mizan.feature.addtransaction.presentation.AddTransactionViewModel
 import dev.esbi.mizan.feature.addtransaction.presentation.PremiumAddTransactionScreen
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
@@ -27,6 +32,7 @@ import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
 internal fun MizanNavHost(
     navController: NavHostController,
     viewModelFactory: ViewModelProvider.Factory,
+    newTransactionStoreProvider: NewTransactionStoreProvider,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -78,6 +84,23 @@ internal fun MizanNavHost(
                 },
                 onSave = {
                     navController.popBackStack()
+                }
+            )
+        }
+
+        composable<NavRoute.NewAddTransaction> {
+            val store = newTransactionStoreProvider.create().create()
+            NewTransactionScreen(
+                store = store,
+                onClose = {
+                    navController.popBackStack()
+                },
+                onSave = { transaction ->
+                    // TODO: Handle saving the transaction
+                    navController.popBackStack()
+                },
+                onManageCategories = {
+                    // TODO: Navigate to category management if needed
                 }
             )
         }

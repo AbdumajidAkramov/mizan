@@ -17,29 +17,50 @@ internal interface AddTransactionStore :
         val flowState: FlowState = FlowState.Amount,
         val inputMode: InputMode = InputMode.Manual,
         val type: TransactionType = TransactionType.Expense,
+
         val currency: String = "UZS",
 
         val leftNumber: String = "",
         val rightNumber: String = "",
         val operator: String = "",
+//        val amountText: String = "0",
 
+        // Category Selection State
         val selectedCategory: String? = null,
-        val fromAccountId: String? = null,
-        val toAccountId: String? = null,
-
-        val date: LocalDate = LocalDate.now(),
-        val notes: String = "",
-        
-        // Dynamic Data Fields
         val availableCategories: List<Category> = emptyList(),
+        val availableSubcategories: List<Category> = emptyList(),
+        val selectedParentCategory: String? = null,
+        val isShowingSubcategories: Boolean = false,
+
+        // Account Selection State
         val availableAccounts: List<Account> = emptyList(),
         val transferSource: Account? = null,
         val transferDestination: Account? = null,
-        
-        // Voice and Camera states
-        val isVoiceListening: Boolean = false,
-        val voiceRecognitionText: String = "",
-        val isCameraScanning: Boolean = false,
+
+        // Date & Note State
+        val selectedDate: LocalDate = LocalDate.now(),
+        val notes: String = "",
+        val showDatePicker: Boolean = false,
+        val showNotesInput: Boolean = false,
+
+        // Voice Recognition State
+        val isListening: Boolean = false,
+        val voiceRecognitionResult: String = "",
+
+        // Camera Recognition State
+        val isScanning: Boolean = false,
+        val cameraRecognitionResult: String = "",
+        val cameraPermissionGranted: Boolean = false,
+
+        // UI State
+        val showKeypad: Boolean = true,
+        val showVoiceInput: Boolean = false,
+        val showCameraInput: Boolean = false,
+
+        val date: LocalDate = LocalDate.now(),
+        // Dynamic Data Fields
+        val fromAccountId: String? = null,
+        val toAccountId: String? = null,
         val receiptScanText: String = "",
         val lastRecognizedAmount: Double = 0.0,
         val voiceRecognitionError: String? = null,
@@ -76,36 +97,46 @@ internal interface AddTransactionStore :
     }
 
     sealed interface Intent {
-        class OnKeypadClick(val key: Keypad) : Intent
         data object BackToPrev : Intent
         data object OnKeypadNext : Intent
-
+        data object OnKeypadBack : Intent
         data object OnNextTransfer : Intent
-
-        class OnTransactionTypeChange(val type: TransactionType) : Intent
-        class OnTransactionTypeSelect(val type: TransactionType) : Intent
-        class OnInputModeChange(val inputMode: InputMode) : Intent
-        class OnSelectFromAccount(val accountId: String? = null) : Intent
-        class OnSelectToAccount(val accountId: String? = null) : Intent
-
-        class OnCategorySelect(val category: String) : Intent
-
-        class OnDateChange(val date: LocalDate) : Intent
-        class OnNoteChange(val notes: String) : Intent
         data object OnSaveTransaction : Intent
+        
+        // Keypad Intents
+        data class OnKeypadClick(val key: Keypad) : Intent
+        
+        // Category Selection Intents
+        data class OnCategorySelect(val category: String) : Intent
+        data class OnParentCategorySelect(val parentCategory: String) : Intent
+        data class OnSubcategorySelect(val subcategory: String) : Intent
+        data object OnBackToCategories : Intent
+        data object OnManageCategories : Intent
+        
+        // Transaction Type Intents
+        data class OnTransactionTypeChange(val type: TransactionType) : Intent
+        data class OnTransactionTypeSelect(val type: TransactionType) : Intent
+        data class OnInputModeChange(val inputMode: InputMode) : Intent
+        
+        // Account Selection Intents
+        data class OnSelectFromAccount(val accountId: String? = null) : Intent
+        data class OnSelectToAccount(val accountId: String? = null) : Intent
+        
+        // Date & Note Intents
+        data class OnDateChange(val date: LocalDate) : Intent
+        data class OnNoteChange(val notes: String) : Intent
         
         // Voice Recognition Intents
         data object OnStartVoiceRecognition : Intent
         data object OnStopVoiceRecognition : Intent
-        class OnVoiceRecognitionResult(val text: String, val confidence: Float, val isFinal: Boolean) : Intent
-        class OnVoiceRecognitionError(val error: String) : Intent
         
-        // Camera Scan Intents
-        data object OnStartCameraScan : Intent
-        data object OnStopCameraScan : Intent
-        class OnReceiptScanResult(val text: String, val confidence: Float) : Intent
-        class OnCameraScanError(val error: String) : Intent
-        class OnAmountExtracted(val amount: Double) : Intent
+        // Camera Recognition Intents
+        data object OnStartCameraRecognition : Intent
+        data object OnStopCameraRecognition : Intent
+        data object OnCameraPermissionDenied : Intent
+        
+        // UI State Intents
+        data object Close : Intent
     }
 
     sealed interface Label {
@@ -130,9 +161,12 @@ internal interface AddTransactionStore :
         
         // Dynamic Data Messages
         class UpdateAvailableCategories(val categories: List<Category>) : Message
+        class UpdateAvailableSubcategories(val subcategories: List<Category>) : Message
         class UpdateAvailableAccounts(val accounts: List<Account>) : Message
         class UpdateTransferSource(val account: Account?) : Message
         class UpdateTransferDestination(val account: Account?) : Message
+        class UpdateSelectedParentCategory(val parentCategory: String?) : Message
+        class UpdateShowingSubcategories(val showing: Boolean) : Message
         
         // Voice Recognition Messages
         class UpdateVoiceListeningState(val isListening: Boolean) : Message

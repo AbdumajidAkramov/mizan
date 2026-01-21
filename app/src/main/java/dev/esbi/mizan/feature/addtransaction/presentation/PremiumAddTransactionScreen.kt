@@ -50,6 +50,7 @@ internal fun PremiumAddTransactionScreen(
     onSave: () -> Unit
 ) {
     val state by viewModel.state.collectAsState(initial = AddTransactionStore.State())
+    val accept  = viewModel::onIntent
 
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
@@ -157,7 +158,7 @@ internal fun PremiumAddTransactionScreen(
 
                     FlowState.Details -> DetailsStep(
                         state = state,
-                        accept = viewModel::onIntent,
+                        accept = viewModel::onIntent
                     )
 
                     FlowState.Confirm -> ConfirmStep(

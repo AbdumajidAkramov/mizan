@@ -15,8 +15,22 @@ class CategoryRepositoryImpl @Inject constructor(
     
     private val tag = "CategoryRepository"
     
+    override fun getMainCategoriesByType(type: String): Flow<List<Category>> {
+        Log.d(tag, "Getting main categories by type: $type")
+        return categoryDao.getMainCategoriesByType(type).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+    
+    override fun getSubcategories(parentId: String): Flow<List<Category>> {
+        Log.d(tag, "Getting subcategories for parent: $parentId")
+        return categoryDao.getSubcategories(parentId).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+    
     override fun getCategoriesByType(type: String): Flow<List<Category>> {
-        Log.d(tag, "Getting categories by type: $type")
+        Log.d(tag, "Getting all categories by type: $type")
         return categoryDao.getCategoriesByType(type).map { entities ->
             entities.map { it.toDomain() }
         }

@@ -27,4 +27,7 @@ sealed class NavRoute() {
 
     @Serializable
     data object AddTransaction : NavRoute()
+
+    @Serializable
+    data object NewAddTransaction : NavRoute()
 }

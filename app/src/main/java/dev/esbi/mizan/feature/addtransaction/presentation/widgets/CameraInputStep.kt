@@ -62,32 +62,45 @@ internal fun CameraInputStep(
         permissionDescription = "Camera permission is required to scan receipts and extract transaction amounts automatically. This helps you quickly add expenses by taking a picture of your receipt.",
         onPermissionGranted = {
             CameraInputStep(
-                isScanning = state.isCameraScanning,
+                isScanning = state.isScanning,
                 scannedText = state.receiptScanText,
                 recognizedAmount = state.lastRecognizedAmount,
                 error = state.cameraScanError,
                 onStartScanning = {
                     if (cameraPermissionState.status.isGranted) {
-                        accept(AddTransactionStore.Intent.OnStartCameraScan)
+                        // TODO: Implement OnStartCameraScan intent in AddTransactionStore
+                        // accept(AddTransactionStore.Intent.OnStartCameraScan)
                     }
                 },
-                onStopScanning = { accept(AddTransactionStore.Intent.OnStopCameraScan) },
+                onStopScanning = { 
+                    // TODO: Implement OnStopCameraScan intent in AddTransactionStore
+                    // accept(AddTransactionStore.Intent.OnStopCameraScan) 
+                },
                 onAmountExtracted = { amount ->
+                    // TODO: Implement OnAmountExtracted intent in AddTransactionStore
+                    /*
                     accept(
                         AddTransactionStore.Intent.OnAmountExtracted(
                             amount
                         )
                     )
+                    */
                 },
                 onScanResult = { text, confidence ->
+                    // TODO: Implement OnReceiptScanResult intent in AddTransactionStore
+                    /*
                     accept(
                         AddTransactionStore.Intent.OnReceiptScanResult(
                             text,
                             confidence
                         )
                     )
+                    */
                 },
-                onError = { error -> accept(AddTransactionStore.Intent.OnCameraScanError(error)) },
+                onError = { error -> 
+                    // TODO: Implement OnCameraScanError intent in AddTransactionStore
+                    // accept(AddTransactionStore.Intent.OnCameraScanError(error)) 
+                },
                 onNext = { accept(AddTransactionStore.Intent.OnKeypadNext) }
             )
         },

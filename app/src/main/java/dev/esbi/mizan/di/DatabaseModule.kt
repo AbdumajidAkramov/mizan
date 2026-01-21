@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
+import dev.esbi.mizan.data.local.DatabaseSeedingManager
 import dev.esbi.mizan.data.local.MizanDatabase
 import dev.esbi.mizan.data.local.MizanDatabaseCallback
 import dev.esbi.mizan.data.local.dao.AccountDao
@@ -14,7 +15,11 @@ import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Singleton
+import javax.inject.Provider
 
 @Module
 class DatabaseModule {
@@ -22,8 +27,6 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
-        val callback = MizanDatabaseCallback()
-        
         return Room.databaseBuilder(
             context,
             MizanDatabase::class.java,
@@ -33,12 +36,7 @@ class DatabaseModule {
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
-                    // Populate database on first creation
-                    callback.populateDatabase(context, Room.databaseBuilder(
-                        context,
-                        MizanDatabase::class.java,
-                        "mizan_database"
-                    ).build())
+                    // Database is created, but we'll seed it on first access
                 }
             })
             .build()
@@ -78,5 +76,11 @@ class DatabaseModule {
     @Singleton
     fun provideAccountDao(database: MizanDatabase): AccountDao {
         return database.accountDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {
+        return DatabaseSeedingManager(database)
     }
 }

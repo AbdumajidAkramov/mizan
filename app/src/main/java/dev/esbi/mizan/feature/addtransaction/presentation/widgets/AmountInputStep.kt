@@ -27,9 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R.drawable.ic_calculate
-import dev.esbi.mizan.R.drawable.ic_camera_alt
-import dev.esbi.mizan.R.drawable.ic_mic
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
@@ -37,6 +34,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.utils.annotatedString
 
 @Composable
@@ -45,15 +43,15 @@ internal fun AmountInputStep(
     accept: (AddTransactionStore.Intent) -> Unit,
 ) {
     AmountInputStep(
-        state,
-        accept,
+        state = state,
+        accept = accept,
         amount = state.amountText,
         displayText = state.displayText,
         currency = state.currency,
         inputMode = state.inputMode,
         onModeChange = { accept(AddTransactionStore.Intent.OnInputModeChange(it)) },
-        onNumberClick = {
-            accept(AddTransactionStore.Intent.OnKeypadClick(it))
+        onNumberClick = { key ->
+            accept(AddTransactionStore.Intent.OnKeypadClick(key))
         },
         onNext = {
             accept(AddTransactionStore.Intent.OnKeypadNext)
@@ -115,9 +113,9 @@ internal fun AmountInputStep(
                 horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
             ) {
                 listOf(
-                    InputMode.Manual to IconValue(ic_calculate),
-                    InputMode.Voice to IconValue(ic_mic),
-                    InputMode.Scan to IconValue(ic_camera_alt)
+                    InputMode.Manual to IconValue(Icons.ic_calculate),
+                    InputMode.Voice to IconValue(Icons.ic_mic),
+                    InputMode.Scan to IconValue(Icons.ic_camera_alt)
                 ).forEach { (mode, icon) ->
                     val isSelected = inputMode == mode
                     Box(
@@ -205,8 +203,9 @@ fun AmountInputStepPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme(
         darkTheme = true
     ) {
-        /*AmountInputStep(
+       /* AmountInputStep(
             amount = "1",
+            currency = "UZS",
             displayText = "",
             currency = "UZS",
             inputMode = InputMode.Manual,

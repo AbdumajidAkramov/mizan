@@ -5,6 +5,9 @@ import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.ClearText
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableAccounts
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableCategories
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateAvailableSubcategories
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateSelectedParentCategory
+import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateShowingSubcategories
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanError
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateCameraScanningState
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore.Message.UpdateFlowState
@@ -40,22 +43,25 @@ internal object AddTransactionReducer :
             )
 
             is UpdateTransactionType -> copy(type = msg.type)
-            is UpdateTransactionDate -> copy(date = msg.date)
+            is UpdateTransactionDate -> copy(selectedDate = msg.date)
             is UpdateTransactionNotes -> copy(notes = msg.notes)
             
             // Dynamic Data Messages
             is UpdateAvailableCategories -> copy(availableCategories = msg.categories)
+            is UpdateAvailableSubcategories -> copy(availableSubcategories = msg.subcategories)
             is UpdateAvailableAccounts -> copy(availableAccounts = msg.accounts)
             is UpdateTransferSource -> copy(transferSource = msg.account)
             is UpdateTransferDestination -> copy(transferDestination = msg.account)
+            is UpdateSelectedParentCategory -> copy(selectedParentCategory = msg.parentCategory)
+            is UpdateShowingSubcategories -> copy(isShowingSubcategories = msg.showing)
 
             // Voice Recognition Messages
-            is UpdateVoiceListeningState -> copy(isVoiceListening = msg.isListening)
-            is UpdateVoiceRecognitionText -> copy(voiceRecognitionText = msg.text)
+            is UpdateVoiceListeningState -> copy(isListening = msg.isListening)
+            is UpdateVoiceRecognitionText -> copy(voiceRecognitionResult = msg.text)
             is UpdateVoiceRecognitionError -> copy(voiceRecognitionError = msg.error)
 
             // Camera Scan Messages
-            is UpdateCameraScanningState -> copy(isCameraScanning = msg.isScanning)
+            is UpdateCameraScanningState -> copy(isScanning = msg.isScanning)
             is UpdateReceiptScanText -> copy(receiptScanText = msg.text)
             is UpdateCameraScanError -> copy(cameraScanError = msg.error)
             

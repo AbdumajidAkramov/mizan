@@ -37,7 +37,7 @@ import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
         CategoryEntity::class,
         AccountEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

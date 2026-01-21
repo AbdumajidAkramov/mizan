@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.addtransaction.presentation.widgets
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,80 +13,164 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.feature.addtransaction.domain.model.Category
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun PremiumCategoryPicker(
+    categories: List<Category>,
     selectedCategory: String?,
-    onSelectCategory: (String) -> Unit
+    onSelectCategory: (String) -> Unit,
+    onSelectParentCategory: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    // Mock Data from CATEGORY_METADATA
-    val categories = listOf(
-        "food" to Color(0xFFFF6B9D),
-        "transport" to Color(0xFF4FACFE),
-        "shopping" to Color(0xFFFFA34D),
-        "bills" to Color(0xFF00D2FF),
-        "entertainment" to Color(0xFFC471F5),
-        "health" to Color(0xFFFF6B6B)
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)) {
-        // Grid manually or LazyVerticalGrid
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+    ) {
+        // Grid manually - 3 columns
         val rows = categories.chunked(3)
         rows.forEach { rowCats ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                rowCats.forEach { (id, color) ->
-                    val isSelected = selectedCategory == id
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
-                            .background(if (isSelected) MizanTheme.premium.colors.surface3 else MizanTheme.premium.colors.surface2)
-                            .clickable { onSelectCategory(id) }
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-                                    .background(color.copy(alpha = 0.2f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                // CategoryIcon(id) bu yerda chaqiriladi
-                                Icon(
-                                    icon = IconValue(Icons.ic_mic),
-                                    modifier = Modifier.size(24.dp),
-                                    tint = color
-                                )
+                rowCats.forEach { category ->
+                    PremiumCategoryItem(
+                        category = category,
+                        isSelected = selectedCategory == category.name,
+                        onSelect = { 
+                            // Check if this category has subcategories by looking at its ID pattern
+                            // Main categories have IDs like "food_main", "transport_main"
+                            if (category.id.endsWith("_main")) {
+                                onSelectParentCategory(category.name)
+                            } else {
+                                onSelectCategory(category.name)
                             }
-                            Spacer(Modifier.height(8.dp))
-                            Text(
-                                id.capitalize(Locale.current),
-                                style = MizanTheme.typography.bodySm,
-                                color = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.secondary
-                            )
-                        }
-                    }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
+                
+                // Fill empty slots if row has less than 3 items
+                repeat(3 - rowCats.size) {
+                    Spacer(Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PremiumCategoryItem(
+    category: Category,
+    isSelected: Boolean,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val categoryColor = getCategoryColor(category.color)
+    val scale by animateFloatAsState(if (isSelected) 0.95f else 1f)
+    
+    Card(
+        modifier = modifier
+            .width(100.dp)
+            .aspectRatio(1f)
+            .scale(scale)
+            .clickable { onSelect() },
+        shape = RoundedCornerShape(MizanTheme.premium.radius.lg),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MizanTheme.premium.colors.surface3 else MizanTheme.premium.colors.surface2
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 4.dp else 2.dp
+        )
+    ) {
+        Box {
+            // Selection Indicator
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(20.dp)
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF667eea),
+                                    Color(0xFF764ba2)
+                                )
+                            ),
+                            shape = RoundedCornerShape(50)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = "Selected",
+                        tint = Color.White,
+                        modifier = Modifier.size(12.dp)
+                    )
+                }
+            }
+            
+            Column(
+                modifier = Modifier
+                    .padding(MizanTheme.premium.spacing.md)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Icon with gradient background
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    categoryColor.copy(alpha = 0.4f),
+                                    categoryColor.copy(alpha = 0.2f)
+                                )
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        icon = IconValue(getIconName(category.iconName)),
+                        modifier = Modifier.size(24.dp),
+                        tint = categoryColor
+                    )
+                }
+                
+                Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
+                
+                // Label
+                Text(
+                    text = category.name,
+                    style = MizanTheme.typography.bodySm,
+                    fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
+                    color = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.secondary,
+                    maxLines = 2
+                )
             }
         }
     }

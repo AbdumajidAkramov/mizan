@@ -79,6 +79,8 @@ internal fun VoiceInputStep(
                 is VoiceRecognitionEvent.OnResults -> {
                     val text = event.results?.firstOrNull() ?: ""
                     if (text.isNotEmpty()) {
+                        // TODO: Implement OnVoiceRecognitionResult intent in AddTransactionStore
+                        /*
                         accept(
                             AddTransactionStore.Intent.OnVoiceRecognitionResult(
                                 text = text,
@@ -86,15 +88,19 @@ internal fun VoiceInputStep(
                                 isFinal = true
                             )
                         )
+                        */
                     }
                 }
 
                 is VoiceRecognitionEvent.OnError -> {
+                    // TODO: Implement OnVoiceRecognitionError intent in AddTransactionStore
+                    /*
                     accept(
                         AddTransactionStore.Intent.OnVoiceRecognitionError(
                             error = event.error.message
                         )
                     )
+                    */
                 }
 
                 is VoiceRecognitionEvent.OnEndOfSpeech -> {
@@ -118,8 +124,8 @@ internal fun VoiceInputStep(
         permissionDescription = "Microphone permission is required to record voice input for transactions. This allows you to say things like \"Lunch 15000\" to quickly add expenses.",
         onPermissionGranted = {
             VoiceInputStep(
-                isListening = state.isVoiceListening || isRecognizerListening,
-                recognizedText = state.voiceRecognitionText,
+                isListening = state.isListening,
+                recognizedText = state.voiceRecognitionResult,
                 error = state.voiceRecognitionError,
                 amount = state.amountText,
                 onStartListening = {

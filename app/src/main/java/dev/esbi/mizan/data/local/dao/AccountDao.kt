@@ -24,4 +24,7 @@ interface AccountDao {
     
     @Query("DELETE FROM accounts")
     suspend fun clearAllAccounts()
+    
+    @Query("SELECT COUNT(*) FROM accounts")
+    suspend fun getAccountCount(): Int
 }
