@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R.drawable.ic_calculate
 import dev.esbi.mizan.R.drawable.ic_camera_alt
 import dev.esbi.mizan.R.drawable.ic_mic
-import dev.esbi.mizan.feature.addtransaction.domain.models.Keypad
+import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText

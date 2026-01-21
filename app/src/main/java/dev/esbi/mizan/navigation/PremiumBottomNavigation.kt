@@ -54,18 +54,6 @@ import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 
-/*
-
-@Composable
-fun PremiumBottomNavigation(
-    currentRoute: String? = null,
-    onNavigate: (String) -> Unit,
-    onAddClick: () -> Unit,
-) {
-
-}
-*/
-
 @Composable
 fun PremiumBottomNavigation(
     navController: NavController,

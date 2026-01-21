@@ -2,7 +2,7 @@ package dev.esbi.mizan.feature.addtransaction.presentation.store
 
 import androidx.compose.ui.text.AnnotatedString
 import com.arkivanov.mvikotlin.core.store.Store
-import dev.esbi.mizan.feature.addtransaction.domain.models.Keypad
+import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.FlowState
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction.domain.models
+package dev.esbi.mizan.feature.addtransaction.domain.model
 
 enum class Keypad {
     DEL,
