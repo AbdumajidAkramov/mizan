@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +21,6 @@ import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
 @Composable
 internal fun MizanNavHost(
     navController: NavHostController,
-    viewModelFactory: ViewModelProvider.Factory,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -76,7 +74,7 @@ internal fun MizanNavHost(
         composable<NavRoute.AmountInput> {
             val component = remember { appComponent.amountInputComponent().create() }
             val viewModel = component.viewModel
-            
+
             AmountInputScreen(
                 viewModel = viewModel,
                 onBackPressed = {
@@ -94,7 +92,7 @@ internal fun MizanNavHost(
 
         composable<NavRoute.CategorySelect> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategorySelect>()
-            
+
             val component = remember { appComponent.categorySelectComponent().create() }
             val viewModel = component.viewModel
 

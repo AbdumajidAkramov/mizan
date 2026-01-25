@@ -27,7 +27,6 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 internal fun MainAppScreen(
-    viewModelFactory: ViewModelProvider.Factory,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -70,7 +69,6 @@ internal fun MainAppScreen(
                     .fillMaxSize()
                     .padding(top = innerPadding.calculateTopPadding()),
                 navController = navController,
-                viewModelFactory = viewModelFactory,
             )
 
             // 2. Bottom Navigation (Overlay)

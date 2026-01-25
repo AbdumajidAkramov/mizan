@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
 import dev.esbi.mizan.data.settings.AppSettingsManager
@@ -23,9 +22,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var settingsManager: AppSettingsManager
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory // MizanViewModelFactory keladi
 
     @Inject
     lateinit var databaseSeedingManager: DatabaseSeedingManager
@@ -50,7 +46,6 @@ class MainActivity : ComponentActivity() {
             val state = settingState.collectAsState()
             MizanTheme(darkTheme = state.value.isDarkMode) {
                 MainAppScreen(
-                    viewModelFactory = viewModelFactory,
                     modifier = Modifier
                         .fillMaxSize()
                         .navigationBarsPadding()
