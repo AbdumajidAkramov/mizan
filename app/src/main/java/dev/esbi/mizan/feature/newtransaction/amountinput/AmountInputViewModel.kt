@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class AmountInputViewModel @Inject constructor(
-    private val storeFactory: AmountInputStoreFactory
+    storeFactory: AmountInputStoreFactory
 ) : ViewModel() {
+
     private val store: AmountInputStore = storeFactory.create()
+
     val state: Flow<AmountInputState> = store.states
     val labels: Flow<Label> = store.labels
 

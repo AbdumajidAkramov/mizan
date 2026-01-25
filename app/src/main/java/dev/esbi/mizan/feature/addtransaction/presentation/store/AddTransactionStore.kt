@@ -16,7 +16,7 @@ internal interface AddTransactionStore :
     data class State(
         val flowState: FlowState = FlowState.Amount,
         val inputMode: InputMode = InputMode.Manual,
-        val type: TransactionType = TransactionType.Expense,
+        val type: TransactionType = TransactionType.EXPENSE,
 
         val currency: String = "UZS",
 

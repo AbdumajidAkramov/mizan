@@ -5,8 +5,6 @@ import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.entity.TransactionEntity
 import dev.esbi.mizan.feature.addtransaction.domain.model.ReceiptScanResult
@@ -31,8 +29,7 @@ class TransactionRepositoryImpl @Inject constructor(
     private val tag = "TransactionRepository"
 
     // ML Kit Text Recognizer
-    private val textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-
+    
     // Regex patterns for amount extraction
     private val amountPatterns = listOf(
         Pattern.compile("\\$\\s*(\\d+(?:\\.\\d{2})?)"), // $25.99
@@ -112,19 +109,7 @@ class TransactionRepositoryImpl @Inject constructor(
             }
 
             // Use ML Kit to recognize text
-            image?.let {
-                textRecognizer.process(image)
-                    .addOnSuccessListener { visionText ->
-                        val recognizedText = visionText.text
-                        Log.d(tag, "Recognized text: $recognizedText")
 
-                        // For now, just return the full recognized text
-                        // In production, you might want to process blocks and lines individually
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(tag, "Failed to recognize text", e)
-                    }
-            }
             val mockResult = ReceiptScanResult(
                 text = "Total: $25.99 Tax: $2.60 Subtotal: $23.39",
                 confidence = 0.88f

@@ -160,16 +160,20 @@ internal fun AmountInputContent(
 
             InputMode.Voice -> VoiceInputStep(
                 state = state.voiceInputState,
-                onStopListening = {
-                    viewModel.onIntent(AmountInputStore.Intent.OnStopVoiceRecognition)
-                },
                 onStartListening = {
-                    viewModel.onIntent(AmountInputStore.Intent.OnStartVoiceRecognition)
+                    viewModel.onIntent(AmountInputStore.Intent.OnStartListening)
                 },
-                onVoiceRecognitionError = {
-                    viewModel.onIntent(AmountInputStore.Intent.OnVoiceRecognitionError(it))
+                onStopListening = {
+                    viewModel.onIntent(AmountInputStore.Intent.OnStopListening)
                 },
-                onSubmitVoice = {}
+                onVoiceRecognitionError = { error ->
+                    // Clear error and restart listening
+                    viewModel.onIntent(AmountInputStore.Intent.OnVoiceRecognitionError(error))
+                },
+                onSubmitVoice = { voiceText ->
+                    // Parse the voice text again and apply it
+                    viewModel.onIntent(AmountInputStore.Intent.OnVoiceResult(voiceText))
+                }
             )
 
             InputMode.Scan -> {
@@ -186,6 +190,9 @@ internal fun AmountInputContent(
                         accept(
                             AmountInputStore.Intent.OnReceiptScanResult(text, confidence)
                         )
+                    },
+                    onQRCodeScanned = { qrText ->
+                        accept(AmountInputStore.Intent.OnQrCodeScanned(qrText))
                     },
                     onError = { error ->
                         accept(AmountInputStore.Intent.OnCameraScanError(error))

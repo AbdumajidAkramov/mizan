@@ -8,6 +8,22 @@ internal object AmountInputReducer : Reducer<AmountInputState, AmountInputStore.
             is AmountInputStore.Message.UpdateKeypadState -> copy(keypadState = msg.state)
             is AmountInputStore.Message.UpdateVoiceInputStateState -> copy(voiceInputState = msg.state)
             is AmountInputStore.Message.UpdateMode -> copy(inputMode = msg.mode)
+            is AmountInputStore.Message.UpdateCameraInputState -> copy(cameraInputState = msg.state)
+            is AmountInputStore.Message.QrCodeDetected -> copy(
+                cameraInputState = cameraInputState.copy(
+                    qrtext = msg.text,
+                    isScanning = false
+                )
+            )
+            is AmountInputStore.Message.UpdateListeningState -> copy(
+                voiceInputState = voiceInputState.copy(isListening = msg.isListening)
+            )
+            is AmountInputStore.Message.UpdateVoiceError -> copy(
+                voiceInputState = voiceInputState.copy(voiceRecognitionError = msg.error)
+            )
+            is AmountInputStore.Message.UpdateVoiceResult -> copy(
+                voiceInputState = voiceInputState.copy(voiceResult = msg.result)
+            )
         }
     }
 }

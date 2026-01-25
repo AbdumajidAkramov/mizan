@@ -40,11 +40,11 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
@@ -69,6 +69,7 @@ internal fun CameraInputStep(
     onStopScanning: () -> Unit,
     onAmountExtracted: (Double) -> Unit,
     onScanResult: (String, Float) -> Unit,
+    onQRCodeScanned: (String) -> Unit,
     onError: (String) -> Unit,
     onNext: () -> Unit
 ) {
@@ -82,7 +83,7 @@ internal fun CameraInputStep(
         onPermissionGranted = {
             CameraInputStep(
                 isScanning = state.isScanning,
-                scannedText = state.receiptScanText,
+                scannedText = state.qrtext ?: state.receiptScanText,
                 recognizedAmount = state.lastRecognizedAmount,
                 error = state.cameraScanError,
                 onStartScanning = {
@@ -93,6 +94,7 @@ internal fun CameraInputStep(
                 onStopScanning = onStopScanning,
                 onAmountExtracted = onAmountExtracted,
                 onScanResult = onScanResult,
+                onQRCodeScanned = onQRCodeScanned,
                 onError = onError,
                 onNext = onNext
             )
@@ -116,6 +118,7 @@ internal fun CameraInputStep(
     onStopScanning: () -> Unit,
     onAmountExtracted: (Double) -> Unit,
     onScanResult: (String, Float) -> Unit,
+    onQRCodeScanned: (String) -> Unit,
     onError: (String) -> Unit,
     onNext: () -> Unit
 ) {
@@ -157,10 +160,15 @@ internal fun CameraInputStep(
         ) {
             if (isScanning) {
                 CameraPreview(
-                    onTextDetected = { text, confidence ->
-                        onScanResult(text, confidence)
-                        // Extract amount from detected text
-                        extractAmountFromText(text)?.let { amount ->
+                    onQRCodeDetected = { qrCodeData ->
+                        // Immediately notify the store about QR code detection
+                        onQRCodeScanned(qrCodeData)
+                        
+                        // Also provide scan result for backward compatibility
+                        onScanResult(qrCodeData, 1.0f)
+                        
+                        // Extract amount from QR code data
+                        extractAmountFromText(qrCodeData)?.let { amount ->
                             onAmountExtracted(amount)
                         }
                     },
@@ -183,25 +191,45 @@ internal fun CameraInputStep(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = "Camera Preview",
-                            style = MizanTheme.typography.bodyLg,
-                            color = MizanTheme.premium.text.tertiary
-                        )
-
-                        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
-
-                        Button(
-                            onClick = onStartScanning,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MizanTheme.premium.colors.primary
-                            )
-                        ) {
+                        if (scannedText.isNotEmpty()) {
+                            // Show detected QR code
                             Text(
-                                text = "Start Scanning",
+                                text = "QR Code Detected!",
                                 style = MizanTheme.typography.labelLg,
-                                color = Color.White
+                                color = MizanTheme.premium.colors.success
                             )
+                            
+                            Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
+                            
+                            Text(
+                                text = scannedText,
+                                style = MizanTheme.typography.bodySm,
+                                color = MizanTheme.premium.text.secondary,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = MizanTheme.premium.spacing.md)
+                            )
+                        } else {
+                            // Show camera preview placeholder
+                            Text(
+                                text = "Camera Preview",
+                                style = MizanTheme.typography.bodyLg,
+                                color = MizanTheme.premium.text.tertiary
+                            )
+
+                            Spacer(Modifier.height(MizanTheme.premium.spacing.md))
+
+                            Button(
+                                onClick = onStartScanning,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MizanTheme.premium.colors.primary
+                                )
+                            ) {
+                                Text(
+                                    text = "Start QR Scan",
+                                    style = MizanTheme.typography.labelLg,
+                                    color = Color.White
+                                )
+                            }
                         }
                     }
                 }
@@ -282,7 +310,7 @@ internal fun CameraInputStep(
                     )
                 ) {
                     Text(
-                        text = "Stop",
+                        text = "Stop Scan",
                         style = MizanTheme.typography.labelLg,
                         color = Color.White
                     )
@@ -312,7 +340,7 @@ internal fun CameraInputStep(
 
 @Composable
 private fun CameraPreview(
-    onTextDetected: (String, Float) -> Unit,
+    onQRCodeDetected: (String) -> Unit,
     onError: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -338,7 +366,7 @@ private fun CameraPreview(
                     .build()
                     .also {
                         it.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
-                            processImage(imageProxy, onTextDetected, onError)
+                            processImage(imageProxy, onQRCodeDetected, onError)
                         }
                     }
 
@@ -367,24 +395,34 @@ private fun CameraPreview(
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
 private fun processImage(
     imageProxy: ImageProxy,
-    onTextDetected: (String, Float) -> Unit,
+    onQRCodeDetected: (String) -> Unit,
     onError: (String) -> Unit
 ) {
     val mediaImage = imageProxy.image
     if (mediaImage != null) {
         val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
 
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        // Configure barcode scanner to only detect QR codes for better performance
+        val options = BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+            .build()
 
-        recognizer.process(image)
-            .addOnSuccessListener { visionText ->
-                val recognizedText = visionText.text
-                if (recognizedText.isNotBlank()) {
-                    onTextDetected(recognizedText, 0.8f)
+        val scanner = BarcodeScanning.getClient(options)
+
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                for (barcode in barcodes) {
+                    // Extract the raw value from the detected QR code
+                    val rawValue = barcode.rawValue
+                    if (!rawValue.isNullOrBlank()) {
+                        onQRCodeDetected(rawValue)
+                        // Stop processing after finding first valid QR code
+                        break
+                    }
                 }
             }
             .addOnFailureListener { e ->
-                onError("Text recognition failed: ${e.message}")
+                onError("QR code scanning failed: ${e.message}")
             }
             .addOnCompleteListener {
                 imageProxy.close()
@@ -543,6 +581,7 @@ fun CameraInputStepIdlePreview() {
             onStopScanning = {},
             onAmountExtracted = {},
             onScanResult = { _, _ -> },
+            onQRCodeScanned = {},
             onError = {},
             onNext = {}
         )
@@ -565,6 +604,7 @@ fun CameraInputStepScanningPreview() {
             onStopScanning = {},
             onAmountExtracted = {},
             onScanResult = { _, _ -> },
+            onQRCodeScanned = {},
             onError = {},
             onNext = {}
         )

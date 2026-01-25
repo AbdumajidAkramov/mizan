@@ -47,14 +47,14 @@ internal data class TypeConfig(
 @Composable
 internal fun getTypeConfig(type: TransactionType): TypeConfig {
     return when (type) {
-        TransactionType.Expense -> TypeConfig(
+        TransactionType.EXPENSE -> TypeConfig(
             label = "Expense",
             color = Color(0xFFF5576C), // PremiumDesignSystem.colors.secondary
             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_up),
             caption = "Track your spending"
         )
 
-        TransactionType.Income -> TypeConfig(
+        TransactionType.INCOME -> TypeConfig(
             label = "Income",
             color = Color(0xFF4FACFE), // PremiumDesignSystem.colors.success (variant)
             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_down),

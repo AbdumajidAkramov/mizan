@@ -23,6 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +33,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Category
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
@@ -59,7 +64,7 @@ fun PremiumCategoryPicker(
                     PremiumCategoryItem(
                         category = category,
                         isSelected = selectedCategory == category.name,
-                        onSelect = { 
+                        onSelect = {
                             // Check if this category has subcategories by looking at its ID pattern
                             // Main categories have IDs like "food_main", "transport_main"
                             if (category.id.endsWith("_main")) {
@@ -71,7 +76,7 @@ fun PremiumCategoryPicker(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                
+
                 // Fill empty slots if row has less than 3 items
                 repeat(3 - rowCats.size) {
                     Spacer(Modifier.weight(1f))
@@ -90,7 +95,7 @@ private fun PremiumCategoryItem(
 ) {
     val categoryColor = getCategoryColor(category.color)
     val scale by animateFloatAsState(if (isSelected) 0.95f else 1f)
-    
+
     Card(
         modifier = modifier
             .width(100.dp)
@@ -132,7 +137,7 @@ private fun PremiumCategoryItem(
                     )
                 }
             }
-            
+
             Column(
                 modifier = Modifier
                     .padding(MizanTheme.premium.spacing.md)
@@ -160,9 +165,9 @@ private fun PremiumCategoryItem(
                         tint = categoryColor
                     )
                 }
-                
+
                 Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
-                
+
                 // Label
                 Text(
                     text = category.name,
@@ -172,6 +177,78 @@ private fun PremiumCategoryItem(
                     maxLines = 2
                 )
             }
+        }
+    }
+}
+
+// 1. Soxta ma'lumotlar (Mock Data)
+val MOCK_CATEGORIES = listOf(
+    Category(
+        id = "food",
+        name = "Food & Dining",
+        iconName = "restaurant", // Ikonka nomi (sizning logikangizga qarab)
+        type = "EXPENSE",
+        color = "#FF6B9D"
+    ),
+    Category(
+        id = "transport",
+        name = "Transport",
+        iconName = "directions_car",
+        type = "EXPENSE",
+        color = "#4FACFE"
+    ),
+    Category(
+        id = "shopping",
+        name = "Shopping",
+        iconName = "shopping_bag",
+        type = "EXPENSE",
+        color = "#FFA34D"
+    ),
+    Category(
+        id = "entertainment",
+        name = "Entertainment",
+        iconName = "movie",
+        type = "EXPENSE",
+        color = "#C471F5"
+    ),
+    Category(
+        id = "health",
+        name = "Health",
+        iconName = "favorite",
+        type = "EXPENSE",
+        color = "#FF6B6B"
+    ),
+    // Subcategory misoli (agar kerak bo'lsa)
+    Category(
+        id = "fast_food",
+        name = "Fast Food",
+        iconName = "lunch_dining",
+        type = "EXPENSE",
+        color = "#FF6B9D",
+        parentId = "food"
+    )
+)
+
+// 2. Preview Komponenti
+@Preview(showBackground = true, backgroundColor = 0xFF111827) // Dark mode foni
+@Composable
+fun PremiumCategoryPickerPreview() {
+    // Tanlangan kategoriyani eslab qolish uchun state
+    var selectedCategoryId by remember { mutableStateOf<String?>(null) }
+
+    MizanTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            PremiumCategoryPicker(
+                categories = MOCK_CATEGORIES.filter { it.parentId == null }, // Faqat asosiy kategoriyalarni ko'rsatish
+                selectedCategory = selectedCategoryId,
+                onSelectCategory = { newCategory ->
+                    selectedCategoryId = newCategory
+                },
+                onSelectParentCategory = { parentId ->
+                    // Parent bosilganda nima bo'lishini simulyatsiya qilish
+                    println("Parent category clicked: $parentId")
+                }
+            )
         }
     }
 }

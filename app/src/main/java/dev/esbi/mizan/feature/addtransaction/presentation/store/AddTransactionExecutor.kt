@@ -88,14 +88,14 @@ internal class AddTransactionExecutor(
                 // Fetch data based on transaction type
                 scope.launch {
                     when (intent.type) {
-                        TransactionType.Expense -> {
+                        TransactionType.EXPENSE -> {
                             val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))
                             }
                         }
 
-                        TransactionType.Income -> {
+                        TransactionType.INCOME -> {
                             val categories = categoryRepository.getMainCategoriesByType("INCOME")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))
@@ -119,14 +119,14 @@ internal class AddTransactionExecutor(
                 // Fetch data based on transaction type
                 scope.launch {
                     when (intent.type) {
-                        TransactionType.Expense -> {
+                        TransactionType.EXPENSE -> {
                             val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))
                             }
                         }
 
-                        TransactionType.Income -> {
+                        TransactionType.INCOME -> {
                             val categories = categoryRepository.getMainCategoriesByType("INCOME")
                             categories.collect { categoryList ->
                                 dispatch(UpdateAvailableCategories(categoryList))

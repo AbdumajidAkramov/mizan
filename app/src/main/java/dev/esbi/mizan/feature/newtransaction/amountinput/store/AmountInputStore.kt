@@ -31,7 +31,10 @@ interface AmountInputStore :
         //
         data object OnStartVoiceRecognition : Intent
         data object OnStopVoiceRecognition : Intent
+        data object OnStartListening : Intent
+        data object OnStopListening : Intent
         class OnVoiceRecognitionError(val error: String) : Intent
+        class OnVoiceResult(val text: String) : Intent
 
         // Camera
         data object OnStartCameraScan : Intent
@@ -41,7 +44,7 @@ interface AmountInputStore :
             val text: String,
             val confidence: Float
         ) : Intent
-
+        class OnQrCodeScanned(val text: String) : Intent
         class OnCameraScanError(val error: String) : Intent
 
         data object OnKeypadNext : Intent
@@ -51,6 +54,11 @@ interface AmountInputStore :
         class UpdateKeypadState(val state: KeypadState) : Message
         class UpdateVoiceInputStateState(val state: VoiceInputState) : Message
         class UpdateMode(val mode: InputMode) : Message
+        class UpdateCameraInputState(val state: CameraInputState) : Message
+        class QrCodeDetected(val text: String) : Message
+        class UpdateListeningState(val isListening: Boolean) : Message
+        class UpdateVoiceError(val error: String?) : Message
+        class UpdateVoiceResult(val result: String?) : Message
     }
 
     sealed interface Action {
