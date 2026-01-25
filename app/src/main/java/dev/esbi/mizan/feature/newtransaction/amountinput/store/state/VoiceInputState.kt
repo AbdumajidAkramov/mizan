@@ -5,4 +5,9 @@ data class VoiceInputState(
     val voiceRecognitionResult: String = "",
     val voiceRecognitionError: String? = null,
     val amountText: String = "0",
-)
+) {
+    val isValid: Boolean
+        get() = amountText.isNotBlank() && 
+                amountText.toDoubleOrNull() != null && 
+                (amountText.toDoubleOrNull() ?: 0.0) > 0.0
+}

@@ -3,19 +3,23 @@ package dev.esbi.mizan.feature.newtransaction.amountinput.store
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
 
 
-interface AmountInputStore : Store<AmountInputStore.Intent, AmountInputState, AmountInputStore.Label> {
+interface AmountInputStore :
+    Store<AmountInputStore.Intent, AmountInputState, AmountInputStore.Label> {
 
     data class State(
         val inputMode: InputMode = InputMode.Manual,
         val keypadState: KeypadState = KeypadState(),
-        val voiceInputState: VoiceInputState = VoiceInputState()
+        val voiceInputState: VoiceInputState = VoiceInputState(),
+        val cameraInputState: CameraInputState = CameraInputState()
     ) {
         companion object
     }
+
     /**
      * Intents for the Amount Input screen
      */
@@ -28,6 +32,19 @@ interface AmountInputStore : Store<AmountInputStore.Intent, AmountInputState, Am
         data object OnStartVoiceRecognition : Intent
         data object OnStopVoiceRecognition : Intent
         class OnVoiceRecognitionError(val error: String) : Intent
+
+        // Camera
+        data object OnStartCameraScan : Intent
+        data object OnStopCameraScan : Intent
+        class OnAmountExtracted(val amount: Double) : Intent
+        class OnReceiptScanResult(
+            val text: String,
+            val confidence: Float
+        ) : Intent
+
+        class OnCameraScanError(val error: String) : Intent
+
+        data object OnKeypadNext : Intent
     }
 
     sealed interface Message {
@@ -36,7 +53,7 @@ interface AmountInputStore : Store<AmountInputStore.Intent, AmountInputState, Am
         class UpdateMode(val mode: InputMode) : Message
     }
 
-    sealed interface Action{
+    sealed interface Action {
         object Init : Action
     }
 

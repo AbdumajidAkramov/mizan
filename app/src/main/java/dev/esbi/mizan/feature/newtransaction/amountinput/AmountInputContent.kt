@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.KeypadContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputState
@@ -45,7 +46,7 @@ internal fun AmountInputContent(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState(initial = AmountInputState())
-
+    val accept = viewModel::onIntent
     Column(
         modifier = modifier.padding(top = 32.dp)
     ) {
@@ -172,10 +173,27 @@ internal fun AmountInputContent(
             )
 
             InputMode.Scan -> {
-                /*CameraInputStep(
-                    state = state,
-                    accept = accept
-                )*/
+                CameraInputStep(
+                    state = state.cameraInputState,
+                    onStartScanning = { accept(AmountInputStore.Intent.OnStartCameraScan) },
+                    onStopScanning = { accept(AmountInputStore.Intent.OnStopCameraScan) },
+                    onAmountExtracted = {
+                        accept(
+                            AmountInputStore.Intent.OnAmountExtracted(it)
+                        )
+                    },
+                    onScanResult = { text, confidence ->
+                        accept(
+                            AmountInputStore.Intent.OnReceiptScanResult(text, confidence)
+                        )
+                    },
+                    onError = { error ->
+                        accept(AmountInputStore.Intent.OnCameraScanError(error))
+                    },
+                    onNext = {
+                        accept(AmountInputStore.Intent.OnKeypadNext)
+                    }
+                )
             }
         }
     }

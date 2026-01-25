@@ -1,29 +1,54 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput.di
 
-import com.arkivanov.mvikotlin.core.store.Executor
-import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoSet
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStoreImpl
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.executors.ManualInputExecutor
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.executors.VoiceInputExecutor
+import dagger.Provides
+import dev.esbi.mizan.di.MainDispatcher
+import dev.esbi.mizan.feature.newtransaction.amountinput.executor.CameraScannerHandler
+import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
+import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputObserver
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.executors.AmountInputExecutor
+import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Singleton
 
 @Module
-internal interface AmountInputModule {
+internal object AmountInputModule {
 
-    @IntoSet
-    @Binds
-    fun bindsManualInputExecutor(
-        executor: ManualInputExecutor
-    ): Executor<AmountInputStore.Intent, AmountInputStore.Action, AmountInputStore.State, AmountInputStore.Message, AmountInputStore.Label>
+    @Provides
+    @Singleton
+    fun provideAmountInputExecutor(
+        @MainDispatcher mainDispatcher: CoroutineDispatcher,
+        manualInputHandler: ManualInputHandler,
+        navigationHandler: NavigationHandler
+    ): AmountInputExecutor {
+        return AmountInputExecutor(
+            mainDispatcher = mainDispatcher,
+            manualInputHandler = manualInputHandler,
+            navigationHandler = navigationHandler
+        )
+    }
 
-    @Binds
-    @IntoSet
-    fun bindsVoiceInputExecutor(
-        executor: VoiceInputExecutor
-    ): Executor<AmountInputStore.Intent, AmountInputStore.Action, AmountInputStore.State, AmountInputStore.Message, AmountInputStore.Label>
+    @Provides
+    @Singleton
+    fun provideCameraScannerHandler(): CameraScannerHandler {
+        return CameraScannerHandler()
+    }
 
-    @Binds
-    fun store(impl: AmountInputStoreImpl): AmountInputStore
+    @Provides
+    @Singleton
+    fun provideCalculatorHandler(): ManualInputHandler {
+        return ManualInputHandler()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNavigationHandler(): NavigationHandler {
+        return NavigationHandler()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAmountInputObserver(): AmountInputObserver {
+        return AmountInputObserver()
+    }
 }

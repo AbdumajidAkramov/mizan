@@ -44,6 +44,8 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -55,6 +57,20 @@ import java.util.concurrent.Executors
 internal fun CameraInputStep(
     state: AddTransactionStore.State,
     accept: (AddTransactionStore.Intent) -> Unit,
+) {
+
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+internal fun CameraInputStep(
+    state: CameraInputState,
+    onStartScanning: () -> Unit,
+    onStopScanning: () -> Unit,
+    onAmountExtracted: (Double) -> Unit,
+    onScanResult: (String, Float) -> Unit,
+    onError: (String) -> Unit,
+    onNext: () -> Unit
 ) {
     @OptIn(ExperimentalPermissionsApi::class)
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
@@ -71,40 +87,14 @@ internal fun CameraInputStep(
                 error = state.cameraScanError,
                 onStartScanning = {
                     if (cameraPermissionState.status.isGranted) {
-                        // TODO: Implement OnStartCameraScan intent in AddTransactionStore
-                        // accept(AddTransactionStore.Intent.OnStartCameraScan)
+                        onStartScanning()
                     }
                 },
-                onStopScanning = {
-                    // TODO: Implement OnStopCameraScan intent in AddTransactionStore
-                    // accept(AddTransactionStore.Intent.OnStopCameraScan) 
-                },
-                onAmountExtracted = { amount ->
-                    // TODO: Implement OnAmountExtracted intent in AddTransactionStore
-                    /*
-                    accept(
-                        AddTransactionStore.Intent.OnAmountExtracted(
-                            amount
-                        )
-                    )
-                    */
-                },
-                onScanResult = { text, confidence ->
-                    // TODO: Implement OnReceiptScanResult intent in AddTransactionStore
-                    /*
-                    accept(
-                        AddTransactionStore.Intent.OnReceiptScanResult(
-                            text,
-                            confidence
-                        )
-                    )
-                    */
-                },
-                onError = { error ->
-                    // TODO: Implement OnCameraScanError intent in AddTransactionStore
-                    // accept(AddTransactionStore.Intent.OnCameraScanError(error)) 
-                },
-                onNext = { accept(AddTransactionStore.Intent.OnKeypadNext) }
+                onStopScanning = onStopScanning,
+                onAmountExtracted = onAmountExtracted,
+                onScanResult = onScanResult,
+                onError = onError,
+                onNext = onNext
             )
         },
         onPermissionDenied = { permission ->
