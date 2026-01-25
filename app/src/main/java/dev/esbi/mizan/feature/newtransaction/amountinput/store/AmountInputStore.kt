@@ -7,9 +7,15 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
 
 
-interface AmountInputStore :
-    Store<AmountInputStore.Intent, AmountInputState, AmountInputStore.Label> {
+interface AmountInputStore : Store<AmountInputStore.Intent, AmountInputState, AmountInputStore.Label> {
 
+    data class State(
+        val inputMode: InputMode = InputMode.Manual,
+        val keypadState: KeypadState = KeypadState(),
+        val voiceInputState: VoiceInputState = VoiceInputState()
+    ) {
+        companion object
+    }
     /**
      * Intents for the Amount Input screen
      */
@@ -30,7 +36,9 @@ interface AmountInputStore :
         class UpdateMode(val mode: InputMode) : Message
     }
 
-    sealed interface Action
+    sealed interface Action{
+        object Init : Action
+    }
 
     /**
      * Labels for state changes

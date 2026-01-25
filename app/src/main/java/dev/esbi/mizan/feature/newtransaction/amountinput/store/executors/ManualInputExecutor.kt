@@ -1,15 +1,18 @@
-package dev.esbi.mizan.feature.newtransaction.amountinput.store
+package dev.esbi.mizan.feature.newtransaction.amountinput.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputState
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
 import dev.esbi.mizan.utils.AMOUNT_MAX
 import dev.esbi.mizan.utils.DOT
 import dev.esbi.mizan.utils.FRAC_LENGTH
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
 
-internal class AmountInputExecutor(
+internal class ManualInputExecutor @Inject constructor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) : CoroutineExecutor<
         AmountInputStore.Intent,
@@ -62,7 +65,7 @@ internal class AmountInputExecutor(
     private fun handleNumberClick(key: Keypad, state: KeypadState) {
         val isLeftNumberActive = state.operator.isBlank()
         val newState: KeypadState = when (key) {
-            in Keypad.numbers -> with(state) {
+            in Keypad.Companion.numbers -> with(state) {
                 if (key in listOf(Keypad.ZERO, Keypad.ZERO_ZERO, Keypad.ZERO_ZERO_ZERO)) {
                     if (isLeftNumberActive && leftNumber.isEmpty() || !isLeftNumberActive && rightNumber.isEmpty()) {
                         return
@@ -72,9 +75,9 @@ internal class AmountInputExecutor(
                     isEqualed -> {
                         isEqualed = false
                         if (operator.isEmpty()) {
-                            state.copy(leftNumber = Keypad.number(key))
+                            state.copy(leftNumber = Keypad.Companion.number(key))
                         } else {
-                            state.copy(rightNumber = Keypad.number(key))
+                            state.copy(rightNumber = Keypad.Companion.number(key))
                         }
                     }
 
@@ -82,7 +85,7 @@ internal class AmountInputExecutor(
                         if ((leftNumber.toDoubleOrNull() ?: 0.0) > AMOUNT_MAX) return
                         val separatorIndex = leftNumber.lastIndexOf(DOT)
                         if (separatorIndex != -1 && leftNumber.length - separatorIndex > FRAC_LENGTH) return
-                        val newLeftNumber = leftNumber + Keypad.number(key)
+                        val newLeftNumber = leftNumber + Keypad.Companion.number(key)
                         state.copy(leftNumber = newLeftNumber)
                     }
 
@@ -92,14 +95,14 @@ internal class AmountInputExecutor(
                         if (separatorIndex != -1 && rightNumber.length - separatorIndex > FRAC_LENGTH) {
                             return
                         }
-                        val newRightNumber = rightNumber + Keypad.number(key)
+                        val newRightNumber = rightNumber + Keypad.Companion.number(key)
                         state.copy(rightNumber = newRightNumber)
                     }
                 }
             }
 
-            in Keypad.operators -> with(state) {
-                val op = Keypad.operator(key)
+            in Keypad.Companion.operators -> with(state) {
+                val op = Keypad.Companion.operator(key)
                 val a = leftNumber.toDoubleOrNull() ?: 0.0
                 val b = rightNumber.toDoubleOrNull() ?: 0.0
                 val s = calc(a, b, op)
@@ -163,27 +166,5 @@ internal class AmountInputExecutor(
         }
 
         dispatch(AmountInputStore.Message.UpdateKeypadState(state = newState))
-    }
-
-    fun formatGroupedNumber(input: String): String {
-        val s = input.trim()
-        if (s.isEmpty()) return s
-
-        val parts = s.split('.', limit = 2)
-        val intPartRaw = parts[0]
-        val fracPartRaw = parts.getOrNull(1)
-
-        val isNegative = intPartRaw.startsWith("-")
-        val intDigits = if (isNegative) intPartRaw.drop(1) else intPartRaw
-
-
-        // Group fraction part from the left (first 3, then the rest): 12342 -> 123 42
-        val fracGrouped = fracPartRaw?.take(FRAC_LENGTH)
-
-        val sign = if (isNegative) "-" else ""
-        return if (fracGrouped != null && (fracPartRaw.toIntOrNull() ?: 0) > 0)
-            "$sign$intDigits.$fracGrouped"
-        else
-            "$sign$intDigits"
     }
 }

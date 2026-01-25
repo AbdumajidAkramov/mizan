@@ -4,6 +4,7 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import dev.esbi.mizan.MainActivity
+import dev.esbi.mizan.feature.newtransaction.amountinput.di.AmountInputModule
 import javax.inject.Singleton
 
 @Singleton
@@ -18,6 +19,7 @@ import javax.inject.Singleton
         StatisticsModule::class,
         ProfileModule::class,
         ViewModelModule::class,
+        AmountInputModule::class
     ]
 )
 internal interface AppComponent {

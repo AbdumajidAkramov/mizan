@@ -4,17 +4,15 @@ import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputState
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore.Intent
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore.Label
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 internal class AmountInputViewModel @Inject constructor(
-    storeFactory: AmountInputStoreFactory
+    private val store: AmountInputStore
 ) : ViewModel() {
-
-    private val store = storeFactory.create()
 
     val state: Flow<AmountInputState> = store.states
     val labels: Flow<Label> = store.labels

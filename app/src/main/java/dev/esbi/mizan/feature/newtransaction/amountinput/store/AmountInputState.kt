@@ -7,10 +7,4 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputS
 /**
  * State for the Amount Input screen
  */
-data class AmountInputState(
-    val inputMode: InputMode = InputMode.Manual,
-    val keypadState: KeypadState = KeypadState(),
-    val voiceInputState: VoiceInputState = VoiceInputState()
-) {
-    companion object
-}
+typealias AmountInputState = AmountInputStore.State
