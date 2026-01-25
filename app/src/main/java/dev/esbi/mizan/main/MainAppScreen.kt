@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -50,8 +52,13 @@ internal fun MainAppScreen(
     }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
-        // Scaffoldning o'z bottomBar'ini ishlatmaymiz (Box ichida manual joylaymiz)
+        modifier = modifier, // Add padding for system navigation bar
+        contentWindowInsets = WindowInsets(
+            0,
+            0,
+            0,
+            0
+        ) // Remove default insets since we handle them manually
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
 

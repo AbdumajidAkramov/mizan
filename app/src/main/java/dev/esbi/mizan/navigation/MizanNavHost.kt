@@ -8,8 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import dev.esbi.mizan.feature.addtransaction.presentation.AddTransactionViewModel
-import dev.esbi.mizan.feature.addtransaction.presentation.PremiumAddTransactionScreen
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
@@ -70,18 +68,18 @@ internal fun MizanNavHost(
             // TODO: Implement CategoryDetailScreen when needed
         }
 
-       /* composable<NavRoute.AddTransaction> { backStackEntry ->
-            val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
-            PremiumAddTransactionScreen(
-                viewModel = viewModel,
-                onClose = {
-                    navController.popBackStack()
-                },
-                onSave = {
-                    navController.popBackStack()
-                }
-            )
-        }*/
+        /* composable<NavRoute.AddTransaction> { backStackEntry ->
+             val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
+             PremiumAddTransactionScreen(
+                 viewModel = viewModel,
+                 onClose = {
+                     navController.popBackStack()
+                 },
+                 onSave = {
+                     navController.popBackStack()
+                 }
+             )
+         }*/
 
         composable<NavRoute.AmountInput> {
             val viewModel: AmountInputViewModel = viewModel(factory = viewModelFactory)

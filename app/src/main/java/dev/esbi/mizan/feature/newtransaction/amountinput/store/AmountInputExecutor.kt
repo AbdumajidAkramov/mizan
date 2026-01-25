@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
+import dev.esbi.mizan.utils.AMOUNT_MAX
 import dev.esbi.mizan.utils.DOT
 import dev.esbi.mizan.utils.FRAC_LENGTH
 import kotlinx.coroutines.CoroutineDispatcher
@@ -78,31 +79,32 @@ internal class AmountInputExecutor(
                     }
 
                     isLeftNumberActive -> {
+                        if ((leftNumber.toDoubleOrNull() ?: 0.0) > AMOUNT_MAX) return
                         val separatorIndex = leftNumber.lastIndexOf(DOT)
-                        if (separatorIndex != -1 && leftNumber.length - separatorIndex > FRAC_LENGTH) {
-                            return
-                        }
+                        if (separatorIndex != -1 && leftNumber.length - separatorIndex > FRAC_LENGTH) return
                         val newLeftNumber = leftNumber + Keypad.number(key)
                         state.copy(leftNumber = newLeftNumber)
                     }
 
                     else -> {
+                        if ((rightNumber.toDoubleOrNull() ?: 0.0) > AMOUNT_MAX) return
                         val separatorIndex = rightNumber.lastIndexOf(DOT)
                         if (separatorIndex != -1 && rightNumber.length - separatorIndex > FRAC_LENGTH) {
                             return
                         }
                         val newRightNumber = rightNumber + Keypad.number(key)
-                        state.copy(rightNumber = rightNumber)
+                        state.copy(rightNumber = newRightNumber)
                     }
                 }
             }
 
             in Keypad.operators -> with(state) {
+                val op = Keypad.operator(key)
                 val a = leftNumber.toDoubleOrNull() ?: 0.0
                 val b = rightNumber.toDoubleOrNull() ?: 0.0
-                val s = calc(a, b, operator)
+                val s = calc(a, b, op)
                 state.copy(
-                    operator = Keypad.operator(key),
+                    operator = op,
                     leftNumber = s.toString(),
                     rightNumber = ""
                 )

@@ -74,8 +74,11 @@ fun formatGroupedNumber(input: String): String {
         ?.take(FRAC_LENGTH)
 
     val sign = if (isNegative) "-" else ""
-    return if (fracGrouped != null && (fracPartRaw.toIntOrNull() ?: 0) > 0)
-        "$sign$intGrouped.$fracGrouped"
-    else
-        "$sign$intGrouped"
+    return when {
+        fracGrouped != null && (fracPartRaw.toIntOrNull() ?: 0) > 0
+            -> "$sign$intGrouped.$fracGrouped"
+
+        input.last() == '.' -> "$sign$intGrouped."
+        else -> "$sign$intGrouped"
+    }
 }

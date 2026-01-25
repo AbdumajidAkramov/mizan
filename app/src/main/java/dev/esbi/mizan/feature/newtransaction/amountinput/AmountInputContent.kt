@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,14 +41,13 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 internal fun AmountInputContent(
     viewModel: AmountInputViewModel,
     onBackPressed: () -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState(initial = AmountInputState())
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MizanTheme.premium.background.primary)
+        modifier = modifier.padding(top = 32.dp)
     ) {
         // Header Section
         Row(
@@ -60,7 +58,7 @@ internal fun AmountInputContent(
                     vertical = MizanTheme.premium.spacing.md
                 ),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
                 onClick = onBackPressed,
@@ -92,65 +90,52 @@ internal fun AmountInputContent(
         Spacer(Modifier.height(24.dp))
 
         // Mode Switcher
-        Row(
-            modifier = Modifier
-                .width(width = 208.dp)
-                .background(
-                    MizanTheme.premium.colors.surface1,
-                    RoundedCornerShape(MizanTheme.premium.radius.full)
-                )
-                .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            listOf(
-                InputMode.Manual to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calculate),
-                InputMode.Voice to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_mic),
-                InputMode.Scan to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_camera_alt)
-            ).forEach { (mode, icon) ->
-                val isSelected = state.inputMode == mode
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(if (isSelected) MizanTheme.premium.colors.surface3 else Color.Transparent)
-                        .clickable { viewModel.onIntent(AmountInputStore.Intent.OnModeChange(mode)) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    dev.esbi.mizan.ui.kit.icon.Icon(
-                        icon = icon,
-                        modifier = Modifier.size(22.dp),
-                        tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary
+            Row(
+                modifier = Modifier
+                    .width(width = 208.dp)
+                    .background(
+                        MizanTheme.premium.colors.surface1,
+                        RoundedCornerShape(MizanTheme.premium.radius.full)
                     )
+                    .padding(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
+            ) {
+                listOf(
+                    InputMode.Manual to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calculate),
+                    InputMode.Voice to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_mic),
+                    InputMode.Scan to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_camera_alt)
+                ).forEach { (mode, icon) ->
+                    val isSelected = state.inputMode == mode
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(if (isSelected) MizanTheme.premium.colors.surface3 else Color.Transparent)
+                            .clickable {
+                                viewModel.onIntent(
+                                    AmountInputStore.Intent.OnModeChange(
+                                        mode
+                                    )
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        dev.esbi.mizan.ui.kit.icon.Icon(
+                            icon = icon,
+                            modifier = Modifier.size(22.dp),
+                            tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary
+                        )
+                    }
                 }
             }
         }
 
-
         Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
-        Spacer(Modifier.weight(1f))
-
-        // Display Area - Takes available weight
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.lg),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Row(
-                modifier = Modifier
-                    .background(
-                        color = MizanTheme.premium.colors.surface1,
-                        shape = RoundedCornerShape(50.dp)
-                    )
-                    .padding(MizanTheme.premium.spacing.sm),
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-            }
-        }
 
         Spacer(modifier = Modifier.weight(1f))
 

@@ -4,7 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
@@ -48,6 +51,9 @@ class MainActivity : ComponentActivity() {
             MizanTheme(darkTheme = state.value.isDarkMode) {
                 MainAppScreen(
                     viewModelFactory = viewModelFactory,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding()
                 )
             }
         }
