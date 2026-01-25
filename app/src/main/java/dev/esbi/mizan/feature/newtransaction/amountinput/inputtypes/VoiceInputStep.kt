@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction.presentation.widgets
+package dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes
 
 import android.Manifest
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -43,9 +43,11 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import dev.esbi.mizan.R.drawable.ic_mic
 import dev.esbi.mizan.R.drawable.ic_stop
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.VoiceRecognitionEvent
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.VoiceSpeechRecognizer
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
+import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
+import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -54,8 +56,11 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 internal fun VoiceInputStep(
-    state: AddTransactionStore.State,
-    accept: (AddTransactionStore.Intent) -> Unit,
+    state: VoiceInputState,
+    onStartListening: () -> Unit,
+    onStopListening: () -> Unit,
+    onVoiceRecognitionError: (String) -> Unit,
+    onSubmitVoice: (String) -> Unit
 ) {
     @OptIn(ExperimentalPermissionsApi::class)
     val recordAudioPermissionState = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
@@ -73,13 +78,15 @@ internal fun VoiceInputStep(
         voiceEvents?.let { event ->
             when (event) {
                 is VoiceRecognitionEvent.OnReadyForSpeech -> {
-                    accept(AddTransactionStore.Intent.OnStartVoiceRecognition)
+                    onStartListening()
+//                    accept(AddTransactionStore.Intent.OnStartVoiceRecognition)
                 }
 
                 is VoiceRecognitionEvent.OnResults -> {
                     val text = event.results?.firstOrNull() ?: ""
                     if (text.isNotEmpty()) {
                         // TODO: Implement OnVoiceRecognitionResult intent in AddTransactionStore
+                        onSubmitVoice(text)
                         /*
                         accept(
                             AddTransactionStore.Intent.OnVoiceRecognitionResult(
@@ -94,6 +101,7 @@ internal fun VoiceInputStep(
 
                 is VoiceRecognitionEvent.OnError -> {
                     // TODO: Implement OnVoiceRecognitionError intent in AddTransactionStore
+                    onVoiceRecognitionError(event.error.message)
                     /*
                     accept(
                         AddTransactionStore.Intent.OnVoiceRecognitionError(
@@ -104,7 +112,8 @@ internal fun VoiceInputStep(
                 }
 
                 is VoiceRecognitionEvent.OnEndOfSpeech -> {
-                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+//                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+                    onStopListening()
                 }
 
                 else -> {}
@@ -135,9 +144,12 @@ internal fun VoiceInputStep(
                 },
                 onStopListening = {
                     voiceRecognizer.stopListening()
-                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+//                    accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+                    onStopListening()
                 },
-                onNext = { accept(AddTransactionStore.Intent.OnKeypadNext) }
+                onNext = {
+//                    accept(AddTransactionStore.Intent.OnKeypadNext)
+                }
             )
         },
         onPermissionDenied = { permission ->

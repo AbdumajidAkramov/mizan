@@ -18,8 +18,6 @@ import javax.inject.Singleton
         StatisticsModule::class,
         ProfileModule::class,
         ViewModelModule::class,
-        dev.esbi.mizan.feature.newtransaction.di.NewTransactionModule::class,
-        dev.esbi.mizan.feature.newtransaction.di.NewTransactionUseCaseModule::class
     ]
 )
 internal interface AppComponent {

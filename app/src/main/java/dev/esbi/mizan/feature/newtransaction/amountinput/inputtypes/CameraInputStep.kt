@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction.presentation.widgets
+package dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes
 
 import android.Manifest
 import android.view.ViewGroup
@@ -6,6 +6,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
@@ -43,6 +44,8 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
+import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
+import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.util.concurrent.Executors
@@ -72,7 +75,7 @@ internal fun CameraInputStep(
                         // accept(AddTransactionStore.Intent.OnStartCameraScan)
                     }
                 },
-                onStopScanning = { 
+                onStopScanning = {
                     // TODO: Implement OnStopCameraScan intent in AddTransactionStore
                     // accept(AddTransactionStore.Intent.OnStopCameraScan) 
                 },
@@ -97,7 +100,7 @@ internal fun CameraInputStep(
                     )
                     */
                 },
-                onError = { error -> 
+                onError = { error ->
                     // TODO: Implement OnCameraScanError intent in AddTransactionStore
                     // accept(AddTransactionStore.Intent.OnCameraScanError(error)) 
                 },
@@ -339,7 +342,7 @@ private fun CameraPreview(
             cameraProviderFuture.addListener({
                 val cameraProvider = cameraProviderFuture.get()
 
-                val preview = androidx.camera.core.Preview.Builder().build()
+                val preview = Preview.Builder().build()
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()

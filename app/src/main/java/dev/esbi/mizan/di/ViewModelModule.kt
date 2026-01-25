@@ -10,6 +10,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.AddTransactionViewMode
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModel
+import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModel
 import dev.esbi.mizan.feature.transactions.presentation.TransactionsViewModel
@@ -56,4 +57,10 @@ internal abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(TransactionsViewModel::class)
     abstract fun bindTransactionsViewModel(viewModel: TransactionsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AmountInputViewModel::class)
+    abstract fun bindAmountInputViewModel(viewModel: AmountInputViewModel): ViewModel
+
 }

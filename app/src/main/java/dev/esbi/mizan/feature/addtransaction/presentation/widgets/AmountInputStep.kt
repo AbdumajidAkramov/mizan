@@ -31,6 +31,9 @@ import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
+import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
+import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
+import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
 import dev.esbi.mizan.ui.kit.icon.Icon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -179,8 +182,22 @@ internal fun AmountInputStep(
                 }
 
                 InputMode.Voice -> VoiceInputStep(
-                    state = state,
-                    accept = accept
+                    state = VoiceInputState(
+                        isListening = state.isListening,
+                        voiceRecognitionResult = state.voiceRecognitionResult,
+                        voiceRecognitionError = state.voiceRecognitionError,
+                        amountText = state.amountText,
+                    ),
+                    onStopListening = {
+                        accept(AddTransactionStore.Intent.OnStopVoiceRecognition)
+                    },
+                    onStartListening = {
+                        accept(AddTransactionStore.Intent.OnStartVoiceRecognition)
+                    },
+                    onVoiceRecognitionError = {
+                        accept(AddTransactionStore.Intent.OnVoiceRecognitionError(it))
+                    },
+                    onSubmitVoice = {}
                 )
 
                 InputMode.Scan -> CameraInputStep(
@@ -203,15 +220,15 @@ fun AmountInputStepPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme(
         darkTheme = true
     ) {
-       /* AmountInputStep(
-            amount = "1",
-            currency = "UZS",
-            displayText = "",
-            currency = "UZS",
-            inputMode = InputMode.Manual,
-            onModeChange = {},
-            onNumberClick = {},
-            onNext = {},
-        )*/
+        /* AmountInputStep(
+             amount = "1",
+             currency = "UZS",
+             displayText = "",
+             currency = "UZS",
+             inputMode = InputMode.Manual,
+             onModeChange = {},
+             onNumberClick = {},
+             onNext = {},
+         )*/
     }
 }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import dev.esbi.mizan.feature.newtransaction.di.NewTransactionStoreProvider
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,7 +26,6 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 @Composable
 internal fun MainAppScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    newTransactionStoreProvider: NewTransactionStoreProvider,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -66,7 +64,6 @@ internal fun MainAppScreen(
                     .padding(top = innerPadding.calculateTopPadding()),
                 navController = navController,
                 viewModelFactory = viewModelFactory,
-                newTransactionStoreProvider = newTransactionStoreProvider
             )
 
             // 2. Bottom Navigation (Overlay)

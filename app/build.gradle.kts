@@ -68,6 +68,10 @@ dependencies {
     implementation(libs.mvikotlin.main)
     implementation(libs.mvikotlin.coroutines)
 
+    // Decompose
+    implementation("com.arkivanov.decompose:decompose:2.2.0")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:2.2.0")
+
     // Dagger2
     implementation(libs.dagger.core)
     implementation(libs.androidx.compose.foundation.layout)

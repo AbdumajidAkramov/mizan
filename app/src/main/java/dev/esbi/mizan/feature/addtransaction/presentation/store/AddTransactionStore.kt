@@ -23,7 +23,6 @@ internal interface AddTransactionStore :
         val leftNumber: String = "",
         val rightNumber: String = "",
         val operator: String = "",
-//        val amountText: String = "0",
 
         // Category Selection State
         val selectedCategory: String? = null,
@@ -129,7 +128,8 @@ internal interface AddTransactionStore :
         // Voice Recognition Intents
         data object OnStartVoiceRecognition : Intent
         data object OnStopVoiceRecognition : Intent
-        
+        class OnVoiceRecognitionError(val error: String) : Intent
+
         // Camera Recognition Intents
         data object OnStartCameraRecognition : Intent
         data object OnStopCameraRecognition : Intent

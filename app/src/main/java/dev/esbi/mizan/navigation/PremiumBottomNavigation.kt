@@ -25,8 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
@@ -133,7 +132,7 @@ fun PremiumBottomNavigation(
         // --- FLOATING ACTION BUTTON (Markazda alohida qatlamda) ---
         PremiumFab(
             onClick = {
-                navController.navigate(NavRoute.NewAddTransaction)
+                navController.navigate(NavRoute.AmountInput)
             },
             modifier = Modifier
                 .align(Alignment.Center)
@@ -270,8 +269,8 @@ private fun PremiumFab(
                     onClick = onClick
                 )
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
+            dev.esbi.mizan.ui.kit.icon.Icon(
+                icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_add),
                 contentDescription = "Add Expense",
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
-    private val storeFactory: DashboardStoreFactory
+    storeFactory: DashboardStoreFactory
 ) : ViewModel() {
 
     private val store: DashboardStore = storeFactory.create()

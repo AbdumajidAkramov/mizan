@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction.presentation.widgets
+package dev.esbi.mizan.feature.newtransaction.amountinput.widgets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -75,7 +76,7 @@ fun PermissionHandler(
                     Text(
                         text = "Grant Permission",
                         style = MizanTheme.typography.labelLg,
-                        color = androidx.compose.ui.graphics.Color.White
+                        color = Color.White
                     )
                 }
             }
@@ -129,7 +130,7 @@ fun PermissionDeniedScreen(
             Text(
                 text = "Request Again",
                 style = MizanTheme.typography.labelLg,
-                color = androidx.compose.ui.graphics.Color.White
+                color = Color.White
             )
         }
     }

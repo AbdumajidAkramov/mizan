@@ -8,11 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import dev.esbi.mizan.feature.newtransaction.root.NewTransactionScreen
-import dev.esbi.mizan.feature.newtransaction.di.NewTransactionStoreProvider
-import dev.esbi.mizan.feature.newtransaction.domain.usecase.GetTransactionMetadataUseCase
-import dev.esbi.mizan.feature.newtransaction.domain.usecase.SaveNewTransactionUseCase
 import dev.esbi.mizan.feature.addtransaction.presentation.AddTransactionViewModel
 import dev.esbi.mizan.feature.addtransaction.presentation.PremiumAddTransactionScreen
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
@@ -21,6 +16,8 @@ import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModel
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
+import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputScreen
+import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.StatisticsViewModel
@@ -32,7 +29,6 @@ import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
 internal fun MizanNavHost(
     navController: NavHostController,
     viewModelFactory: ViewModelProvider.Factory,
-    newTransactionStoreProvider: NewTransactionStoreProvider,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -40,7 +36,7 @@ internal fun MizanNavHost(
         startDestination = NavRoute.Dashboard,
         modifier = modifier
     ) {
-        composable<NavRoute.Dashboard>() {
+        composable<NavRoute.Dashboard> {
             val viewModel: DashboardViewModel = viewModel(factory = viewModelFactory)
             DashboardScreen(
                 viewModel = viewModel,
@@ -49,7 +45,6 @@ internal fun MizanNavHost(
                 }
             )
         }
-
         composable<NavRoute.FinancialMirror> {
             val viewModel: FinancialMirrorViewModel = viewModel(factory = viewModelFactory)
             FinancialMirrorScreen(viewModel)
@@ -75,7 +70,7 @@ internal fun MizanNavHost(
             // TODO: Implement CategoryDetailScreen when needed
         }
 
-        composable<NavRoute.AddTransaction> { backStackEntry ->
+       /* composable<NavRoute.AddTransaction> { backStackEntry ->
             val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
             PremiumAddTransactionScreen(
                 viewModel = viewModel,
@@ -86,23 +81,20 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 }
             )
-        }
+        }*/
 
-        composable<NavRoute.NewAddTransaction> {
-            val store = newTransactionStoreProvider.create().create()
-            NewTransactionScreen(
-                store = store,
-                onClose = {
+        composable<NavRoute.AmountInput> {
+            val viewModel: AmountInputViewModel = viewModel(factory = viewModelFactory)
+            AmountInputScreen(
+                viewModel = viewModel,
+                onBackPressed = {
                     navController.popBackStack()
                 },
-                onSave = { transaction ->
-                    // TODO: Handle saving the transaction
+                onSubmit = {
                     navController.popBackStack()
-                },
-                onManageCategories = {
-                    // TODO: Navigate to category management if needed
                 }
             )
         }
+
     }
 }
