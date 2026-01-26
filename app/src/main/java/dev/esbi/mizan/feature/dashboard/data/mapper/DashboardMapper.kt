@@ -2,8 +2,8 @@ package dev.esbi.mizan.feature.dashboard.data.mapper
 
 import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
 import dev.esbi.mizan.data.local.entity.DashboardSummaryEntity
-import dev.esbi.mizan.data.local.entity.TransactionEntity
 import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
+import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.feature.dashboard.domain.model.CategorySpending
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
@@ -48,17 +48,17 @@ fun WeeklySpendingEntity.toDomain(): WeeklySpendingPoint {
 
 fun TransactionEntity.toDomain(): Transaction {
     return Transaction(
-        id = id,
+        id = "id",
         amount = amount,
-        category = category,
-        categoryLabel = categoryLabel,
-        description = description,
-        date = date,
-        type = when (type) {
+        category = "category",
+        categoryLabel = "categoryLabel",
+        description = "description",
+        date = java.util.Date(),
+        type = when (type.name) {
             "INCOME" -> TransactionType.INCOME
             "TRANSFER" -> TransactionType.TRANSFER
             else -> TransactionType.EXPENSE
         },
-        colorToken = colorToken
+        colorToken = "colorToken"
     )
 }

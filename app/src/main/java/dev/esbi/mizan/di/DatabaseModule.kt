@@ -8,22 +8,17 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
 import dev.esbi.mizan.data.local.MizanDatabase
-import dev.esbi.mizan.data.local.MizanDatabaseCallback
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Singleton
-import javax.inject.Provider
 
 @Module
 class DatabaseModule {
-    
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -32,6 +27,7 @@ class DatabaseModule {
             MizanDatabase::class.java,
             "mizan_database"
         )
+            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
             .fallbackToDestructiveMigration()
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -41,43 +37,43 @@ class DatabaseModule {
             })
             .build()
     }
-    
+
     @Provides
     @Singleton
     fun provideDashboardDao(database: MizanDatabase): DashboardDao {
         return database.dashboardDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideFinancialMirrorDao(database: MizanDatabase): FinancialMirrorDao {
         return database.financialMirrorDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideBudgetDao(database: MizanDatabase): BudgetDao {
         return database.budgetDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideTransactionsDao(database: MizanDatabase): TransactionsDao {
         return database.transactionsDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideCategoryDao(database: MizanDatabase): CategoryDao {
         return database.categoryDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideAccountDao(database: MizanDatabase): AccountDao {
         return database.accountDao()
     }
-    
+
     @Provides
     @Singleton
     fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {

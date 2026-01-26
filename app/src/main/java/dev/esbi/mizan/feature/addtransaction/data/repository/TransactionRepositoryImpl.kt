@@ -6,13 +6,10 @@ import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
 import dev.esbi.mizan.data.local.dao.TransactionsDao
-import dev.esbi.mizan.data.local.entity.TransactionEntity
 import dev.esbi.mizan.feature.addtransaction.domain.model.ReceiptScanResult
 import dev.esbi.mizan.feature.addtransaction.domain.model.TransactionData
 import dev.esbi.mizan.feature.addtransaction.domain.model.VoiceRecognitionResult
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TransactionRepository
-import java.util.Date
-import java.util.UUID
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,7 +26,7 @@ class TransactionRepositoryImpl @Inject constructor(
     private val tag = "TransactionRepository"
 
     // ML Kit Text Recognizer
-    
+
     // Regex patterns for amount extraction
     private val amountPatterns = listOf(
         Pattern.compile("\\$\\s*(\\d+(?:\\.\\d{2})?)"), // $25.99
@@ -58,30 +55,33 @@ class TransactionRepositoryImpl @Inject constructor(
     )
 
     override suspend fun saveTransaction(transactionData: TransactionData): Result<Unit> {
-        return try {
-            Log.d(tag, "Saving transaction: $transactionData")
+        return Result.failure(Exception("Not implemented"))
+        /*
+                return try {
+                    Log.d(tag, "Saving transaction: $transactionData")
 
-            // Convert domain model to database entity
-            val transactionEntity = TransactionEntity(
-                id = UUID.randomUUID().toString(),
-                amount = transactionData.amount,
-                category = transactionData.category ?: "Uncategorized",
-                categoryLabel = transactionData.category ?: "Uncategorized",
-                description = transactionData.note,
-                date = transactionData.date ?: Date(),
-                type = transactionData.type.name,
-                colorToken = transactionData.categoryColor ?: "blue"
-            )
+                    // Convert domain model to database entity
+                    val transactionEntity = TransactionEntity(
+                        id = 0,
+                        amount = transactionData.amount,
+                        category = transactionData.category ?: "Uncategorized",
+                        categoryLabel = transactionData.category ?: "Uncategorized",
+                        description = transactionData.note,
+                        date = transactionData.date ?: Date(),
+                        type = transactionData.type.name,
+                        colorToken = transactionData.categoryColor ?: "blue"
+                    )
 
-            // Save to Room database
-            transactionsDao.insertTransaction(transactionEntity)
+                    // Save to Room database
+                    transactionsDao.insertTransaction(transactionEntity)
 
-            Log.d(tag, "Transaction saved successfully with ID: ${transactionEntity.id}")
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Log.e(tag, "Failed to save transaction", e)
-            Result.failure(e)
-        }
+                    Log.d(tag, "Transaction saved successfully with ID: ${transactionEntity.id}")
+                    Result.success(Unit)
+                } catch (e: Exception) {
+                    Log.e(tag, "Failed to save transaction", e)
+                    Result.failure(e)
+                }
+        */
     }
 
     override suspend fun startVoiceRecognition(): Result<VoiceRecognitionResult> {

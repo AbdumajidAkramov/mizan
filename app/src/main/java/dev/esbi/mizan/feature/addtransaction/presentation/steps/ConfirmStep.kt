@@ -100,13 +100,13 @@ internal fun ConfirmStep(
 
     // Ranglar va Ikonkalarni aniqlash
     val (bgTint, accentColor, icon) = when (type) {
-        TransactionType.EXPENSE -> Triple(
+        TransactionType.Expense -> Triple(
             Color(0xFFF5576C).copy(alpha = 0.1f), // Red tint
             Color(0xFFF5576C), // Red
             IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_up)
         )
 
-        TransactionType.INCOME -> Triple(
+        TransactionType.Income -> Triple(
             Color(0xFF4FACFE).copy(alpha = 0.1f), // Blue tint
             Color(0xFF4FACFE), // Blue
             IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_down)

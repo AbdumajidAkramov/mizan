@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction.presentation.triple
+package dev.esbi.mizan.feature.newtransaction.transactiontype
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -35,6 +35,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 
 internal data class TypeConfig(
@@ -47,24 +48,24 @@ internal data class TypeConfig(
 @Composable
 internal fun getTypeConfig(type: TransactionType): TypeConfig {
     return when (type) {
-        TransactionType.EXPENSE -> TypeConfig(
+        TransactionType.Expense -> TypeConfig(
             label = "Expense",
             color = Color(0xFFF5576C), // PremiumDesignSystem.colors.secondary
-            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_up),
+            icon = IconValue(Icons.ic_arrow_up),
             caption = "Track your spending"
         )
 
-        TransactionType.INCOME -> TypeConfig(
+        TransactionType.Income -> TypeConfig(
             label = "Income",
             color = Color(0xFF4FACFE), // PremiumDesignSystem.colors.success (variant)
-            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_down),
+            icon = IconValue(Icons.ic_arrow_down),
             caption = "Record money received"
         )
 
         TransactionType.Transfer -> TypeConfig(
             label = "Transfer",
             color = Color(0xFF10B981), // PremiumDesignSystem.colors.success (emerald)
-            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_swap_horizontal),
+            icon = IconValue(Icons.ic_swap_horizontal),
             caption = "Move money between accounts"
         )
     }
@@ -105,12 +106,12 @@ fun TransactionTypeSelector(
                 )
             }
         }
-        Text(
+       /* Text(
             modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
             text = text.value,
             style = MizanTheme.typography.bodyXs,
             color = MizanTheme.premium.text.muted
-        )
+        )*/
 
     }
 }

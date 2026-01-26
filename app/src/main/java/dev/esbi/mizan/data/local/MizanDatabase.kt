@@ -9,36 +9,38 @@ import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
-import dev.esbi.mizan.data.local.entity.AccountEntity
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
 import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
-import dev.esbi.mizan.data.local.entity.CategoryEntity
 import dev.esbi.mizan.data.local.entity.DashboardSummaryEntity
 import dev.esbi.mizan.data.local.entity.FinancialProjectionEntity
 import dev.esbi.mizan.data.local.entity.InvestmentOpportunityEntity
 import dev.esbi.mizan.data.local.entity.RiskFactorEntity
 import dev.esbi.mizan.data.local.entity.TimeMachineScenarioEntity
 import dev.esbi.mizan.data.local.entity.TransactionDetailEntity
-import dev.esbi.mizan.data.local.entity.TransactionEntity
 import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
+import dev.esbi.mizan.data.local.entity.account.AccountEntity
+import dev.esbi.mizan.data.local.entity.category.CategoryEntity
+import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 
 @Database(
     entities = [
         DashboardSummaryEntity::class,
         CategorySpendingEntity::class,
         WeeklySpendingEntity::class,
-        TransactionEntity::class,
         TransactionDetailEntity::class,
         FinancialProjectionEntity::class,
         RiskFactorEntity::class,
         TimeMachineScenarioEntity::class,
         InvestmentOpportunityEntity::class,
         CategoryBudgetEntity::class,
+        AccountEntity::class,
+        TransactionEntity::class,
         CategoryEntity::class,
-        AccountEntity::class
+        CurrencyEntity::class
     ],
-    version = 6,
-    exportSchema = false
+    version = 7,
+    exportSchema = true
 )
 @TypeConverters(Converters::class)
 abstract class MizanDatabase : RoomDatabase() {

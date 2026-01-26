@@ -3,6 +3,7 @@ package dev.esbi.mizan.feature.newtransaction.amountinput.store
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
@@ -13,6 +14,7 @@ interface AmountInputStore :
 
     data class State(
         val inputMode: InputMode = InputMode.Manual,
+        val transactionType: TransactionType = TransactionType.Expense,
         val keypadState: KeypadState = KeypadState(),
         val voiceInputState: VoiceInputState = VoiceInputState(),
         val cameraInputState: CameraInputState = CameraInputState()
@@ -45,13 +47,17 @@ interface AmountInputStore :
             val text: String,
             val confidence: Float
         ) : Intent
+
         class OnQrCodeScanned(val text: String) : Intent
         class OnCameraScanError(val error: String) : Intent
 
         data object OnKeypadNext : Intent
+
+        class OnTypeSelect(val type: TransactionType) : Intent
     }
 
     sealed interface Message {
+        class UpdateTransactionType(val type: TransactionType) : Message
         class UpdateKeypadState(val state: KeypadState) : Message
         class UpdateVoiceInputStateState(val state: VoiceInputState) : Message
         class UpdateMode(val mode: InputMode) : Message

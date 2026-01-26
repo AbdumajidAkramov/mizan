@@ -1,33 +1,22 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.KeypadContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
-import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.InputModeContent
+import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeSelector
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,53 +25,33 @@ internal fun AmountInputContent(
     state: AmountInputState = AmountInputState(),
     accept: (AmountInputStore.Intent) -> Unit
 ) {
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         // Mode Switcher
-        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
+        TransactionTypeSelector(
+            selectedType = state.transactionType,
+            onTypeSelect = {
+                accept(AmountInputStore.Intent.OnTypeSelect(it))
+            },
+        )
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Row(
-                modifier = Modifier
-                    .width(width = 208.dp)
-                    .background(
-                        MizanTheme.premium.colors.surface1,
-                        RoundedCornerShape(MizanTheme.premium.radius.full)
-                    )
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
-            ) {
-                listOf(
-                    InputMode.Manual to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calculate),
-                    InputMode.Voice to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_mic),
-                    InputMode.Scan to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_camera_alt)
-                ).forEach { (mode, icon) ->
-                    val isSelected = state.inputMode == mode
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(if (isSelected) MizanTheme.premium.colors.surface3 else Color.Transparent)
-                            .clickable {
-                                accept(
-                                    AmountInputStore.Intent.OnModeChange(
-                                        mode
-                                    )
-                                )
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
-                            icon = icon,
-                            modifier = Modifier.size(22.dp),
-                            tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary
+            InputModeContent(
+                inputMode = state.inputMode,
+                onModeChange = { mode ->
+                    accept(
+                        AmountInputStore.Intent.OnModeChange(
+                            mode
                         )
-                    }
+                    )
                 }
-            }
+            )
         }
 
 

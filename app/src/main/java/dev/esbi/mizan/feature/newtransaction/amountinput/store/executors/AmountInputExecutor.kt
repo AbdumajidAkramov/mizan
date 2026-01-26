@@ -108,6 +108,9 @@ internal class AmountInputExecutor @Inject constructor(
             is AmountInputStore.Intent.NavigateBack -> {
                 publish(AmountInputStore.Label.Back)
             }
+            is AmountInputStore.Intent.OnTypeSelect -> {
+                dispatch(AmountInputStore.Message.UpdateTransactionType(type = intent.type))
+            }
             // Delegate Calculator logic
             is AmountInputStore.Intent.OnNumberClick -> {
                 val newKeypadState = manualInputHandler.handleNumberClick(

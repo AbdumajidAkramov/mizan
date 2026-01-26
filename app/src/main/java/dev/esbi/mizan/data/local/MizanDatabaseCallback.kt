@@ -5,12 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
-import dev.esbi.mizan.data.local.entity.AccountEntity
-import dev.esbi.mizan.data.local.entity.CategoryEntity
+import dev.esbi.mizan.data.local.entity.account.AccountEntity
+import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class MizanDatabaseCallback : RoomDatabase.Callback() {
     
@@ -29,13 +28,14 @@ class MizanDatabaseCallback : RoomDatabase.Callback() {
             database.accountDao().clearAllAccounts()
             
             // Seed Categories
-            seedCategories(database.categoryDao())
+//            seedCategories(database.categoryDao())
             
             // Seed Accounts
-            seedAccounts(database.accountDao())
+//            seedAccounts(database.accountDao())
         }
     }
     
+/*
     private suspend fun seedCategories(categoryDao: CategoryDao) {
         // Main Categories first
         val mainCategories = listOf(
@@ -326,4 +326,5 @@ class MizanDatabaseCallback : RoomDatabase.Callback() {
         
         accountDao.insertAccounts(defaultAccounts)
     }
+*/
 }

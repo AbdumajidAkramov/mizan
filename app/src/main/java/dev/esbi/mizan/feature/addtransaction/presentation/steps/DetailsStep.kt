@@ -140,7 +140,7 @@ fun DetailsStep(
 
         // --- CONTENT ---
         when (type) {
-            TransactionType.EXPENSE, TransactionType.INCOME -> {
+            TransactionType.Expense, TransactionType.Income -> {
                 // Premium Category Selection with hierarchical navigation
                 Column {
                     if (isShowingSubcategories) {
@@ -271,7 +271,7 @@ fun DetailsStepPreview() {
         DetailsStep(
             amount = "90000",
             currency = "UZS",
-            type = TransactionType.EXPENSE,
+            type = TransactionType.Expense,
             selectedCategory = "food",
             availableCategories = emptyList(),
             availableSubcategories = emptyList(),

@@ -84,7 +84,7 @@ fun CategorySelectContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = { accept(CategorySelectStore.Intent.NavigateBack) }) {
-                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
+                        MizanIcon(
                             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_back),
                             contentDescription = "Back",
                             tint = MizanTheme.premium.text.primary

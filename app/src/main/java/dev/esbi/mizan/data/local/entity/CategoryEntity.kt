@@ -3,6 +3,7 @@ package dev.esbi.mizan.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/*
 @Entity(tableName = "categories")
 data class CategoryEntity(
     @PrimaryKey val id: String,
@@ -12,3 +13,4 @@ data class CategoryEntity(
     val color: String,
     val parentId: String? = null // null for main categories, non-null for subcategories
 )
+*/

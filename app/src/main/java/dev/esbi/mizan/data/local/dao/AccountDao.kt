@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.esbi.mizan.data.local.entity.AccountEntity
+import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

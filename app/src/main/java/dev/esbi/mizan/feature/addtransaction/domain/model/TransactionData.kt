@@ -11,7 +11,7 @@ data class TransactionData(
     val note: String,
     val category: String? = null,
     val confidence: Float = 1.0f,
-    val type: TransactionType = TransactionType.EXPENSE,
+    val type: TransactionType = TransactionType.Expense,
     val date: Date? = null,
     val categoryColor: String? = null
 )

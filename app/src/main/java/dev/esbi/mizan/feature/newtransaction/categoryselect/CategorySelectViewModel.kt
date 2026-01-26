@@ -15,7 +15,7 @@ internal class CategorySelectViewModel @Inject constructor(
     private val storeFactory: CategorySelectStoreFactory
 ) : ViewModel() {
 
-    private val transactionType: TransactionType = TransactionType.EXPENSE
+    private val transactionType: TransactionType = TransactionType.Expense
 
     private val store: CategorySelectStore by lazy {
         storeFactory.create(transactionType)
