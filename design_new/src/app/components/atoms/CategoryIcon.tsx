@@ -1,38 +1,41 @@
 /**
- * CategoryIcon Component
- * Renders category icons from lucide-react based on category metadata
+ * CategoryIcon Atom Component
+ * Displays category icon with consistent styling
  */
 
-import * as Icons from 'lucide-react';
+import { Utensils, Car, ShoppingBag, Receipt, Film, Heart, Plane, Smartphone, TrendingUp } from 'lucide-react';
 import type { TransactionCategory } from '../../../types/domain';
-import { CATEGORY_METADATA } from '../../../mocks/data';
 
 export interface CategoryIconProps {
+  /** Category identifier */
   category: TransactionCategory;
-  size?: number;
+  /** Icon size in pixels (must follow 8dp grid) */
+  size?: 16 | 20 | 24 | 32;
+  /** Icon color */
   color?: string;
+  /** Additional CSS classes */
   className?: string;
 }
 
+/** Icon mapping for each category */
+const CATEGORY_ICONS: Record<TransactionCategory, typeof Utensils> = {
+  food: Utensils,
+  transport: Car,
+  shopping: ShoppingBag,
+  bills: Receipt,
+  entertainment: Film,
+  health: Heart,
+  travel: Plane,
+  tech: Smartphone,
+  income: TrendingUp,
+};
+
 /**
- * Renders the appropriate icon for a given category
+ * Material 3 Category Icon Component
+ * Maps to Android Icon composable
  */
-export function CategoryIcon({
-  category,
-  size = 24,
-  color,
-  className = '',
-}: CategoryIconProps) {
-  // Get category metadata
-  const metadata = CATEGORY_METADATA.find((cat) => cat.id === category);
+export function CategoryIcon({ category, size = 24, color, className = '' }: CategoryIconProps) {
+  const IconComponent = CATEGORY_ICONS[category];
   
-  if (!metadata) {
-    // Fallback to a generic icon
-    return <Icons.Tag size={size} color={color} className={className} />;
-  }
-
-  // Get the icon component from lucide-react
-  const IconComponent = (Icons as any)[metadata.iconName] || Icons.Tag;
-
   return <IconComponent size={size} color={color} className={className} />;
 }

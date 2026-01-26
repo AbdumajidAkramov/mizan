@@ -232,23 +232,21 @@ export function PremiumDashboardScreen({
           <div className="flex items-center gap-[var(--premium-space-lg)]">
             {/* Donut Chart */}
             <div className="w-[140px] h-[140px] min-w-[140px] min-h-[140px] flex-shrink-0" style={{ minWidth: '140px', minHeight: '140px' }}>
-              <ResponsiveContainer width={140} height={140}>
-                <RechartsPieChart>
-                  <Pie
-                    data={data.categorySpending || []}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={40}
-                    outerRadius={60}
-                    paddingAngle={2}
-                    dataKey="totalAmount"
-                  >
-                    {(data.categorySpending || []).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.colorToken} />
-                    ))}
-                  </Pie>
-                </RechartsPieChart>
-              </ResponsiveContainer>
+              <RechartsPieChart width={140} height={140}>
+                <Pie
+                  data={data.categorySpending || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={60}
+                  paddingAngle={2}
+                  dataKey="totalAmount"
+                >
+                  {(data.categorySpending || []).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.colorToken} />
+                  ))}
+                </Pie>
+              </RechartsPieChart>
             </div>
 
             {/* Category Legend */}

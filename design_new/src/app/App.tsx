@@ -3,7 +3,4 @@
  * Premium Expense Manager - Fintech UI
  */
 
-import '../styles/index.css';
-import PremiumApp from './PremiumApp';
-
-export default PremiumApp;
+export { default } from './PremiumApp';

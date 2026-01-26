@@ -42,7 +42,7 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
         CurrencyEntity::class,
         AccountGroupEntity::class
     ],
-    version = 7,
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

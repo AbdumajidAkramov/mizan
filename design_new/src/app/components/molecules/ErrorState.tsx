@@ -4,7 +4,7 @@
  */
 
 import { AlertCircle } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../atoms/Button';
 
 export interface ErrorStateProps {
   /** Error message */
@@ -37,7 +37,7 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
         {message}
       </p>
       {onRetry && (
-        <Button onClick={onRetry} variant="outline">
+        <Button onClick={onRetry} variant="outlined">
           Try Again
         </Button>
       )}

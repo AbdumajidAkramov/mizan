@@ -1,23 +1,26 @@
 /**
- * Premium Expense Manager App - Mizan
- * Clean, production-ready fintech UI with glassmorphism and gradients
- * 
- * Navigation Flow:
- * - Home (Dashboard) → Transactions Hub → Add Transaction → Manage Categories
- * - Statistics, Financial Mirror, Profile screens
+ * Premium Expense Manager App
+ * Stunning fintech UI with gradients and glassmorphism
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { PremiumDashboardScreen } from './screens/PremiumDashboardScreen';
+import { PremiumTransactionsScreen } from './screens/PremiumTransactionsScreen';
 import { PremiumStatisticsScreen } from './screens/PremiumStatisticsScreen';
+import { PremiumBudgetScreen } from './screens/PremiumBudgetScreen';
 import { PremiumProfileScreen } from './screens/PremiumProfileScreen';
 import { PremiumFinancialMirrorScreen } from './screens/PremiumFinancialMirrorScreen';
 import { PremiumAddTransactionScreen } from './screens/PremiumAddTransactionScreen';
 import { ManageCategoriesScreen } from './screens/ManageCategoriesScreen';
-import { TransactionsHubScreen } from './screens/TransactionsHubScreen';
+import { ManageTemplatesScreen } from './screens/ManageTemplatesScreen';
 import { PremiumBottomNav, type PremiumNavTab } from './components/premium/PremiumBottomNav';
-import type { UiState, DashboardSummary, Transaction, TransactionCategory, TransactionType } from '../types/domain';
+import { PremiumButton } from './components/premium/PremiumButton';
+import { PremiumCard } from './components/premium/PremiumCard';
+import { PremiumCategoryPicker } from './components/premium/PremiumCategoryPicker';
+import { PremiumCalendar } from './components/premium/PremiumCalendar';
+import { X, DollarSign, Calendar, Tag, FileText, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import type { UiState, DashboardSummary, Transaction, TransactionCategory } from '../types/domain';
 import {
   MOCK_USER_ACCOUNT,
   MOCK_DASHBOARD_SUMMARY,
@@ -25,11 +28,15 @@ import {
 } from '../mocks/data';
 
 function PremiumAppContent() {
-  // Navigation State
   const [activeTab, setActiveTab] = useState<PremiumNavTab>('home');
   const [showAddTransaction, setShowAddTransaction] = useState(false);
   const [showManageCategories, setShowManageCategories] = useState(false);
-  const [showTransactionsHub, setShowTransactionsHub] = useState(false);
+  const [showManageTemplates, setShowManageTemplates] = useState(false);
+  const [addExpenseStep, setAddExpenseStep] = useState<'type' | 'amount' | 'category' | 'details'>('type');
+  const [transactionType, setTransactionType] = useState<'expense' | 'income' | 'transfer'>('expense');
+  const [selectedCategory, setSelectedCategory] = useState<TransactionCategory>();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [amount, setAmount] = useState('');
 
   // MVI State Management
   const [dashboardState, setDashboardState] = useState<UiState<DashboardSummary>>({
@@ -80,7 +87,7 @@ function PremiumAppContent() {
 
   const handleSaveTransaction = (transaction: {
     amount: number;
-    type: TransactionType;
+    type: 'expense' | 'income' | 'transfer';
     category?: TransactionCategory;
     fromAccountId?: string;
     toAccountId?: string;
@@ -99,8 +106,18 @@ function PremiumAppContent() {
     setShowAddTransaction(false);
   };
 
+  const handleNext = () => {
+    if (addExpenseStep === 'type') {
+      setAddExpenseStep('amount');
+    } else if (addExpenseStep === 'amount' && amount) {
+      setAddExpenseStep('category');
+    } else if (addExpenseStep === 'category' && selectedCategory) {
+      setAddExpenseStep('details');
+    }
+  };
+
   /**
-   * Render current screen based on active tab
+   * Render current screen
    */
   const renderScreen = () => {
     switch (activeTab) {
@@ -109,7 +126,6 @@ function PremiumAppContent() {
           <PremiumDashboardScreen
             dashboardState={dashboardState}
             userDisplayName={MOCK_USER_ACCOUNT.displayName}
-            onViewTransactionsHub={() => setShowTransactionsHub(true)}
           />
         );
       
@@ -131,10 +147,336 @@ function PremiumAppContent() {
           <PremiumDashboardScreen
             dashboardState={dashboardState}
             userDisplayName={MOCK_USER_ACCOUNT.displayName}
-            onViewTransactionsHub={() => setShowTransactionsHub(true)}
           />
         );
     }
+  };
+
+  /**
+   * Render Add Expense Modal Content
+   */
+  const renderAddExpenseContent = () => {
+    // Type Selection
+    if (addExpenseStep === 'type') {
+      return (
+        <>
+          <div className="flex items-center justify-between mb-[var(--premium-space-xl)]">
+            <h2 className="heading-xl text-[var(--premium-text-primary)]">
+              Add Transaction
+            </h2>
+            <button
+              onClick={handleCloseAddExpense}
+              className="
+                w-[40px] h-[40px]
+                bg-[var(--premium-surface-2)]
+                rounded-full
+                flex items-center justify-center
+                hover:bg-[var(--premium-surface-3)]
+                transition-all
+              "
+            >
+              <X size={20} className="text-[var(--premium-text-secondary)]" />
+            </button>
+          </div>
+
+          <div className="space-y-[var(--premium-space-md)]">
+            <p className="body-md text-[var(--premium-text-tertiary)] mb-[var(--premium-space-lg)]">
+              What type of transaction?
+            </p>
+
+            <button
+              onClick={() => setTransactionType('expense')}
+              className={`
+                w-full p-[var(--premium-space-xl)]
+                rounded-[var(--premium-radius-xl)]
+                transition-all duration-200
+                ${transactionType === 'expense'
+                  ? 'bg-gradient-to-r from-[#f093fb] to-[#f5576c] scale-95'
+                  : 'bg-[var(--premium-surface-2)] hover:bg-[var(--premium-surface-3)]'
+                }
+              `}
+            >
+              <div className="flex items-center gap-[var(--premium-space-md)]">
+                <div className={`
+                  w-[56px] h-[56px]
+                  rounded-full
+                  flex items-center justify-center
+                  ${transactionType === 'expense' ? 'bg-white/20' : 'bg-[var(--premium-error)]/20'}
+                `}>
+                  <ArrowUpRight size={28} className={transactionType === 'expense' ? 'text-white' : 'text-[var(--premium-error)]'} />
+                </div>
+                <div className="flex-1 text-left">
+                  <h3 className={`heading-md mb-[4px] ${transactionType === 'expense' ? 'text-white' : 'text-[var(--premium-text-primary)]'}`}>
+                    Expense
+                  </h3>
+                  <p className={`body-sm ${transactionType === 'expense' ? 'text-white/70' : 'text-[var(--premium-text-tertiary)]'}`}>
+                    Money spent on purchases
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => setTransactionType('income')}
+              className={`
+                w-full p-[var(--premium-space-xl)]
+                rounded-[var(--premium-radius-xl)]
+                transition-all duration-200
+                ${transactionType === 'income'
+                  ? 'bg-gradient-to-r from-[#4facfe] to-[#00f2fe] scale-95'
+                  : 'bg-[var(--premium-surface-2)] hover:bg-[var(--premium-surface-3)]'
+                }
+              `}
+            >
+              <div className="flex items-center gap-[var(--premium-space-md)]">
+                <div className={`
+                  w-[56px] h-[56px]
+                  rounded-full
+                  flex items-center justify-center
+                  ${transactionType === 'income' ? 'bg-white/20' : 'bg-[var(--premium-success)]/20'}
+                `}>
+                  <ArrowDownLeft size={28} className={transactionType === 'income' ? 'text-white' : 'text-[var(--premium-success)]'} />
+                </div>
+                <div className="flex-1 text-left">
+                  <h3 className={`heading-md mb-[4px] ${transactionType === 'income' ? 'text-white' : 'text-[var(--premium-text-primary)]'}`}>
+                    Income
+                  </h3>
+                  <p className={`body-sm ${transactionType === 'income' ? 'text-white/70' : 'text-[var(--premium-text-tertiary)]'}`}>
+                    Money received
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            <PremiumButton
+              variant="gradient-primary"
+              size="lg"
+              fullWidth
+              onClick={handleNext}
+            >
+              Continue
+            </PremiumButton>
+          </div>
+        </>
+      );
+    }
+
+    // Amount Entry
+    if (addExpenseStep === 'amount') {
+      return (
+        <>
+          <div className="flex items-center justify-between mb-[var(--premium-space-xl)]">
+            <h2 className="heading-xl text-[var(--premium-text-primary)]">
+              Enter Amount
+            </h2>
+            <button
+              onClick={handleCloseAddExpense}
+              className="
+                w-[40px] h-[40px]
+                bg-[var(--premium-surface-2)]
+                rounded-full
+                flex items-center justify-center
+                hover:bg-[var(--premium-surface-3)]
+                transition-all
+              "
+            >
+              <X size={20} className="text-[var(--premium-text-secondary)]" />
+            </button>
+          </div>
+
+          <div className="space-y-[var(--premium-space-lg)]">
+            <div className="text-center py-[var(--premium-space-2xl)]">
+              <DollarSign size={40} className="text-[var(--premium-text-muted)] mx-auto mb-[var(--premium-space-md)]" />
+              <input
+                type="number"
+                inputMode="decimal"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                autoFocus
+                className="
+                  w-full
+                  bg-transparent
+                  display-lg text-center text-[var(--premium-text-primary)]
+                  outline-none
+                  placeholder:text-[var(--premium-text-muted)]
+                "
+              />
+              <p className="body-md text-[var(--premium-text-tertiary)] mt-[var(--premium-space-sm)]">
+                {transactionType === 'expense' ? 'Expense Amount' : 'Income Amount'}
+              </p>
+            </div>
+
+            <div className="flex gap-[var(--premium-space-md)]">
+              <PremiumButton
+                variant="ghost"
+                size="lg"
+                fullWidth
+                onClick={() => setAddExpenseStep('type')}
+              >
+                Back
+              </PremiumButton>
+              <PremiumButton
+                variant="gradient-primary"
+                size="lg"
+                fullWidth
+                onClick={handleNext}
+                disabled={!amount || parseFloat(amount) <= 0}
+              >
+                Continue
+              </PremiumButton>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    // Category Selection
+    if (addExpenseStep === 'category') {
+      return (
+        <>
+          <div className="flex items-center justify-between mb-[var(--premium-space-xl)]">
+            <h2 className="heading-xl text-[var(--premium-text-primary)]">
+              Select Category
+            </h2>
+            <button
+              onClick={handleCloseAddExpense}
+              className="
+                w-[40px] h-[40px]
+                bg-[var(--premium-surface-2)]
+                rounded-full
+                flex items-center justify-center
+                hover:bg-[var(--premium-surface-3)]
+                transition-all
+              "
+            >
+              <X size={20} className="text-[var(--premium-text-secondary)]" />
+            </button>
+          </div>
+
+          <div className="space-y-[var(--premium-space-lg)]">
+            <PremiumCategoryPicker
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
+
+            <div className="flex gap-[var(--premium-space-md)]">
+              <PremiumButton
+                variant="ghost"
+                size="lg"
+                fullWidth
+                onClick={() => setAddExpenseStep('amount')}
+              >
+                Back
+              </PremiumButton>
+              <PremiumButton
+                variant="gradient-primary"
+                size="lg"
+                fullWidth
+                onClick={handleNext}
+                disabled={!selectedCategory}
+              >
+                Continue
+              </PremiumButton>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    // Details & Submit
+    if (addExpenseStep === 'details') {
+      return (
+        <>
+          <div className="flex items-center justify-between mb-[var(--premium-space-xl)]">
+            <h2 className="heading-xl text-[var(--premium-text-primary)]">
+              Add Details
+            </h2>
+            <button
+              onClick={handleCloseAddExpense}
+              className="
+                w-[40px] h-[40px]
+                bg-[var(--premium-surface-2)]
+                rounded-full
+                flex items-center justify-center
+                hover:bg-[var(--premium-surface-3)]
+                transition-all
+              "
+            >
+              <X size={20} className="text-[var(--premium-text-secondary)]" />
+            </button>
+          </div>
+
+          <div className="space-y-[var(--premium-space-lg)]">
+            {/* Date */}
+            <div>
+              <label className="label-sm text-[var(--premium-text-secondary)] mb-[var(--premium-space-sm)] block">
+                Date
+              </label>
+              <PremiumCalendar
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+              />
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="label-sm text-[var(--premium-text-secondary)] mb-[var(--premium-space-sm)] block">
+                Notes (Optional)
+              </label>
+              <div className="
+                bg-[var(--premium-surface-2)]
+                rounded-[var(--premium-radius-lg)]
+                p-[var(--premium-space-md)]
+                flex items-start gap-[var(--premium-space-sm)]
+              ">
+                <FileText size={20} className="text-[var(--premium-text-tertiary)] mt-[2px]" />
+                <textarea
+                  placeholder="Add a note..."
+                  rows={3}
+                  className="
+                    flex-1 bg-transparent
+                    body-md text-[var(--premium-text-primary)]
+                    outline-none resize-none
+                    placeholder:text-[var(--premium-text-muted)]
+                  "
+                />
+              </div>
+            </div>
+
+            {/* Submit */}
+            <div className="flex gap-[var(--premium-space-md)]">
+              <PremiumButton
+                variant="ghost"
+                size="lg"
+                fullWidth
+                onClick={() => setAddExpenseStep('category')}
+              >
+                Back
+              </PremiumButton>
+              <PremiumButton
+                variant="gradient-primary"
+                size="lg"
+                fullWidth
+                onClick={() => {
+                  // Handle submit
+                  handleSaveTransaction({
+                    amount: parseFloat(amount),
+                    type: transactionType,
+                    category: selectedCategory!,
+                    date: selectedDate,
+                  });
+                }}
+              >
+                Add {transactionType === 'expense' ? 'Expense' : 'Income'}
+              </PremiumButton>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -178,6 +520,10 @@ function PremiumAppContent() {
             setShowAddTransaction(false);
             setShowManageCategories(true);
           }}
+          onManageTemplates={() => {
+            setShowAddTransaction(false);
+            setShowManageTemplates(true);
+          }}
         />
       )}
 
@@ -191,16 +537,12 @@ function PremiumAppContent() {
         />
       )}
 
-      {/* Transactions Hub Screen (Full-screen overlay) */}
-      {showTransactionsHub && (
-        <TransactionsHubScreen
-          transactions={transactionsState.data}
+      {/* Manage Templates Screen (Full-screen overlay) */}
+      {showManageTemplates && (
+        <ManageTemplatesScreen
           onBack={() => {
-            setShowTransactionsHub(false);
-          }}
-          onAddTransaction={handleAddExpense}
-          onTransactionClick={(txn) => {
-            console.log('Transaction clicked:', txn);
+            setShowManageTemplates(false);
+            setShowAddTransaction(true);
           }}
         />
       )}
