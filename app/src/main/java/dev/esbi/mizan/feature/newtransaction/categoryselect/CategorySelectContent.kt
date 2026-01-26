@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +42,7 @@ import dev.esbi.mizan.feature.addtransaction.domain.model.Category
 import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.kit.icon.Icon as MizanIcon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon as MizanIcon
 
 // Neon category colors
 private object CategoryColors {
@@ -85,8 +84,8 @@ fun CategorySelectContent(
                 },
                 navigationIcon = {
                     IconButton(onClick = { accept(CategorySelectStore.Intent.NavigateBack) }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
+                            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_back),
                             contentDescription = "Back",
                             tint = MizanTheme.premium.text.primary
                         )

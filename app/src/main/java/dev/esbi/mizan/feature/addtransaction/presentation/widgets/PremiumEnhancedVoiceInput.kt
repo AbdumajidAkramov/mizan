@@ -23,7 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -67,7 +67,7 @@ fun PremiumEnhancedVoiceInput(
                 .clickable { if (isListening) onStopListening() else onStartListening() },
             contentAlignment = Alignment.Center
         ) {
-            Icon(
+            MizanIcon(
                 icon = if (isListening) {
                     IconValue(Icons.ic_micoff)
                 } else {

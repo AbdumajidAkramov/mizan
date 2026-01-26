@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -38,9 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import dev.esbi.mizan.R.drawable.ic_mic
-import dev.esbi.mizan.R.drawable.ic_stop
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
@@ -163,14 +160,14 @@ private fun VoiceInputStepContent(
                 contentAlignment = Alignment.Center
             ) {
                 if (state.isListening) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_micoff),
                         contentDescription = "Stop listening",
                         tint = Color.White,
                         modifier = Modifier.size(40.dp)
                     )
                 } else {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_mic),
                         contentDescription = "Start voice input",
                         tint = Color.White,

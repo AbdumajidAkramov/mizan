@@ -38,7 +38,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.steps.DetailsStep
 import dev.esbi.mizan.feature.addtransaction.presentation.steps.TransactionTypeStep
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.AmountInputStep
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -88,7 +88,7 @@ internal fun PremiumAddTransactionScreen(
                                 .clip(CircleShape)
                                 .background(MizanTheme.premium.colors.surface2)
                         ) {
-                            Icon(
+                            MizanIcon(
                                 icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_chevron_left),
                                 modifier = Modifier.size(20.dp),
                                 tint = MizanTheme.premium.text.secondary

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.financialmirror.domain.model.ScenarioIconType
 import dev.esbi.mizan.feature.financialmirror.domain.model.TimeMachineScenario
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -51,7 +51,7 @@ internal fun ScenarioCard(scenario: TimeMachineScenario) {
                     .background(MizanTheme.premium.gradients.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
+                MizanIcon(
                     icon = IconValue(iconRes),
                     modifier = Modifier.size(24.dp),
                     tint = Color.White
@@ -102,7 +102,7 @@ internal fun ScenarioCard(scenario: TimeMachineScenario) {
                 }
             }
 
-            Icon(
+            MizanIcon(
                 icon = IconValue(Icons.ic_arrow_right),
                 modifier = Modifier.size(20.dp),
                 tint = MizanTheme.premium.text.tertiary

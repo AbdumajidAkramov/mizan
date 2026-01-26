@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.financialmirror.domain.model.RiskAnalysis
 import dev.esbi.mizan.feature.financialmirror.domain.model.RiskStatus
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -43,7 +43,7 @@ internal fun RiskAnalysisCard(riskAnalysis: RiskAnalysis) {
                         .background(MizanTheme.premium.colors.warning.copy(0.2f)),
                     Alignment.Center
                 ) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_shield),
                         modifier = Modifier.size(16.dp),
                         tint = MizanTheme.premium.colors.warning

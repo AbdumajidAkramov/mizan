@@ -55,7 +55,7 @@ internal fun ComparisonCard(
                             .background(Brush.linearGradient(gradientColors)),
                         contentAlignment = Alignment.Center
                     ) {
-                        dev.esbi.mizan.ui.kit.icon.Icon(
+                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
                             icon = icon,
                             contentDescription = null,
                             tint = Color.White,

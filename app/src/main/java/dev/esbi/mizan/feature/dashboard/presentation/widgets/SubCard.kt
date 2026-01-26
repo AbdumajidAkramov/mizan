@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Red
@@ -45,7 +45,7 @@ fun SubCard(label: String, amount: Double, isIncome: Boolean, modifier: Modifier
                     .clip(CircleShape)
                     .background(if (isIncome) Color(0xFF047750) else Red), Alignment.Center
             ) {
-                Icon(
+                MizanIcon(
                     icon = IconValue(if (isIncome) Icons.ic_trend_up else Icons.ic_down_trend),
                     modifier = Modifier.size(14.dp),
                     tint = Color.White

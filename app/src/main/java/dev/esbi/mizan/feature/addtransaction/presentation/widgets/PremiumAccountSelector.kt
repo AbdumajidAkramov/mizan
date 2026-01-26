@@ -145,7 +145,7 @@ fun PremiumAccountSelector(
                             .background(account.color.copy(alpha = 0.2f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        dev.esbi.mizan.ui.kit.icon.Icon(
+                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
                             icon = account.icon,
                             contentDescription = null,
                             tint = account.color,

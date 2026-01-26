@@ -31,7 +31,7 @@ import dev.esbi.mizan.R.drawable.ic_arrow_down
 import dev.esbi.mizan.R.drawable.ic_arrow_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
@@ -161,7 +161,7 @@ private fun CashFlowItem(
                 .background(color.copy(alpha = 0.2f), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
+            MizanIcon(
                 icon = icon,
                 contentDescription = null,
                 tint = color,

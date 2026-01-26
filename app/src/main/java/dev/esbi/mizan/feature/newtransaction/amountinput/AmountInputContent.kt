@@ -75,7 +75,7 @@ internal fun AmountInputContent(
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        dev.esbi.mizan.ui.kit.icon.Icon(
+                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
                             icon = icon,
                             modifier = Modifier.size(22.dp),
                             tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary

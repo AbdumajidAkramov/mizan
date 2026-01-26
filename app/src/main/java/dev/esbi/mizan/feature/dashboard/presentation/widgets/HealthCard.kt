@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -53,7 +53,7 @@ fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_shield),
                         modifier = Modifier.size(24.dp),
                         tint = Purple
@@ -72,7 +72,7 @@ fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
                         .padding(8.dp, 4.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(Icons.ic_trend_up),
                             modifier = Modifier.size(14.dp),
                             tint = Cyan

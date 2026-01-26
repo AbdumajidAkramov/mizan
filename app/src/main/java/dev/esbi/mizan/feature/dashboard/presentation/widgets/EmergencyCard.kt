@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.CardBg
 import dev.esbi.mizan.ui.theme.CardBorderColor
@@ -54,7 +54,7 @@ fun EmergencyCard(current: Double, goal: Double, months: Int) {
         ) {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_shield),
                         modifier = Modifier.size(24.dp),
                         tint = Purple
@@ -127,7 +127,7 @@ fun EmergencyCard(current: Double, goal: Double, months: Int) {
                     .padding(16.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_trend_up),
                         modifier = Modifier.size(20.dp),
                         tint = Purple

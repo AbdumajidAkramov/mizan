@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -86,7 +86,7 @@ fun PremiumCalculatorKeypad(
                         contentAlignment = Alignment.Center
                     ) {
                         if (key == DEL_KEY) {
-                            Icon(
+                            MizanIcon(
                                 icon = IconValue(Icons.ic_backspace),
                                 modifier = Modifier,
                                 tint = textColor

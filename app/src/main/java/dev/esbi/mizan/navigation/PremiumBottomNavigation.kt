@@ -269,7 +269,7 @@ private fun PremiumFab(
                     onClick = onClick
                 )
         ) {
-            dev.esbi.mizan.ui.kit.icon.Icon(
+            dev.esbi.mizan.ui.kit.icon.MizanIcon(
                 icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_add),
                 contentDescription = "Add Expense",
                 tint = Color.White,

@@ -10,7 +10,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImagePainter
 
 @Composable
-fun Icon(
+fun MizanIcon(
     icon: IconValue,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.CardBg
 import dev.esbi.mizan.ui.theme.Cyan
@@ -50,7 +50,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                             .clip(CircleShape)
                             .background(Brush.linearGradient(listOf(Orange, Red))), Alignment.Center
                     ) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(Icons.ic_trend_up),
                             modifier = Modifier.size(16.dp),
                             tint = TextWhite
@@ -102,7 +102,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                             .clip(CircleShape)
                             .background(Cyan), Alignment.Center
                     ) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(Icons.ic_calendar_month),
                             modifier = Modifier.size(16.dp),
                             tint = TextWhite

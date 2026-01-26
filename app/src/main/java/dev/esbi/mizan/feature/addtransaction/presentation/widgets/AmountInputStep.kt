@@ -34,7 +34,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -129,7 +129,7 @@ internal fun AmountInputStep(
                             .clickable { onModeChange(mode) },
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        MizanIcon(
                             icon = icon,
                             modifier = Modifier.size(22.dp),
                             tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary

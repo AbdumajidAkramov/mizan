@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Purple2
@@ -75,7 +75,7 @@ fun NetWorthCard(worth: Double, change: Double, pct: Double) {
                         .padding(8.dp, 4.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(Icons.ic_trend_up),
                             modifier = Modifier.size(14.dp),
                             tint = Cyan

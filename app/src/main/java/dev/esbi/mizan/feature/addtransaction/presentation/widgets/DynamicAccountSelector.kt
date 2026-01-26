@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Account
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
@@ -91,7 +91,7 @@ private fun AccountItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Account Icon
-            Icon(
+            MizanIcon(
                 icon = IconValue(getAccountIconResource(account.iconName)),
                 modifier = Modifier.size(24.dp),
                 tint = if (isSelected) Color.White else MizanTheme.premium.colors.primary

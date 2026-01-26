@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.presentation.dialog.PremiumDatePickerDialog
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
@@ -179,7 +179,7 @@ internal fun ConfirmStep(
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            MizanIcon(
                                 icon = icon,
                                 tint = accentColor,
                                 modifier = Modifier.size(24.dp)
@@ -229,7 +229,7 @@ internal fun ConfirmStep(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
                     ) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calendar_month),
                             tint = MizanTheme.premium.text.tertiary,
                             modifier = Modifier.size(20.dp)
@@ -268,7 +268,7 @@ internal fun ConfirmStep(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
                     ) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_file),
                             tint = MizanTheme.premium.text.tertiary,
                             modifier = Modifier.size(20.dp)

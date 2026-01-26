@@ -30,7 +30,7 @@ import dev.esbi.mizan.R.drawable.ic_down_trend
 import dev.esbi.mizan.R.drawable.ic_trend_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -72,7 +72,7 @@ fun PremiumNetWorthCard(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_attach_money),
                         contentDescription = null,
                         tint = Color.White, // Icon doim oq bo'lishi ma'qul gradient ustida
@@ -110,7 +110,7 @@ fun PremiumNetWorthCard(
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
+                        MizanIcon(
                             icon = IconValue(if (isPositive) ic_trend_up else ic_down_trend),
                             contentDescription = null,
                             tint = pillColor,

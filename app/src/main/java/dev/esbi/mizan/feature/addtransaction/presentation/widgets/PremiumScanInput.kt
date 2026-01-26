@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -68,7 +68,7 @@ fun PremiumScanInput(
                         .clickable(onClick = onStartScan),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_camera_alt),
                         modifier = Modifier.size(48.dp),
                         tint = MizanTheme.premium.text.primary

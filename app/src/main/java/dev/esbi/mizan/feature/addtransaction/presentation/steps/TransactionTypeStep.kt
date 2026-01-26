@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.triple.getTypeConfig
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
@@ -92,7 +92,7 @@ internal fun TransactionTypeItem(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
+            MizanIcon(
                 icon = config.icon,
                 modifier = Modifier.size(28.dp),
                 tint = config.color
@@ -112,7 +112,7 @@ internal fun TransactionTypeItem(
             )
         }
         Spacer(Modifier.weight(1f))
-        Icon(
+        MizanIcon(
             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_chevron_right),
             modifier = Modifier,
             tint = MizanTheme.premium.text.muted

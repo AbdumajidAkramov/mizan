@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -178,7 +178,7 @@ private fun PremiumSubcategoryItem(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(getIconName(subcategory.iconName)),
                         modifier = Modifier.size(24.dp),
                         tint = categoryColor

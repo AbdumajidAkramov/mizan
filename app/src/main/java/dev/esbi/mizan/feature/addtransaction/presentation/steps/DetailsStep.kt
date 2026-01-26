@@ -32,7 +32,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumAccountSelector
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCategoryPicker
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.SubcategoryPicker
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
@@ -180,7 +180,7 @@ fun DetailsStep(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(
+                                    MizanIcon(
                                         icon = IconValue("edit"),
                                         modifier = Modifier.size(20.dp),
                                         tint = MizanTheme.premium.text.secondary
@@ -192,7 +192,7 @@ fun DetailsStep(
                                         color = MizanTheme.premium.text.secondary
                                     )
 
-                                    Icon(
+                                    MizanIcon(
                                         icon = IconValue("chevron_right"),
                                         modifier = Modifier.size(20.dp),
                                         tint = MizanTheme.premium.text.tertiary

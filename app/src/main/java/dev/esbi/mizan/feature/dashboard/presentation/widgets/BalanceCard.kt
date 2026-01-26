@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Pink
@@ -77,7 +77,7 @@ fun BalanceCard(total: Double, income: Double, expenses: Double) {
                                 .clip(CircleShape)
                                 .background(Color.White.copy(0.2f)), Alignment.Center
                         ) {
-                            Icon(
+                            MizanIcon(
                                 icon = IconValue(Icons.ic_wallet),
                                 modifier = Modifier.size(20.dp),
                                 tint = Color.White
@@ -91,7 +91,7 @@ fun BalanceCard(total: Double, income: Double, expenses: Double) {
                         )
                     }
                     IconButton({ show = !show }) {
-                        Icon(
+                        MizanIcon(
 
                             icon = IconValue(if (show) Icons.ic_visibility else Icons.ic_visibility_off),
                             modifier = Modifier.size(20.dp),

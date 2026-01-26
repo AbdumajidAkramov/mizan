@@ -30,7 +30,7 @@ import dev.esbi.mizan.R.drawable.ic_shield
 import dev.esbi.mizan.R.drawable.ic_trend_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -85,7 +85,7 @@ fun PremiumEmergencyFund(
             ) {
                 // Title & Icon
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(ic_shield), // Shield icon
                         contentDescription = null,
                         tint = activeColor,
@@ -224,7 +224,7 @@ fun PremiumEmergencyFund(
                 verticalAlignment = Alignment.Top
             ) {
                 if (isComplete) {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(Icons.ic_track_changes), // Target icon
                         contentDescription = null,
                         tint = MizanTheme.premium.colors.success,
@@ -246,7 +246,7 @@ fun PremiumEmergencyFund(
                         )
                     }
                 } else {
-                    Icon(
+                    MizanIcon(
                         icon = IconValue(ic_trend_up),
                         contentDescription = null,
                         tint = activeColor,

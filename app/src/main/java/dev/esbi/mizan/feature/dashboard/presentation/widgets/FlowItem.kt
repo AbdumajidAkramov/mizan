@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.Icon
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.Red
@@ -37,7 +37,7 @@ fun FlowItem(isIncome: Boolean, amount: Double) {
                 .clip(CircleShape)
                 .background(if (isIncome) Purple.copy(0.2f) else Red.copy(0.2f)), Alignment.Center
         ) {
-            Icon(
+            MizanIcon(
                 icon = IconValue(if (isIncome) Icons.ic_down_trend else Icons.ic_trend_up),
                 modifier = Modifier.size(16.dp),
                 tint = if (isIncome) Purple else Red

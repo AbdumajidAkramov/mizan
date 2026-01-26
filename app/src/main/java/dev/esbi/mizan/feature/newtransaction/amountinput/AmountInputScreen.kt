@@ -51,7 +51,7 @@ internal fun AmountInputScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { accept(AmountInputStore.Intent.NavigateBack) }) {
-                        dev.esbi.mizan.ui.kit.icon.Icon(
+                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
                             icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_back),
                             contentDescription = "Back",
                             tint = MizanTheme.premium.text.primary
