@@ -105,6 +105,9 @@ internal class AmountInputExecutor @Inject constructor(
 
     override fun executeIntent(intent: AmountInputStore.Intent) {
         when (intent) {
+            is AmountInputStore.Intent.NavigateBack -> {
+                publish(AmountInputStore.Label.Back)
+            }
             // Delegate Calculator logic
             is AmountInputStore.Intent.OnNumberClick -> {
                 val newKeypadState = manualInputHandler.handleNumberClick(

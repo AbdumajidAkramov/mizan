@@ -14,20 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
@@ -38,59 +30,16 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AmountInputContent(
-    viewModel: AmountInputViewModel,
-    onBackPressed: () -> Unit,
-    onSubmit: () -> Unit,
-    modifier: Modifier = Modifier
+    state: AmountInputState = AmountInputState(),
+    accept: (AmountInputStore.Intent) -> Unit
 ) {
-    val state by viewModel.state.collectAsState(initial = AmountInputState())
-    val accept = viewModel::onIntent
-    Column(
-        modifier = modifier.padding(top = 32.dp)
-    ) {
-        // Header Section
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = MizanTheme.premium.spacing.lg,
-                    vertical = MizanTheme.premium.spacing.md
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(
-                onClick = onBackPressed,
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(
-                        color = MizanTheme.premium.colors.surface2,
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MizanTheme.premium.text.secondary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Text(
-                text = "Enter Amount",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MizanTheme.premium.text.secondary,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(modifier = Modifier.width(32.dp)) // Balance the header
-        }
-
-        Spacer(Modifier.height(24.dp))
-
+    Column {
         // Mode Switcher
+        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
+
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -118,7 +67,7 @@ internal fun AmountInputContent(
                             .clip(CircleShape)
                             .background(if (isSelected) MizanTheme.premium.colors.surface3 else Color.Transparent)
                             .clickable {
-                                viewModel.onIntent(
+                                accept(
                                     AmountInputStore.Intent.OnModeChange(
                                         mode
                                     )
@@ -136,7 +85,6 @@ internal fun AmountInputContent(
             }
         }
 
-        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -146,14 +94,14 @@ internal fun AmountInputContent(
                 KeypadContent(
                     state = state.keypadState,
                     onNumberClick = { key ->
-                        viewModel.onIntent(
+                        accept(
                             AmountInputStore.Intent.OnNumberClick(
                                 key
                             )
                         )
                     },
                     onSubmit = {
-                        viewModel.onIntent(AmountInputStore.Intent.OnSubmit)
+                        accept(AmountInputStore.Intent.OnSubmit)
                     }
                 )
             }
@@ -161,18 +109,18 @@ internal fun AmountInputContent(
             InputMode.Voice -> VoiceInputStep(
                 state = state.voiceInputState,
                 onStartListening = {
-                    viewModel.onIntent(AmountInputStore.Intent.OnStartListening)
+                    accept(AmountInputStore.Intent.OnStartListening)
                 },
                 onStopListening = {
-                    viewModel.onIntent(AmountInputStore.Intent.OnStopListening)
+                    accept(AmountInputStore.Intent.OnStopListening)
                 },
                 onVoiceRecognitionError = { error ->
                     // Clear error and restart listening
-                    viewModel.onIntent(AmountInputStore.Intent.OnVoiceRecognitionError(error))
+                    accept(AmountInputStore.Intent.OnVoiceRecognitionError(error))
                 },
                 onSubmitVoice = { voiceText ->
                     // Parse the voice text again and apply it
-                    viewModel.onIntent(AmountInputStore.Intent.OnVoiceResult(voiceText))
+                    accept(AmountInputStore.Intent.OnVoiceResult(voiceText))
                 }
             )
 

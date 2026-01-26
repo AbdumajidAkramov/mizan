@@ -24,6 +24,7 @@ interface AmountInputStore :
      * Intents for the Amount Input screen
      */
     sealed interface Intent {
+        data object NavigateBack : Intent
         class OnNumberClick(val key: Keypad) : Intent
         class OnModeChange(val mode: InputMode) : Intent
         object OnSubmit : Intent
@@ -70,5 +71,6 @@ interface AmountInputStore :
      */
     sealed interface Label {
         object MapsToNextStep : Label
+        object Back : Label
     }
 }

@@ -55,6 +55,7 @@ internal fun KeypadContent(
             modifier = Modifier
                 .padding(vertical = MizanTheme.premium.spacing.md)
         )
+        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
 
         Box(
             modifier = Modifier
