@@ -12,6 +12,7 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHand
 import dev.esbi.mizan.feature.newtransaction.amountinput.voice.TransactionVoiceParser
 import dev.esbi.mizan.feature.newtransaction.amountinput.voice.VoiceRecognitionManager
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserMessage.ParentCategorySelected
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -296,8 +297,12 @@ internal class NewTransactionExecutor @Inject constructor(
                 selectSubCategory(intent.category)
             }
 
-            is NewTransactionStore.CategoryChooserIntent.NavigateBack -> {
-                handleNavigateBack()
+            is NewTransactionStore.CategoryChooserIntent.Continue -> {
+                val selected = state().categoryChooserState.selectedCategory
+                if (selected != null) {
+                    pages.push(TransactionStep.ConfirmSave())
+                    updateCurrentPage()
+                }
             }
 
             is NewTransactionStore.CategoryChooserIntent.RetryLoad -> {
@@ -329,35 +334,14 @@ internal class NewTransactionExecutor @Inject constructor(
     }
 
     private fun selectParentCategory(category: Category) {
-        val state = state().categoryChooserState
-        val hasSubcategories = state.categories.any { it.parentId == category.id }
-
-        if (hasSubcategories) {
-            dispatch(NewTransactionStore.CategoryChooserMessage.ParentCategorySelected(category.id))
-        } else {
-            // This category doesn't have children, treat as final selection
-            dispatch(NewTransactionStore.CategoryChooserMessage.CategorySelected(category))
-            pages.push(TransactionStep.ConfirmSave())
-            updateCurrentPage()
+        if (state().categoryChooserState.selectedParentId == category.id) {
+            dispatch(ParentCategorySelected(null))
+            return
         }
+        dispatch(ParentCategorySelected(category))
     }
 
     private fun selectSubCategory(category: Category) {
-        dispatch(NewTransactionStore.CategoryChooserMessage.CategorySelected(category))
-        pages.push(TransactionStep.ConfirmSave())
-        updateCurrentPage()
+        dispatch(NewTransactionStore.CategoryChooserMessage.SubCategorySelected(category))
     }
-
-    private fun handleNavigateBack() {
-        val currentState = state().categoryChooserState
-
-        if (currentState.selectedParentId != null) {
-            // Go back to parent categories
-            dispatch(NewTransactionStore.CategoryChooserMessage.NavigateToParent)
-        } else {
-            // Go back to previous screen
-            publish(NewTransactionStore.Label.Back)
-        }
-    }
-
 }

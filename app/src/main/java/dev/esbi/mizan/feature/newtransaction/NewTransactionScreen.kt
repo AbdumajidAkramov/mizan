@@ -115,6 +115,10 @@ internal fun NewTransactionScreen(
                     )
                 }
 
+                is TransactionStep.Transfer -> {
+
+                }
+
                 else -> {}
             }
         }

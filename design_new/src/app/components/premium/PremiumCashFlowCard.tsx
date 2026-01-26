@@ -85,18 +85,14 @@ export function PremiumCashFlowCard({
       </div>
 
       {/* Mini bar chart */}
-      <div className="h-[50px] w-full min-h-[50px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="h-[50px] w-full min-h-[50px]" style={{ minHeight: '50px', height: '50px' }}>
+        <ResponsiveContainer width="100%" height={50}>
           <BarChart data={chartData}>
             <Bar dataKey="income" radius={[4, 4, 0, 0]}>
-              {chartData.map((_, index) => (
-                <Cell key={`income-${index}`} fill="var(--premium-emerald)" />
-              ))}
+              <Cell fill="var(--premium-emerald)" />
             </Bar>
-            <Bar dataKey="expense" radius={[4, 4, 0, 0]}>
-              {chartData.map((_, index) => (
-                <Cell key={`expense-${index}`} fill="var(--premium-error)" />
-              ))}
+            <Bar dataKey="expenses" radius={[4, 4, 0, 0]}>
+              <Cell fill="var(--premium-error)" />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

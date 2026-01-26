@@ -1,18 +1,18 @@
 /**
  * Manage Categories Screen
- *
+ * 
  * STANDALONE FULL-SCREEN COMPONENT
  * This is a completely independent screen with no dependencies on Dashboard or other screens.
- *
+ * 
  * @architecture MVI Pattern - Explicit UI State Management
  * @design Material 3 with 8dp grid system and glassmorphism
  * @navigation Callback-based navigation for easy integration with React Router or Android Navigation
- *
+ * 
  * ANDROID MAPPING:
  * - This should be a separate Fragment/Destination in Android Navigation Component
  * - Navigate here from CategorySelectionScreen via "Manage" button
  * - Back navigation returns to CategorySelectionScreen
- *
+ * 
  * USAGE:
  * ```tsx
  * <ManageCategoriesScreen
@@ -21,27 +21,14 @@
  * ```
  */
 
-import { useState, useCallback } from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import {
-  ArrowLeft,
-  Plus,
-  GripVertical,
-  Edit2,
-  Trash2,
-  ChevronRight,
-} from "lucide-react";
-import {
-  AddEditCategoryModal,
-  type CategoryData,
-} from "../components/premium/AddEditCategoryModal";
-import { CategoryIcon } from "../components/atoms/CategoryIcon";
-import {
-  CATEGORY_METADATA,
-  CATEGORY_SUBCATEGORIES,
-} from "../../mocks/data";
-import type { TransactionCategory } from "../../types/domain";
+import { useState, useCallback } from 'react';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ArrowLeft, Plus, GripVertical, Edit2, Trash2, ChevronRight } from 'lucide-react';
+import { AddEditCategoryModal, type CategoryData } from '../components/premium/AddEditCategoryModal';
+import { CategoryIcon } from '../components/atoms/CategoryIcon';
+import { CATEGORY_METADATA, CATEGORY_SUBCATEGORIES } from '../../mocks/data';
+import type { TransactionCategory } from '../../types/domain';
 
 /**
  * Category item for drag and drop
@@ -57,7 +44,7 @@ interface CategoryItem {
   subcategories?: string[];
 }
 
-const DRAG_TYPE = "category-item";
+const DRAG_TYPE = 'category-item';
 
 /**
  * Draggable Category Row Component
@@ -102,8 +89,7 @@ function DraggableCategoryRow({
     }),
   });
 
-  const hasSubcategories =
-    category.subcategories && category.subcategories.length > 0;
+  const hasSubcategories = category.subcategories && category.subcategories.length > 0;
 
   return (
     <>
@@ -111,8 +97,8 @@ function DraggableCategoryRow({
         ref={(node) => preview(drop(node))}
         className={`
           transition-all duration-200
-          ${isDragging ? "opacity-50" : "opacity-100"}
-          ${isOver ? "bg-[var(--premium-surface-3)]" : ""}
+          ${isDragging ? 'opacity-50' : 'opacity-100'}
+          ${isOver ? 'bg-[var(--premium-surface-3)]' : ''}
         `}
       >
         <div
@@ -182,7 +168,7 @@ function DraggableCategoryRow({
                 className={`
                   text-[var(--premium-text-secondary)]
                   transition-transform duration-200
-                  ${isExpanded ? "rotate-90" : ""}
+                  ${isExpanded ? 'rotate-90' : ''}
                 `}
               />
             </button>
@@ -271,51 +257,35 @@ export interface ManageCategoriesScreenProps {
   onBack: () => void;
 }
 
-export function ManageCategoriesScreen({
-  onBack,
-}: ManageCategoriesScreenProps) {
+export function ManageCategoriesScreen({ onBack }: ManageCategoriesScreenProps) {
   // Initialize categories from mock data
-  const [categories, setCategories] = useState<CategoryItem[]>(
-    () =>
-      CATEGORY_METADATA.filter(
-        (cat) => cat.id !== "income",
-      ).map((cat) => ({
-        id: cat.id,
-        name: cat.label,
-        icon: cat.iconName,
-        color: cat.colorToken,
-        colorToken: cat.colorToken,
-        isSubcategory: false,
-        subcategories: CATEGORY_SUBCATEGORIES[cat.id] || [],
-      })),
+  const [categories, setCategories] = useState<CategoryItem[]>(() =>
+    CATEGORY_METADATA.filter(cat => cat.id !== 'income').map(cat => ({
+      id: cat.id,
+      name: cat.label,
+      icon: cat.iconName,
+      color: cat.colorToken,
+      colorToken: cat.colorToken,
+      isSubcategory: false,
+      subcategories: CATEGORY_SUBCATEGORIES[cat.id] || [],
+    }))
   );
 
-  const [showAddEditModal, setShowAddEditModal] =
-    useState(false);
-  const [editingCategory, setEditingCategory] = useState<
-    CategoryData | undefined
-  >();
-  const [expandedCategories, setExpandedCategories] = useState<
-    Set<string>
-  >(new Set());
+  const [showAddEditModal, setShowAddEditModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<CategoryData | undefined>();
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   /**
    * Handle reordering categories
    */
-  const handleMoveCategory = useCallback(
-    (dragIndex: number, hoverIndex: number) => {
-      setCategories((prevCategories) => {
-        const newCategories = [...prevCategories];
-        const [draggedItem] = newCategories.splice(
-          dragIndex,
-          1,
-        );
-        newCategories.splice(hoverIndex, 0, draggedItem);
-        return newCategories;
-      });
-    },
-    [],
-  );
+  const handleMoveCategory = useCallback((dragIndex: number, hoverIndex: number) => {
+    setCategories((prevCategories) => {
+      const newCategories = [...prevCategories];
+      const [draggedItem] = newCategories.splice(dragIndex, 1);
+      newCategories.splice(hoverIndex, 0, draggedItem);
+      return newCategories;
+    });
+  }, []);
 
   /**
    * Handle edit category
@@ -338,9 +308,7 @@ export function ManageCategoriesScreen({
    */
   const handleDeleteCategory = (id: string) => {
     // TODO: Show confirmation dialog
-    setCategories((prev) =>
-      prev.filter((cat) => cat.id !== id),
-    );
+    setCategories((prev) => prev.filter((cat) => cat.id !== id));
   };
 
   /**
@@ -361,8 +329,8 @@ export function ManageCategoriesScreen({
                 isSubcategory: categoryData.isSubcategory,
                 parentCategory: categoryData.parentCategory,
               }
-            : cat,
-        ),
+            : cat
+        )
       );
     } else {
       // Add new
@@ -407,24 +375,20 @@ export function ManageCategoriesScreen({
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div
-        className="
+      <div className="
         min-h-screen
         bg-[var(--premium-bg-primary)]
         flex flex-col
-      "
-      >
+      ">
         {/* Top Toolbar */}
-        <div
-          className="
+        <div className="
           sticky top-0 z-10
           bg-[var(--premium-glass-bg)]
           backdrop-blur-[var(--premium-glass-blur)]
           border-b border-[var(--premium-glass-border)]
           px-[var(--premium-space-lg)]
           py-[var(--premium-space-md)]
-        "
-        >
+        ">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-[var(--premium-space-md)]">
               <button
@@ -471,18 +435,15 @@ export function ManageCategoriesScreen({
         <div className="flex-1 p-[var(--premium-space-lg)]">
           <div className="max-w-[768px] mx-auto">
             {/* Info Card */}
-            <div
-              className="
+            <div className="
               p-[var(--premium-space-lg)]
               rounded-[var(--premium-radius-xl)]
               bg-[var(--premium-surface-2)]
               mb-[var(--premium-space-xl)]
-            "
-            >
+            ">
               <p className="body-sm text-[var(--premium-text-secondary)]">
-                Drag and drop to reorder categories. Click edit
-                to modify or delete to remove. Expand categories
-                to view their subcategories.
+                Drag and drop to reorder categories. Click edit to modify or delete to remove.
+                Expand categories to view their subcategories.
               </p>
             </div>
 
@@ -497,35 +458,26 @@ export function ManageCategoriesScreen({
                   onEdit={handleEditCategory}
                   onDelete={handleDeleteCategory}
                   onExpand={handleToggleExpand}
-                  isExpanded={expandedCategories.has(
-                    category.id,
-                  )}
+                  isExpanded={expandedCategories.has(category.id)}
                 />
               ))}
             </div>
 
             {/* Empty State */}
             {categories.length === 0 && (
-              <div
-                className="
+              <div className="
                 py-[var(--premium-space-2xl)]
                 text-center
-              "
-              >
-                <div
-                  className="
+              ">
+                <div className="
                   w-[80px] h-[80px]
                   rounded-full
                   bg-[var(--premium-surface-2)]
                   flex items-center justify-center
                   mx-auto
                   mb-[var(--premium-space-lg)]
-                "
-                >
-                  <Plus
-                    size={32}
-                    className="text-[var(--premium-text-tertiary)]"
-                  />
+                ">
+                  <Plus size={32} className="text-[var(--premium-text-tertiary)]" />
                 </div>
                 <p className="body-md text-[var(--premium-text-secondary)] mb-[var(--premium-space-md)]">
                   No categories yet

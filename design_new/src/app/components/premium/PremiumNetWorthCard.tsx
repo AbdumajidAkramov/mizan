@@ -80,8 +80,8 @@ export function PremiumNetWorthCard({
         </div>
 
         {/* Mini trend chart */}
-        <div className="h-[60px] w-full min-h-[60px] -mx-[var(--premium-space-sm)]">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[60px] w-full min-h-[60px] -mx-[var(--premium-space-sm)]" style={{ minHeight: '60px', height: '60px' }}>
+          <ResponsiveContainer width="100%" height={60}>
             <LineChart data={chartData}>
               <defs>
                 <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">

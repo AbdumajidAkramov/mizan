@@ -1,22 +1,23 @@
 package dev.esbi.mizan.feature.newtransaction.categorychooser
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,11 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectParentCategory
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectSubCategory
 import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 
@@ -65,37 +68,44 @@ fun CategoryChooserContent(
     state: CategoryChooserState,
     accept: (NewTransactionStore.Intent) -> Unit
 ) {
-
-
+    val tintColor = when (state.transactionType) {
+        Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
+        else -> CategoryColors.FoodPink
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(MizanTheme.premium.spacing.lg),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(horizontal = MizanTheme.premium.spacing.lg)
+            .padding(top = MizanTheme.premium.spacing.lg, bottom = MizanTheme.premium.spacing.lg),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
+        // Header
+
         Text(
-            "Amount",
-            style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.tertiary
+            text = state.transactionType.name.lowercase().replaceFirstChar { it.uppercase() },
+            style = MizanTheme.premium.typography.labelMd,
+            color = tintColor
         )
+        Spacer(Modifier.height(8.dp))
         Text(
-            amount.annotatedString(),
-            style = MizanTheme.typography.displayMd,
-            color = MizanTheme.premium.text.primary
+            text = amount.annotatedString(),
+            style = MizanTheme.premium.typography.displayMd,
+            color = tintColor
         )
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(12.dp))
         Text(
-            "Choose a category",
-            style = MizanTheme.typography.bodySm,
+            text = "Choose a category",
+            style = MizanTheme.premium.typography.bodySm,
             color = MizanTheme.premium.text.tertiary
         )
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(20.dp))
 
+        // Content
         Box(
             modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) {
             when {
                 state.isLoading -> {
@@ -112,28 +122,167 @@ fun CategoryChooserContent(
                 }
 
                 else -> {
-                    CategoryGrid(
+                    CategoryAccordionList(
                         state = state,
-                        onCategoryClick = { category ->
-                            if (state.selectedParentId != null) {
-                                accept(
-                                    NewTransactionStore.CategoryChooserIntent.SelectSubCategory(
-                                        category
-                                    )
-                                )
-                            } else {
-                                accept(
-                                    NewTransactionStore.CategoryChooserIntent.SelectParentCategory(
-                                        category
-                                    )
-                                )
-                            }
+                        selectionTint = tintColor,
+                        onParentClick = { parent ->
+                            accept(SelectParentCategory(parent))
+                        },
+                        onSubCategoryClick = { sub ->
+                            accept(SelectSubCategory(sub))
                         }
                     )
                 }
             }
         }
 
+        Spacer(Modifier.height(16.dp))
+
+        // Footer
+        Button(
+            onClick = { accept(NewTransactionStore.CategoryChooserIntent.Continue) },
+            enabled = state.selectedCategory != null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            shape = RoundedCornerShape(28.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = tintColor,
+                disabledContainerColor = MizanTheme.premium.colors.surface2,
+                contentColor = MizanTheme.premium.text.primary,
+                disabledContentColor = MizanTheme.premium.text.tertiary
+            )
+        ) {
+            Text(
+                text = "Continue",
+                style = MizanTheme.premium.typography.labelLg,
+                color = TextWhite
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CategoryAccordionList(
+    state: CategoryChooserState,
+    selectionTint: Color,
+    onParentClick: (Category) -> Unit,
+    onSubCategoryClick: (Category) -> Unit
+) {
+    val parents = state.mainCategories
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(parents, key = { it.id }) { parent ->
+            val subCategories = state.categories
+                .filter { it.parentId == parent.id }
+                .sortedBy { it.orderIndex }
+
+            val isSelected = state.selectedParentId == parent.id
+
+            val expanded = state.selectedParentId == parent.id && subCategories.isNotEmpty()
+
+            val parentModifier = if (isSelected) {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        color = selectionTint.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .clickable {
+                        onParentClick(parent)
+                    }
+                    .padding(2.dp)
+                    .animateContentSize()
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable {
+                        onParentClick(parent)
+                    }
+                    .animateContentSize()
+            }
+
+            Surface(
+                modifier = parentModifier,
+                color = if (isSelected) {
+                    selectionTint.copy(alpha = 0.15f)
+                } else {
+                    MizanTheme.premium.colors.surface2
+                },
+                shape = RoundedCornerShape(20.dp),
+                tonalElevation = 0.dp,
+                shadowElevation = 0.dp,
+                border = if (isSelected) {
+                    androidx.compose.foundation.BorderStroke(2.dp, selectionTint)
+                } else {
+                    null
+                }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp)
+                ) {
+                    Text(
+                        text = parent.name,
+                        style = MizanTheme.premium.typography.bodyMd,
+                        color = if (isSelected) selectionTint else MizanTheme.premium.text.primary,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    if (expanded) {
+                        Spacer(Modifier.height(10.dp))
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            subCategories.forEach { sub ->
+                                SubCategoryChip(
+                                    label = sub.name,
+                                    selected = state.selectedCategory?.id == sub.id,
+                                    selectionTint = selectionTint,
+                                    onClick = { onSubCategoryClick(sub) }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SubCategoryChip(
+    label: String,
+    selected: Boolean,
+    selectionTint: Color,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .clip(RoundedCornerShape(999.dp))
+            .clickable { onClick() },
+        color = if (selected) selectionTint else MizanTheme.premium.colors.surface3,
+        shape = RoundedCornerShape(999.dp),
+        border = null
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            style = MizanTheme.premium.typography.labelMd,
+            color = if (selected) TextWhite else MizanTheme.premium.text.secondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -215,75 +364,6 @@ internal fun ErrorView(
     }
 }
 
-@Composable
-internal fun CategoryGrid(
-    state: CategoryChooserState,
-    onCategoryClick: (Category) -> Unit
-) {
-    val currentCategories = state.currentCategories
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(currentCategories) { category ->
-            CategoryItem(
-                category = category,
-                onClick = { onCategoryClick(category) }
-            )
-        }
-    }
-}
-
-
-@Composable
-internal fun CategoryItem(
-    category: Category,
-    onClick: () -> Unit
-) {
-    val neonColor = getCategoryColor(category.name)
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(24.dp))
-            .clickable { onClick() },
-        shape = RoundedCornerShape(24.dp),
-        color = MizanTheme.premium.colors.surface2
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // Icon - larger, no background
-            MizanIcon(
-                icon = getIcon(category.iconName),
-                modifier = Modifier.size(36.dp),
-                tint = neonColor
-            )
-
-            Spacer(Modifier.height(12.dp))
-
-            // Label - muted white
-            Text(
-                text = category.name,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = MizanTheme.premium.text.secondary,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
 
 // Helper function to get neon color based on category name
 private fun getCategoryColor(categoryName: String): Color {

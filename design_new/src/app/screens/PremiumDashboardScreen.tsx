@@ -15,19 +15,17 @@ import { TrendingUp, PieChart, Wallet, Calendar, ArrowRight } from 'lucide-react
 import type { UiState, DashboardSummary, Transaction, CategorySpending } from '../../types/domain';
 import { AreaChart, Area, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, XAxis, YAxis, Tooltip } from 'recharts';
 import { MOCK_TRANSACTIONS } from '../../mocks/data';
-import { LoadingSkeleton } from '../components/shared/LoadingSkeleton';
+import { LoadingSkeleton } from '../components/atoms/LoadingSkeleton';
 import { ErrorState } from '../components/molecules/ErrorState';
 
 export interface PremiumDashboardScreenProps {
   dashboardState: UiState<DashboardSummary>;
   userDisplayName?: string;
-  onViewTransactionsHub?: () => void;
 }
 
 export function PremiumDashboardScreen({
   dashboardState,
   userDisplayName = 'User',
-  onViewTransactionsHub,
 }: PremiumDashboardScreenProps) {
   // Loading state
   if (dashboardState.status === 'loading') {
@@ -176,8 +174,8 @@ export function PremiumDashboardScreen({
           </button>
         </div>
         
-        <div className="w-full h-[180px] min-h-[180px]">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full min-h-[180px]">
+          <ResponsiveContainer width="100%" height={180}>
             <AreaChart data={data.weeklySpending}>
               <defs>
                 <linearGradient id="spendingGradient" x1="0" y1="0" x2="0" y2="1">
@@ -233,8 +231,8 @@ export function PremiumDashboardScreen({
         <PremiumCard variant="glass" className="p-[var(--premium-space-lg)]">
           <div className="flex items-center gap-[var(--premium-space-lg)]">
             {/* Donut Chart */}
-            <div className="w-[140px] h-[140px] min-w-[140px] min-h-[140px] flex-shrink-0">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="w-[140px] h-[140px] min-w-[140px] min-h-[140px] flex-shrink-0" style={{ minWidth: '140px', minHeight: '140px' }}>
+              <ResponsiveContainer width={140} height={140}>
                 <RechartsPieChart>
                   <Pie
                     data={data.categorySpending || []}
@@ -285,7 +283,7 @@ export function PremiumDashboardScreen({
           <h3 className="heading-md text-[var(--premium-text-primary)]">
             Recent Transactions
           </h3>
-          <button className="body-sm text-[var(--premium-primary)]" onClick={onViewTransactionsHub}>
+          <button className="body-sm text-[var(--premium-primary)]">
             See all
           </button>
         </div>

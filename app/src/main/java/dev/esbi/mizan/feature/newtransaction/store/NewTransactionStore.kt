@@ -24,7 +24,7 @@ interface NewTransactionStore :
         val keypadState: KeypadState = KeypadState(),
         val voiceInputState: VoiceInputState = VoiceInputState(),
         val cameraInputState: CameraInputState = CameraInputState(),
-        val categoryChooserState: CategoryChooserState = CategoryChooserState(),
+        val categoryChooserState: CategoryChooserState = CategoryChooserState(Transaction.Type.EXPENSE),
         val activePad: ActivePads = ActivePads.AmountPad()
     ) {
         companion object
@@ -52,7 +52,7 @@ interface NewTransactionStore :
         object LoadCategories : CategoryChooserIntent
         class SelectParentCategory(val category: Category) : CategoryChooserIntent
         class SelectSubCategory(val category: Category) : CategoryChooserIntent
-        object NavigateBack : CategoryChooserIntent
+        object Continue : CategoryChooserIntent
         data object RetryLoad : CategoryChooserIntent
         object ManageCategories : CategoryChooserIntent
     }
@@ -92,10 +92,9 @@ interface NewTransactionStore :
         class CategoriesLoaded(val categories: List<Category>) : CategoryChooserMessage
         class LoadingChanged(val isLoading: Boolean) : CategoryChooserMessage
         class ErrorChanged(val error: String?) : CategoryChooserMessage
-        class ParentCategorySelected(val parentId: Long) : CategoryChooserMessage
+        class ParentCategorySelected(val category: Category?) : CategoryChooserMessage
+        class SubCategorySelected(val category: Category) : CategoryChooserMessage
         object NavigateToParent : CategoryChooserMessage
-        class TransactionTypeChanged(val transactionType: TransactionType) : CategoryChooserMessage
-        class CategorySelected(val category: Category) : CategoryChooserMessage
     }
 
 

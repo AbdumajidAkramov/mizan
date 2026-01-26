@@ -136,46 +136,44 @@ export function PremiumStatisticsScreen({ dashboardState }: PremiumStatisticsScr
           </p>
         </div>
 
-        <div className="w-full h-[200px] min-h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={monthComparisonData}>
-              <defs>
-                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#667eea" />
-                  <stop offset="100%" stopColor="#764ba2" />
-                </linearGradient>
-              </defs>
-              <XAxis
-                dataKey="month"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'var(--premium-surface-3)',
-                  border: '1px solid var(--premium-glass-border)',
-                  borderRadius: 'var(--premium-radius-sm)',
-                  fontSize: '12px',
-                  color: 'var(--premium-text-primary)',
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey="amount"
-                stroke="url(#lineGradient)"
-                strokeWidth={3}
-                dot={{ fill: '#667eea', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={monthComparisonData}>
+            <defs>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#667eea" />
+                <stop offset="100%" stopColor="#764ba2" />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey="month"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'var(--premium-surface-3)',
+                border: '1px solid var(--premium-glass-border)',
+                borderRadius: 'var(--premium-radius-sm)',
+                fontSize: '12px',
+                color: 'var(--premium-text-primary)',
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="amount"
+              stroke="url(#lineGradient)"
+              strokeWidth={3}
+              dot={{ fill: '#667eea', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </PremiumCard>
 
       {/* Category Breakdown */}

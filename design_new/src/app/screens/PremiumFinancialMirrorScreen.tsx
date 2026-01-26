@@ -148,8 +148,8 @@ export function PremiumFinancialMirrorScreen() {
         </div>
 
         {/* Projection Chart */}
-        <div className="w-full h-[250px] min-h-[250px]">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="w-full min-h-[250px]">
+          <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={NET_WORTH_PROJECTION}>
               <defs>
                 <linearGradient id="netWorthProjection" x1="0" y1="0" x2="0" y2="1">
@@ -184,7 +184,7 @@ export function PremiumFinancialMirrorScreen() {
               />
               <Area
                 type="monotone"
-                dataKey={projectionView}
+                dataKey="value"
                 stroke="var(--premium-emerald)"
                 strokeWidth={3}
                 fill="url(#netWorthProjection)"

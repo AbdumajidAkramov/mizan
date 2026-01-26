@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { X, Calculator, Mic, Camera, ChevronRight, ArrowUpRight, ArrowDownLeft, ArrowLeftRight } from 'lucide-react';
+import { X, Calculator, Mic, Camera, ChevronRight, ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Wallet, Building2, PiggyBank, CreditCard, Landmark } from 'lucide-react';
 import { PremiumCategoryPicker } from '../components/premium/PremiumCategoryPicker';
 import { PremiumCategoryPickerEnhanced } from '../components/premium/PremiumCategoryPickerEnhanced';
 import { PremiumAccountSelector } from '../components/premium/PremiumAccountSelector';
@@ -15,6 +15,16 @@ import { PremiumScanInput } from '../components/premium/PremiumScanInput';
 import { PremiumCalendar } from '../components/premium/PremiumCalendar';
 import type { TransactionCategory, TransactionType } from '../../types/domain';
 import { Calendar, FileText } from 'lucide-react';
+import { CATEGORY_METADATA, CATEGORY_SUBCATEGORIES } from '../../mocks/data';
+
+// Account data for horizontal scroll
+const MOCK_ACCOUNTS = [
+  { id: 'cash', name: 'Cash', type: 'cash', balance: 1250.00, icon: Wallet, color: '#10b981' },
+  { id: 'bank-checking', name: 'Bank Checking', type: 'bank', balance: 5430.50, icon: Building2, color: '#667eea' },
+  { id: 'savings', name: 'Savings Account', type: 'savings', balance: 12500.00, icon: PiggyBank, color: '#4facfe' },
+  { id: 'credit-card', name: 'Credit Card', type: 'credit', balance: -850.00, icon: CreditCard, color: '#f5576c' },
+  { id: 'investment', name: 'Investment', type: 'investment', balance: 8200.00, icon: Landmark, color: '#c471f5' },
+];
 
 export interface PremiumAddTransactionScreenProps {
   onClose: () => void;
@@ -640,51 +650,285 @@ export function PremiumAddTransactionScreen({
               </div>
 
               {transactionType === 'transfer' ? (
-                <div className="space-y-[var(--premium-space-xl)]">
-                  <PremiumAccountSelector
-                    label="From Account"
-                    selectedAccountId={fromAccountId}
-                    onSelectAccount={setFromAccountId}
-                    excludeAccountId={toAccountId}
-                  />
-                  
-                  <PremiumAccountSelector
-                    label="To Account"
-                    selectedAccountId={toAccountId}
-                    onSelectAccount={setToAccountId}
-                    excludeAccountId={fromAccountId}
-                  />
+                <div className="space-y-[var(--premium-space-lg)]">
+                  {/* From Account - Horizontal Scroll */}
+                  <div>
+                    <p className="body-sm text-[var(--premium-text-tertiary)] mb-[var(--premium-space-md)] px-[4px]">
+                      From Account
+                    </p>
+                    <div className="overflow-x-auto -mx-[var(--premium-space-lg)] px-[var(--premium-space-lg)] pb-[8px] scrollbar-hide">
+                      <div className="flex gap-[var(--premium-space-md)] min-w-min">
+                        {MOCK_ACCOUNTS.filter(acc => acc.id !== toAccountId).map((account) => {
+                          const Icon = account.icon;
+                          const isSelected = fromAccountId === account.id;
+                          
+                          return (
+                            <button
+                              key={account.id}
+                              onClick={() => setFromAccountId(account.id)}
+                              className={`
+                                flex-shrink-0
+                                w-[180px]
+                                p-[var(--premium-space-md)]
+                                rounded-[var(--premium-radius-xl)]
+                                transition-all duration-200
+                                ${isSelected
+                                  ? 'bg-[var(--premium-emerald)]/15 border-2 border-[var(--premium-emerald)] shadow-[0_0_0_4px_rgba(16,185,129,0.1)]'
+                                  : 'bg-[var(--premium-surface-2)] border-2 border-transparent hover:bg-[var(--premium-surface-3)] active:scale-95'
+                                }
+                              `}
+                            >
+                              <div className={`
+                                w-[48px] h-[48px]
+                                rounded-[var(--premium-radius-lg)]
+                                flex items-center justify-center
+                                mb-[var(--premium-space-sm)]
+                                transition-all duration-200
+                                ${isSelected
+                                  ? 'bg-[var(--premium-emerald)] shadow-[var(--premium-shadow-sm)]'
+                                  : ''
+                                }
+                              `}
+                                style={{ backgroundColor: isSelected ? account.color : `${account.color}20` }}
+                              >
+                                <Icon 
+                                  size={24} 
+                                  style={{ color: isSelected ? 'white' : account.color }}
+                                />
+                              </div>
+                              
+                              <p className={`
+                                body-sm font-medium mb-[4px] text-left
+                                ${isSelected ? 'text-[var(--premium-emerald)]' : 'text-[var(--premium-text-primary)]'}
+                              `}>
+                                {account.name}
+                              </p>
+                              
+                              <p className={`
+                                body-xs text-left
+                                ${account.balance < 0 ? 'text-[#f5576c]' : 'text-[var(--premium-text-secondary)]'}
+                              `}>
+                                ${Math.abs(account.balance).toLocaleString()}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
 
-                  <button
-                    onClick={handleTransferAccountsSet}
-                    disabled={!fromAccountId || !toAccountId}
-                    className={`
-                      w-full
-                      h-[56px]
-                      rounded-[var(--premium-radius-full)]
-                      font-medium text-[18px]
-                      flex items-center justify-center gap-[8px]
-                      transition-all duration-200
-                      ${fromAccountId && toAccountId
-                        ? 'bg-[var(--premium-emerald)] text-white active:scale-95'
-                        : 'bg-[var(--premium-surface-3)] text-[var(--premium-text-muted)] cursor-not-allowed'
-                      }
-                    `}
-                  >
-                    Next
-                    <ChevronRight size={20} />
-                  </button>
+                  {/* Transfer Indicator */}
+                  {fromAccountId && (
+                    <div className="flex justify-center -my-[8px] animate-[fadeIn_0.2s_ease-out]">
+                      <div className="
+                        w-[40px] h-[40px]
+                        rounded-full
+                        bg-[var(--premium-surface-3)]
+                        flex items-center justify-center
+                        text-[var(--premium-text-tertiary)]
+                      ">
+                        <ArrowDownLeft size={20} className="rotate-180" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* To Account - Horizontal Scroll */}
+                  <div>
+                    <p className="body-sm text-[var(--premium-text-tertiary)] mb-[var(--premium-space-md)] px-[4px]">
+                      To Account
+                    </p>
+                    <div className="overflow-x-auto -mx-[var(--premium-space-lg)] px-[var(--premium-space-lg)] pb-[8px] scrollbar-hide">
+                      <div className="flex gap-[var(--premium-space-md)] min-w-min">
+                        {MOCK_ACCOUNTS.filter(acc => acc.id !== fromAccountId).map((account) => {
+                          const Icon = account.icon;
+                          const isSelected = toAccountId === account.id;
+                          
+                          return (
+                            <button
+                              key={account.id}
+                              onClick={() => setToAccountId(account.id)}
+                              className={`
+                                flex-shrink-0
+                                w-[180px]
+                                p-[var(--premium-space-md)]
+                                rounded-[var(--premium-radius-xl)]
+                                transition-all duration-200
+                                ${isSelected
+                                  ? 'bg-[var(--premium-emerald)]/15 border-2 border-[var(--premium-emerald)] shadow-[0_0_0_4px_rgba(16,185,129,0.1)]'
+                                  : 'bg-[var(--premium-surface-2)] border-2 border-transparent hover:bg-[var(--premium-surface-3)] active:scale-95'
+                                }
+                              `}
+                            >
+                              <div className={`
+                                w-[48px] h-[48px]
+                                rounded-[var(--premium-radius-lg)]
+                                flex items-center justify-center
+                                mb-[var(--premium-space-sm)]
+                                transition-all duration-200
+                              `}
+                                style={{ backgroundColor: isSelected ? account.color : `${account.color}20` }}
+                              >
+                                <Icon 
+                                  size={24} 
+                                  style={{ color: isSelected ? 'white' : account.color }}
+                                />
+                              </div>
+                              
+                              <p className={`
+                                body-sm font-medium mb-[4px] text-left
+                                ${isSelected ? 'text-[var(--premium-emerald)]' : 'text-[var(--premium-text-primary)]'}
+                              `}>
+                                {account.name}
+                              </p>
+                              
+                              <p className={`
+                                body-xs text-left
+                                ${account.balance < 0 ? 'text-[#f5576c]' : 'text-[var(--premium-text-secondary)]'}
+                              `}>
+                                ${Math.abs(account.balance).toLocaleString()}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Continue Button */}
+                  {fromAccountId && toAccountId && (
+                    <button
+                      onClick={handleTransferAccountsSet}
+                      className="
+                        w-full
+                        h-[56px]
+                        rounded-[var(--premium-radius-full)]
+                        bg-[var(--premium-emerald)]
+                        text-white
+                        font-medium text-[18px]
+                        flex items-center justify-center gap-[8px]
+                        hover:bg-[var(--premium-emerald-dark)]
+                        active:scale-95
+                        transition-all duration-200
+                        animate-[slideUp_0.2s_ease-out]
+                      "
+                    >
+                      Continue
+                      <ChevronRight size={20} />
+                    </button>
+                  )}
                 </div>
               ) : (
                 <>
                   <p className="body-md text-[var(--premium-text-tertiary)] mb-[var(--premium-space-lg)] text-center">
                     Choose a category
                   </p>
-                  <PremiumCategoryPickerEnhanced
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={handleSelectCategory}
-                    onManageCategories={onManageCategories}
-                  />
+                  
+                  {/* Text-Only Category Grid with Expandable Subcategories */}
+                  <div className="space-y-[var(--premium-space-sm)]">
+                    {CATEGORY_METADATA.filter(cat => cat.id !== 'income').map((category) => {
+                      const isSelected = selectedCategory === category.id;
+                      const hasSubcategories = CATEGORY_SUBCATEGORIES[category.id]?.length > 0;
+                      
+                      return (
+                        <div key={category.id} className="space-y-[4px]">
+                          {/* Main Category Chip */}
+                          <button
+                            onClick={() => {
+                              if (selectedCategory === category.id) {
+                                // Deselect if clicking the same category
+                                setSelectedCategory(undefined);
+                                setSelectedSubcategory(undefined);
+                              } else {
+                                setSelectedCategory(category.id as TransactionCategory);
+                                setSelectedSubcategory(undefined);
+                              }
+                            }}
+                            className={`
+                              w-full
+                              px-[var(--premium-space-lg)]
+                              py-[var(--premium-space-md)]
+                              rounded-[var(--premium-radius-lg)]
+                              font-medium
+                              transition-all duration-200
+                              text-left
+                              ${isSelected
+                                ? 'bg-[var(--premium-emerald)]/15 border-2 border-[var(--premium-emerald)] text-[var(--premium-emerald)] shadow-[0_0_0_4px_rgba(16,185,129,0.1)]'
+                                : 'bg-[var(--premium-surface-2)] border-2 border-transparent text-[var(--premium-text-primary)] hover:bg-[var(--premium-surface-3)] active:scale-[0.98]'
+                              }
+                            `}
+                          >
+                            {category.label}
+                          </button>
+
+                          {/* Subcategories - Expanded under selected category */}
+                          {isSelected && hasSubcategories && (
+                            <div className="
+                              pl-[var(--premium-space-md)]
+                              space-y-[4px]
+                              animate-[slideDown_0.2s_ease-out]
+                            ">
+                              <div className="flex flex-wrap gap-[8px] pt-[4px]">
+                                {CATEGORY_SUBCATEGORIES[category.id].map((subcategory) => {
+                                  const isSubSelected = selectedSubcategory === subcategory;
+                                  
+                                  return (
+                                    <button
+                                      key={subcategory}
+                                      onClick={() => {
+                                        setSelectedSubcategory(subcategory);
+                                        // Auto-advance to confirm when subcategory selected
+                                        setTimeout(() => {
+                                          handleSelectCategory(category.id as TransactionCategory, subcategory);
+                                        }, 150);
+                                      }}
+                                      className={`
+                                        px-[var(--premium-space-md)]
+                                        py-[8px]
+                                        rounded-[var(--premium-radius-full)]
+                                        body-sm
+                                        font-medium
+                                        transition-all duration-200
+                                        ${isSubSelected
+                                          ? 'bg-[var(--premium-emerald)] text-white shadow-[var(--premium-shadow-sm)]'
+                                          : 'bg-[var(--premium-surface-3)] text-[var(--premium-text-secondary)] hover:bg-[var(--premium-surface-4)] active:scale-95'
+                                        }
+                                      `}
+                                    >
+                                      {subcategory}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Continue Button - Only show when category selected */}
+                  {selectedCategory && (
+                    <button
+                      onClick={() => handleSelectCategory(selectedCategory, selectedSubcategory)}
+                      className="
+                        w-full
+                        h-[56px]
+                        mt-[var(--premium-space-lg)]
+                        rounded-[var(--premium-radius-full)]
+                        bg-[var(--premium-emerald)]
+                        text-white
+                        font-medium text-[18px]
+                        flex items-center justify-center gap-[8px]
+                        hover:bg-[var(--premium-emerald-dark)]
+                        active:scale-95
+                        transition-all duration-200
+                        animate-[slideUp_0.2s_ease-out]
+                      "
+                    >
+                      Continue
+                      <ChevronRight size={20} />
+                    </button>
+                  )}
                 </>
               )}
             </div>

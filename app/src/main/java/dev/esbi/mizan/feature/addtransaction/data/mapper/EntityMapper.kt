@@ -20,7 +20,7 @@ fun AccountEntity.toDomain(): Account {
     return Account(
         id = "id",
         name = name,
-        iconName = iconName,
+        iconName = iconName.orEmpty(),
         currentBalance = 12.90,
         currency = "currency"
     )

@@ -1,11 +1,16 @@
 package dev.esbi.mizan.feature.newtransaction.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
+import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
 
 internal object NewTransactionReducer : Reducer<AmountInputState, NewTransactionStore.Message> {
     override fun AmountInputState.reduce(msg: NewTransactionStore.Message): AmountInputState {
         return when (msg) {
-            is NewTransactionStore.Message.UpdateTransactionType -> copy(transactionType = msg.type)
+            is NewTransactionStore.Message.UpdateTransactionType -> copy(
+                transactionType = msg.type,
+                categoryChooserState = CategoryChooserState(msg.type)
+            )
+
             is NewTransactionStore.Message.UpdateKeypadState -> copy(keypadState = msg.state)
             is NewTransactionStore.Message.UpdateVoiceInputStateState -> copy(voiceInputState = msg.state)
             is NewTransactionStore.Message.UpdateMode -> copy(inputMode = msg.mode)
@@ -55,7 +60,8 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
 
             is NewTransactionStore.CategoryChooserMessage.ParentCategorySelected -> copy(
                 categoryChooserState = categoryChooserState.copy(
-                    selectedParentId = msg.parentId
+                    selectedParentId = msg.category?.id,
+                    selectedCategory = msg.category,
                 )
             )
 
@@ -65,17 +71,11 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
                 )
             )
 
-            is NewTransactionStore.CategoryChooserMessage.TransactionTypeChanged -> copy(
+            is NewTransactionStore.CategoryChooserMessage.SubCategorySelected -> copy(
                 categoryChooserState = categoryChooserState.copy(
-                    transactionType = msg.transactionType,
-                    selectedParentId = null,
-                    selectedCategory = null
-                )
-            )
-
-            is NewTransactionStore.CategoryChooserMessage.CategorySelected -> copy(
-                categoryChooserState = categoryChooserState.copy(
-                    selectedCategory = msg.category
+                    selectedCategory = msg.category,
+                    selectedChildId = msg.category.id,
+                    selectedParentId = msg.category.parentId
                 )
             )
         }

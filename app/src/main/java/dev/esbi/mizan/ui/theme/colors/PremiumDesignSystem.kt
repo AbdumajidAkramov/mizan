@@ -180,7 +180,7 @@ private val SharedCategories = PremiumCategoryColors(
     shopping = Color(0xFFFFA34D), bills = Color(0xFF00D2FF),
     entertainment = Color(0xFFC471F5), health = Color(0xFFFF6B6B),
     travel = Color(0xFF667EEA), tech = Color(0xFF00F2A0),
-    income = Color(0xFF00F2FE)
+    income = Color(0xFF00F2A0)
 )
 
 private val SharedSpacing = PremiumSpacing(

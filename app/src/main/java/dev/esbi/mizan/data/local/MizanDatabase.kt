@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import dev.esbi.mizan.data.local.dao.AccountDao
+import dev.esbi.mizan.data.local.dao.AccountGroupDao
 import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
@@ -19,6 +20,7 @@ import dev.esbi.mizan.data.local.entity.TimeMachineScenarioEntity
 import dev.esbi.mizan.data.local.entity.TransactionDetailEntity
 import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
 import dev.esbi.mizan.data.local.entity.account.AccountEntity
+import dev.esbi.mizan.data.local.entity.account.AccountGroupEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
@@ -37,7 +39,8 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
         AccountEntity::class,
         TransactionEntity::class,
         CategoryEntity::class,
-        CurrencyEntity::class
+        CurrencyEntity::class,
+        AccountGroupEntity::class
     ],
     version = 7,
     exportSchema = true
@@ -50,4 +53,5 @@ abstract class MizanDatabase : RoomDatabase() {
     abstract fun transactionsDao(): TransactionsDao
     abstract fun categoryDao(): CategoryDao
     abstract fun accountDao(): AccountDao
+    abstract fun accountGroupDao(): AccountGroupDao
 }

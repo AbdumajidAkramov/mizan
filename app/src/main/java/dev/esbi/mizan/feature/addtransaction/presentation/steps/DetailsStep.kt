@@ -271,7 +271,7 @@ fun DetailsStepPreview() {
         DetailsStep(
             amount = "90000",
             currency = "UZS",
-            type = TransactionType.EXPENSE,
+            type = TransactionType.INCOME,
             selectedCategory = "food",
             availableCategories = emptyList(),
             availableSubcategories = emptyList(),
