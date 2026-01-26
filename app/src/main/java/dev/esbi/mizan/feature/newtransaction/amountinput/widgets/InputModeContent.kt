@@ -27,14 +27,13 @@ internal fun InputModeContent(
 ) {
     Row(
         modifier = Modifier
-            .width(width = 208.dp)
             .background(
                 MizanTheme.premium.colors.surface1,
                 RoundedCornerShape(MizanTheme.premium.radius.full)
             )
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
+        horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
     ) {
         listOf(
             InputMode.Manual to IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calculate),
@@ -44,7 +43,7 @@ internal fun InputModeContent(
             val isSelected = inputMode == mode
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
                     .background(if (isSelected) MizanTheme.premium.colors.surface3 else Color.Transparent)
                     .clickable {

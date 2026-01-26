@@ -1,10 +1,8 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput.executor
 
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStore
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputState
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.newtransaction.store.AmountInputState
 import javax.inject.Inject
 
 /**
@@ -16,33 +14,33 @@ internal class NavigationHandler @Inject constructor() {
     /**
      * Handles mode change logic
      */
-    fun handleModeChange(mode: InputMode): AmountInputStore.Message {
-        return AmountInputStore.Message.UpdateMode(mode)
+    fun handleModeChange(mode: InputMode): NewTransactionStore.Message {
+        return NewTransactionStore.Message.UpdateMode(mode)
     }
     
     /**
      * Handles submit logic with validation
      * Returns a label if navigation should occur, null otherwise
      */
-    fun handleSubmit(state: AmountInputState): AmountInputStore.Label? {
+    fun handleSubmit(state: AmountInputState): NewTransactionStore.Label? {
         return when (state.inputMode) {
             InputMode.Manual -> {
                 if (state.keypadState.canSubmit) {
-                    AmountInputStore.Label.MapsToNextStep
+                    NewTransactionStore.Label.MapsToNextStep
                 } else {
                     null
                 }
             }
             InputMode.Voice -> {
                 if (state.voiceInputState.isValid) {
-                    AmountInputStore.Label.MapsToNextStep
+                    NewTransactionStore.Label.MapsToNextStep
                 } else {
                     null
                 }
             }
             InputMode.Scan -> {
                 // TODO: Implement scan validation logic
-                AmountInputStore.Label.MapsToNextStep
+                NewTransactionStore.Label.MapsToNextStep
             }
         }
     }

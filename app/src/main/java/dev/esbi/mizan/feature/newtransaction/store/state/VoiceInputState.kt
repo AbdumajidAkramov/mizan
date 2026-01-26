@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.amountinput.store.state
+package dev.esbi.mizan.feature.newtransaction.store.state
 
 data class VoiceInputState(
     val isListening: Boolean = false,

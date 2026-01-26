@@ -103,7 +103,7 @@ internal class CategorySelectExecutor @Inject constructor(
     
     // TODO: Remove this mock data method and replace with repository
     private fun getMockCategories(transactionType: TransactionType): List<dev.esbi.mizan.feature.addtransaction.domain.model.Category> {
-        return if (transactionType == TransactionType.Expense) {
+        return if (transactionType == TransactionType.EXPENSE) {
             listOf(
                 dev.esbi.mizan.feature.addtransaction.domain.model.Category(
                     id = "1",

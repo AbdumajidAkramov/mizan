@@ -10,7 +10,7 @@ interface CategorySelectStore :
     data class State(
         val categories: List<Category> = emptyList(),
         val selectedParentId: String? = null,
-        val transactionType: TransactionType = TransactionType.Expense,
+        val transactionType: TransactionType = TransactionType.EXPENSE,
         val isLoading: Boolean = false,
         val error: String? = null,
         val selectedCategory: Category? = null

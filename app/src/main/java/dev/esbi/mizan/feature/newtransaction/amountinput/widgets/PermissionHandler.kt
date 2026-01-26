@@ -29,7 +29,8 @@ fun PermissionHandler(
     permissionTitle: String,
     permissionDescription: String,
     onPermissionGranted: @Composable () -> Unit,
-    onPermissionDenied: @Composable (String) -> Unit = { }
+    onPermissionDenied: @Composable (String) -> Unit = { },
+    modifier: Modifier = Modifier,
 ) {
     val permissionState = rememberPermissionState(permission)
 
@@ -43,7 +44,8 @@ fun PermissionHandler(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MizanTheme.premium.spacing.lg),
+                    .padding(MizanTheme.premium.spacing.lg)
+                    .then(modifier),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

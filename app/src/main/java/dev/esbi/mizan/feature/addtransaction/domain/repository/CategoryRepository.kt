@@ -1,6 +1,6 @@
 package dev.esbi.mizan.feature.addtransaction.domain.repository
 
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
+import dev.esbi.mizan.domain.model.Category
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {

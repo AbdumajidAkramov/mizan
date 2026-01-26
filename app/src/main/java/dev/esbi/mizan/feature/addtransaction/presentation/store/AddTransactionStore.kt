@@ -16,7 +16,7 @@ internal interface AddTransactionStore :
     data class State(
         val flowState: FlowState = FlowState.Amount,
         val inputMode: InputMode = InputMode.Manual,
-        val type: TransactionType = TransactionType.Expense,
+        val type: TransactionType = TransactionType.EXPENSE,
 
         val currency: String = "UZS",
 
@@ -90,8 +90,8 @@ internal interface AddTransactionStore :
         val annotatedString: AnnotatedString get() = amountText.annotatedString(currency = currency)
 
         val isFormValid = amount > 0.0 &&
-                (type != TransactionType.Transfer || (transferSource != null && transferDestination != null)) &&
-                (type == TransactionType.Transfer || selectedCategory != null)
+                (type != TransactionType.TRANSFER || (transferSource != null && transferDestination != null)) &&
+                (type == TransactionType.TRANSFER || selectedCategory != null)
 
     }
 

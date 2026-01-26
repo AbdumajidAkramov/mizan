@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.amountinput.store.state
+package dev.esbi.mizan.feature.newtransaction.store.state
 
 import androidx.compose.ui.text.AnnotatedString
 import dev.esbi.mizan.utils.annotatedString

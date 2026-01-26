@@ -1,6 +1,6 @@
-package dev.esbi.mizan.feature.newtransaction.categoryselect
+package dev.esbi.mizan.feature.newtransaction.categorychooser
 
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,18 +17,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,11 +36,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectStore
+import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.kit.icon.MizanIcon as MizanIcon
+import dev.esbi.mizan.utils.annotatedString
 
 // Neon category colors
 private object CategoryColors {
@@ -61,56 +60,42 @@ private object CategoryColors {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategorySelectContent(
-    state: CategorySelectStore.State,
-    accept: (CategorySelectStore.Intent) -> Unit
+fun CategoryChooserContent(
+    amount: String,
+    state: CategoryChooserState,
+    accept: (NewTransactionStore.Intent) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = when {
-                            state.selectedParentId != null -> {
-                                state.parentCategory?.name
-                                    ?: "Subcategories"
-                            }
 
-                            else -> "Select Category"
-                        },
-                        style = MizanTheme.premium.typography.headingSm,
-                        color = MizanTheme.premium.text.primary
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { accept(CategorySelectStore.Intent.NavigateBack) }) {
-                        MizanIcon(
-                            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_back),
-                            contentDescription = "Back",
-                            tint = MizanTheme.premium.text.primary
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { accept(CategorySelectStore.Intent.ManageCategories) }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Manage Categories",
-                            tint = MizanTheme.premium.text.secondary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MizanTheme.premium.background.primary
-                )
-            )
-        }
-    ) { paddingValues ->
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(MizanTheme.premium.spacing.lg),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
+        Text(
+            "Amount",
+            style = MizanTheme.typography.bodySm,
+            color = MizanTheme.premium.text.tertiary
+        )
+        Text(
+            amount.annotatedString(),
+            style = MizanTheme.typography.displayMd,
+            color = MizanTheme.premium.text.primary
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            "Choose a category",
+            style = MizanTheme.typography.bodySm,
+            color = MizanTheme.premium.text.tertiary
+        )
+
+        Spacer(Modifier.height(32.dp))
+
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MizanTheme.premium.background.primary)
         ) {
             when {
                 state.isLoading -> {
@@ -121,7 +106,7 @@ fun CategorySelectContent(
                     ErrorView(
                         error = state.error,
                         onRetry = {
-                            accept(CategorySelectStore.Intent.RetryLoad)
+                            accept(NewTransactionStore.CategoryChooserIntent.RetryLoad)
                         }
                     )
                 }
@@ -132,13 +117,13 @@ fun CategorySelectContent(
                         onCategoryClick = { category ->
                             if (state.selectedParentId != null) {
                                 accept(
-                                    CategorySelectStore.Intent.SelectSubCategory(
+                                    NewTransactionStore.CategoryChooserIntent.SelectSubCategory(
                                         category
                                     )
                                 )
                             } else {
                                 accept(
-                                    CategorySelectStore.Intent.SelectParentCategory(
+                                    NewTransactionStore.CategoryChooserIntent.SelectParentCategory(
                                         category
                                     )
                                 )
@@ -148,12 +133,12 @@ fun CategorySelectContent(
                 }
             }
         }
-    }
 
+    }
 }
 
 @Composable
-private fun LoadingView() {
+internal fun LoadingView() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -176,10 +161,11 @@ private fun LoadingView() {
 }
 
 @Composable
-private fun ErrorView(
+internal fun ErrorView(
     error: String,
     onRetry: () -> Unit
 ) {
+    Log.d("ErrorView", "Error: $error")
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -196,16 +182,26 @@ private fun ErrorView(
                 fontWeight = FontWeight.Bold
             )
 
-            Text(
-                text = error,
-                style = MizanTheme.premium.typography.bodyMd,
-                color = MizanTheme.premium.text.secondary,
-                textAlign = TextAlign.Center
-            )
+            // Matn qismi vertikal skroll bo'ladigan qilindi
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = error,
+                    style = MizanTheme.premium.typography.bodyMd,
+                    color = MizanTheme.premium.text.secondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()) // Skroll qo'shish
+                        .padding(horizontal = 8.dp)
+                )
+            }
 
-            androidx.compose.material3.Button(
+
+            Button(
                 onClick = onRetry,
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                colors = ButtonDefaults.buttonColors(
                     containerColor = MizanTheme.premium.colors.primary
                 )
             ) {
@@ -220,8 +216,8 @@ private fun ErrorView(
 }
 
 @Composable
-private fun CategoryGrid(
-    state: CategorySelectStore.State,
+internal fun CategoryGrid(
+    state: CategoryChooserState,
     onCategoryClick: (Category) -> Unit
 ) {
     val currentCategories = state.currentCategories
@@ -242,8 +238,9 @@ private fun CategoryGrid(
     }
 }
 
+
 @Composable
-private fun CategoryItem(
+internal fun CategoryItem(
     category: Category,
     onClick: () -> Unit
 ) {

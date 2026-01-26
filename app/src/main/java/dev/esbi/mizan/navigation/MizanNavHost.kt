@@ -12,7 +12,7 @@ import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
-import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputScreen
+import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
@@ -75,7 +75,7 @@ internal fun MizanNavHost(
             val component = remember { appComponent.amountInputComponent().create() }
             val viewModel = component.viewModel
 
-            AmountInputScreen(
+            NewTransactionScreen(
                 viewModel = viewModel,
                 onBackPressed = {
                     navController.popBackStack()

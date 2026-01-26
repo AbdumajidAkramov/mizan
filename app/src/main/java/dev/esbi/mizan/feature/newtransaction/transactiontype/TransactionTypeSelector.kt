@@ -31,9 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
@@ -48,21 +49,21 @@ internal data class TypeConfig(
 @Composable
 internal fun getTypeConfig(type: TransactionType): TypeConfig {
     return when (type) {
-        TransactionType.Expense -> TypeConfig(
+        TransactionType.EXPENSE -> TypeConfig(
             label = "Expense",
             color = Color(0xFFF5576C), // PremiumDesignSystem.colors.secondary
             icon = IconValue(Icons.ic_arrow_up),
             caption = "Track your spending"
         )
 
-        TransactionType.Income -> TypeConfig(
+        TransactionType.INCOME -> TypeConfig(
             label = "Income",
             color = Color(0xFF4FACFE), // PremiumDesignSystem.colors.success (variant)
             icon = IconValue(Icons.ic_arrow_down),
             caption = "Record money received"
         )
 
-        TransactionType.Transfer -> TypeConfig(
+        TransactionType.TRANSFER -> TypeConfig(
             label = "Transfer",
             color = Color(0xFF10B981), // PremiumDesignSystem.colors.success (emerald)
             icon = IconValue(Icons.ic_swap_horizontal),
@@ -74,7 +75,7 @@ internal fun getTypeConfig(type: TransactionType): TypeConfig {
 // 2. MAIN COMPONENT
 @Composable
 fun TransactionTypeSelector(
-    selectedType: TransactionType,
+    selectedType: Transaction.Type,
     onTypeSelect: (TransactionType) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -106,12 +107,12 @@ fun TransactionTypeSelector(
                 )
             }
         }
-       /* Text(
-            modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
-            text = text.value,
-            style = MizanTheme.typography.bodyXs,
-            color = MizanTheme.premium.text.muted
-        )*/
+        /* Text(
+             modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
+             text = text.value,
+             style = MizanTheme.typography.bodyXs,
+             color = MizanTheme.premium.text.muted
+         )*/
 
     }
 }
@@ -191,7 +192,7 @@ private fun SelectorPreview() {
     // MizanTheme { // Theme context
     Box(modifier = Modifier.padding(24.dp)) {
         TransactionTypeSelector(
-            selectedType = TransactionType.Transfer,
+            selectedType = TransactionType.TRANSFER,
             onTypeSelect = {}
         )
     }

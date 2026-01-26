@@ -1,7 +1,7 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput.executor
 
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
+import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import dev.esbi.mizan.utils.AMOUNT_MAX
 import dev.esbi.mizan.utils.DOT
 import dev.esbi.mizan.utils.FRAC_LENGTH

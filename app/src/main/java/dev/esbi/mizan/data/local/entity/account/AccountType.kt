@@ -4,14 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import dev.esbi.mizan.domain.model.Account
 
-enum class AccountType {
-    CASH,       // Naqd pul
-    CARD,       // Plastik karta (Uzcard, Humo, Visa)
-    SAVINGS,    // Omonat / Yig'im
-    DEBT,       // Qarz (Men birovdan qarzdorman yoki birov mendan)
-    INVESTMENT  // Investitsiya
-}
 
 @Entity(
     tableName = "accounts",
@@ -26,21 +20,21 @@ enum class AccountType {
 )
 data class AccountEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    override val id: Long = 0,
 
-    val name: String,
-    val type: AccountType,
+    override val name: String,
+    override val type: Account.Type,
 
-    val initialBalance: Double,
+    override val initialBalance: Double,
 
     // --- MULTICURRENCY O'ZGARISHI ---
     // Bu hisob faqat shu valyutada pul saqlaydi
-    val currencyCode: String, // "USD" yoki "UZS"
+    override val currencyCode: String, // "USD" yoki "UZS"
 
     // UI uchun
-    val iconName: String,       // Ikonka nomi (resurs ID emas, string. Masalan: "ic_card")
-    val color: String,          // HEX rang kodi (Masalan: "#4FACFE")
+    override val iconName: String,       // Ikonka nomi (resurs ID emas, string. Masalan: "ic_card")
+    override val color: String,          // HEX rang kodi (Masalan: "#4FACFE")
 
-    val isArchived: Boolean = false, // O'chirib yubormasdan, arxivlash uchun
-    val excludeFromTotal: Boolean = false // Umumiy balansda ko'rsatmaslik uchun
-)
+    override val isArchived: Boolean = false, // O'chirib yubormasdan, arxivlash uchun
+    override val excludeFromTotal: Boolean = false // Umumiy balansda ko'rsatmaslik uchun
+) : Account

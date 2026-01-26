@@ -100,19 +100,19 @@ internal fun ConfirmStep(
 
     // Ranglar va Ikonkalarni aniqlash
     val (bgTint, accentColor, icon) = when (type) {
-        TransactionType.Expense -> Triple(
+        TransactionType.EXPENSE -> Triple(
             Color(0xFFF5576C).copy(alpha = 0.1f), // Red tint
             Color(0xFFF5576C), // Red
             IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_up)
         )
 
-        TransactionType.Income -> Triple(
+        TransactionType.INCOME -> Triple(
             Color(0xFF4FACFE).copy(alpha = 0.1f), // Blue tint
             Color(0xFF4FACFE), // Blue
             IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_down)
         )
 
-        TransactionType.Transfer -> Triple(
+        TransactionType.TRANSFER -> Triple(
             Color(0xFF10B981).copy(alpha = 0.1f), // Emerald tint
             Color(0xFF10B981), // Emerald
             IconValue(dev.esbi.mizan.ui.utils.Icons.ic_swap_horizontal)
@@ -190,7 +190,7 @@ internal fun ConfirmStep(
                     Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
                     // Footer Text (From/To or Category)
-                    if (type == TransactionType.Transfer) {
+                    if (type == TransactionType.TRANSFER) {
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
                                 text = "From: ${

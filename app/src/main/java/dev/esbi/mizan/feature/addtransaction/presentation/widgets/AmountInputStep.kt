@@ -33,7 +33,7 @@ import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionSt
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
+import dev.esbi.mizan.feature.newtransaction.store.state.VoiceInputState
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.colors.MizanTheme

@@ -4,7 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Transaction
 
 @Entity(
     tableName = "categories",
@@ -22,21 +23,21 @@ import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 )
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
+    override val id: Long = 0,
 
-    val name: String,           // "Oziq-ovqat", "Transport"
-    val type: TransactionType,  // EXPENSE yoki INCOME (Avvalgi enumdan foydalanamiz)
-    
+    override val name: String,           // "Oziq-ovqat", "Transport"
+    override val type: Transaction.Type,  // EXPENSE yoki INCOME (Avvalgi enumdan foydalanamiz)
+
     // Subkategoriya mantig'i
-    val parentId: Long? = null, // Null bo'lsa - Main Category
-    
-    // UI uchun
-    val iconName: String,       // Masalan: "ic_food", "emoji_apple"
-    val color: String,          // HEX rang kodi ("#FF5722")
-    
-    // Budjet (ixtiyoriy, kelajak uchun)
-    val budgetLimit: Double? = null, // Shu kategoriya uchun oylik limit
+    override val parentId: Long? = null, // Null bo'lsa - Main Category
 
-    val isArchived: Boolean = false,  // Ishlatilmaydigan kategoriyalar uchun
-    val orderIndex: Int = 0           // Ro'yxatda chiqish tartibi
-)
+    // UI uchun
+    override val iconName: String,       // Masalan: "ic_food", "emoji_apple"
+    override val color: String,          // HEX rang kodi ("#FF5722")
+
+    // Budjet (ixtiyoriy, kelajak uchun)
+    override val budgetLimit: Double? = null, // Shu kategoriya uchun oylik limit
+
+    override val isArchived: Boolean = false,  // Ishlatilmaydigan kategoriyalar uchun
+    override val orderIndex: Int = 0           // Ro'yxatda chiqish tartibi
+) : Category

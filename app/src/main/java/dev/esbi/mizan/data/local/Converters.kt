@@ -3,8 +3,8 @@ package dev.esbi.mizan.data.local
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dev.esbi.mizan.data.local.entity.account.AccountType
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.Transaction
 import java.util.Date
 
 class Converters {
@@ -30,10 +30,10 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromTransactionType(value: TransactionType): String = value.name
+    fun fromTransactionType(value: Transaction.Type): String = value.name
 
     @TypeConverter
-    fun toTransactionType(value: String): TransactionType = TransactionType.valueOf(value)
+    fun toTransactionType(value: String): Transaction.Type = Transaction.Type.valueOf(value)
 
     // Converters.kt
     class Converters {
@@ -50,17 +50,17 @@ class Converters {
 
         // 2. TransactionType (String -> Enum)
         @TypeConverter
-        fun toTransactionType(value: String) = enumValueOf<TransactionType>(value)
+        fun toTransactionType(value: String) = enumValueOf<Transaction.Type>(value)
 
         @TypeConverter
-        fun fromTransactionType(value: TransactionType) = value.name
+        fun fromTransactionType(value: Transaction.Type) = value.name
 
         // 3. AccountType (String -> Enum)
         @TypeConverter
-        fun toAccountType(value: String) = enumValueOf<AccountType>(value)
+        fun toAccountType(value: String) = enumValueOf<Account.Type>(value)
 
         @TypeConverter
-        fun fromAccountType(value: AccountType) = value.name
+        fun fromAccountType(value: Account.Type) = value.name
 
         // 4. PhotoPaths (JSON String -> List<String>)
         @TypeConverter

@@ -140,7 +140,7 @@ fun DetailsStep(
 
         // --- CONTENT ---
         when (type) {
-            TransactionType.Expense, TransactionType.Income -> {
+            TransactionType.EXPENSE, TransactionType.INCOME -> {
                 // Premium Category Selection with hierarchical navigation
                 Column {
                     if (isShowingSubcategories) {
@@ -204,7 +204,7 @@ fun DetailsStep(
                 }
             }
 
-            TransactionType.Transfer -> {
+            TransactionType.TRANSFER -> {
                 // Account Selection for Transfers
                 Column(
                     verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xl)
@@ -271,7 +271,7 @@ fun DetailsStepPreview() {
         DetailsStep(
             amount = "90000",
             currency = "UZS",
-            type = TransactionType.Expense,
+            type = TransactionType.EXPENSE,
             selectedCategory = "food",
             availableCategories = emptyList(),
             availableSubcategories = emptyList(),

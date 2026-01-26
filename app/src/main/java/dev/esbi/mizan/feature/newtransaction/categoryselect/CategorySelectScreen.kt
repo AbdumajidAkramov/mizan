@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.esbi.mizan.feature.addtransaction.domain.model.Category
+import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContent
 import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectStore
 
 @Composable
@@ -32,8 +33,8 @@ internal fun CategorySelectScreen(
         }
     }
 
-    CategorySelectContent(
+/*    CategoryChooserContent(
         state = state,
         accept = viewModel::onIntent
-    )
+    )*/
 }

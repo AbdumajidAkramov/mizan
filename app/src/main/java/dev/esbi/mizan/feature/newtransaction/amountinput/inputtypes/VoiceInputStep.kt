@@ -40,7 +40,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.utils.Icons
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.VoiceInputState
+import dev.esbi.mizan.feature.newtransaction.store.state.VoiceInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -53,12 +53,14 @@ internal fun VoiceInputStep(
     onStartListening: () -> Unit,
     onStopListening: () -> Unit,
     onVoiceRecognitionError: (String) -> Unit,
-    onSubmitVoice: (String) -> Unit
+    onSubmitVoice: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     @OptIn(ExperimentalPermissionsApi::class)
     val recordAudioPermissionState = rememberPermissionState(Manifest.permission.RECORD_AUDIO)
 
     PermissionHandler(
+        modifier = modifier,
         permission = Manifest.permission.RECORD_AUDIO,
         permissionTitle = "Microphone Access",
         permissionDescription = "Microphone permission is required to record voice input for transactions. This allows you to say things like \"Lunch 15000\" to quickly add expenses.",

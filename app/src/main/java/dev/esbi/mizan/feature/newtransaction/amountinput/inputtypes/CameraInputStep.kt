@@ -45,7 +45,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.CameraInputState
+import dev.esbi.mizan.feature.newtransaction.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
 import dev.esbi.mizan.ui.theme.MizanTheme

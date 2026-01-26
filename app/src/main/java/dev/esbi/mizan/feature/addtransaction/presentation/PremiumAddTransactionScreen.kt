@@ -100,7 +100,7 @@ internal fun PremiumAddTransactionScreen(
                         text = when (state.flowState) {
                             FlowState.Amount -> "New Transaction"
                             FlowState.Type -> "Transaction Type"
-                            FlowState.Details -> if (state.type == TransactionType.Transfer) "Select Accounts" else "Choose Category"
+                            FlowState.Details -> if (state.type == TransactionType.TRANSFER) "Select Accounts" else "Choose Category"
                             FlowState.Confirm -> "Confirm & Save"
                         },
                         style = MizanTheme.typography.bodyMd,

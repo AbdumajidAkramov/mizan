@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import dev.esbi.mizan.data.local.DatabaseSeedingManager
 import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
 import dev.esbi.mizan.main.MainAppScreen
@@ -23,8 +22,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsManager: AppSettingsManager
 
-    @Inject
-    lateinit var databaseSeedingManager: DatabaseSeedingManager
+//    @Inject
+//    lateinit var databaseSeedingManager: DatabaseSeedingManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
 
         // Ensure database is seeded
-        databaseSeedingManager.ensureDatabaseSeeded(this)
+//        databaseSeedingManager.ensureDatabaseSeeded(this)
 
         lifecycleScope.launch {
             settingsManager.settings.collect {

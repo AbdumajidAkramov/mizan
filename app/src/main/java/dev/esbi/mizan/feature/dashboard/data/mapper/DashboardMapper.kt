@@ -54,7 +54,7 @@ fun TransactionEntity.toDomain(): Transaction {
         categoryLabel = "categoryLabel",
         description = "description",
         date = java.util.Date(),
-        type = when (type.name) {
+        type = when (type.name.uppercase()) {
             "INCOME" -> TransactionType.INCOME
             "TRANSFER" -> TransactionType.TRANSFER
             else -> TransactionType.EXPENSE

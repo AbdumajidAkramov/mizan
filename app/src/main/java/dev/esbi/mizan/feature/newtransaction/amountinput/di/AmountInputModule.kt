@@ -6,13 +6,14 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
+import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.CameraScannerHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputObserver
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.AmountInputStoreFactory
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.executors.AmountInputExecutor
+import dev.esbi.mizan.feature.newtransaction.store.AmountInputObserver
+import dev.esbi.mizan.feature.newtransaction.store.AmountInputStoreFactory
+import dev.esbi.mizan.feature.newtransaction.store.executors.NewTransactionExecutor
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Provider
 
@@ -25,13 +26,15 @@ internal object AmountInputModule {
         context: Context,
         @MainDispatcher mainDispatcher: CoroutineDispatcher,
         manualInputHandler: ManualInputHandler,
-        navigationHandler: NavigationHandler
-    ): AmountInputExecutor {
-        return AmountInputExecutor(
+        navigationHandler: NavigationHandler,
+        categoryRepository: CategoryRepository
+    ): NewTransactionExecutor {
+        return NewTransactionExecutor(
             context = context,
             mainDispatcher = mainDispatcher,
             manualInputHandler = manualInputHandler,
-            navigationHandler = navigationHandler
+            navigationHandler = navigationHandler,
+            categoryRepository = categoryRepository
         )
     }
 
@@ -63,7 +66,7 @@ internal object AmountInputModule {
     @ScreenScope
     fun provideAmountInputStoreFactory(
         storeFactory: Provider<StoreFactory>,
-        executorProvider: Provider<AmountInputExecutor>
+        executorProvider: Provider<NewTransactionExecutor>
     ): AmountInputStoreFactory {
         return AmountInputStoreFactory(storeFactory, executorProvider)
     }

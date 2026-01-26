@@ -63,16 +63,17 @@ internal class AddTransactionExecutor(
         when (action) {
             is Action.Init -> {
                 // Load initial categories based on default transaction type (Expense)
-                scope.launch {
+               /* scope.launch {
                     val categories = categoryRepository.getMainCategoriesByType("EXPENSE")
                     categories.collect { categoryList ->
                         dispatch(UpdateAvailableCategories(categoryList))
                     }
-                }
+                }*/
             }
         }
     }
 
+/*
     override fun executeIntent(intent: AddTransactionStore.Intent) {
         super.executeIntent(intent)
         when (intent) {
@@ -259,7 +260,8 @@ internal class AddTransactionExecutor(
             }
 
             // Voice Recognition Intents - TODO: Implement these intents in AddTransactionStore
-            /*
+            */
+/*
             is AddTransactionStore.Intent.OnVoiceRecognitionResult -> {
                 dispatch(UpdateVoiceRecognitionText(intent.text))
 
@@ -278,10 +280,12 @@ internal class AddTransactionExecutor(
                 dispatch(UpdateVoiceRecognitionError(intent.error))
                 dispatch(UpdateVoiceListeningState(false))
             }
-            */
+            *//*
+
 
             // Camera Scan Intents - TODO: Implement these intents in AddTransactionStore
-            /*
+            */
+/*
             is AddTransactionStore.Intent.OnStartCameraScan -> {
                 dispatch(UpdateCameraScanningState(true))
                 dispatch(UpdateCameraScanError(null))
@@ -308,12 +312,14 @@ internal class AddTransactionExecutor(
                 dispatch(UpdateOperator(""))
                 dispatch(UpdateRecognizedAmount(intent.amount))
             }
-            */
+            *//*
+
 
             else -> {}
 
         }
     }
+*/
 
     private fun calc(left: Double, right: Double, operator: String): Double {
         return when (operator) {

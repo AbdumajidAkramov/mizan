@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
-import dev.esbi.mizan.feature.newtransaction.amountinput.store.state.KeypadState
+import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 
