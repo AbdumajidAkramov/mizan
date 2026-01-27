@@ -10,6 +10,12 @@ import dev.esbi.mizan.feature.addtransaction.domain.repository.AccountRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TransactionRepository
+import dev.esbi.mizan.data.repository.AccountRepositoryImpl as CoreAccountRepositoryImpl
+import dev.esbi.mizan.data.repository.CurrencyRepositoryImpl as CoreCurrencyRepositoryImpl
+import dev.esbi.mizan.data.repository.TransactionRepositoryImpl as CoreTransactionRepositoryImpl
+import dev.esbi.mizan.domain.repository.AccountRepository as CoreAccountRepository
+import dev.esbi.mizan.domain.repository.CurrencyRepository as CoreCurrencyRepository
+import dev.esbi.mizan.domain.repository.TransactionRepository as CoreTransactionRepository
 import dev.esbi.mizan.feature.transactions.data.repository.TransactionsRepositoryImpl
 import dev.esbi.mizan.feature.transactions.domain.repository.TransactionsRepository
 
@@ -40,4 +46,19 @@ abstract class TransactionsModule {
     abstract fun bindTemplateRepository(
         impl: TemplateRepositoryImpl
     ): TemplateRepository
+
+    @Binds
+    abstract fun bindCoreAccountRepository(
+        impl: CoreAccountRepositoryImpl
+    ): CoreAccountRepository
+
+    @Binds
+    abstract fun bindCoreCurrencyRepository(
+        impl: CoreCurrencyRepositoryImpl
+    ): CoreCurrencyRepository
+
+    @Binds
+    abstract fun bindCoreTransactionRepository(
+        impl: CoreTransactionRepositoryImpl
+    ): CoreTransactionRepository
 }

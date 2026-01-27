@@ -40,53 +40,59 @@ import dev.esbi.mizan.domain.model.Transaction
 )
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
-    override val id: Long = 0,
+    val id: Long = 0,
 
-    override val type: Transaction.Type,
+    val type: Transaction.Type,
 
     // 1. ASOSIY SUMMA (Chiqim yoki Kirim)
     // Expense uchun: Xarajat summasi (Account valyutasida)
     // Income uchun: Daromad summasi (Account valyutasida)
     // Transfer uchun: "From Account" dan qancha pul ketgani
-    override val amount: Double,
+    val amount: Double,
+
+    // Transaction currency at the time of transaction (usually matches account currency)
+    val currencyCode: String = "UZS",
+
+    // Snapshot exchange rate at time of transaction (currency -> base)
+    val exchangeRate: Double = 1.0,
 
     // 2. TRASFER UCHUN QO'SHIMCHA (Exchange Rate)
     // Faqat TRANSFER bo'lganda va valyutalar har xil bo'lganda to'ldiriladi.
     // "To Account" ga qancha pul tushgani (Target Currency da).
-    override val targetAmount: Double? = null,
+    val targetAmount: Double? = null,
 
-    override val date: Long,
-    override val note: String? = null,
-    override val description: String? = null,
-    override val photoPaths: List<String> = emptyList(),
+    val date: Long,
+    val note: String? = null,
+    val description: String? = null,
+    val photoPaths: List<String> = emptyList(),
 
     // ... (Foreign Keylar o'zgarishsiz: accountId, categoryId...)
-    override val accountId: Long? = null,       // Source Account
+    val accountId: Long? = null,       // Source Account
 
-    override val categoryId: Long? = null,       // Kategoriya (Masalan: Daily Essentials)
+    val categoryId: Long? = null,       // Kategoriya (Masalan: Daily Essentials)
 
     // Subkategoriya (Masalan: Fruits). Skrinshotda "Daily Essentials/Fruits" ko'rindi
-    override val subCategoryId: Long? = null,
+    val subCategoryId: Long? = null,
 
     // --- Transfer Specific ---
-    override val targetAccountId: Long? = null,  // Faqat Transfer uchun: 'To Account'
-    override val fee: Double = 0.0,              // Transfer komissiyasi (Fees)
+    val targetAccountId: Long? = null,  // Faqat Transfer uchun: 'To Account'
+    val fee: Double = 0.0,              // Transfer komissiyasi (Fees)
 
     // --- Advanced Features (Skrinshotlardan kelib chiqib) ---
 
     // Bookmark (Yulduzcha tugmasi uchun)
-    override val isBookmarked: Boolean = false,
+    val isBookmarked: Boolean = false,
 
     // Repeat / Takrorlanish (Every Day, Weekdays va h.k.)
     // Agar null bo'lsa - takrorlanmaydi.
     // Qiymat bo'lsa - qoida (masalan: "DAILY", "WEEKLY" yoki RRule string)
-    override val recurrenceRule: String? = null,
+    val recurrenceRule: String? = null,
 
     // Installment / Bo'lib to'lash (12 Months)
-    override val isInstallment: Boolean = false,
-    override val installmentTotalMonths: Int? = null, // Jami oylar (masalan, 12)
-    override val installmentCurrentMonth: Int? = null, // Hozirgi oy (masalan, 1)
+    val isInstallment: Boolean = false,
+    val installmentTotalMonths: Int? = null, // Jami oylar (masalan, 12)
+    val installmentCurrentMonth: Int? = null, // Hozirgi oy (masalan, 1)
 
     // Agar bu tranzaksiya avtomatik yaratilgan bo'lsa, ota tranzaksiya IDsi
-    override val parentTransactionId: Long? = null
-) : Transaction
+    val parentTransactionId: Long? = null
+)

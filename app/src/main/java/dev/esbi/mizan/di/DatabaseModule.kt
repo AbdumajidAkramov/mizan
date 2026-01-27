@@ -11,6 +11,7 @@ import dev.esbi.mizan.data.local.MizanDatabase
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
+import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
@@ -39,6 +40,14 @@ class DatabaseModule {
         }
     }
 
+    private val migration2to3 = object : androidx.room.migration.Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `transactions` ADD COLUMN `currencyCode` TEXT NOT NULL DEFAULT 'UZS'")
+            db.execSQL("ALTER TABLE `transactions` ADD COLUMN `exchangeRate` REAL NOT NULL DEFAULT 1.0")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_transactions_currencyCode` ON `transactions` (`currencyCode`)")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -47,8 +56,8 @@ class DatabaseModule {
             MizanDatabase::class.java,
             "mizan_database"
         )
-            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2)
+//            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
+            .addMigrations(migration1to2, migration2to3)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)
@@ -92,6 +101,12 @@ class DatabaseModule {
     @Singleton
     fun provideAccountDao(database: MizanDatabase): AccountDao {
         return database.accountDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyDao(database: MizanDatabase): CurrencyDao {
+        return database.currencyDao()
     }
 
     @Provides

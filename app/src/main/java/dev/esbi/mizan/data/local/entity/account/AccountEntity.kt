@@ -26,15 +26,15 @@ import dev.esbi.mizan.domain.model.Account
 )
 data class AccountEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("id") override val id: Long = 0,
-    @ColumnInfo("groupId") override val groupId: Long, // <--- MAJBURIY BOG'LANISH
-    @ColumnInfo("name") override val name: String,
-    @ColumnInfo("type") override val type: Account.Type,
-    @ColumnInfo("balance") override val balance: Double,
-    @ColumnInfo("currencyCode") override val currencyCode: String, // "USD" yoki "UZS"  // Bu hisob faqat shu valyutada pul saqlaydi
-    @ColumnInfo("iconName") override val iconName: String? = null,       // Ikonka nomi (resurs ID emas, string. Masalan: "ic_card")
-    @ColumnInfo("color") override val color: String? = null,          // HEX rang kodi (Masalan: "#4FACFE")
-    @ColumnInfo("isArchived") override val isArchived: Boolean = false, // O'chirib yubormasdan, arxivlash uchun
-    @ColumnInfo("excludeFromTotal") override val excludeFromTotal: Boolean = false, // Umumiy balansda ko'rsatmaslik uchun
-    @ColumnInfo("description") override val description: String? = null
-) : Account
+    @ColumnInfo("id") val id: Long = 0,
+    @ColumnInfo("groupId") val groupId: Long, // <--- MAJBURIY BOG'LANISH
+    @ColumnInfo("name") val name: String,
+    @ColumnInfo("type") val type: Account.Type,
+    @ColumnInfo("balance") val balance: Double,
+    @ColumnInfo("currencyCode") val currencyCode: String, // "USD" yoki "UZS"  // Bu hisob faqat shu valyutada pul saqlaydi
+    @ColumnInfo("iconName") val iconName: String? = null,       // Ikonka nomi (resurs ID emas, string. Masalan: "ic_card")
+    @ColumnInfo("color") val color: String? = null,          // HEX rang kodi (Masalan: "#4FACFE")
+    @ColumnInfo("isArchived") val isArchived: Boolean = false, // O'chirib yubormasdan, arxivlash uchun
+    @ColumnInfo("excludeFromTotal") val excludeFromTotal: Boolean = false, // Umumiy balansda ko'rsatmaslik uchun
+    @ColumnInfo("description") val description: String? = null
+)

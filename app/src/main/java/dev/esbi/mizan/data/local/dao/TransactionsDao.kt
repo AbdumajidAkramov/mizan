@@ -4,8 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import dev.esbi.mizan.data.local.entity.TransactionDetailEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
+import dev.esbi.mizan.data.local.entity.transaction.TransactionWithCurrencyEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,8 +17,16 @@ interface TransactionsDao {
     @Query("SELECT * FROM transactions ORDER BY date DESC")
     fun observeAllTransactions(): Flow<List<TransactionEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM transactions ORDER BY date DESC")
+    fun observeAllTransactionsWithCurrency(): Flow<List<TransactionWithCurrencyEntity>>
+
     @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC")
     fun observeTransactionsByType(type: String): Flow<List<TransactionEntity>>
+
+    @Transaction
+    @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date DESC")
+    fun observeTransactionsByTypeWithCurrency(type: String): Flow<List<TransactionWithCurrencyEntity>>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun getTransactionById(id: String): TransactionEntity?

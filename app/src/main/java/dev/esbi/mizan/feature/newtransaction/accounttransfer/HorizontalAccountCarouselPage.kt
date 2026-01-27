@@ -45,7 +45,7 @@ import dev.esbi.mizan.utils.annotatedString
 @Composable
 fun HorizontalAccountCarousel(
     label: String,
-    accounts: List<Account>,
+    accounts: List<AccountEntity>,
     selectedAccountId: Long?,
     onSelectAccount: (Long) -> Unit
 ) {
@@ -107,7 +107,7 @@ fun HorizontalAccountCarousel(
 
 @Composable
 fun HorizontalAccountCard(
-    account: Account,
+    account: AccountEntity,
     isSelected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier
