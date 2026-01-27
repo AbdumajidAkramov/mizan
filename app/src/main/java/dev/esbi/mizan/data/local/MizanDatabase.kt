@@ -9,6 +9,7 @@ import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
+import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
 import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
@@ -23,6 +24,7 @@ import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import dev.esbi.mizan.data.local.entity.account.AccountGroupEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 
 @Database(
@@ -40,9 +42,10 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
         TransactionEntity::class,
         CategoryEntity::class,
         CurrencyEntity::class,
-        AccountGroupEntity::class
+        AccountGroupEntity::class,
+        TemplateEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -54,4 +57,5 @@ abstract class MizanDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun accountDao(): AccountDao
     abstract fun accountGroupDao(): AccountGroupDao
+    abstract fun templateDao(): TemplateDao
 }

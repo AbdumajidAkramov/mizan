@@ -13,11 +13,31 @@ import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
+import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import javax.inject.Singleton
 
 @Module
 class DatabaseModule {
+
+    private val migration1to2 = object : androidx.room.migration.Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `templates` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `name` TEXT NOT NULL,
+                    `amount` REAL NOT NULL,
+                    `iconName` TEXT,
+                    `transactionType` TEXT NOT NULL,
+                    `categoryId` INTEGER
+                )
+                """.trimIndent()
+            )
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_templates_categoryId` ON `templates` (`categoryId`)")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_templates_transactionType` ON `templates` (`transactionType`)")
+        }
+    }
 
     @Provides
     @Singleton
@@ -28,7 +48,7 @@ class DatabaseModule {
             "mizan_database"
         )
             .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .fallbackToDestructiveMigration()
+            .addMigrations(migration1to2)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)
@@ -72,6 +92,12 @@ class DatabaseModule {
     @Singleton
     fun provideAccountDao(database: MizanDatabase): AccountDao {
         return database.accountDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTemplateDao(database: MizanDatabase): TemplateDao {
+        return database.templateDao()
     }
 
     @Provides
