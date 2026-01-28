@@ -81,11 +81,7 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onSubmit = {
-                    navController.navigate(
-                        NavRoute.CategorySelect(
-                            transactionType = "EXPENSE"
-                        )
-                    )
+                    navController.navigate(NavRoute.Statistics)
                 }
             )
         }

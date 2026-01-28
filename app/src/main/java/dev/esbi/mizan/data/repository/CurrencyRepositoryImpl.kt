@@ -25,4 +25,8 @@ class CurrencyRepositoryImpl @Inject constructor(
     override suspend fun updateRate(code: String, rateToBase: Double) {
         currencyDao.updateRate(code, rateToBase)
     }
+
+    override suspend fun getCurrencyByCode(code: String): Currency? {
+        return currencyDao.getCurrencyByCode(code)?.toDomain()
+    }
 }

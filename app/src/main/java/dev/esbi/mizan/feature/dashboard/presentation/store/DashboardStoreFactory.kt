@@ -18,11 +18,13 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dev.esbi.mizan.data.local.seeder.MockDataSeeder
 
 class DashboardStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val observeDashboardSummaryUseCase: ObserveDashboardSummaryUseCase,
     private val refreshDashboardUseCase: RefreshDashboardUseCase,
+    private val mockDataSeeder: MockDataSeeder,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) {
 
@@ -35,6 +37,7 @@ class DashboardStoreFactory @Inject constructor(
                 ExecutorImpl(
                     observeDashboardSummaryUseCase,
                     refreshDashboardUseCase,
+                    mockDataSeeder,
                     mainDispatcher
                 )
             },
@@ -50,6 +53,7 @@ class DashboardStoreFactory @Inject constructor(
     private class ExecutorImpl(
         private val observeDashboardSummaryUseCase: ObserveDashboardSummaryUseCase,
         private val refreshDashboardUseCase: RefreshDashboardUseCase,
+        private val mockDataSeeder: MockDataSeeder,
         @MainDispatcher private val mainDispatcher: CoroutineDispatcher
     ) : CoroutineExecutor<Intent, DashboardStore.Action, State, Msg, Label>(
         mainContext = mainDispatcher
@@ -57,6 +61,9 @@ class DashboardStoreFactory @Inject constructor(
         override fun executeAction(action: DashboardStore.Action) {
             when (action) {
                 DashboardStore.Action.Init -> {
+                    scope.launch {
+                        mockDataSeeder.seedData()
+                    }
                     observeDashboard()
                     refresh()
                 }

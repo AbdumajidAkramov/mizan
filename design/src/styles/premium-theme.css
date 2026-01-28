@@ -41,6 +41,12 @@
   --premium-error-light: #ff8a8a;
   --premium-error-dark: #ee5253;
   
+  /* Emerald Green - Premium Accent */
+  --premium-emerald: #10b981;
+  --premium-emerald-light: #34d399;
+  --premium-emerald-dark: #059669;
+  --premium-gradient-emerald: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  
   /* Light Theme Base */
   --premium-bg-primary: #f8f9fa;
   --premium-bg-secondary: #ffffff;
@@ -157,6 +163,11 @@
   --premium-surface-3: rgba(255, 255, 255, 0.08);
   --premium-surface-4: rgba(255, 255, 255, 0.12);
   
+  /* Emerald adjustments for dark mode */
+  --premium-emerald: #10b981;
+  --premium-emerald-light: #34d399;
+  --premium-emerald-dark: #047857;
+  
   /* Shadows - Dark Mode */
   --premium-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
   --premium-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
@@ -242,6 +253,20 @@
     font-size: var(--premium-text-heading-sm);
     font-weight: 600;
     line-height: 1.45;
+  }
+  
+  .heading-2xl {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  
+  .heading-3xl {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
   
   .body-lg {
@@ -344,45 +369,32 @@
    PREMIUM ANIMATIONS
    ========================================== */
 
-@keyframes fadeInUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes slideUpBottomSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
     transform: translateY(0);
   }
 }
 
 @keyframes slideInRight {
   from {
+    transform: translateX(100%);
     opacity: 0;
-    transform: translateX(20px);
   }
   to {
-    opacity: 1;
     transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
     opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
   }
 }
 
@@ -418,6 +430,16 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--premium-surface-4);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* ==========================================

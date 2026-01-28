@@ -1,0 +1,119 @@
+-- Mizan SQLite Database Schema
+-- Generated from Room @Entity definitions
+-- Execution order to respect foreign keys
+
+-- 1. currencies (no dependencies)
+CREATE TABLE currencies (
+    code TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    rateToBase REAL NOT NULL DEFAULT 1.0,
+    isBaseCurrency INTEGER NOT NULL DEFAULT 0
+);
+
+-- 2. account_groups (no dependencies)
+CREATE TABLE account_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    iconName TEXT,
+    orderIndex INTEGER NOT NULL DEFAULT 0
+);
+
+-- 3. categories (self-reference on parentId)
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    parentId INTEGER,
+    iconName TEXT NOT NULL,
+    color TEXT NOT NULL,
+    budgetLimit REAL,
+    isArchived INTEGER NOT NULL DEFAULT 0,
+    orderIndex INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (parentId) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+-- Index for categories parentId
+CREATE INDEX index_categories_parentId ON categories (parentId);
+
+-- 4. accounts (depends on account_groups, currencies)
+CREATE TABLE accounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    groupId INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    balance REAL NOT NULL,
+    currencyCode TEXT NOT NULL,
+    iconName TEXT,
+    color TEXT,
+    isArchived INTEGER NOT NULL DEFAULT 0,
+    excludeFromTotal INTEGER NOT NULL DEFAULT 0,
+    description TEXT,
+    FOREIGN KEY (groupId) REFERENCES account_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (currencyCode) REFERENCES currencies(code) ON DELETE RESTRICT
+);
+
+-- 5. transaction_details (no dependencies)
+CREATE TABLE transaction_details (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    amount REAL NOT NULL,
+    type TEXT NOT NULL,
+    category TEXT NOT NULL,
+    categoryName TEXT NOT NULL,
+    timestamp INTEGER NOT NULL,
+    description TEXT
+);
+
+-- 6. transactions (depends on accounts, categories)
+CREATE TABLE transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    amount REAL NOT NULL,
+    currencyCode TEXT NOT NULL DEFAULT 'UZS',
+    exchangeRate REAL NOT NULL DEFAULT 1.0,
+    targetAmount REAL,
+    date INTEGER NOT NULL,
+    note TEXT,
+    description TEXT,
+    photoPaths TEXT NOT NULL DEFAULT '[]',
+    accountId INTEGER,
+    categoryId INTEGER,
+    subCategoryId INTEGER,
+    targetAccountId INTEGER,
+    fee REAL NOT NULL DEFAULT 0.0,
+    isBookmarked INTEGER NOT NULL DEFAULT 0,
+    recurrenceRule TEXT,
+    isInstallment INTEGER NOT NULL DEFAULT 0,
+    installmentTotalMonths INTEGER,
+    installmentCurrentMonth INTEGER,
+    parentTransactionId INTEGER,
+    FOREIGN KEY (accountId) REFERENCES accounts(id) ON DELETE CASCADE,
+    FOREIGN KEY (targetAccountId) REFERENCES accounts(id) ON DELETE SET NULL,
+    FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE SET NULL,
+    FOREIGN KEY (subCategoryId) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+-- Indexes for transactions
+CREATE INDEX index_transactions_date ON transactions (date);
+CREATE INDEX index_transactions_accountId ON transactions (accountId);
+CREATE INDEX index_transactions_categoryId ON transactions (categoryId);
+
+-- 7. templates (depends on categories)
+CREATE TABLE templates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    amount REAL NOT NULL,
+    iconName TEXT,
+    transactionType TEXT NOT NULL,
+    categoryId INTEGER,
+    FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+-- Indexes for templates
+CREATE INDEX index_templates_categoryId ON templates (categoryId);
+CREATE INDEX index_templates_transactionType ON templates (transactionType);
+
+-- Sample base currency insert (UZS)
+INSERT INTO currencies (code, name, symbol, rateToBase, isBaseCurrency)
+VALUES ('UZS', 'O''zbek so''mi', 'so''m', 1.0, 1);

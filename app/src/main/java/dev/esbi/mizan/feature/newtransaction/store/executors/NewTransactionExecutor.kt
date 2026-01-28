@@ -5,6 +5,8 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.domain.repository.CurrencyRepository
+import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
@@ -29,7 +31,9 @@ internal class NewTransactionExecutor @Inject constructor(
     private val context: Context,
     private val manualInputHandler: ManualInputHandler,
     private val navigationHandler: NavigationHandler,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val currencyRepository: CurrencyRepository,
+    private val transactionRepository: TransactionRepository
 ) : CoroutineExecutor<
         NewTransactionStore.Intent,
         NewTransactionStore.Action,
@@ -163,6 +167,94 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.Intent.TransactionTypesShow -> {
                 pages.push(TransactionStep.TypeSelector())
                 updateCurrentPage()
+            }
+
+            is NewTransactionStore.Intent.ConfirmSave -> {
+                scope.launch {
+                    dispatch(NewTransactionStore.Message.SetLoading(true))
+                    dispatch(NewTransactionStore.Message.SetError(null))
+                    
+                    try {
+                        val currentState = state()
+                        
+                        // Get exchange rate for the selected currency
+                        val currency = currencyRepository.getCurrencyByCode(currentState.keypadState.currency)
+                        val exchangeRate = currency?.rateToBase ?: 1.0
+                        
+                        // Get category ID (prefer child category if selected)
+                        val categoryId = currentState.categoryChooserState.selectedChildId 
+                            ?: currentState.categoryChooserState.selectedParentId
+                        
+                        // Create Transaction domain model
+                        val transaction = Transaction(
+                            id = 0, // New transaction
+                            type = when (currentState.transactionType) {
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.EXPENSE -> 
+                                    Transaction.Type.EXPENSE
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.INCOME -> 
+                                    Transaction.Type.INCOME
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.TRANSFER -> 
+                                    Transaction.Type.TRANSFER
+                            },
+                            amount = currentState.keypadState.amount,
+                            currency = currency ?: dev.esbi.mizan.domain.model.Currency(
+                                code = currentState.keypadState.currency,
+                                name = currentState.keypadState.currency,
+                                symbol = currentState.keypadState.currency,
+                                rateToBase = exchangeRate,
+                                isBaseCurrency = currentState.keypadState.currency == "UZS"
+                            ),
+                            exchangeRate = exchangeRate,
+                            targetAmount = null, // TODO: Calculate for transfers if needed
+                            date = currentState.transactionDate,
+                            note = currentState.note.takeIf { it.isNotBlank() },
+                            description = null,
+                            photoPaths = emptyList(),
+                            accountId = currentState.selectedAccountId,
+                            categoryId = categoryId,
+                            subCategoryId = null,
+                            targetAccountId = currentState.targetAccountId,
+                            fee = 0.0,
+                            isBookmarked = false,
+                            recurrenceRule = null,
+                            isInstallment = false,
+                            installmentTotalMonths = null,
+                            installmentCurrentMonth = null,
+                            parentTransactionId = null,
+                            merchantName = null,
+                            fiscalSign = null
+                        )
+                        
+                        // Save transaction
+                        val result = transactionRepository.saveTransaction(transaction)
+                        
+                        if (result.isSuccess) {
+                            publish(NewTransactionStore.Label.MapsToNextStep)
+                        } else {
+                            dispatch(NewTransactionStore.Message.SetError("Failed to save transaction"))
+                        }
+                    } catch (e: Exception) {
+                        dispatch(NewTransactionStore.Message.SetError(e.message ?: "Unknown error"))
+                    } finally {
+                        dispatch(NewTransactionStore.Message.SetLoading(false))
+                    }
+                }
+            }
+
+            is NewTransactionStore.Intent.UpdateNote -> {
+                dispatch(NewTransactionStore.Message.UpdateNote(intent.note))
+            }
+
+            is NewTransactionStore.Intent.UpdateDate -> {
+                dispatch(NewTransactionStore.Message.UpdateDate(intent.date))
+            }
+
+            is NewTransactionStore.Intent.UpdateSelectedAccount -> {
+                dispatch(NewTransactionStore.Message.UpdateSelectedAccount(intent.accountId))
+            }
+
+            is NewTransactionStore.Intent.UpdateTargetAccount -> {
+                dispatch(NewTransactionStore.Message.UpdateTargetAccount(intent.accountId))
             }
             // Delegate Calculator logic
             is NewTransactionStore.AmountInputIntent -> {

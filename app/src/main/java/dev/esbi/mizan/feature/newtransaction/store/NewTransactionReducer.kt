@@ -36,6 +36,13 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
 
             is NewTransactionStore.Message.UpdateTransactionStep -> copy(currentPage = msg.step)
 
+            is NewTransactionStore.Message.UpdateNote -> copy(note = msg.note)
+            is NewTransactionStore.Message.UpdateDate -> copy(transactionDate = msg.date)
+            is NewTransactionStore.Message.UpdateSelectedAccount -> copy(selectedAccountId = msg.accountId)
+            is NewTransactionStore.Message.UpdateTargetAccount -> copy(targetAccountId = msg.accountId)
+            is NewTransactionStore.Message.SetLoading -> copy(isLoading = msg.isLoading)
+            is NewTransactionStore.Message.SetError -> copy(error = msg.error)
+
             // NewTransactionStore.CategoryChooserMessage
             is NewTransactionStore.CategoryChooserMessage.CategoriesLoaded -> copy(
                 categoryChooserState = categoryChooserState.copy(

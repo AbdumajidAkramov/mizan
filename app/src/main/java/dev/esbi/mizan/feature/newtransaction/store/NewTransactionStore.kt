@@ -25,7 +25,14 @@ interface NewTransactionStore :
         val voiceInputState: VoiceInputState = VoiceInputState(),
         val cameraInputState: CameraInputState = CameraInputState(),
         val categoryChooserState: CategoryChooserState = CategoryChooserState(Transaction.Type.EXPENSE),
-        val activePad: ActivePads = ActivePads.AmountPad()
+        val activePad: ActivePads = ActivePads.AmountPad(),
+        val note: String = "",
+        val description: String = "",
+        val transactionDate: Long = System.currentTimeMillis(),
+        val selectedAccountId: Long? = null,
+        val targetAccountId: Long? = null,
+        val isLoading: Boolean = false,
+        val error: String? = null
     ) {
         companion object
     }
@@ -66,6 +73,11 @@ interface NewTransactionStore :
         class OnTypeSelect(val type: Transaction.Type) : Intent
         object OnSubmit : Intent
         object TransactionTypesShow : Intent
+        data object ConfirmSave : Intent
+        class UpdateNote(val note: String) : Intent
+        class UpdateDate(val date: Long) : Intent
+        class UpdateSelectedAccount(val accountId: Long?) : Intent
+        class UpdateTargetAccount(val accountId: Long?) : Intent
     }
 
     sealed interface AmountInputIntent : Intent {
@@ -86,6 +98,12 @@ interface NewTransactionStore :
         class UpdateVoiceResult(val result: String?) : Message
 
         class UpdateTransactionStep(val step: TransactionStep) : Message
+        class UpdateNote(val note: String) : Message
+        class UpdateDate(val date: Long) : Message
+        class UpdateSelectedAccount(val accountId: Long?) : Message
+        class UpdateTargetAccount(val accountId: Long?) : Message
+        class SetLoading(val isLoading: Boolean) : Message
+        class SetError(val error: String?) : Message
     }
 
     sealed interface CategoryChooserMessage : Message {

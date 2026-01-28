@@ -6,6 +6,8 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
+import dev.esbi.mizan.domain.repository.CurrencyRepository
+import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.CameraScannerHandler
@@ -27,14 +29,18 @@ internal object AmountInputModule {
         @MainDispatcher mainDispatcher: CoroutineDispatcher,
         manualInputHandler: ManualInputHandler,
         navigationHandler: NavigationHandler,
-        categoryRepository: CategoryRepository
+        categoryRepository: CategoryRepository,
+        currencyRepository: CurrencyRepository,
+        transactionRepository: TransactionRepository
     ): NewTransactionExecutor {
         return NewTransactionExecutor(
             context = context,
             mainDispatcher = mainDispatcher,
             manualInputHandler = manualInputHandler,
             navigationHandler = navigationHandler,
-            categoryRepository = categoryRepository
+            categoryRepository = categoryRepository,
+            currencyRepository = currencyRepository,
+            transactionRepository = transactionRepository
         )
     }
 

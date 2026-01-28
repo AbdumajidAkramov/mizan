@@ -29,6 +29,21 @@ export const CATEGORY_METADATA: CategoryMetadata[] = [
 ];
 
 /**
+ * Subcategory configuration for enhanced category selection
+ * Maps main categories to their subcategories
+ */
+export const CATEGORY_SUBCATEGORIES: Record<string, string[]> = {
+  food: ['Restaurants', 'Groceries', 'Fast Food', 'Coffee Shop', 'Delivery'],
+  transport: ['Fuel', 'Taxi', 'Public Transport', 'Maintenance', 'Parking'],
+  shopping: ['Clothing', 'Electronics', 'Home & Garden', 'Books', 'Personal Care'],
+  bills: ['Electricity', 'Water', 'Internet', 'Phone', 'Rent', 'Insurance'],
+  entertainment: ['Movies', 'Concerts', 'Games', 'Streaming', 'Hobbies'],
+  health: ['Doctor', 'Pharmacy', 'Gym', 'Wellness', 'Sports'],
+  travel: ['Flights', 'Hotels', 'Car Rental', 'Tours', 'Activities'],
+  tech: ['Software', 'Hardware', 'Subscriptions', 'Apps', 'Services'],
+};
+
+/**
  * Mock user account data
  */
 export const MOCK_USER_ACCOUNT: UserAccount = {

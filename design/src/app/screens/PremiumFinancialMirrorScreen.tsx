@@ -148,46 +148,50 @@ export function PremiumFinancialMirrorScreen() {
         </div>
 
         {/* Projection Chart */}
-        <ResponsiveContainer width="100%" height={250}>
-          <AreaChart data={NET_WORTH_PROJECTION}>
-            <defs>
-              <linearGradient id="projectionGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#667eea" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#667eea" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--premium-surface-2)" />
-            <XAxis
-              dataKey="year"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-              tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'var(--premium-surface-3)',
-                border: '1px solid var(--premium-glass-border)',
-                borderRadius: 'var(--premium-radius-sm)',
-                color: 'var(--premium-text-primary)',
-              }}
-              formatter={(value: number) => [`$${value.toLocaleString()}`, 'Net Worth']}
-            />
-            <Area
-              type="monotone"
-              dataKey={projectionView}
-              stroke="#667eea"
-              strokeWidth={3}
-              fill="url(#projectionGradient)"
-              animationDuration={1000}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        <div className="w-full min-h-[250px]">
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart data={NET_WORTH_PROJECTION}>
+              <defs>
+                <linearGradient id="netWorthProjection" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--premium-emerald)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--premium-emerald)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="var(--premium-glass-border)"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="year"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+                tickFormatter={(value) => `$${value / 1000}k`}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--premium-glass-bg)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--premium-glass-border)',
+                  borderRadius: 'var(--premium-radius-md)',
+                }}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="var(--premium-emerald)"
+                strokeWidth={3}
+                fill="url(#netWorthProjection)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
 
         {/* Projection Summary */}
         <div className="mt-[var(--premium-space-lg)] grid grid-cols-3 gap-[var(--premium-space-md)]">

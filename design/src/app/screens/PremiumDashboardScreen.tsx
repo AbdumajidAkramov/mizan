@@ -21,11 +21,14 @@ import { ErrorState } from '../components/molecules/ErrorState';
 export interface PremiumDashboardScreenProps {
   dashboardState: UiState<DashboardSummary>;
   userDisplayName?: string;
+  /** Callback when user taps "See all" on Recent Transactions */
+  onViewAllTransactions?: () => void;
 }
 
 export function PremiumDashboardScreen({
   dashboardState,
   userDisplayName = 'User',
+  onViewAllTransactions,
 }: PremiumDashboardScreenProps) {
   // Loading state
   if (dashboardState.status === 'loading') {
@@ -174,43 +177,47 @@ export function PremiumDashboardScreen({
           </button>
         </div>
         
-        <ResponsiveContainer width="100%" height={180}>
-          <AreaChart data={data.weeklySpending}>
-            <defs>
-              <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#667eea" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#667eea" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="dayLabel"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'var(--premium-surface-3)',
-                border: '1px solid var(--premium-glass-border)',
-                borderRadius: 'var(--premium-radius-sm)',
-                fontSize: '12px',
-                color: 'var(--premium-text-primary)',
-              }}
-            />
-            <Area
-              type="monotone"
-              dataKey="totalAmount"
-              stroke="#667eea"
-              strokeWidth={3}
-              fill="url(#colorAmount)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        <div className="w-full min-h-[180px]">
+          <ResponsiveContainer width="100%" height={180}>
+            <AreaChart data={data.weeklySpending}>
+              <defs>
+                <linearGradient id="spendingGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--premium-primary)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--premium-primary)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+                tickFormatter={(value) => `$${value}`}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--premium-glass-bg)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--premium-glass-border)',
+                  borderRadius: 'var(--premium-radius-md)',
+                  padding: '8px 12px',
+                }}
+                labelStyle={{ color: 'var(--premium-text-primary)' }}
+              />
+              <Area
+                type="monotone"
+                dataKey="amount"
+                stroke="var(--premium-primary)"
+                strokeWidth={2}
+                fill="url(#spendingGradient)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </PremiumCard>
 
       {/* Top Categories */}
@@ -227,29 +234,27 @@ export function PremiumDashboardScreen({
         <PremiumCard variant="glass" className="p-[var(--premium-space-lg)]">
           <div className="flex items-center gap-[var(--premium-space-lg)]">
             {/* Donut Chart */}
-            <div className="w-[140px] h-[140px] flex-shrink-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPieChart>
-                  <Pie
-                    data={data.topCategories}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={65}
-                    paddingAngle={3}
-                    dataKey="totalAmount"
-                  >
-                    {data.topCategories.map((category: CategorySpending, index: number) => (
-                      <Cell key={`cell-${index}`} fill={category.colorToken} />
-                    ))}
-                  </Pie>
-                </RechartsPieChart>
-              </ResponsiveContainer>
+            <div className="w-[140px] h-[140px] min-w-[140px] min-h-[140px] flex-shrink-0" style={{ minWidth: '140px', minHeight: '140px' }}>
+              <RechartsPieChart width={140} height={140}>
+                <Pie
+                  data={data.categorySpending || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={60}
+                  paddingAngle={2}
+                  dataKey="totalAmount"
+                >
+                  {(data.categorySpending || []).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.colorToken} />
+                  ))}
+                </Pie>
+              </RechartsPieChart>
             </div>
 
             {/* Category Legend */}
             <div className="flex-1 space-y-[var(--premium-space-sm)]">
-              {data.topCategories.slice(0, 4).map((category: CategorySpending) => (
+              {(data.categorySpending || []).slice(0, 5).map((category) => (
                 <div key={category.category} className="flex items-center justify-between">
                   <div className="flex items-center gap-[var(--premium-space-sm)]">
                     <div
@@ -279,8 +284,22 @@ export function PremiumDashboardScreen({
           <h3 className="heading-md text-[var(--premium-text-primary)]">
             Recent Transactions
           </h3>
-          <button className="body-sm text-[var(--premium-primary)]">
+          <button 
+            onClick={onViewAllTransactions}
+            className="
+              body-sm font-medium text-[var(--premium-emerald)]
+              flex items-center gap-[4px]
+              hover:gap-[8px]
+              transition-all duration-200
+              active:scale-95
+              px-[var(--premium-space-sm)]
+              py-[4px]
+              rounded-[var(--premium-radius-md)]
+              hover:bg-[var(--premium-emerald)]/10
+            "
+          >
             See all
+            <ArrowRight size={16} strokeWidth={2.5} />
           </button>
         </div>
         

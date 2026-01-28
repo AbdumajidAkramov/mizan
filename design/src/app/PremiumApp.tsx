@@ -11,6 +11,10 @@ import { PremiumStatisticsScreen } from './screens/PremiumStatisticsScreen';
 import { PremiumBudgetScreen } from './screens/PremiumBudgetScreen';
 import { PremiumProfileScreen } from './screens/PremiumProfileScreen';
 import { PremiumFinancialMirrorScreen } from './screens/PremiumFinancialMirrorScreen';
+import { PremiumAddTransactionScreen } from './screens/PremiumAddTransactionScreen';
+import { PremiumTransactionsHubScreen } from './screens/PremiumTransactionsHubScreen';
+import { ManageCategoriesScreen } from './screens/ManageCategoriesScreen';
+import { ManageTemplatesScreen } from './screens/ManageTemplatesScreen';
 import { PremiumBottomNav, type PremiumNavTab } from './components/premium/PremiumBottomNav';
 import { PremiumButton } from './components/premium/PremiumButton';
 import { PremiumCard } from './components/premium/PremiumCard';
@@ -26,9 +30,13 @@ import {
 
 function PremiumAppContent() {
   const [activeTab, setActiveTab] = useState<PremiumNavTab>('home');
-  const [showAddExpense, setShowAddExpense] = useState(false);
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [showManageCategories, setShowManageCategories] = useState(false);
+  const [showManageTemplates, setShowManageTemplates] = useState(false);
+  const [showTransactionsHub, setShowTransactionsHub] = useState(false);
+  const [lastSavedTransactionId, setLastSavedTransactionId] = useState<string | undefined>();
   const [addExpenseStep, setAddExpenseStep] = useState<'type' | 'amount' | 'category' | 'details'>('type');
-  const [transactionType, setTransactionType] = useState<'expense' | 'income'>('expense');
+  const [transactionType, setTransactionType] = useState<'expense' | 'income' | 'transfer'>('expense');
   const [selectedCategory, setSelectedCategory] = useState<TransactionCategory>();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [amount, setAmount] = useState('');
@@ -73,16 +81,42 @@ function PremiumAppContent() {
   };
 
   const handleAddExpense = () => {
-    setShowAddExpense(true);
-    setAddExpenseStep('type');
-    setTransactionType('expense');
-    setSelectedCategory(undefined);
-    setAmount('');
+    setShowAddTransaction(true);
   };
 
   const handleCloseAddExpense = () => {
-    setShowAddExpense(false);
-    setAddExpenseStep('type');
+    setShowAddTransaction(false);
+  };
+
+  const handleSaveTransaction = (transaction: {
+    amount: number;
+    type: 'expense' | 'income' | 'transfer';
+    category?: TransactionCategory;
+    fromAccountId?: string;
+    toAccountId?: string;
+    date: Date;
+    notes?: string;
+  }) => {
+    // Generate a unique transaction ID
+    const newTransactionId = `txn-${Date.now()}`;
+    
+    // TODO: Add transaction to state/database
+    console.log('Saving transaction:', transaction);
+    
+    if (transaction.type === 'transfer') {
+      console.log(`Transfer $${transaction.amount} from ${transaction.fromAccountId} to ${transaction.toAccountId}`);
+    } else {
+      console.log(`${transaction.type} of $${transaction.amount} in category ${transaction.category}`);
+    }
+    
+    // Close Add Transaction screen
+    setShowAddTransaction(false);
+    
+    // Save the transaction ID for highlighting
+    setLastSavedTransactionId(newTransactionId);
+    
+    // Navigate to Transactions Hub (Daily View)
+    setShowTransactionsHub(true);
   };
 
   const handleNext = () => {
@@ -105,6 +139,7 @@ function PremiumAppContent() {
           <PremiumDashboardScreen
             dashboardState={dashboardState}
             userDisplayName={MOCK_USER_ACCOUNT.displayName}
+            onViewAllTransactions={() => setShowTransactionsHub(true)}
           />
         );
       
@@ -439,7 +474,12 @@ function PremiumAppContent() {
                 fullWidth
                 onClick={() => {
                   // Handle submit
-                  handleCloseAddExpense();
+                  handleSaveTransaction({
+                    amount: parseFloat(amount),
+                    type: transactionType,
+                    category: selectedCategory!,
+                    date: selectedDate,
+                  });
                 }}
               >
                 Add {transactionType === 'expense' ? 'Expense' : 'Income'}
@@ -485,31 +525,56 @@ function PremiumAppContent() {
         onAddExpense={handleAddExpense}
       />
 
-      {/* Add Expense Modal */}
-      {showAddExpense && (
-        <div 
-          className="
-            fixed inset-0 z-50 
-            bg-black/60 backdrop-blur-sm
-            flex items-end justify-center
-            animate-fade-in-up
-          "
-          onClick={handleCloseAddExpense}
-        >
-          <PremiumCard
-            variant="solid"
-            className="
-              w-full max-w-lg 
-              rounded-t-[var(--premium-radius-2xl)] rounded-b-none
-              p-[var(--premium-space-xl)]
-              max-h-[90vh]
-              overflow-y-auto
-            "
-            onClick={(e) => e.stopPropagation()}
-          >
-            {renderAddExpenseContent()}
-          </PremiumCard>
-        </div>
+      {/* Add Transaction Screen (Full-screen overlay) */}
+      {showAddTransaction && (
+        <PremiumAddTransactionScreen
+          onClose={handleCloseAddExpense}
+          onSave={handleSaveTransaction}
+          onManageCategories={() => {
+            setShowAddTransaction(false);
+            setShowManageCategories(true);
+          }}
+          onManageTemplates={() => {
+            setShowAddTransaction(false);
+            setShowManageTemplates(true);
+          }}
+        />
+      )}
+
+      {/* Manage Categories Screen (Full-screen overlay) */}
+      {showManageCategories && (
+        <ManageCategoriesScreen
+          onBack={() => {
+            setShowManageCategories(false);
+            setShowAddTransaction(true);
+          }}
+        />
+      )}
+
+      {/* Manage Templates Screen (Full-screen overlay) */}
+      {showManageTemplates && (
+        <ManageTemplatesScreen
+          onBack={() => {
+            setShowManageTemplates(false);
+            setShowAddTransaction(true);
+          }}
+        />
+      )}
+
+      {/* Transactions Hub Screen (Full-screen overlay) */}
+      {showTransactionsHub && (
+        <PremiumTransactionsHubScreen
+          onAddTransaction={() => {
+            setShowTransactionsHub(false);
+            setShowAddTransaction(true);
+          }}
+          onBack={() => {
+            setShowTransactionsHub(false);
+            setLastSavedTransactionId(undefined);
+          }}
+          initialTab="daily"
+          highlightTransactionId={lastSavedTransactionId}
+        />
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 package dev.esbi.mizan.data.local.entity.transaction
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -27,12 +28,6 @@ import dev.esbi.mizan.domain.model.Transaction
             entity = CategoryEntity::class,
             parentColumns = ["id"],
             childColumns = ["categoryId"],
-            onDelete = ForeignKey.SET_NULL
-        ),
-        ForeignKey(
-            entity = CategoryEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["subCategoryId"],
             onDelete = ForeignKey.SET_NULL
         )
     ],
@@ -71,12 +66,8 @@ data class TransactionEntity(
 
     val categoryId: Long? = null,       // Kategoriya (Masalan: Daily Essentials)
 
-    // Subkategoriya (Masalan: Fruits). Skrinshotda "Daily Essentials/Fruits" ko'rindi
-    val subCategoryId: Long? = null,
-
     // --- Transfer Specific ---
     val targetAccountId: Long? = null,  // Faqat Transfer uchun: 'To Account'
-    val fee: Double = 0.0,              // Transfer komissiyasi (Fees)
 
     // --- Advanced Features (Skrinshotlardan kelib chiqib) ---
 
@@ -94,5 +85,12 @@ data class TransactionEntity(
     val installmentCurrentMonth: Int? = null, // Hozirgi oy (masalan, 1)
 
     // Agar bu tranzaksiya avtomatik yaratilgan bo'lsa, ota tranzaksiya IDsi
-    val parentTransactionId: Long? = null
+    val parentTransactionId: Long? = null,
+
+    // --- Fiscal Information ---
+    @ColumnInfo(name = "merchantName")
+    val merchantName: String? = null,    // Merchant name for fiscal receipts
+
+    @ColumnInfo(name = "fiscalSign")
+    val fiscalSign: String? = null       // Fiscal sign for fiscal receipts
 )

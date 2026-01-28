@@ -87,8 +87,8 @@ export function DashboardSummarySection({
         </h3>
         <div className="flex items-center gap-[var(--spacing-lg)]">
           {/* Pie Chart */}
-          <div className="w-[160px] h-[160px] flex-shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-[160px] h-[160px] flex-shrink-0" style={{ minWidth: '160px', minHeight: '160px' }}>
+            <ResponsiveContainer width={160} height={160}>
               <PieChart>
                 <Pie
                   data={data.topCategories}
@@ -101,8 +101,7 @@ export function DashboardSummarySection({
                 >
                   {data.topCategories.map((category: CategorySpending, index: number) => (
                     <Cell key={`cell-${index}`} fill={category.colorToken} />
-                  ))}
-                </Pie>
+                  ))}</Pie>
               </PieChart>
             </ResponsiveContainer>
           </div>

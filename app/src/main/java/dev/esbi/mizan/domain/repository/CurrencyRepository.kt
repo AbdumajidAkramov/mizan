@@ -7,4 +7,5 @@ interface CurrencyRepository {
     fun observeCurrencies(): Flow<List<Currency>>
     suspend fun setBaseCurrency(code: String)
     suspend fun updateRate(code: String, rateToBase: Double)
+    suspend fun getCurrencyByCode(code: String): Currency?
 }

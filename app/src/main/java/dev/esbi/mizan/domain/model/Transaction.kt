@@ -22,16 +22,19 @@ data class Transaction(
     // ... (Foreign Keylar o'zgarishsiz: accountId, categoryId...)
     val accountId: Long? = null,       // Source Account
     val categoryId: Long? = null,
-    val subCategoryId: Long? = null,
+    val subCategoryId: Long? = null,   // Deprecated - not used in new schema
     // --- Transfer Specific ---
     val targetAccountId: Long? = null,
-    val fee: Double = 0.0,
+    val fee: Double = 0.0,             // Deprecated - not used in new schema
     val isBookmarked: Boolean = false,
     val recurrenceRule: String? = null,
     val isInstallment: Boolean = false,
     val installmentTotalMonths: Int? = null,
     val installmentCurrentMonth: Int? = null,
-    val parentTransactionId: Long? = null
+    val parentTransactionId: Long? = null,
+    // --- Fiscal Information ---
+    val merchantName: String? = null,   // Merchant name for fiscal receipts
+    val fiscalSign: String? = null      // Fiscal sign for fiscal receipts
 ) {
     enum class Type {
         EXPENSE,

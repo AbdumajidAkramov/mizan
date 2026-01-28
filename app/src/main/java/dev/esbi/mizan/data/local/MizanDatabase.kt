@@ -11,6 +11,7 @@ import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
+import dev.esbi.mizan.data.local.dao.TransactionItemDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
 import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
@@ -27,6 +28,7 @@ import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
 import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
+import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
 
 @Database(
     entities = [
@@ -41,6 +43,7 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
         CategoryBudgetEntity::class,
         AccountEntity::class,
         TransactionEntity::class,
+        TransactionItemEntity::class,
         CategoryEntity::class,
         CurrencyEntity::class,
         AccountGroupEntity::class,
@@ -55,6 +58,7 @@ abstract class MizanDatabase : RoomDatabase() {
     abstract fun financialMirrorDao(): FinancialMirrorDao
     abstract fun budgetDao(): BudgetDao
     abstract fun transactionsDao(): TransactionsDao
+    abstract fun transactionItemDao(): TransactionItemDao
     abstract fun categoryDao(): CategoryDao
     abstract fun accountDao(): AccountDao
     abstract fun accountGroupDao(): AccountGroupDao

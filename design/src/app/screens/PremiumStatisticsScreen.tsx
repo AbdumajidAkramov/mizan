@@ -31,8 +31,8 @@ export function PremiumStatisticsScreen({ dashboardState }: PremiumStatisticsScr
 
   // Category breakdown for bar chart
   const categoryBarData = data.topCategories.map(cat => ({
-    name: cat.categoryLabel.split(' ')[0], // First word
-    value: cat.totalAmount,
+    category: cat.categoryLabel.split(' ')[0], // First word
+    amount: cat.totalAmount,
     color: cat.colorToken,
   }));
 
@@ -189,7 +189,7 @@ export function PremiumStatisticsScreen({ dashboardState }: PremiumStatisticsScr
 
         <div className="flex items-center gap-[var(--premium-space-lg)]">
           {/* Donut Chart */}
-          <div className="w-[160px] h-[160px] flex-shrink-0">
+          <div className="w-[160px] h-[160px] min-w-[160px] min-h-[160px] flex-shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -197,8 +197,8 @@ export function PremiumStatisticsScreen({ dashboardState }: PremiumStatisticsScr
                   cx="50%"
                   cy="50%"
                   innerRadius={50}
-                  outerRadius={75}
-                  paddingAngle={2}
+                  outerRadius={70}
+                  paddingAngle={3}
                   dataKey="totalAmount"
                 >
                   {data.topCategories.map((category, index) => (
@@ -247,35 +247,37 @@ export function PremiumStatisticsScreen({ dashboardState }: PremiumStatisticsScr
           </p>
         </div>
 
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={categoryBarData}>
-            <XAxis
-              dataKey="name"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-            />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: 'var(--premium-text-tertiary)', fontSize: 12 }}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: 'var(--premium-surface-3)',
-                border: '1px solid var(--premium-glass-border)',
-                borderRadius: 'var(--premium-radius-sm)',
-                fontSize: '12px',
-                color: 'var(--premium-text-primary)',
-              }}
-            />
-            <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-              {categoryBarData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="w-full min-h-[220px]">
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={categoryBarData}>
+              <XAxis
+                dataKey="category"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'var(--premium-text-muted)' }}
+                tickFormatter={(value) => `$${value}`}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--premium-glass-bg)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--premium-glass-border)',
+                  borderRadius: 'var(--premium-radius-md)',
+                }}
+              />
+              <Bar dataKey="amount" radius={[8, 8, 0, 0]}>
+                {categoryBarData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </PremiumCard>
 
       {/* Insights */}

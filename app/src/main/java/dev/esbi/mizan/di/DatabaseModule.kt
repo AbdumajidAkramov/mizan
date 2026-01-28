@@ -9,6 +9,7 @@ import dagger.Provides
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
 import dev.esbi.mizan.data.local.MizanDatabase
 import dev.esbi.mizan.data.local.dao.AccountDao
+import dev.esbi.mizan.data.local.dao.AccountGroupDao
 import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.CurrencyDao
@@ -16,6 +17,7 @@ import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
+import dev.esbi.mizan.data.local.seeder.MockDataSeeder
 import javax.inject.Singleton
 
 @Module
@@ -105,6 +107,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideAccountGroupDao(database: MizanDatabase): AccountGroupDao {
+        return database.accountGroupDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideCurrencyDao(database: MizanDatabase): CurrencyDao {
         return database.currencyDao()
     }
@@ -119,5 +127,17 @@ class DatabaseModule {
     @Singleton
     fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {
         return DatabaseSeedingManager(database)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMockDataSeeder(
+        currencyDao: CurrencyDao,
+        accountDao: AccountDao,
+        accountGroupDao: AccountGroupDao,
+        categoryDao: CategoryDao,
+        transactionsDao: TransactionsDao
+    ): MockDataSeeder {
+        return MockDataSeeder(currencyDao, accountDao, accountGroupDao, categoryDao, transactionsDao)
     }
 }

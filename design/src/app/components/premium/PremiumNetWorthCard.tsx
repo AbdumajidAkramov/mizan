@@ -80,22 +80,22 @@ export function PremiumNetWorthCard({
         </div>
 
         {/* Mini trend chart */}
-        <div className="h-[60px] -mx-[var(--premium-space-sm)]">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[60px] w-full min-h-[60px] -mx-[var(--premium-space-sm)]" style={{ minHeight: '60px', height: '60px' }}>
+          <ResponsiveContainer width="100%" height={60}>
             <LineChart data={chartData}>
               <defs>
-                <linearGradient id="netWorthGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#667eea" />
-                  <stop offset="100%" stopColor="#764ba2" />
+                <linearGradient id="netWorthGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--premium-emerald)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--premium-emerald)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="url(#netWorthGradient)"
+                stroke="var(--premium-emerald)"
                 strokeWidth={2}
                 dot={false}
-                animationDuration={1000}
+                fill="url(#netWorthGradient)"
               />
             </LineChart>
           </ResponsiveContainer>

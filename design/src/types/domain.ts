@@ -40,7 +40,7 @@ export type TransactionCategory =
 /**
  * Transaction type enum
  */
-export type TransactionType = 'expense' | 'income';
+export type TransactionType = 'expense' | 'income' | 'transfer';
 
 /**
  * Category metadata for UI rendering
