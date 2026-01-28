@@ -12,6 +12,7 @@ import dev.esbi.mizan.feature.newtransaction.inputcontent.ActivePads
 import dev.esbi.mizan.feature.newtransaction.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction.store.state.VoiceInputState
+import dev.esbi.mizan.domain.model.Account
 
 
 interface NewTransactionStore :
@@ -31,6 +32,9 @@ interface NewTransactionStore :
         val transactionDate: Long = System.currentTimeMillis(),
         val selectedAccountId: Long? = null,
         val targetAccountId: Long? = null,
+        val accounts: List<Account> = emptyList(),
+        val isAccountSheetVisible: Boolean = false,
+        val saveAsTemplate: Boolean = false,
         val isLoading: Boolean = false,
         val error: String? = null
     ) {
@@ -78,6 +82,10 @@ interface NewTransactionStore :
         class UpdateDate(val date: Long) : Intent
         class UpdateSelectedAccount(val accountId: Long?) : Intent
         class UpdateTargetAccount(val accountId: Long?) : Intent
+        data object OpenAccountSelection : Intent
+        data object CloseAccountSelection : Intent
+        class SelectAccount(val accountId: Long) : Intent
+        class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Intent
     }
 
     sealed interface AmountInputIntent : Intent {
@@ -102,6 +110,9 @@ interface NewTransactionStore :
         class UpdateDate(val date: Long) : Message
         class UpdateSelectedAccount(val accountId: Long?) : Message
         class UpdateTargetAccount(val accountId: Long?) : Message
+        class UpdateAccounts(val accounts: List<Account>) : Message
+        class SetAccountSheetVisible(val visible: Boolean) : Message
+        class SetSaveAsTemplate(val saveAsTemplate: Boolean) : Message
         class SetLoading(val isLoading: Boolean) : Message
         class SetError(val error: String?) : Message
     }
@@ -127,5 +138,6 @@ interface NewTransactionStore :
         object MapsToNextStep : Label
         object Back : Label
         class ShowError(val message: String) : Label
+        object TransactionSaved : Label
     }
 }

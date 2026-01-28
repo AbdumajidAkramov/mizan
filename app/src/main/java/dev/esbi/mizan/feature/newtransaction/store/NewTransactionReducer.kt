@@ -40,6 +40,9 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
             is NewTransactionStore.Message.UpdateDate -> copy(transactionDate = msg.date)
             is NewTransactionStore.Message.UpdateSelectedAccount -> copy(selectedAccountId = msg.accountId)
             is NewTransactionStore.Message.UpdateTargetAccount -> copy(targetAccountId = msg.accountId)
+            is NewTransactionStore.Message.UpdateAccounts -> copy(accounts = msg.accounts)
+            is NewTransactionStore.Message.SetAccountSheetVisible -> copy(isAccountSheetVisible = msg.visible)
+            is NewTransactionStore.Message.SetSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
             is NewTransactionStore.Message.SetLoading -> copy(isLoading = msg.isLoading)
             is NewTransactionStore.Message.SetError -> copy(error = msg.error)
 

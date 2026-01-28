@@ -27,5 +27,7 @@ data class TemplateEntity(
     @ColumnInfo("amount") val amount: Double,
     @ColumnInfo("iconName") val iconName: String? = null,
     @ColumnInfo("transactionType") val transactionType: Transaction.Type,
-    @ColumnInfo("categoryId") val categoryId: Long? = null
+    @ColumnInfo("categoryId") val categoryId: Long? = null,
+    @ColumnInfo("accountId") val accountId: Long? = null,
+    @ColumnInfo("note") val note: String? = null
 )

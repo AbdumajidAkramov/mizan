@@ -6,9 +6,11 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
+import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.CameraScannerHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
@@ -31,7 +33,9 @@ internal object AmountInputModule {
         navigationHandler: NavigationHandler,
         categoryRepository: CategoryRepository,
         currencyRepository: CurrencyRepository,
-        transactionRepository: TransactionRepository
+        transactionRepository: TransactionRepository,
+        accountRepository: AccountRepository,
+        templateRepository: TemplateRepository
     ): NewTransactionExecutor {
         return NewTransactionExecutor(
             context = context,
@@ -40,7 +44,9 @@ internal object AmountInputModule {
             navigationHandler = navigationHandler,
             categoryRepository = categoryRepository,
             currencyRepository = currencyRepository,
-            transactionRepository = transactionRepository
+            transactionRepository = transactionRepository,
+            accountRepository = accountRepository,
+            templateRepository = templateRepository
         )
     }
 

@@ -1,7 +1,10 @@
 package dev.esbi.mizan.feature.newtransaction.confirm
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,23 +15,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
 import dev.esbi.mizan.ui.kit.icon.IconValue
@@ -39,219 +46,381 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmTransactionContent(
     state: ConfirmTransactionUiState,
     onNoteChange: (String) -> Unit,
     onDateClick: () -> Unit,
     onConfirmClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSaveAsTemplateChange: (Boolean) -> Unit = {}
 ) {
+    val typeColor = when (state.transactionType) {
+        Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
+        Transaction.Type.EXPENSE -> Color(0xFFF5576C)
+        Transaction.Type.TRANSFER -> MizanTheme.premium.colors.primary
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MizanTheme.premium.background.primary)
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = MizanTheme.premium.spacing.lg)
     ) {
-        // Amount Display
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.md),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "${state.amount} ${state.currencyCode}",
-                style = MizanTheme.premium.typography.displaySm,
-                color = when (state.transactionType) {
-                    Transaction.Type.INCOME -> MizanTheme.premium.colors.success
-                    Transaction.Type.EXPENSE -> MizanTheme.premium.colors.error
-                    Transaction.Type.TRANSFER -> MizanTheme.premium.colors.primary
-                },
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
 
-        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xxl))
+        // Main Receipt Card
+        ReceiptCard(
+            state = state,
+            typeColor = typeColor
+        )
 
-        // Details Section
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.md)
-        ) {
-            // Category Row
-            if (state.categoryName != null) {
-                DetailRow(
-                    icon = Icons.ic_add, // TODO: Use proper category icon
-                    title = "Category",
-                    value = state.categoryName,
-                    onClick = null
-                )
-                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
-            }
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
-            // Account Row
-            DetailRow(
-                icon = Icons.ic_wallet,
-                title = "Account",
-                value = state.accountName,
-                onClick = null
-            )
+        // Date Selector Card
+        ActionCard(
+            icon = R.drawable.ic_calendar_month,
+            text = formatDate(state.date),
+            onClick = onDateClick
+        )
 
-            // To Account Row (for transfers)
-            if (state.toAccountName != null) {
-                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
-                DetailRow(
-                    icon = Icons.ic_wallet,
-                    title = "To Account",
-                    value = state.toAccountName,
-                    onClick = null
-                )
-            }
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+        // Note Input Card
+        NoteInputCard(
+            note = state.note,
+            onNoteChange = onNoteChange
+        )
 
-            // Date Row
-            DetailRow(
-                icon = Icons.ic_calendar_month,
-                title = "Date",
-                value = formatDate(state.date),
-                onClick = onDateClick
-            )
-        }
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
-        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
-
-        // Note Section
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.md)
-        ) {
-            Text(
-                text = "Note",
-                style = MizanTheme.premium.typography.labelMd,
-                color = MizanTheme.premium.text.secondary,
-                modifier = Modifier.padding(bottom = MizanTheme.premium.spacing.sm)
-            )
-
-            OutlinedTextField(
-                value = state.note,
-                onValueChange = onNoteChange,
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = {
-                    Text(
-                        text = "Add a note...",
-                        style = MizanTheme.premium.typography.bodyMd,
-                        color = MizanTheme.premium.text.tertiary
-                    )
-                },
-                shape = RoundedCornerShape(MizanTheme.premium.radius.md),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = MizanTheme.premium.colors.surface1,
-                    focusedContainerColor = MizanTheme.premium.colors.surface1,
-                    unfocusedBorderColor = MizanTheme.premium.colors.surface4,
-                    focusedBorderColor = MizanTheme.premium.colors.primary,
-                    unfocusedTextColor = MizanTheme.premium.text.primary,
-                    focusedTextColor = MizanTheme.premium.text.primary
-                )
-            )
-        }
+        // Save as Template Card
+        SaveAsTemplateCard(
+            isChecked = state.saveAsTemplate,
+            onCheckedChange = onSaveAsTemplateChange
+        )
 
         Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
 
         // Save Button
-        Button(
-            onClick = onConfirmClick,
-            enabled = !state.isLoading,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.md)
-                .height(56.dp),
-            shape = RoundedCornerShape(MizanTheme.premium.radius.md),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = when (state.transactionType) {
-                    Transaction.Type.INCOME -> MizanTheme.premium.colors.success
-                    Transaction.Type.EXPENSE -> MizanTheme.premium.colors.error
-                    Transaction.Type.TRANSFER -> MizanTheme.premium.colors.primary
-                }
-            )
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(
-                    text = "Save Transaction",
-                    style = MizanTheme.premium.typography.labelLg,
-                    color = Color.White,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+        SaveButton(
+            isLoading = state.isLoading,
+            onClick = onConfirmClick
+        )
 
         Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
     }
 }
 
 @Composable
-private fun DetailRow(
-    icon: Int,
-    title: String,
-    value: String,
-    onClick: (() -> Unit)?
+private fun ReceiptCard(
+    state: ConfirmTransactionUiState,
+    typeColor: Color
 ) {
-    Row(
+    val typeName = when (state.transactionType) {
+        Transaction.Type.INCOME -> "Income"
+        Transaction.Type.EXPENSE -> "Expense"
+        Transaction.Type.TRANSFER -> "Transfer"
+    }
+
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-            .background(MizanTheme.premium.colors.surface1)
-            .let { modifier ->
-                if (onClick != null) {
-                    modifier.clickable { onClick() }
-                } else {
-                    modifier
+            .border(
+                width = 2.dp,
+                color = typeColor.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+            ),
+        color = MizanTheme.premium.colors.surface2,
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MizanTheme.premium.spacing.lg)
+        ) {
+            // Top Row: Type Label + Icon
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                // Type Label
+                Text(
+                    text = typeName,
+                    style = MizanTheme.typography.bodyMd,
+                    color = typeColor,
+                    fontWeight = FontWeight.Medium
+                )
+
+                // Direction Icon
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(typeColor.copy(alpha = 0.15f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id = when (state.transactionType) {
+                                Transaction.Type.INCOME -> R.drawable.ic_trend_up
+                                Transaction.Type.EXPENSE -> R.drawable.ic_down_trend
+                                Transaction.Type.TRANSFER -> R.drawable.ic_swap_horizontal
+                            }
+                        ),
+                        contentDescription = null,
+                        tint = typeColor,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
-            .padding(MizanTheme.premium.spacing.md),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        MizanIcon(
-            icon = IconValue(icon),
-            contentDescription = null,
-            tint = MizanTheme.premium.text.secondary,
-            modifier = Modifier.size(24.dp)
-        )
 
-        Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.md))
-
-        Column(modifier = Modifier.weight(1f)) {
+            // Amount
             Text(
-                text = title,
-                style = MizanTheme.premium.typography.bodySm,
-                color = MizanTheme.premium.text.secondary
+                text = "$${state.amount}",
+                style = MizanTheme.premium.typography.displayMd.copy(
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MizanTheme.premium.text.primary,
+                modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.sm)
+            )
+
+            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+            // Category Section
+            if (state.categoryName != null) {
+                Text(
+                    text = "Category",
+                    style = MizanTheme.typography.bodySm,
+                    color = MizanTheme.premium.text.tertiary
+                )
+                Text(
+                    text = state.categoryName,
+                    style = MizanTheme.typography.bodyMd,
+                    color = MizanTheme.premium.text.primary,
+                    fontWeight = FontWeight.Medium
+                )
+                if (state.subCategoryName != null) {
+                    Text(
+                        text = state.subCategoryName,
+                        style = MizanTheme.typography.bodySm,
+                        color = MizanTheme.premium.text.secondary
+                    )
+                }
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+            }
+
+            // Account Section
+            Text(
+                text = "Account",
+                style = MizanTheme.typography.bodySm,
+                color = MizanTheme.premium.text.tertiary
             )
             Text(
-                text = value,
-                style = MizanTheme.premium.typography.bodyMd,
+                text = state.accountName,
+                style = MizanTheme.typography.bodyMd,
+                color = MizanTheme.premium.text.primary,
+                fontWeight = FontWeight.Medium
+            )
+
+            // To Account (for transfers)
+            if (state.toAccountName != null) {
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        contentDescription = null,
+                        tint = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = state.toAccountName,
+                        style = MizanTheme.typography.bodyMd,
+                        color = MizanTheme.premium.text.primary,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActionCard(
+    icon: Int,
+    text: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .clickable { onClick() },
+        color = MizanTheme.premium.colors.surface2,
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MizanTheme.premium.spacing.md),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+        ) {
+            MizanIcon(
+                icon = IconValue(icon),
+                contentDescription = null,
+                tint = MizanTheme.premium.text.secondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = text,
+                style = MizanTheme.typography.bodyMd,
                 color = MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.Medium
             )
         }
+    }
+}
 
-        if (onClick != null) {
+@Composable
+private fun NoteInputCard(
+    note: String,
+    onNoteChange: (String) -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MizanTheme.premium.colors.surface2,
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MizanTheme.premium.spacing.md),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+        ) {
             MizanIcon(
-                icon = IconValue(Icons.ic_chevron_right),
+                icon = IconValue(Icons.ic_file),
                 contentDescription = null,
-                tint = MizanTheme.premium.text.tertiary,
-                modifier = Modifier.size(20.dp)
+                tint = MizanTheme.premium.text.secondary,
+                modifier = Modifier.size(24.dp)
             )
+            TextField(
+                value = note,
+                onValueChange = onNoteChange,
+                modifier = Modifier.weight(1f),
+                placeholder = {
+                    Text(
+                        text = "Add a note (optional)",
+                        style = MizanTheme.typography.bodyMd,
+                        color = MizanTheme.premium.text.tertiary
+                    )
+                },
+                textStyle = MizanTheme.typography.bodyMd.copy(
+                    color = MizanTheme.premium.text.primary
+                ),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    cursorColor = MizanTheme.premium.colors.emerald
+                ),
+                singleLine = true
+            )
+        }
+    }
+}
+
+@Composable
+private fun SaveAsTemplateCard(
+    isChecked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .clickable { onCheckedChange(!isChecked) },
+        color = MizanTheme.premium.colors.surface2,
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = MizanTheme.premium.spacing.md,
+                    vertical = MizanTheme.premium.spacing.sm
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+        ) {
+            MizanIcon(
+                icon = IconValue(Icons.ic_star),
+                contentDescription = null,
+                tint = MizanTheme.premium.text.secondary,
+                modifier = Modifier.size(24.dp)
+            )
+            Text(
+                text = "Save as Template",
+                style = MizanTheme.typography.bodyMd,
+                color = MizanTheme.premium.text.primary,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f)
+            )
+            Switch(
+                checked = isChecked,
+                onCheckedChange = onCheckedChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = MizanTheme.premium.colors.emerald,
+                    uncheckedThumbColor = MizanTheme.premium.text.tertiary,
+                    uncheckedTrackColor = MizanTheme.premium.colors.surface3
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun SaveButton(
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable(enabled = !isLoading) { onClick() },
+        color = MizanTheme.premium.colors.emerald,
+        shape = RoundedCornerShape(28.dp)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Save Transaction",
+                    style = MizanTheme.typography.bodyLg,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }

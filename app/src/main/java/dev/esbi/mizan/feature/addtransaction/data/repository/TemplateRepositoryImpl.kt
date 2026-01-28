@@ -1,6 +1,7 @@
 package dev.esbi.mizan.feature.addtransaction.data.repository
 
 import dev.esbi.mizan.data.local.dao.TemplateDao
+import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.domain.model.Template
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +21,25 @@ class TemplateRepositoryImpl @Inject constructor(
                     amount = entity.amount,
                     iconName = entity.iconName,
                     transactionType = entity.transactionType,
-                    categoryId = entity.categoryId
+                    categoryId = entity.categoryId,
+                    accountId = entity.accountId,
+                    note = entity.note
                 )
             }
         }
+    }
+
+    override suspend fun addTemplate(template: Template): Long {
+        val entity = TemplateEntity(
+            id = template.id,
+            name = template.name,
+            amount = template.amount,
+            iconName = template.iconName,
+            transactionType = template.transactionType,
+            categoryId = template.categoryId,
+            accountId = template.accountId,
+            note = template.note
+        )
+        return templateDao.insert(entity)
     }
 }

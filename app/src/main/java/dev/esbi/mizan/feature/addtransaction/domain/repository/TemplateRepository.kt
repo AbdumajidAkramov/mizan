@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface TemplateRepository {
     fun getAllTemplates(): Flow<List<Template>>
+    suspend fun addTemplate(template: Template): Long
 }

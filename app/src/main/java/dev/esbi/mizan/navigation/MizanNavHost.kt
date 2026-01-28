@@ -16,7 +16,7 @@ import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
-import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsScreen
+import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsHubScreen
 
 @Composable
 internal fun MizanNavHost(
@@ -38,6 +38,9 @@ internal fun MizanNavHost(
                 viewModel = viewModel,
                 onNavigateToCategory = { categoryId ->
                     navController.navigate(NavRoute.CategoryDetail(categoryId))
+                },
+                onSeeAllTransactions = {
+                    navController.navigate(NavRoute.Transactions)
                 }
             )
         }
@@ -54,7 +57,15 @@ internal fun MizanNavHost(
         composable<NavRoute.Transactions> {
             val component = remember { appComponent.transactionsComponent().create() }
             val viewModel = component.viewModel
-            TransactionsScreen(viewModel)
+            TransactionsHubScreen(
+                viewModel = viewModel,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onAddTransaction = {
+                    navController.navigate(NavRoute.AmountInput)
+                }
+            )
         }
         composable<NavRoute.Statistics> {
             val component = remember { appComponent.statisticsComponent().create() }
@@ -81,7 +92,11 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onSubmit = {
-                    navController.navigate(NavRoute.Statistics)
+                    navController.navigate(NavRoute.Transactions) {
+                        popUpTo(NavRoute.Transactions) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

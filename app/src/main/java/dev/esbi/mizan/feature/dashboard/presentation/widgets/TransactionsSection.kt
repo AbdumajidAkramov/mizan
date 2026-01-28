@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.dashboard.presentation.widgets
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,10 @@ import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
-fun TransactionsSection(txns: List<Transaction>) {
+fun TransactionsSection(
+    txns: List<Transaction>,
+    onSeeAllClick: () -> Unit = {}
+) {
     Column {
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
             Text(
@@ -28,7 +32,12 @@ fun TransactionsSection(txns: List<Transaction>) {
                 fontWeight = FontWeight.SemiBold,
                 color = MizanTheme.premium.text.primary
             )
-            Text("See all", style = MaterialTheme.typography.bodySmall, color = Purple)
+            Text(
+                text = "See all", 
+                style = MaterialTheme.typography.bodySmall, 
+                color = Purple,
+                modifier = Modifier.clickable { onSeeAllClick() }
+            )
         }
         Spacer(Modifier.height(16.dp))
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

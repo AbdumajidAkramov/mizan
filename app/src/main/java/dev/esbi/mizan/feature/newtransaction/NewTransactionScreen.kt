@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,12 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
-import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContent
+import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContentV2
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeContent
 import dev.esbi.mizan.feature.newtransaction.confirm.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanDatePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
+import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionContent
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -46,9 +50,16 @@ internal fun NewTransactionScreen(
     val accept = viewModel::onIntent
     val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
+    val accountSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    
+    // Get selected account name
+    val selectedAccountName = remember(state.selectedAccountId, state.accounts) {
+        state.accounts.find { it.id == state.selectedAccountId }?.name
+    }
     LaunchedEffect(labels) {
         when (labels) {
             NewTransactionStore.Label.MapsToNextStep -> onSubmit()
+            NewTransactionStore.Label.TransactionSaved -> onSubmit()
             NewTransactionStore.Label.Back -> onBackPressed()
             is NewTransactionStore.Label.ShowError -> {
                 Toast.makeText(
@@ -116,10 +127,14 @@ internal fun NewTransactionScreen(
                 }
 
                 is TransactionStep.CategoryChooser -> {
-                    CategoryChooserContent(
+                    CategoryChooserContentV2(
                         amount = state.keypadState.amountText,
                         state = state.categoryChooserState,
-                        accept = accept
+                        selectedAccountName = selectedAccountName,
+                        accept = accept,
+                        onBack = { accept(NewTransactionStore.Intent.Back) },
+                        onClose = onBackPressed,
+                        onAccountClick = { accept(NewTransactionStore.Intent.OpenAccountSelection) }
                     )
                 }
 
@@ -128,17 +143,28 @@ internal fun NewTransactionScreen(
                 }
 
                 is TransactionStep.ConfirmSave -> {
+                    // Get selected account details
+                    val selectedAccount = state.accounts.find { it.id == state.selectedAccountId }
+                    val targetAccount = state.accounts.find { it.id == state.targetAccountId }
+                    
+                    // Get subcategory name if child is selected
+                    val subCategoryName = state.categoryChooserState.selectedChildId?.let { childId ->
+                        state.categoryChooserState.categories.find { it.id == childId }?.name
+                    }
+                    
                     val confirmState = ConfirmTransactionUiState(
                         amount = state.keypadState.amountText.ifEmpty { "0" },
-                        currencyCode = "UZS", // TODO: Get from selected account
+                        currencyCode = selectedAccount?.currency?.code ?: "UZS",
                         transactionType = state.transactionType ?: Transaction.Type.EXPENSE,
                         categoryName = state.categoryChooserState.selectedCategory?.name,
+                        subCategoryName = subCategoryName,
                         categoryIcon = state.categoryChooserState.selectedCategory?.iconName,
-                        accountName = "Cash Account", // TODO: Get from selected account
-                        toAccountName = null, // TODO: Get for transfers
+                        accountName = selectedAccount?.name ?: "No Account",
+                        toAccountName = targetAccount?.name,
                         date = state.transactionDate,
                         note = state.note,
-                        isLoading = false
+                        saveAsTemplate = state.saveAsTemplate,
+                        isLoading = state.isLoading
                     )
                     
                     ConfirmTransactionContent(
@@ -154,6 +180,9 @@ internal fun NewTransactionScreen(
                         },
                         onBackClick = { 
                             accept(NewTransactionStore.Intent.Back)
+                        },
+                        onSaveAsTemplateChange = { saveAsTemplate ->
+                            accept(NewTransactionStore.Intent.UpdateSaveAsTemplate(saveAsTemplate))
                         }
                     )
                     
@@ -171,6 +200,29 @@ internal fun NewTransactionScreen(
                 }
 
                 else -> {}
+            }
+        }
+
+        // Account Selection Bottom Sheet
+        if (state.isAccountSheetVisible) {
+            ModalBottomSheet(
+                onDismissRequest = { accept(NewTransactionStore.Intent.CloseAccountSelection) },
+                sheetState = accountSheetState,
+                containerColor = MizanTheme.premium.background.primary,
+                dragHandle = null
+            ) {
+                AccountSelectionContent(
+                    accounts = state.accounts,
+                    selectedAccountId = state.selectedAccountId,
+                    onAccountClick = { account ->
+                        accept(NewTransactionStore.Intent.SelectAccount(account.id))
+                    },
+                    onAddAccountClick = {
+                        // TODO: Navigate to add account
+                        accept(NewTransactionStore.Intent.CloseAccountSelection)
+                    },
+                    onClose = { accept(NewTransactionStore.Intent.CloseAccountSelection) }
+                )
             }
         }
     }

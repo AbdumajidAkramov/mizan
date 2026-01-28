@@ -25,6 +25,10 @@ import {
   Coffee,
 } from 'lucide-react';
 import type { Transaction, TransactionCategory } from '../../types/domain';
+import { PremiumCalendarView } from '../components/premium/PremiumCalendarView';
+import { PremiumMonthlyView } from '../components/premium/PremiumMonthlyView';
+import { MobilePremiumSummaryView } from '../components/premium/MobilePremiumSummaryView';
+import { PremiumDescriptionView } from '../components/premium/PremiumDescriptionView';
 
 // Transaction Hub Tab Type
 type TransactionHubTab = 'daily' | 'calendar' | 'monthly' | 'summary' | 'description';
@@ -46,89 +50,182 @@ const MOCK_TRANSACTIONS_EXTENDED: Transaction[] = [
     id: 'txn-1',
     amount: 45.50,
     type: 'expense',
-    category: 'food',
+    category: 'food-dining',
+    categoryLabel: 'Food & Dining',
+    subcategoryLabel: 'Groceries',
     accountId: 'acc-1',
-    title: 'Grocery Shopping',
-    notes: 'Weekly groceries from Whole Foods',
+    accountLabel: 'Main Wallet',
+    description: 'Weekly groceries from Whole Foods',
     timestamp: new Date().toISOString(),
+    title: 'Weekly Groceries',
+    notes: 'Weekly groceries from Whole Foods',
   },
   {
     id: 'txn-2',
     amount: 1250.00,
     type: 'income',
-    category: 'income',
+    category: 'income-salary',
+    categoryLabel: 'Income',
+    subcategoryLabel: 'Salary',
     accountId: 'acc-1',
-    title: 'Monthly Salary',
-    notes: 'January salary payment',
+    accountLabel: 'Main Wallet',
+    description: 'January salary payment',
     timestamp: new Date().toISOString(),
+    title: 'Salary Payment',
+    notes: 'January salary payment',
   },
   {
     id: 'txn-3',
     amount: 89.99,
     type: 'expense',
-    category: 'transport',
+    category: 'transportation',
+    categoryLabel: 'Transportation',
+    subcategoryLabel: 'Fuel',
     accountId: 'acc-2',
+    accountLabel: 'Chase Card',
+    description: 'Shell - Full tank',
+    timestamp: new Date(Date.now() - 86400000).toISOString(), // Yesterday
     title: 'Gas Station',
     notes: 'Shell - Full tank',
-    timestamp: new Date(Date.now() - 86400000).toISOString(), // Yesterday
   },
   {
     id: 'txn-4',
     amount: 25.00,
     type: 'expense',
-    category: 'shopping',
+    category: 'food-dining',
+    categoryLabel: 'Food & Dining',
+    subcategoryLabel: 'Coffee',
     accountId: 'acc-1',
-    title: 'Coffee Shop',
-    notes: 'Morning latte and croissant',
+    accountLabel: 'Main Wallet',
+    description: 'Morning latte and croissant',
     timestamp: new Date().toISOString(),
+    title: 'Starbucks',
+    notes: 'Morning latte and croissant',
   },
   {
     id: 'txn-5',
     amount: 450.00,
     type: 'expense',
-    category: 'bills',
+    category: 'bills-utilities',
+    categoryLabel: 'Bills & Utilities',
+    subcategoryLabel: 'Electricity',
     accountId: 'acc-1',
+    accountLabel: 'Main Wallet',
+    description: 'Monthly electricity payment',
+    timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
     title: 'Electric Bill',
     notes: 'Monthly electricity payment',
-    timestamp: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+  },
+  {
+    id: 'txn-6',
+    amount: 120.00,
+    type: 'expense',
+    category: 'shopping',
+    categoryLabel: 'Shopping',
+    subcategoryLabel: 'Clothing',
+    accountId: 'acc-2',
+    accountLabel: 'Chase Card',
+    description: 'New sneakers from Nike',
+    timestamp: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
+    title: 'Nike Store',
+    notes: 'New sneakers from Nike',
+  },
+  {
+    id: 'txn-7',
+    amount: 75.50,
+    type: 'expense',
+    category: 'entertainment',
+    categoryLabel: 'Entertainment',
+    subcategoryLabel: 'Movies',
+    accountId: 'acc-1',
+    accountLabel: 'Main Wallet',
+    description: 'Movie tickets and popcorn',
+    timestamp: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
+    title: 'Cinema',
+    notes: 'Movie tickets and popcorn',
+  },
+  {
+    id: 'txn-8',
+    amount: 200.00,
+    type: 'expense',
+    category: 'healthcare',
+    categoryLabel: 'Healthcare',
+    subcategoryLabel: 'Doctor Visit',
+    accountId: 'acc-1',
+    accountLabel: 'Main Wallet',
+    description: 'Annual checkup',
+    timestamp: new Date(Date.now() - 604800000).toISOString(), // 1 week ago
+    title: 'Medical Center',
+    notes: 'Annual checkup',
+  },
+  {
+    id: 'txn-9',
+    amount: 500.00,
+    type: 'income',
+    category: 'income-salary',
+    categoryLabel: 'Income',
+    subcategoryLabel: 'Freelance',
+    accountId: 'acc-1',
+    accountLabel: 'Main Wallet',
+    description: 'Freelance project payment',
+    timestamp: new Date(Date.now() - 691200000).toISOString(), // 8 days ago
+    title: 'Freelance Work',
+    notes: 'Freelance project payment',
+  },
+  {
+    id: 'txn-10',
+    amount: 35.00,
+    type: 'expense',
+    category: 'food-dining',
+    categoryLabel: 'Food & Dining',
+    subcategoryLabel: 'Restaurant',
+    accountId: 'acc-2',
+    accountLabel: 'Chase Card',
+    description: 'Lunch at Italian restaurant',
+    timestamp: new Date(Date.now() - 777600000).toISOString(), // 9 days ago
+    title: 'Italian Restaurant',
+    notes: 'Lunch at Italian restaurant',
   },
 ];
 
 // Category Metadata
 const CATEGORY_ICONS: Record<TransactionCategory, any> = {
-  food: Utensils,
-  transport: Car,
-  shopping: ShoppingBag,
-  bills: Home,
-  entertainment: Coffee,
-  health: Wallet,
-  travel: Wallet,
-  tech: Wallet,
-  income: TrendingUp,
+  'food-dining': Utensils,
+  'transportation': Car,
+  'shopping': ShoppingBag,
+  'bills-utilities': Home,
+  'entertainment': Coffee,
+  'healthcare': Wallet,
+  'travel': Wallet,
+  'technology': Wallet,
+  'income-salary': TrendingUp,
+  'other': Wallet,
 };
 
 const CATEGORY_COLORS: Record<TransactionCategory, string> = {
-  food: '#ff6b9d',
-  transport: '#4facfe',
-  shopping: '#ffa34d',
-  bills: '#00d2ff',
-  entertainment: '#c471f5',
-  health: '#ff6b6b',
-  travel: '#667eea',
-  tech: '#00f2a0',
-  income: '#00f2fe',
+  'food-dining': '#ff6b9d',
+  'transportation': '#4facfe',
+  'shopping': '#ffa34d',
+  'bills-utilities': '#00d2ff',
+  'entertainment': '#c471f5',
+  'healthcare': '#ff6b6b',
+  'travel': '#667eea',
+  'technology': '#00f2a0',
+  'income-salary': '#00f2fe',
+  'other': '#a0aec0',
 };
 
 const CATEGORY_LABELS: Record<TransactionCategory, string> = {
-  food: 'Food & Dining',
-  transport: 'Transportation',
-  shopping: 'Shopping',
-  bills: 'Bills & Utilities',
-  entertainment: 'Entertainment',
-  health: 'Health & Wellness',
-  travel: 'Travel',
-  tech: 'Technology',
-  income: 'Income',
+  'food-dining': 'Food & Dining',
+  'transportation': 'Transportation',
+  'shopping': 'Shopping',
+  'bills-utilities': 'Bills & Utilities',
+  'entertainment': 'Entertainment',
+  'healthcare': 'Health & Wellness',
+  'travel': 'Travel',
+  'technology': 'Technology',
+  'income-salary': 'Income',
+  'other': 'Other',
 };
 
 // Account Names Mock
@@ -192,8 +289,8 @@ export function PremiumTransactionsHubScreen({
    * Render Transaction Item
    */
   const renderTransactionItem = (txn: Transaction, index: number) => {
-    const CategoryIcon = CATEGORY_ICONS[txn.category || 'food'];
-    const categoryColor = CATEGORY_COLORS[txn.category || 'food'];
+    const CategoryIcon = CATEGORY_ICONS[txn.category || 'food-dining'];
+    const categoryColor = CATEGORY_COLORS[txn.category || 'food-dining'];
     const isHighlighted = txn.id === highlightTransactionId;
 
     return (
@@ -233,7 +330,7 @@ export function PremiumTransactionsHubScreen({
                 {txn.title}
               </p>
               <p className="body-sm text-[var(--premium-text-tertiary)] truncate">
-                {CATEGORY_LABELS[txn.category || 'food']} • {ACCOUNT_NAMES[txn.accountId] || 'Unknown Account'}
+                {CATEGORY_LABELS[txn.category || 'food-dining']} • {ACCOUNT_NAMES[txn.accountId] || 'Unknown Account'}
               </p>
             </div>
             <p
@@ -316,15 +413,25 @@ export function PremiumTransactionsHubScreen({
    */
   const renderCalendarView = () => {
     return (
-      <div className="flex items-center justify-center py-[var(--premium-space-4xl)] animate-[fadeIn_0.3s_ease-out]">
-        <div className="text-center">
-          <Calendar size={48} className="text-[var(--premium-text-muted)] mx-auto mb-[var(--premium-space-md)]" />
-          <p className="body-lg text-[var(--premium-text-secondary)]">Calendar View</p>
-          <p className="body-sm text-[var(--premium-text-tertiary)] mt-[4px]">
-            Coming soon
-          </p>
-        </div>
-      </div>
+      <PremiumCalendarView
+        transactions={transactions}
+        selectedMonth={selectedMonth}
+        onMonthChange={(newMonth) => setSelectedMonth(newMonth)}
+        onDateTap={(date) => {
+          // Drill-down: Switch to Daily tab and scroll to date
+          setActiveTab('daily');
+          // In a real implementation, you would scroll to the specific date section
+          console.log('Drill-down to date:', date);
+        }}
+        onDateLongPress={(date) => {
+          // Long-press: Open Add Transaction with pre-selected date
+          if (onAddTransaction) {
+            onAddTransaction();
+            // In a real implementation, you would pass the date to the transaction screen
+            console.log('Add transaction for date:', date);
+          }
+        }}
+      />
     );
   };
 
@@ -333,15 +440,24 @@ export function PremiumTransactionsHubScreen({
    */
   const renderMonthlyView = () => {
     return (
-      <div className="flex items-center justify-center py-[var(--premium-space-4xl)] animate-[fadeIn_0.3s_ease-out]">
-        <div className="text-center">
-          <BarChart3 size={48} className="text-[var(--premium-text-muted)] mx-auto mb-[var(--premium-space-md)]" />
-          <p className="body-lg text-[var(--premium-text-secondary)]">Monthly View</p>
-          <p className="body-sm text-[var(--premium-text-tertiary)] mt-[4px]">
-            Coming soon
-          </p>
-        </div>
-      </div>
+      <PremiumMonthlyView
+        transactions={transactions}
+        selectedMonth={selectedMonth}
+        onMonthChange={(newMonth) => setSelectedMonth(newMonth)}
+        onEditTransaction={(transaction) => {
+          console.log('Edit transaction:', transaction);
+          // In a real implementation, this would open an edit dialog
+        }}
+        onDeleteTransaction={(transactionId) => {
+          console.log('Delete transaction:', transactionId);
+          // In a real implementation, this would show a confirmation dialog
+          setTransactions((prev) => prev.filter((t) => t.id !== transactionId));
+        }}
+        onTransactionTap={(transaction) => {
+          console.log('Transaction tapped:', transaction);
+          // In a real implementation, this would open transaction details
+        }}
+      />
     );
   };
 
@@ -350,15 +466,11 @@ export function PremiumTransactionsHubScreen({
    */
   const renderSummaryView = () => {
     return (
-      <div className="flex items-center justify-center py-[var(--premium-space-4xl)] animate-[fadeIn_0.3s_ease-out]">
-        <div className="text-center">
-          <BarChart3 size={48} className="text-[var(--premium-text-muted)] mx-auto mb-[var(--premium-space-md)]" />
-          <p className="body-lg text-[var(--premium-text-secondary)]">Summary View</p>
-          <p className="body-sm text-[var(--premium-text-tertiary)] mt-[4px]">
-            Coming soon
-          </p>
-        </div>
-      </div>
+      <MobilePremiumSummaryView
+        transactions={transactions}
+        selectedMonth={selectedMonth}
+        onMonthChange={(newMonth) => setSelectedMonth(newMonth)}
+      />
     );
   };
 
@@ -367,15 +479,9 @@ export function PremiumTransactionsHubScreen({
    */
   const renderDescriptionView = () => {
     return (
-      <div className="flex items-center justify-center py-[var(--premium-space-4xl)] animate-[fadeIn_0.3s_ease-out]">
-        <div className="text-center">
-          <FileText size={48} className="text-[var(--premium-text-muted)] mx-auto mb-[var(--premium-space-md)]" />
-          <p className="body-lg text-[var(--premium-text-secondary)]">Description View</p>
-          <p className="body-sm text-[var(--premium-text-tertiary)] mt-[4px]">
-            Coming soon
-          </p>
-        </div>
-      </div>
+      <PremiumDescriptionView
+        transactions={transactions}
+      />
     );
   };
 

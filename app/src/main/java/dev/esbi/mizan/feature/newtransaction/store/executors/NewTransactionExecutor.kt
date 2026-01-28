@@ -4,10 +4,13 @@ import android.content.Context
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Template
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
@@ -33,7 +36,9 @@ internal class NewTransactionExecutor @Inject constructor(
     private val navigationHandler: NavigationHandler,
     private val categoryRepository: CategoryRepository,
     private val currencyRepository: CurrencyRepository,
-    private val transactionRepository: TransactionRepository
+    private val transactionRepository: TransactionRepository,
+    private val accountRepository: AccountRepository,
+    private val templateRepository: TemplateRepository
 ) : CoroutineExecutor<
         NewTransactionStore.Intent,
         NewTransactionStore.Action,
@@ -50,6 +55,23 @@ internal class NewTransactionExecutor @Inject constructor(
     init {
         voiceRecognitionManager.initialize()
         setupVoiceRecognitionFlow()
+        loadAccounts()
+    }
+
+    private fun loadAccounts() {
+        accountRepository.observeAccounts()
+            .onEach { accounts ->
+                dispatch(NewTransactionStore.Message.UpdateAccounts(accounts))
+                
+                // Auto-select first account if none selected
+                if (state().selectedAccountId == null && accounts.isNotEmpty()) {
+                    // Prefer CASH type, otherwise first account
+                    val defaultAccount = accounts.find { it.type == dev.esbi.mizan.domain.model.Account.Type.CASH }
+                        ?: accounts.first()
+                    dispatch(NewTransactionStore.Message.UpdateSelectedAccount(defaultAccount.id))
+                }
+            }
+            .launchIn(scope)
     }
 
     private fun setupVoiceRecognitionFlow() {
@@ -229,7 +251,22 @@ internal class NewTransactionExecutor @Inject constructor(
                         val result = transactionRepository.saveTransaction(transaction)
                         
                         if (result.isSuccess) {
-                            publish(NewTransactionStore.Label.MapsToNextStep)
+                            // Save as template if enabled
+                            if (currentState.saveAsTemplate) {
+                                val categoryName = currentState.categoryChooserState.selectedCategory?.name 
+                                    ?: "Template"
+                                val template = Template(
+                                    name = categoryName,
+                                    amount = currentState.keypadState.amount,
+                                    iconName = currentState.categoryChooserState.selectedCategory?.iconName,
+                                    transactionType = transaction.type,
+                                    categoryId = categoryId,
+                                    accountId = currentState.selectedAccountId,
+                                    note = currentState.note.takeIf { it.isNotBlank() }
+                                )
+                                templateRepository.addTemplate(template)
+                            }
+                            publish(NewTransactionStore.Label.TransactionSaved)
                         } else {
                             dispatch(NewTransactionStore.Message.SetError("Failed to save transaction"))
                         }
@@ -255,6 +292,23 @@ internal class NewTransactionExecutor @Inject constructor(
 
             is NewTransactionStore.Intent.UpdateTargetAccount -> {
                 dispatch(NewTransactionStore.Message.UpdateTargetAccount(intent.accountId))
+            }
+
+            is NewTransactionStore.Intent.OpenAccountSelection -> {
+                dispatch(NewTransactionStore.Message.SetAccountSheetVisible(true))
+            }
+
+            is NewTransactionStore.Intent.CloseAccountSelection -> {
+                dispatch(NewTransactionStore.Message.SetAccountSheetVisible(false))
+            }
+
+            is NewTransactionStore.Intent.SelectAccount -> {
+                dispatch(NewTransactionStore.Message.UpdateSelectedAccount(intent.accountId))
+                dispatch(NewTransactionStore.Message.SetAccountSheetVisible(false))
+            }
+
+            is NewTransactionStore.Intent.UpdateSaveAsTemplate -> {
+                dispatch(NewTransactionStore.Message.SetSaveAsTemplate(intent.saveAsTemplate))
             }
             // Delegate Calculator logic
             is NewTransactionStore.AmountInputIntent -> {

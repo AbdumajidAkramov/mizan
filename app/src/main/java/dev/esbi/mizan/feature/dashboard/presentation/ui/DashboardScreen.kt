@@ -45,6 +45,7 @@ import dev.esbi.mizan.ui.components.ErrorState
 fun DashboardScreen(
     viewModel: DashboardViewModel,
     onNavigateToCategory: (String) -> Unit,
+    onSeeAllTransactions: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -68,7 +69,8 @@ fun DashboardScreen(
         state.dashboardData != null -> DashboardScrollContent(
             modifier = modifier,
             data = state.dashboardData!!,
-            onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) }
+            onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) },
+            onSeeAllTransactions = onSeeAllTransactions
         )
     }
 }
@@ -77,6 +79,7 @@ fun DashboardScreen(
 private fun DashboardScrollContent(
     data: DashboardSummary,
     onCategoryClick: (String) -> Unit,
+    onSeeAllTransactions: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -203,7 +206,7 @@ private fun DashboardScrollContent(
             }
         }
         item { AnimSection(visible) { InsightsSection() } }
-        item { AnimSection(visible) { TransactionsSection(data.recentTransactions) } }
+        item { AnimSection(visible) { TransactionsSection(data.recentTransactions, onSeeAllClick = onSeeAllTransactions) } }
 
     }
 }
