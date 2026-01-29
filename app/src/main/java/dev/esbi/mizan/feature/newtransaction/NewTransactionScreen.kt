@@ -110,11 +110,23 @@ internal fun NewTransactionScreen(
         ) {
             when (state.currentPage) {
                 is TransactionStep.AmountInput -> {
+                    // Get selected account and category
+                    val selectedAccount = state.accounts.find { it.id == state.selectedAccountId }
+                    val selectedCategory = state.categoryChooserState.selectedCategory
+                    val selectedSubCategory = state.categoryChooserState.selectedChildId?.let { childId ->
+                        state.categoryChooserState.categories.find { it.id == childId }
+                    }
+                    
                     AmountInputContent(
                         state = state,
+                        selectedAccount = selectedAccount,
+                        selectedCategory = selectedCategory,
+                        selectedSubCategory = selectedSubCategory,
+                        onTypeClick = { /* Navigate to type selector if needed */ },
+                        onCategoryClick = { /* Navigate to category chooser if needed */ },
+                        onAccountClick = { accept(NewTransactionStore.Intent.OpenAccountSelection) },
                         accept = accept
                     )
-
                 }
 
                 is TransactionStep.TypeSelector -> {

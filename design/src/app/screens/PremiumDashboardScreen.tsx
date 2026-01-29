@@ -11,6 +11,7 @@ import { PremiumNetWorthCard } from '../components/premium/PremiumNetWorthCard';
 import { PremiumCashFlowCard } from '../components/premium/PremiumCashFlowCard';
 import { PremiumEmergencyFund } from '../components/premium/PremiumEmergencyFund';
 import { PremiumAIInsights } from '../components/premium/PremiumAIInsights';
+import { PremiumExchangeRatesWidget } from '../components/premium/PremiumExchangeRatesWidget';
 import { TrendingUp, PieChart, Wallet, Calendar, ArrowRight } from 'lucide-react';
 import type { UiState, DashboardSummary, Transaction, CategorySpending } from '../../types/domain';
 import { AreaChart, Area, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, XAxis, YAxis, Tooltip } from 'recharts';
@@ -277,6 +278,9 @@ export function PremiumDashboardScreen({
 
       {/* NEW: AI Insights */}
       <PremiumAIInsights />
+
+      {/* NEW: Exchange Rates Widget */}
+      <PremiumExchangeRatesWidget />
 
       {/* Recent Transactions */}
       <div>

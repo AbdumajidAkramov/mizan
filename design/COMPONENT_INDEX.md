@@ -22,17 +22,150 @@ src/
     │   │   ├── BudgetProgressCard.tsx      # Budget tracker
     │   │   ├── EmptyState.tsx              # Empty list state
     │   │   └── ErrorState.tsx              # Error message
-    │   └── organisms/                      # Level 3: Complex sections
-    │       ├── TransactionList.tsx         # Full transaction list
-    │       ├── DashboardSummarySection.tsx # Dashboard content
-    │       ├── AddExpenseForm.tsx          # Expense form modal
-    │       └── BottomNavigationBar.tsx     # Bottom nav + FAB
+    │   ├── organisms/                      # Level 3: Complex sections
+    │   │   ├── TransactionList.tsx         # Full transaction list
+    │   │   ├── DashboardSummarySection.tsx # Dashboard content
+    │   │   ├── AddExpenseForm.tsx          # Expense form modal
+    │   │   └── BottomNavigationBar.tsx     # Bottom nav + FAB
+    │   └── premium/                        # Premium components (Mizan)
+    │       ├── PremiumBudgetModal.tsx      # 🆕 Add/Edit Budget Modal
+    │       ├── PremiumBudgetNotification.tsx # 🆕 Budget Alert Notifications
+    │       ├── PremiumCalculatorKeypad.tsx # Calculator input
+    │       ├── PremiumCategoryPicker.tsx   # Category selection
+    │       ├── PremiumAccountSelector.tsx  # Account selection
+    │       ├── PremiumHealthScore.tsx      # Financial health gauge
+    │       ├── PremiumNetWorthCard.tsx     # Net worth display
+    │       ├── PremiumCashFlowCard.tsx     # Cash flow chart
+    │       ├── PremiumEmergencyFund.tsx    # Emergency fund tracker
+    │       └── PremiumAIInsights.tsx       # AI insights carousel
     ├── screens/                            # Level 4: Full screens
     │   ├── DashboardScreen.tsx             # Home screen
     │   ├── TransactionsScreen.tsx          # History screen
     │   ├── StatisticsScreen.tsx            # Analytics screen
+    │   ├── PremiumBudgetScreen.tsx         # 🆕 Enhanced Budget Screen
     │   └── ProfileScreen.tsx               # Settings screen
     └── App.tsx                             # Root component
+```
+
+---
+
+## 🆕 **New Budget Management Components**
+
+### **PremiumBudgetModal** - Comprehensive Add/Edit Budget Flow
+**File:** `/src/app/components/premium/PremiumBudgetModal.tsx`
+
+**Purpose:** 5-step progressive disclosure modal for creating and editing category budgets
+
+**Features:**
+- ✅ Step 1: Category Selection (grid layout)
+- ✅ Step 2: Amount Input (calculator + smart suggestions)
+- ✅ Step 3: Period Selection (weekly/monthly/yearly)
+- ✅ Step 4: Alert Configuration (threshold + toggle)
+- ✅ Step 5: Review & Confirm
+
+**Props:**
+```typescript
+interface PremiumBudgetModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (budget: BudgetData) => void;
+  existingBudget?: BudgetData;        // For edit mode
+  monthlyIncome?: number;             // For smart suggestions
+  categorySpendingHistory?: Record<...>; // For AI recommendations
+}
+```
+
+**Key Components:**
+- Progressive wizard flow (5 steps)
+- AI-powered budget suggestions
+- PremiumCalculatorKeypad integration
+- Period conversion previews
+- Alert threshold visualization
+
+**Android Equivalent:**
+```kotlin
+BudgetWizardScreen(
+  steps = listOf(Category, Amount, Period, Alerts, Review),
+  state = BudgetWizardState,
+  onComplete = { budget -> }
+)
+```
+
+---
+
+### **PremiumBudgetNotification** - Budget Alert Toasts
+**File:** `/src/app/components/premium/PremiumBudgetNotification.tsx`
+
+**Purpose:** Toast-style notifications for budget threshold alerts
+
+**Features:**
+- ✅ Warning notifications (80-89% spent)
+- ✅ Critical notifications (90-100% spent)
+- ✅ Over-budget alerts (100%+ spent)
+- ✅ Auto-dismiss timer with progress bar
+- ✅ Manual dismiss
+- ✅ Stacking support (max 3 visible)
+
+**Props:**
+```typescript
+interface PremiumBudgetNotificationProps {
+  notification: BudgetNotification;
+  onDismiss: (id: string) => void;
+  autoDismissMs?: number;  // Default: 5000ms
+  position?: 'top' | 'bottom';
+}
+```
+
+**Notification Types:**
+- `warning` - Amber gradient with AlertTriangle icon
+- `critical` - Red gradient with AlertCircle icon
+- `success` - Green gradient with CheckCircle icon
+- `info` - Blue gradient with TrendingUp icon
+
+**Container Component:**
+```typescript
+<PremiumBudgetNotificationContainer
+  notifications={notifications}
+  onDismiss={handleDismiss}
+  maxVisible={3}
+  autoDismissMs={5000}
+/>
+```
+
+**Android Equivalent:**
+```kotlin
+SnackbarHost() {
+  BudgetAlertSnackbar(
+    type = Warning,
+    category = category,
+    percentage = 85
+  )
+}
+```
+
+---
+
+### **Enhanced PremiumBudgetScreen**
+**File:** `/src/app/screens/PremiumBudgetScreen.tsx`
+
+**New Features:**
+- ✅ Add Budget button (emerald green gradient)
+- ✅ Edit Budget button (per budget card)
+- ✅ Delete Budget button (per budget card)
+- ✅ Smart budget suggestions integration
+- ✅ Period display (weekly/monthly/yearly)
+- ✅ Alert status indicators
+
+**State Management:**
+```typescript
+const [budgets, setBudgets] = useState<CategoryBudget[]>([...]);
+const [showBudgetModal, setShowBudgetModal] = useState(false);
+const [editingBudget, setEditingBudget] = useState<BudgetData | undefined>();
+
+handleAddBudget()    // Opens modal (empty)
+handleEditBudget()   // Opens modal (pre-filled)
+handleSaveBudget()   // Creates or updates
+handleDeleteBudget() // Removes budget
 ```
 
 ---

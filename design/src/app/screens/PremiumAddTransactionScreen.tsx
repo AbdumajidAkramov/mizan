@@ -11,6 +11,7 @@ import {
   Mic,
   Camera,
   ChevronRight,
+  ChevronDown,
   ArrowUpRight,
   ArrowDownLeft,
   ArrowLeftRight,
@@ -23,11 +24,15 @@ import {
   Wand2,
   Check,
   Bookmark,
+  Trash2,
 } from "lucide-react";
 import { PremiumCategoryPicker } from "../components/premium/PremiumCategoryPicker";
 import { PremiumCategoryPickerEnhanced } from "../components/premium/PremiumCategoryPickerEnhanced";
+import { PremiumCategorySelector } from "../components/premium/PremiumCategorySelector";
+import { PremiumSubcategorySelector } from "../components/premium/PremiumSubcategorySelector";
 import { PremiumAccountSelector } from "../components/premium/PremiumAccountSelector";
 import { PremiumAccountBottomSheet } from "../components/premium/PremiumAccountBottomSheet";
+import { PremiumTransactionTypeSelector } from "../components/premium/PremiumTransactionTypeSelector";
 import { PremiumCalculatorKeypad } from "../components/premium/PremiumCalculatorKeypad";
 import {
   PremiumEnhancedVoiceInput,
@@ -44,6 +49,16 @@ import {
   CATEGORY_METADATA,
   CATEGORY_SUBCATEGORIES,
 } from "../../mocks/data";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 
 // Account Interface with Group Support
 interface Account {
@@ -265,6 +280,20 @@ const MOCK_TEMPLATES: TransactionTemplate[] = [
   },
 ];
 
+// Transaction interface for edit mode
+export interface EditableTransaction {
+  id: string;
+  amount: number;
+  type: TransactionType;
+  category?: TransactionCategory;
+  subcategory?: string;
+  accountId?: string;
+  fromAccountId?: string;
+  toAccountId?: string;
+  date: Date;
+  notes?: string;
+}
+
 export interface PremiumAddTransactionScreenProps {
   onClose: () => void;
   onSave: (transaction: {
@@ -280,22 +309,35 @@ export interface PremiumAddTransactionScreenProps {
   onManageCategories?: () => void;
   /** Optional callback to navigate to Manage Templates screen */
   onManageTemplates?: () => void;
+  /** Optional transaction to edit (enables Edit Mode) */
+  editTransaction?: EditableTransaction;
+  /** Optional callback for deleting transaction (Edit Mode only) */
+  onDelete?: (transactionId: string) => void;
 }
 
 type InputMode = "manual" | "voice" | "scan";
-type FlowState = "amount" | "type" | "details" | "confirm";
+// FlowState DEPRECATED - Now using smart state-driven navigation
 
 export function PremiumAddTransactionScreen({
   onClose,
   onSave,
   onManageCategories,
   onManageTemplates,
+  editTransaction,
+  onDelete,
 }: PremiumAddTransactionScreenProps) {
+  // Determine if we're in edit mode
+  const isEditMode = !!editTransaction;
+
   // Input Mode State
   const [inputMode, setInputMode] =
     useState<InputMode>("manual");
-  const [flowState, setFlowState] =
-    useState<FlowState>("amount");
+  
+  // Smart Navigation State (replaces old flowState)
+  const [showConfirmScreen, setShowConfirmScreen] = useState(isEditMode);
+
+  // Delete confirmation dialog state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   // Manual Input State
   const [displayValue, setDisplayValue] = useState("0");
@@ -340,6 +382,36 @@ export function PremiumAddTransactionScreen({
 
   // Account BottomSheet State
   const [showAccountBottomSheet, setShowAccountBottomSheet] = useState(false);
+  
+  // Interactive Chip States
+  const [showTransactionTypeSelector, setShowTransactionTypeSelector] = useState(false);
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+  const [showCategorySelector, setShowCategorySelector] = useState(false);
+  const [showSubcategorySelector, setShowSubcategorySelector] = useState(false);
+  const [pendingCategory, setPendingCategory] = useState<TransactionCategory>();
+
+  // Pre-fill form in Edit Mode
+  useEffect(() => {
+    if (isEditMode && editTransaction) {
+      setDisplayValue(editTransaction.amount.toString());
+      setTransactionType(editTransaction.type);
+      
+      if (editTransaction.type === "transfer") {
+        setFromAccountId(editTransaction.fromAccountId);
+        setToAccountId(editTransaction.toAccountId);
+      } else {
+        setSelectedCategory(editTransaction.category);
+        setSelectedSubcategory(editTransaction.subcategory);
+        setSelectedAccountId(editTransaction.accountId);
+      }
+      
+      setSelectedDate(editTransaction.date);
+      if (editTransaction.notes) {
+        setNotes(editTransaction.notes);
+        setShowNotesInput(true);
+      }
+    }
+  }, [isEditMode, editTransaction]);
 
   // Calculator Logic
   const handleNumberClick = (num: string) => {
@@ -412,14 +484,16 @@ export function PremiumAddTransactionScreen({
   };
 
   const handleNextToType = () => {
+    // DEPRECATED: Now using handleNextStep() with smart navigation
     if (parseFloat(displayValue) > 0) {
-      setFlowState("type");
+      // No longer needed - keeping for backwards compatibility
     }
   };
 
   const handleSelectType = (type: TransactionType) => {
+    // DEPRECATED: Now using PremiumTransactionTypeSelector overlay
     setTransactionType(type);
-    setFlowState("details");
+    // No longer needed - keeping for backwards compatibility
   };
 
   const handleSelectCategory = (
@@ -433,7 +507,7 @@ export function PremiumAddTransactionScreen({
 
   const handleTransferAccountsSet = () => {
     if (fromAccountId && toAccountId) {
-      setFlowState("confirm");
+      setShowConfirmScreen(true);
     }
   };
 
@@ -464,7 +538,7 @@ export function PremiumAddTransactionScreen({
       ) {
         setFromAccountId(result.fromAccount);
         setToAccountId(result.toAccount);
-        setFlowState("confirm");
+        setShowConfirmScreen(true);
       } else if (
         (result.type === "expense" ||
           result.type === "income") &&
@@ -473,9 +547,9 @@ export function PremiumAddTransactionScreen({
         setSelectedCategory(
           result.category as TransactionCategory,
         );
-        setFlowState("confirm");
+        setShowConfirmScreen(true);
       } else {
-        setFlowState("type");
+        // Partial data - stay on amount screen, user can fill missing fields
       }
     }
 
@@ -526,23 +600,29 @@ export function PremiumAddTransactionScreen({
       setShowNotesInput(true);
     }
     
-    // Hide templates and advance to type selection
+    // Hide templates - user can then use Next button
     setShowTemplates(false);
-    setFlowState("type");
+  };
+
+  const handleDeleteTransaction = () => {
+    if (isEditMode && editTransaction && onDelete) {
+      onDelete(editTransaction.id);
+      onClose();
+    }
   };
 
   const handleSaveTransaction = () => {
     const amount = parseFloat(displayValue);
     if (amount <= 0) return;
 
-    // If save as template is enabled, show template name input
-    if (saveAsTemplate && !showTemplateNameInput) {
+    // If save as template is enabled, show template name input (not in edit mode)
+    if (!isEditMode && saveAsTemplate && !showTemplateNameInput) {
       setShowTemplateNameInput(true);
       return;
     }
 
-    // Save the template if needed
-    if (saveAsTemplate && templateName.trim()) {
+    // Save the template if needed (only in add mode)
+    if (!isEditMode && saveAsTemplate && templateName.trim()) {
       const newTemplate: TransactionTemplate = {
         id: `tmpl-${Date.now()}`,
         name: templateName.trim(),
@@ -598,6 +678,95 @@ export function PremiumAddTransactionScreen({
     }
   };
 
+  // Interactive Chip Handlers
+  const handleTransactionTypeClick = () => {
+    setShowTransactionTypeSelector(true);
+  };
+
+  const handleCategoryChipClick = () => {
+    setShowCategorySelector(true);
+  };
+
+  const handleAccountChipClick = () => {
+    setShowAccountBottomSheet(true);
+  };
+
+  // Smart Navigation System - State-Driven Routing
+  const handleNextStep = () => {
+    const hasAmount = parseFloat(displayValue) > 0;
+    
+    if (!hasAmount) {
+      return; // Button should be disabled, but double-check
+    }
+
+    // For Transfer type: check transfer-specific fields
+    if (transactionType === "transfer") {
+      if (!fromAccountId) {
+        // Need From Account - would open transfer flow
+        // For now, transfer uses the details screen
+        setShowConfirmScreen(true);
+        return;
+      }
+      if (!toAccountId) {
+        // Need To Account
+        setShowConfirmScreen(true);
+        return;
+      }
+      // Everything filled - go to confirm
+      setShowConfirmScreen(true);
+      return;
+    }
+
+    // For Expense/Income: check category and account
+    if (!selectedCategory) {
+      // Missing category - open category selector
+      setShowCategorySelector(true);
+      return;
+    }
+
+    if (!selectedAccountId) {
+      // Missing account - open account selector
+      setShowAccountBottomSheet(true);
+      return;
+    }
+
+    // Everything filled - go to confirm screen
+    setShowConfirmScreen(true);
+  };
+
+  // Auto-progression after category selection
+  const handleCategorySelected = (category: TransactionCategory, subcategory?: string) => {
+    setSelectedCategory(category);
+    setSelectedSubcategory(subcategory);
+    
+    // Smart auto-progression: check what's missing next
+    if (!selectedAccountId) {
+      // Account is missing - open account selector immediately
+      setTimeout(() => {
+        setShowAccountBottomSheet(true);
+      }, 300); // Small delay for smooth transition
+    } else {
+      // Everything is filled - go to confirm
+      setTimeout(() => {
+        setShowConfirmScreen(true);
+      }, 300);
+    }
+  };
+
+  // Auto-progression after account selection
+  const handleAccountSelected = (accountId: string) => {
+    setSelectedAccountId(accountId);
+    
+    // Smart auto-progression: check if everything is complete
+    const hasAmount = parseFloat(displayValue) > 0;
+    if (hasAmount && selectedCategory) {
+      // Everything filled - go to confirm screen
+      setTimeout(() => {
+        setShowConfirmScreen(true);
+      }, 300);
+    }
+  };
+
   // Check if all required fields are filled
   const isFormValid = () => {
     const hasAmount = parseFloat(displayValue) > 0;
@@ -606,6 +775,11 @@ export function PremiumAddTransactionScreen({
     }
     // For expense/income: require amount, category, AND account
     return hasAmount && selectedCategory && selectedAccountId;
+  };
+
+  // Check if Next button should be enabled
+  const isNextButtonEnabled = () => {
+    return parseFloat(displayValue) > 0;
   };
 
   const getTypeColor = (type: TransactionType) => {
@@ -652,16 +826,9 @@ export function PremiumAddTransactionScreen({
       "
       >
         <div className="flex items-center gap-[8px]">
-          {flowState !== "amount" && (
+          {showConfirmScreen && (
             <button
-              onClick={() => {
-                if (flowState === "type")
-                  setFlowState("amount");
-                else if (flowState === "details")
-                  setFlowState("type");
-                else if (flowState === "confirm")
-                  setFlowState("details");
-              }}
+              onClick={() => setShowConfirmScreen(false)}
               className="
                 w-[32px] h-[32px]
                 rounded-full
@@ -672,23 +839,19 @@ export function PremiumAddTransactionScreen({
                 active:scale-95
                 transition-all duration-200
               "
+              aria-label="Go back"
             >
               <ChevronRight size={20} className="rotate-180" />
             </button>
           )}
           <h1 className="body-md font-medium text-[var(--premium-text-secondary)]">
-            {flowState === "amount" && "New Transaction"}
-            {flowState === "type" && "Transaction Type"}
-            {flowState === "details" &&
-              (transactionType === "transfer"
-                ? "Select Accounts"
-                : "Choose Category")}
-            {flowState === "confirm" && "Confirm & Save"}
+            {!showConfirmScreen && (isEditMode ? "Edit Transaction" : "New Transaction")}
+            {showConfirmScreen && (isEditMode ? "Update Transaction" : "Confirm & Save")}
           </h1>
         </div>
         <div className="flex items-center gap-[8px]">
           {/* Templates Button - Only show on amount screen */}
-          {flowState === "amount" && (
+          {!showConfirmScreen && (
             <button
               onClick={() => setShowTemplates(!showTemplates)}
               aria-label="Templates"
@@ -728,7 +891,7 @@ export function PremiumAddTransactionScreen({
       </div>
 
       {/* Template Carousel - Horizontal Scroll */}
-      {flowState === "amount" && showTemplates && (
+      {!showConfirmScreen && showTemplates && (
         <div
           className="
             px-[var(--premium-space-lg)]
@@ -834,8 +997,8 @@ export function PremiumAddTransactionScreen({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* AMOUNT INPUT STATE */}
-        {flowState === "amount" && (
+        {/* AMOUNT INPUT STATE - Always shown unless on confirm screen */}
+        {!showConfirmScreen && (
           <>
             {/* Amount Display - Top Section */}
             <div
@@ -866,44 +1029,63 @@ export function PremiumAddTransactionScreen({
                 ${displayValue}
               </div>
 
-              {/* Selected Category & Account Chips */}
-              {(selectedCategory || selectedAccountId) && (
-                <div className="flex flex-wrap items-center justify-center gap-[8px] mb-[var(--premium-space-lg)] animate-[fadeIn_0.2s_ease-out]">
-                  {/* Transaction Type Badge */}
-                  {transactionType && (
-                    <div
-                      className={`
-                        px-[12px] py-[6px]
-                        rounded-[var(--premium-radius-full)]
-                        flex items-center gap-[6px]
-                        ${getTypeColor(transactionType).bg}
-                        border border-${getTypeColor(transactionType).border.replace('border-', '')}
-                      `}
-                    >
-                      {(() => {
-                        const Icon = getTypeColor(transactionType).icon;
-                        return (
-                          <Icon
-                            size={14}
-                            className={getTypeColor(transactionType).text}
-                          />
-                        );
-                      })()}
-                      <span className={`body-xs font-medium ${getTypeColor(transactionType).text}`}>
-                        {transactionType === "expense" ? "Expense" : transactionType === "income" ? "Income" : "Transfer"}
-                      </span>
-                    </div>
-                  )}
+              {/* Interactive Chips - Transaction Type, Category & Account */}
+              <div className="flex flex-wrap items-center justify-center gap-[8px] mb-[var(--premium-space-lg)]">
+                {/* Transaction Type Chip - Always visible, interactive */}
+                {transactionType && (
+                  <button
+                    onClick={handleTransactionTypeClick}
+                    className={`
+                      group
+                      px-[12px] py-[6px]
+                      rounded-[var(--premium-radius-full)]
+                      flex items-center gap-[6px]
+                      ${getTypeColor(transactionType).bg}
+                      border border-${getTypeColor(transactionType).border.replace('border-', '')}
+                      hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                      active:scale-95
+                      transition-all duration-200
+                      cursor-pointer
+                    `}
+                  >
+                    {(() => {
+                      const Icon = getTypeColor(transactionType).icon;
+                      return (
+                        <Icon
+                          size={14}
+                          className={getTypeColor(transactionType).text}
+                        />
+                      );
+                    })()}
+                    <span className={`body-xs font-medium ${getTypeColor(transactionType).text}`}>
+                      {transactionType === "expense" ? "Expense" : transactionType === "income" ? "Income" : "Transfer"}
+                    </span>
+                    <ChevronDown 
+                      size={12} 
+                      className={`${getTypeColor(transactionType).text} opacity-60 group-hover:opacity-100 transition-opacity`}
+                    />
+                  </button>
+                )}
 
-                  {/* Category Chip */}
-                  {selectedCategory && (
-                    <div
+                {/* Category Chip - Interactive when selected, placeholder when not */}
+                {transactionType !== "transfer" && (
+                  selectedCategory ? (
+                    <button
+                      onClick={handleCategoryChipClick}
                       className="
+                        group
                         px-[12px] py-[6px]
                         rounded-[var(--premium-radius-full)]
                         bg-[var(--premium-emerald)]/15
                         border border-[var(--premium-emerald)]/30
                         flex items-center gap-[6px]
+                        hover:bg-[var(--premium-emerald)]/25
+                        hover:border-[var(--premium-emerald)]/50
+                        hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                        active:scale-95
+                        transition-all duration-200
+                        cursor-pointer
+                        animate-[fadeIn_0.2s_ease-out]
                       "
                     >
                       <span className="body-xs font-medium text-[var(--premium-emerald)] capitalize">
@@ -917,39 +1099,98 @@ export function PremiumAddTransactionScreen({
                           </span>
                         </>
                       )}
-                    </div>
-                  )}
+                      <ChevronDown 
+                        size={12} 
+                        className="text-[var(--premium-emerald)] opacity-60 group-hover:opacity-100 transition-opacity"
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCategoryChipClick}
+                      className="
+                        group
+                        px-[12px] py-[6px]
+                        rounded-[var(--premium-radius-full)]
+                        bg-[var(--premium-surface-2)]
+                        border-2 border-dashed border-[var(--premium-border)]
+                        flex items-center gap-[6px]
+                        hover:bg-[var(--premium-emerald)]/10
+                        hover:border-[var(--premium-emerald)]/50
+                        active:scale-95
+                        transition-all duration-200
+                        cursor-pointer
+                      "
+                    >
+                      <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]">
+                        + Category
+                      </span>
+                    </button>
+                  )
+                )}
 
-                  {/* Account Chip */}
-                  {selectedAccountId && (() => {
-                    const account = MOCK_ACCOUNTS.find(acc => acc.id === selectedAccountId);
-                    if (!account) return null;
-                    const Icon = account.icon;
-                    
-                    return (
-                      <div
-                        className="
-                          px-[12px] py-[6px]
-                          rounded-[var(--premium-radius-full)]
-                          bg-[var(--premium-surface-3)]
-                          border border-[var(--premium-glass-border)]
-                          flex items-center gap-[6px]
-                        "
+                {/* Account Chip - Interactive when selected, placeholder when not */}
+                {selectedAccountId ? (() => {
+                  const account = MOCK_ACCOUNTS.find(acc => acc.id === selectedAccountId);
+                  if (!account) return null;
+                  const Icon = account.icon;
+                  
+                  return (
+                    <button
+                      onClick={handleAccountChipClick}
+                      className="
+                        group
+                        px-[12px] py-[6px]
+                        rounded-[var(--premium-radius-full)]
+                        bg-[var(--premium-surface-3)]
+                        border border-[var(--premium-glass-border)]
+                        flex items-center gap-[6px]
+                        hover:bg-[var(--premium-surface-4)]
+                        hover:border-[var(--premium-emerald)]/30
+                        hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                        active:scale-95
+                        transition-all duration-200
+                        cursor-pointer
+                        animate-[fadeIn_0.2s_ease-out]
+                      "
+                    >
+                      <div 
+                        className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
+                        style={{ backgroundColor: `${account.color}20` }}
                       >
-                        <div 
-                          className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
-                          style={{ backgroundColor: `${account.color}20` }}
-                        >
-                          <Icon size={10} style={{ color: account.color }} />
-                        </div>
-                        <span className="body-xs font-medium text-[var(--premium-text-primary)]">
-                          {account.name}
-                        </span>
+                        <Icon size={10} style={{ color: account.color }} />
                       </div>
-                    );
-                  })()}
-                </div>
-              )}
+                      <span className="body-xs font-medium text-[var(--premium-text-primary)]">
+                        {account.name}
+                      </span>
+                      <ChevronDown 
+                        size={12} 
+                        className="text-[var(--premium-text-tertiary)] opacity-60 group-hover:opacity-100 transition-opacity"
+                      />
+                    </button>
+                  );
+                })() : (
+                  <button
+                    onClick={handleAccountChipClick}
+                    className="
+                      group
+                      px-[12px] py-[6px]
+                      rounded-[var(--premium-radius-full)]
+                      bg-[var(--premium-surface-2)]
+                      border-2 border-dashed border-[var(--premium-border)]
+                      flex items-center gap-[6px]
+                      hover:bg-[var(--premium-emerald)]/10
+                      hover:border-[var(--premium-emerald)]/50
+                      active:scale-95
+                      transition-all duration-200
+                      cursor-pointer
+                    "
+                  >
+                    <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]">
+                      + Account
+                    </span>
+                  </button>
+                )}
+              </div>
 
               {/* Input Mode Switcher */}
               <div
@@ -1037,9 +1278,10 @@ export function PremiumAddTransactionScreen({
                     onClear={handleClear}
                   />
 
+                  {/* Smart Next Button - State-Driven Navigation */}
                   <button
-                    onClick={handleNextToType}
-                    disabled={parseFloat(displayValue) <= 0}
+                    onClick={handleNextStep}
+                    disabled={!isNextButtonEnabled()}
                     className={`
                       w-full
                       h-[56px]
@@ -1048,14 +1290,15 @@ export function PremiumAddTransactionScreen({
                       font-medium text-[18px]
                       flex items-center justify-center gap-[8px]
                       transition-all duration-200
+                      shadow-[0_4px_16px_rgba(16,185,129,0.25)]
                       ${
-                        parseFloat(displayValue) > 0
-                          ? "bg-[var(--premium-emerald)] text-white active:scale-95"
-                          : "bg-[var(--premium-surface-3)] text-[var(--premium-text-muted)] cursor-not-allowed"
+                        isNextButtonEnabled()
+                          ? "bg-[var(--premium-emerald)] text-white hover:bg-[var(--premium-emerald-dark)] active:scale-95"
+                          : "bg-[var(--premium-surface-3)] text-[var(--premium-text-muted)] cursor-not-allowed shadow-none"
                       }
                     `}
                   >
-                    Next
+                    {isFormValid() ? "Review & Save" : "Next"}
                     <ChevronRight size={20} />
                   </button>
                 </div>
@@ -1086,8 +1329,8 @@ export function PremiumAddTransactionScreen({
           </>
         )}
 
-        {/* TYPE SELECTION STATE */}
-        {flowState === "type" && (
+        {/* TYPE SELECTION STATE - DEPRECATED: Now using PremiumTransactionTypeSelector overlay */}
+        {false && (
           <div className="flex-1 flex items-center justify-center px-[var(--premium-space-lg)]">
             <div className="w-full max-w-md space-y-[var(--premium-space-md)]">
               {/* Amount Summary */}
@@ -1233,8 +1476,8 @@ export function PremiumAddTransactionScreen({
           </div>
         )}
 
-        {/* DETAILS STATE - Category or Accounts */}
-        {flowState === "details" && (
+        {/* DETAILS STATE - DEPRECATED: Now using PremiumCategorySelector and PremiumAccountBottomSheet overlays */}
+        {false && (
           <div className="flex-1 overflow-y-auto px-[var(--premium-space-lg)] py-[var(--premium-space-xl)] animate-[slideUp_0.3s_ease-out]">
             <div className="max-w-md mx-auto">
               {/* Amount & Type Summary */}
@@ -1734,7 +1977,7 @@ export function PremiumAddTransactionScreen({
                       {/* Continue Button - Only show when account is selected */}
                       {selectedAccountId && (
                         <button
-                          onClick={() => setFlowState("confirm")}
+                          onClick={() => setShowConfirmScreen(true)}
                           className="
                             w-full
                             h-[56px]
@@ -1762,8 +2005,8 @@ export function PremiumAddTransactionScreen({
           </div>
         )}
 
-        {/* CONFIRM STATE */}
-        {flowState === "confirm" && (
+        {/* CONFIRM & SAVE SCREEN */}
+        {showConfirmScreen && (
           <div className="flex-1 overflow-y-auto px-[var(--premium-space-lg)] py-[var(--premium-space-xl)]">
             <div className="max-w-md mx-auto space-y-[var(--premium-space-lg)]">
               {/* Summary Card */}
@@ -2027,27 +2270,75 @@ export function PremiumAddTransactionScreen({
                 </div>
               )}
 
-              {/* Save Button - Only show when valid */}
+              {/* Action Buttons - Different for Edit vs Add Mode */}
               {isFormValid() && (
-                <button
-                  onClick={handleSaveTransaction}
-                  className="
-                    w-full
-                    h-[56px]
-                    rounded-[var(--premium-radius-full)]
-                    bg-[var(--premium-emerald)]
-                    text-white
-                    font-medium text-[18px]
-                    hover:bg-[var(--premium-emerald-dark)]
-                    active:scale-[0.98]
-                    transition-all duration-200
-                    animate-[slideUp_0.3s_ease-out]
-                  "
-                >
-                  {saveAsTemplate && !showTemplateNameInput
-                    ? "Continue"
-                    : "Save Transaction"}
-                </button>
+                <>
+                  {isEditMode ? (
+                    /* Edit Mode: Show Update and Delete buttons */
+                    <div className="space-y-[var(--premium-space-md)]">
+                      {/* Update Transaction Button */}
+                      <button
+                        onClick={handleSaveTransaction}
+                        className="
+                          w-full
+                          h-[56px]
+                          rounded-[var(--premium-radius-full)]
+                          bg-[var(--premium-emerald)]
+                          text-white
+                          font-medium text-[18px]
+                          hover:bg-[var(--premium-emerald-dark)]
+                          active:scale-[0.98]
+                          transition-all duration-200
+                          animate-[slideUp_0.3s_ease-out]
+                        "
+                      >
+                        Update Transaction
+                      </button>
+
+                      {/* Delete Transaction Button */}
+                      <button
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="
+                          w-full
+                          h-[56px]
+                          rounded-[var(--premium-radius-full)]
+                          bg-[var(--premium-surface-2)]
+                          text-[#f5576c]
+                          font-medium text-[18px]
+                          border-2 border-[#f5576c]/30
+                          hover:bg-[#f5576c]/10
+                          active:scale-[0.98]
+                          transition-all duration-200
+                          flex items-center justify-center gap-[8px]
+                        "
+                      >
+                        <Trash2 size={20} />
+                        Delete Transaction
+                      </button>
+                    </div>
+                  ) : (
+                    /* Add Mode: Show normal Save button */
+                    <button
+                      onClick={handleSaveTransaction}
+                      className="
+                        w-full
+                        h-[56px]
+                        rounded-[var(--premium-radius-full)]
+                        bg-[var(--premium-emerald)]
+                        text-white
+                        font-medium text-[18px]
+                        hover:bg-[var(--premium-emerald-dark)]
+                        active:scale-[0.98]
+                        transition-all duration-200
+                        animate-[slideUp_0.3s_ease-out]
+                      "
+                    >
+                      {saveAsTemplate && !showTemplateNameInput
+                        ? "Continue"
+                        : "Save Transaction"}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -2061,10 +2352,198 @@ export function PremiumAddTransactionScreen({
         accounts={MOCK_ACCOUNTS}
         selectedAccountId={selectedAccountId}
         onSelectAccount={(accountId) => {
-          setSelectedAccountId(accountId);
+          setShowAccountBottomSheet(false);
+          handleAccountSelected(accountId);
         }}
         title="Select Account"
       />
+
+      {/* Transaction Type Selector Overlay */}
+      <PremiumTransactionTypeSelector
+        isOpen={showTransactionTypeSelector}
+        selectedType={transactionType}
+        onSelectType={(type) => {
+          setTransactionType(type);
+          // Clear category/account when switching types
+          if (type === "transfer") {
+            setSelectedCategory(undefined);
+            setSelectedSubcategory(undefined);
+            setSelectedAccountId(undefined);
+          } else {
+            setFromAccountId(undefined);
+            setToAccountId(undefined);
+          }
+        }}
+        onClose={() => setShowTransactionTypeSelector(false)}
+      />
+
+      {/* Category Selector Overlay */}
+      <PremiumCategorySelector
+        isOpen={showCategorySelector}
+        selectedCategory={selectedCategory}
+        categories={CATEGORY_METADATA
+          .filter((cat) => cat.id !== "income")
+          .map((cat) => ({
+            id: cat.id as TransactionCategory,
+            label: cat.label,
+            description: `Track your ${cat.label.toLowerCase()} expenses`,
+          }))}
+        onSelectCategory={(category) => {
+          // Check if category has subcategories
+          const hasSubcategories = CATEGORY_SUBCATEGORIES[category]?.length > 0;
+          
+          if (hasSubcategories) {
+            // Store category and show subcategory selector
+            setPendingCategory(category);
+            setShowCategorySelector(false);
+            setShowSubcategorySelector(true);
+          } else {
+            // No subcategories, set category directly and auto-progress
+            setShowCategorySelector(false);
+            handleCategorySelected(category, undefined);
+          }
+        }}
+        onClose={() => setShowCategorySelector(false)}
+      />
+
+      {/* Subcategory Selector Overlay */}
+      <PremiumSubcategorySelector
+        isOpen={showSubcategorySelector}
+        categoryLabel={
+          pendingCategory
+            ? CATEGORY_METADATA.find((c) => c.id === pendingCategory)?.label || ""
+            : ""
+        }
+        selectedSubcategory={selectedSubcategory}
+        subcategories={
+          pendingCategory
+            ? (CATEGORY_SUBCATEGORIES[pendingCategory] || []).map((sub) => ({
+                id: sub,
+                label: sub,
+              }))
+            : []
+        }
+        onSelectSubcategory={(subcategory) => {
+          if (pendingCategory) {
+            setShowSubcategorySelector(false);
+            setPendingCategory(undefined);
+            handleCategorySelected(pendingCategory, subcategory || undefined);
+          }
+        }}
+        onBack={() => {
+          setShowSubcategorySelector(false);
+          setShowCategorySelector(true);
+          setPendingCategory(undefined);
+        }}
+        onClose={() => {
+          setShowSubcategorySelector(false);
+          setPendingCategory(undefined);
+        }}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="
+          bg-[var(--premium-surface-2)]
+          border border-[var(--premium-glass-border)]
+          text-[var(--premium-text-primary)]
+          rounded-[var(--premium-radius-2xl)]
+          max-w-[calc(100%-2rem)]
+          sm:max-w-[425px]
+        ">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="
+              text-[var(--premium-text-primary)]
+              heading-5
+              flex items-center gap-[8px]
+            ">
+              <div className="
+                w-[40px] h-[40px]
+                rounded-full
+                bg-[#f5576c]/10
+                flex items-center justify-center
+              ">
+                <Trash2 size={20} className="text-[#f5576c]" />
+              </div>
+              Delete Transaction?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="
+              text-[var(--premium-text-secondary)]
+              body-md
+              pt-[var(--premium-space-sm)]
+            ">
+              This action cannot be undone. This will permanently delete this transaction
+              and update your account balance accordingly.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-[var(--premium-space-md)] mt-[var(--premium-space-lg)]">
+            <AlertDialogCancel className="
+              w-full sm:w-auto
+              h-[48px]
+              rounded-[var(--premium-radius-full)]
+              bg-[var(--premium-surface-3)]
+              text-[var(--premium-text-primary)]
+              border border-[var(--premium-glass-border)]
+              hover:bg-[var(--premium-surface-4)]
+              font-medium
+              transition-all duration-200
+            ">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteTransaction}
+              className="
+                w-full sm:w-auto
+                h-[48px]
+                rounded-[var(--premium-radius-full)]
+                bg-[#f5576c]
+                text-white
+                hover:bg-[#e03e54]
+                font-medium
+                transition-all duration-200
+              "
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Chip Animations */}
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Ripple effect on chip press */
+        button:active::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+          animation: ripple 0.6s ease-out;
+          pointer-events: none;
+        }
+
+        @keyframes ripple {
+          from {
+            transform: scale(0);
+            opacity: 1;
+          }
+          to {
+            transform: scale(2);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -6,34 +6,163 @@
 import { useState } from 'react';
 import { PremiumCard } from '../components/premium/PremiumCard';
 import { PremiumButton } from '../components/premium/PremiumButton';
+import { PremiumBudgetModal, type BudgetData } from '../components/premium/PremiumBudgetModal';
 import { CategoryIcon } from '../components/atoms/CategoryIcon';
-import { DollarSign, Plus, Edit2, AlertCircle } from 'lucide-react';
+import { DollarSign, Plus, Edit2, AlertCircle, Trash2 } from 'lucide-react';
 import type { TransactionCategory } from '../../types/domain';
 import { getCategoryMetadata } from '../../mocks/data';
 
 interface CategoryBudget {
+  id: string;
   category: TransactionCategory;
   budgetAmount: number;
   spentAmount: number;
   percentage: number;
+  period: 'weekly' | 'monthly' | 'yearly';
+  alertEnabled: boolean;
+  alertThreshold: number;
 }
 
 const MOCK_BUDGETS: CategoryBudget[] = [
-  { category: 'food', budgetAmount: 500, spentAmount: 387, percentage: 77 },
-  { category: 'transport', budgetAmount: 300, spentAmount: 245, percentage: 82 },
-  { category: 'shopping', budgetAmount: 400, spentAmount: 299, percentage: 75 },
-  { category: 'bills', budgetAmount: 250, spentAmount: 204, percentage: 82 },
-  { category: 'entertainment', budgetAmount: 200, spentAmount: 156, percentage: 78 },
-  { category: 'health', budgetAmount: 150, spentAmount: 89, percentage: 59 },
+  { 
+    id: 'budget-1',
+    category: 'food', 
+    budgetAmount: 500, 
+    spentAmount: 387, 
+    percentage: 77,
+    period: 'monthly',
+    alertEnabled: true,
+    alertThreshold: 80,
+  },
+  { 
+    id: 'budget-2',
+    category: 'transport', 
+    budgetAmount: 300, 
+    spentAmount: 245, 
+    percentage: 82,
+    period: 'monthly',
+    alertEnabled: true,
+    alertThreshold: 80,
+  },
+  { 
+    id: 'budget-3',
+    category: 'shopping', 
+    budgetAmount: 400, 
+    spentAmount: 299, 
+    percentage: 75,
+    period: 'monthly',
+    alertEnabled: true,
+    alertThreshold: 75,
+  },
+  { 
+    id: 'budget-4',
+    category: 'bills', 
+    budgetAmount: 250, 
+    spentAmount: 204, 
+    percentage: 82,
+    period: 'monthly',
+    alertEnabled: false,
+    alertThreshold: 80,
+  },
+  { 
+    id: 'budget-5',
+    category: 'entertainment', 
+    budgetAmount: 200, 
+    spentAmount: 156, 
+    percentage: 78,
+    period: 'monthly',
+    alertEnabled: true,
+    alertThreshold: 90,
+  },
+  { 
+    id: 'budget-6',
+    category: 'health', 
+    budgetAmount: 150, 
+    spentAmount: 89, 
+    percentage: 59,
+    period: 'monthly',
+    alertEnabled: true,
+    alertThreshold: 80,
+  },
 ];
+
+// Mock category spending history for smart suggestions
+const MOCK_SPENDING_HISTORY: Record<TransactionCategory, number[]> = {
+  'food': [420, 450, 387, 410, 395],
+  'transport': [280, 245, 260, 270, 255],
+  'shopping': [350, 299, 380, 320, 340],
+  'bills': [210, 204, 215, 200, 205],
+  'entertainment': [180, 156, 170, 160, 175],
+  'health': [95, 89, 85, 90, 92],
+} as any;
 
 export function PremiumBudgetScreen() {
   const [budgets, setBudgets] = useState<CategoryBudget[]>(MOCK_BUDGETS);
-  const [showAddBudget, setShowAddBudget] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<BudgetData | undefined>();
 
   const totalBudget = budgets.reduce((sum, b) => sum + b.budgetAmount, 0);
   const totalSpent = budgets.reduce((sum, b) => sum + b.spentAmount, 0);
   const overallPercentage = (totalSpent / totalBudget) * 100;
+
+  const handleAddBudget = () => {
+    setEditingBudget(undefined);
+    setShowBudgetModal(true);
+  };
+
+  const handleEditBudget = (budget: CategoryBudget) => {
+    setEditingBudget({
+      id: budget.id,
+      category: budget.category,
+      amount: budget.budgetAmount,
+      period: budget.period,
+      alert: {
+        enabled: budget.alertEnabled,
+        threshold: budget.alertThreshold,
+      },
+    });
+    setShowBudgetModal(true);
+  };
+
+  const handleSaveBudget = (budgetData: BudgetData) => {
+    if (budgetData.id) {
+      // Update existing budget
+      setBudgets((prevBudgets) =>
+        prevBudgets.map((b) =>
+          b.id === budgetData.id
+            ? {
+                ...b,
+                budgetAmount: budgetData.amount,
+                period: budgetData.period,
+                alertEnabled: budgetData.alert.enabled,
+                alertThreshold: budgetData.alert.threshold,
+                percentage: Math.round((b.spentAmount / budgetData.amount) * 100),
+              }
+            : b
+        )
+      );
+    } else {
+      // Add new budget
+      const newBudget: CategoryBudget = {
+        id: `budget-${Date.now()}`,
+        category: budgetData.category,
+        budgetAmount: budgetData.amount,
+        spentAmount: 0,
+        percentage: 0,
+        period: budgetData.period,
+        alertEnabled: budgetData.alert.enabled,
+        alertThreshold: budgetData.alert.threshold,
+      };
+      setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
+    }
+    
+    setShowBudgetModal(false);
+    setEditingBudget(undefined);
+  };
+
+  const handleDeleteBudget = (budgetId: string) => {
+    setBudgets((prevBudgets) => prevBudgets.filter((b) => b.id !== budgetId));
+  };
 
   return (
     <div className="flex flex-col gap-[var(--premium-space-lg)] animate-fade-in-up">
@@ -48,14 +177,14 @@ export function PremiumBudgetScreen() {
           </p>
         </div>
         <button
-          onClick={() => setShowAddBudget(true)}
+          onClick={handleAddBudget}
           className="
             w-[44px] h-[44px]
-            bg-gradient-to-r from-[#667eea] to-[#764ba2]
+            bg-gradient-to-r from-[#10b981] to-[#059669]
             rounded-full
             flex items-center justify-center
-            shadow-[var(--premium-glow-primary)]
-            hover:shadow-[0_0_30px_rgba(102,126,234,0.7)]
+            shadow-[0_8px_32px_rgba(16,185,129,0.4)]
+            hover:shadow-[0_12px_40px_rgba(16,185,129,0.6)]
             transition-all
           "
         >
@@ -68,7 +197,7 @@ export function PremiumBudgetScreen() {
         relative
         rounded-[var(--premium-radius-2xl)]
         p-[var(--premium-space-xl)]
-        bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f5576c]
+        bg-gradient-to-br from-[#10b981] via-[#059669] to-[#047857]
         shadow-[var(--premium-shadow-xl)]
         overflow-hidden
       ">
@@ -128,7 +257,7 @@ export function PremiumBudgetScreen() {
 
             return (
               <PremiumCard
-                key={budget.category}
+                key={budget.id}
                 variant="glass"
                 className="p-[var(--premium-space-lg)]"
               >
@@ -180,20 +309,40 @@ export function PremiumBudgetScreen() {
                     </div>
                   </div>
 
-                  {/* Edit Button */}
-                  <button
-                    className="
-                      w-[36px] h-[36px]
-                      bg-[var(--premium-surface-2)]
-                      rounded-full
-                      flex items-center justify-center
-                      hover:bg-[var(--premium-surface-3)]
-                      transition-all
-                      flex-shrink-0
-                    "
-                  >
-                    <Edit2 size={16} className="text-[var(--premium-text-secondary)]" />
-                  </button>
+                  {/* Edit & Delete Buttons */}
+                  <div className="flex items-center gap-[var(--premium-space-xs)]">
+                    <button
+                      onClick={() => handleEditBudget(budget)}
+                      className="
+                        w-[36px] h-[36px]
+                        bg-[var(--premium-surface-2)]
+                        rounded-full
+                        flex items-center justify-center
+                        hover:bg-[var(--premium-accent)]/20
+                        hover:text-[var(--premium-accent)]
+                        transition-all
+                        flex-shrink-0
+                      "
+                    >
+                      <Edit2 size={16} className="text-[var(--premium-text-secondary)]" />
+                    </button>
+                    
+                    <button
+                      onClick={() => handleDeleteBudget(budget.id)}
+                      className="
+                        w-[36px] h-[36px]
+                        bg-[var(--premium-surface-2)]
+                        rounded-full
+                        flex items-center justify-center
+                        hover:bg-[var(--premium-error)]/20
+                        hover:text-[var(--premium-error)]
+                        transition-all
+                        flex-shrink-0
+                      "
+                    >
+                      <Trash2 size={16} className="text-[var(--premium-text-secondary)]" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Progress Bar */}
@@ -232,7 +381,7 @@ export function PremiumBudgetScreen() {
       <PremiumCard
         variant="glass"
         hover
-        onClick={() => setShowAddBudget(true)}
+        onClick={handleAddBudget}
         className="p-[var(--premium-space-lg)] cursor-pointer"
       >
         <div className="flex items-center justify-center gap-[var(--premium-space-sm)] text-[var(--premium-primary)]">
@@ -263,6 +412,19 @@ export function PremiumBudgetScreen() {
           </div>
         </div>
       </PremiumCard>
+
+      {/* Budget Modal */}
+      <PremiumBudgetModal
+        isOpen={showBudgetModal}
+        onClose={() => {
+          setShowBudgetModal(false);
+          setEditingBudget(undefined);
+        }}
+        onSave={handleSaveBudget}
+        existingBudget={editingBudget}
+        monthlyIncome={5000}
+        categorySpendingHistory={MOCK_SPENDING_HISTORY}
+      />
     </div>
   );
 }

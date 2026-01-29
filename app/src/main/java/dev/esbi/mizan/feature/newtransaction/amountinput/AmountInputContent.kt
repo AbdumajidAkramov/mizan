@@ -40,7 +40,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
+import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
@@ -55,6 +59,12 @@ import dev.esbi.mizan.utils.annotatedString
 @Composable
 internal fun AmountInputContent(
     state: AmountInputState = AmountInputState(),
+    selectedAccount: Account? = null,
+    selectedCategory: Category? = null,
+    selectedSubCategory: Category? = null,
+    onTypeClick: () -> Unit = {},
+    onCategoryClick: () -> Unit = {},
+    onAccountClick: () -> Unit = {},
     accept: (NewTransactionStore.Intent) -> Unit
 ) {
     var showTemplates by remember { mutableStateOf(false) }
@@ -117,6 +127,21 @@ internal fun AmountInputContent(
                 minFontSize = 24.sp,
                 modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.md)
             )
+
+            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+
+            // Transaction Context Row (Type, Category, Account chips)
+            TransactionContextRow(
+                transactionType = state.transactionType,
+                selectedCategory = selectedCategory,
+                selectedSubCategory = selectedSubCategory,
+                selectedAccount = selectedAccount,
+                onTypeClick = onTypeClick,
+                onCategoryClick = onCategoryClick,
+                onAccountClick = onAccountClick
+            )
+
+            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
             // Input Mode Selector (Calculator, Mic, Camera icons)
             InputModeContent(
@@ -473,6 +498,174 @@ private fun NextButton(
                 modifier = Modifier.size(20.dp)
             )
         }
+    }
+}
+
+// Transaction Context Row - Shows Type, Category, Account chips
+@Composable
+private fun TransactionContextRow(
+    transactionType: TransactionType?,
+    selectedCategory: Category?,
+    selectedSubCategory: Category?,
+    selectedAccount: Account?,
+    onTypeClick: () -> Unit,
+    onCategoryClick: () -> Unit,
+    onAccountClick: () -> Unit
+) {
+    val typeColor = when (transactionType) {
+        TransactionType.EXPENSE -> Color(0xFFF5576C) // Coral/Red
+        TransactionType.INCOME -> MizanTheme.premium.colors.emerald
+        TransactionType.TRANSFER -> MizanTheme.premium.colors.primary
+        null -> MizanTheme.premium.text.secondary
+    }
+
+    val typeName = when (transactionType) {
+        TransactionType.EXPENSE -> "Expense"
+        TransactionType.INCOME -> "Income"
+        TransactionType.TRANSFER -> "Transfer"
+        null -> "Select Type"
+    }
+
+    val typeIcon = when (transactionType) {
+        TransactionType.EXPENSE -> R.drawable.ic_trend_up
+        TransactionType.INCOME -> R.drawable.ic_down_trend
+        TransactionType.TRANSFER -> R.drawable.ic_swap_horizontal
+        null -> R.drawable.ic_chevron_right
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
+    ) {
+        // First row: Type and Category chips
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Transaction Type Chip (outlined)
+            TransactionTypeChip(
+                label = typeName,
+                color = typeColor,
+                iconRes = typeIcon,
+                onClick = onTypeClick
+            )
+
+            // Category Chip (filled) - only show if category is selected
+            if (selectedCategory != null) {
+                CategoryChip(
+                    categoryName = selectedCategory.name,
+                    subCategoryName = selectedSubCategory?.name,
+                    onClick = onCategoryClick
+                )
+            }
+        }
+
+        // Second row: Account chip
+        AccountChip(
+            accountName = selectedAccount?.name ?: "Select Account",
+            accountIcon = selectedAccount?.iconName,
+            onClick = onAccountClick
+        )
+    }
+}
+
+@Composable
+private fun TransactionTypeChip(
+    label: String,
+    color: Color,
+    iconRes: Int,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+            .border(
+                width = 1.5.dp,
+                color = color,
+                shape = RoundedCornerShape(MizanTheme.premium.radius.full)
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(14.dp)
+        )
+        Text(
+            text = label,
+            style = MizanTheme.typography.bodySm,
+            color = color,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+private fun CategoryChip(
+    categoryName: String,
+    subCategoryName: String?,
+    onClick: () -> Unit
+) {
+    val displayText = if (subCategoryName != null) {
+        "$categoryName • $subCategoryName"
+    } else {
+        categoryName
+    }
+
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+            .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = displayText,
+            style = MizanTheme.typography.bodySm,
+            color = MizanTheme.premium.colors.emerald,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun AccountChip(
+    accountName: String,
+    accountIcon: String?,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+            .background(MizanTheme.premium.colors.surface2)
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_wallet),
+            contentDescription = null,
+            tint = MizanTheme.premium.text.secondary,
+            modifier = Modifier.size(14.dp)
+        )
+        Text(
+            text = accountName,
+            style = MizanTheme.typography.bodySm,
+            color = MizanTheme.premium.text.primary,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

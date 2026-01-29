@@ -36,6 +36,8 @@ type TransactionHubTab = 'daily' | 'calendar' | 'monthly' | 'summary' | 'descrip
 export interface PremiumTransactionsHubScreenProps {
   /** Callback when user wants to add a new transaction */
   onAddTransaction?: () => void;
+  /** Callback when user wants to edit a transaction */
+  onEditTransaction?: (transaction: any) => void;
   /** Callback when user wants to go back */
   onBack?: () => void;
   /** Initial tab to show */
@@ -240,6 +242,7 @@ const ACCOUNT_NAMES: Record<string, string> = {
  */
 export function PremiumTransactionsHubScreen({
   onAddTransaction,
+  onEditTransaction,
   onBack,
   initialTab = 'daily',
   highlightTransactionId,
@@ -286,6 +289,26 @@ export function PremiumTransactionsHubScreen({
   });
 
   /**
+   * Handle Transaction Click (Edit Mode)
+   */
+  const handleTransactionClick = (txn: Transaction) => {
+    if (onEditTransaction) {
+      // Convert Transaction to EditableTransaction format
+      const editableTransaction = {
+        id: txn.id,
+        amount: txn.amount,
+        type: txn.type,
+        category: txn.category,
+        subcategory: txn.subcategoryLabel,
+        accountId: txn.accountId,
+        date: new Date(txn.timestamp),
+        notes: txn.notes,
+      };
+      onEditTransaction(editableTransaction);
+    }
+  };
+
+  /**
    * Render Transaction Item
    */
   const renderTransactionItem = (txn: Transaction, index: number) => {
@@ -294,15 +317,19 @@ export function PremiumTransactionsHubScreen({
     const isHighlighted = txn.id === highlightTransactionId;
 
     return (
-      <div
+      <button
         key={txn.id}
+        onClick={() => handleTransactionClick(txn)}
         className={`
+          w-full
           p-[var(--premium-space-md)]
           rounded-[var(--premium-radius-lg)]
           bg-[var(--premium-surface-2)]
           hover:bg-[var(--premium-surface-3)]
+          active:scale-[0.98]
           transition-all duration-200
           flex items-center gap-[var(--premium-space-md)]
+          text-left
           ${isHighlighted ? 'animate-[pulse_1s_ease-in-out_3] bg-[var(--premium-emerald)]/10 border-2 border-[var(--premium-emerald)]' : 'border-2 border-transparent'}
         `}
         style={{
@@ -351,7 +378,7 @@ export function PremiumTransactionsHubScreen({
             </p>
           )}
         </div>
-      </div>
+      </button>
     );
   };
 
@@ -444,19 +471,13 @@ export function PremiumTransactionsHubScreen({
         transactions={transactions}
         selectedMonth={selectedMonth}
         onMonthChange={(newMonth) => setSelectedMonth(newMonth)}
-        onEditTransaction={(transaction) => {
-          console.log('Edit transaction:', transaction);
-          // In a real implementation, this would open an edit dialog
-        }}
+        onEditTransaction={handleTransactionClick}
         onDeleteTransaction={(transactionId) => {
           console.log('Delete transaction:', transactionId);
           // In a real implementation, this would show a confirmation dialog
           setTransactions((prev) => prev.filter((t) => t.id !== transactionId));
         }}
-        onTransactionTap={(transaction) => {
-          console.log('Transaction tapped:', transaction);
-          // In a real implementation, this would open transaction details
-        }}
+        onTransactionTap={handleTransactionClick}
       />
     );
   };
@@ -481,6 +502,7 @@ export function PremiumTransactionsHubScreen({
     return (
       <PremiumDescriptionView
         transactions={transactions}
+        onTransactionTap={handleTransactionClick}
       />
     );
   };

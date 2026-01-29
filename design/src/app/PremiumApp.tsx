@@ -11,7 +11,7 @@ import { PremiumStatisticsScreen } from './screens/PremiumStatisticsScreen';
 import { PremiumBudgetScreen } from './screens/PremiumBudgetScreen';
 import { PremiumProfileScreen } from './screens/PremiumProfileScreen';
 import { PremiumFinancialMirrorScreen } from './screens/PremiumFinancialMirrorScreen';
-import { PremiumAddTransactionScreen } from './screens/PremiumAddTransactionScreen';
+import { PremiumAddTransactionScreen, type EditableTransaction } from './screens/PremiumAddTransactionScreen';
 import { PremiumTransactionsHubScreen } from './screens/PremiumTransactionsHubScreen';
 import { ManageCategoriesScreen } from './screens/ManageCategoriesScreen';
 import { ManageTemplatesScreen } from './screens/ManageTemplatesScreen';
@@ -31,6 +31,7 @@ import {
 function PremiumAppContent() {
   const [activeTab, setActiveTab] = useState<PremiumNavTab>('home');
   const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<EditableTransaction | undefined>();
   const [showManageCategories, setShowManageCategories] = useState(false);
   const [showManageTemplates, setShowManageTemplates] = useState(false);
   const [showTransactionsHub, setShowTransactionsHub] = useState(false);
@@ -81,11 +82,27 @@ function PremiumAppContent() {
   };
 
   const handleAddExpense = () => {
+    setEditingTransaction(undefined); // Clear any edit state
     setShowAddTransaction(true);
+  };
+
+  const handleEditTransaction = (transaction: EditableTransaction) => {
+    setEditingTransaction(transaction);
+    setShowAddTransaction(true);
+    setShowTransactionsHub(false); // Close the transactions hub
   };
 
   const handleCloseAddExpense = () => {
     setShowAddTransaction(false);
+    setEditingTransaction(undefined); // Clear edit state
+  };
+
+  const handleDeleteTransaction = (transactionId: string) => {
+    // TODO: Delete transaction from state/database
+    console.log('Deleting transaction:', transactionId);
+    setShowAddTransaction(false);
+    setEditingTransaction(undefined);
+    // Optionally reload transactions or update UI
   };
 
   const handleSaveTransaction = (transaction: {
@@ -525,7 +542,7 @@ function PremiumAppContent() {
         onAddExpense={handleAddExpense}
       />
 
-      {/* Add Transaction Screen (Full-screen overlay) */}
+      {/* Add/Edit Transaction Screen (Full-screen overlay) */}
       {showAddTransaction && (
         <PremiumAddTransactionScreen
           onClose={handleCloseAddExpense}
@@ -538,6 +555,8 @@ function PremiumAppContent() {
             setShowAddTransaction(false);
             setShowManageTemplates(true);
           }}
+          editTransaction={editingTransaction}
+          onDelete={handleDeleteTransaction}
         />
       )}
 
@@ -568,6 +587,7 @@ function PremiumAppContent() {
             setShowTransactionsHub(false);
             setShowAddTransaction(true);
           }}
+          onEditTransaction={handleEditTransaction}
           onBack={() => {
             setShowTransactionsHub(false);
             setLastSavedTransactionId(undefined);
