@@ -16,6 +16,9 @@ interface DashboardStore : Store<Intent, State, Label> {
         data object Refresh : Intent
         data object Retry : Intent
         data class CategoryClicked(val categoryId: String) : Intent
+        data object AddTransactionClicked : Intent
+        data object ViewAllTransactionsClicked : Intent
+        data object ProfileClicked : Intent
     }
 
     data class State(
@@ -27,5 +30,8 @@ interface DashboardStore : Store<Intent, State, Label> {
     sealed interface Label {
         data class NavigateToCategory(val categoryId: String) : Label
         data class ShowError(val message: String) : Label
+        data object NavigateToNewTransaction : Label
+        data object NavigateToTransactionsHub : Label
+        data object NavigateToProfile : Label
     }
 }

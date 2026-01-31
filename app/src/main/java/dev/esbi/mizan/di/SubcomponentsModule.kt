@@ -9,6 +9,7 @@ import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectCom
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
 import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
 import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
+import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
 
 /**
  * Module that declares all screen-level subcomponents.
@@ -25,7 +26,8 @@ import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
         FinancialMirrorComponent::class,
         ProfileComponent::class,
         StatisticsComponent::class,
-        TransactionsComponent::class
+        TransactionsComponent::class,
+        TransactionsHubComponent::class
     ]
 )
 object SubcomponentsModule

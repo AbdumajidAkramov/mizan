@@ -75,6 +75,9 @@ class DashboardStoreFactory @Inject constructor(
                 is Intent.Refresh -> refresh()
                 is Intent.Retry -> retry()
                 is Intent.CategoryClicked -> publish(Label.NavigateToCategory(intent.categoryId))
+                is Intent.AddTransactionClicked -> publish(Label.NavigateToNewTransaction)
+                is Intent.ViewAllTransactionsClicked -> publish(Label.NavigateToTransactionsHub)
+                is Intent.ProfileClicked -> publish(Label.NavigateToProfile)
             }
         }
 

@@ -16,7 +16,7 @@ import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
-import dev.esbi.mizan.feature.transactions.presentation.ui.TransactionsHubScreen
+import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
 
 @Composable
 internal fun MizanNavHost(
@@ -39,8 +39,14 @@ internal fun MizanNavHost(
                 onNavigateToCategory = { categoryId ->
                     navController.navigate(NavRoute.CategoryDetail(categoryId))
                 },
-                onSeeAllTransactions = {
+                onNavigateToNewTransaction = {
+                    navController.navigate(NavRoute.AmountInput)
+                },
+                onNavigateToTransactionsHub = {
                     navController.navigate(NavRoute.Transactions)
+                },
+                onNavigateToProfile = {
+                    // TODO: Navigate to Profile screen when implemented
                 }
             )
         }
@@ -55,15 +61,18 @@ internal fun MizanNavHost(
             BudgetScreen(viewModel)
         }
         composable<NavRoute.Transactions> {
-            val component = remember { appComponent.transactionsComponent().create() }
+            val component = remember { appComponent.transactionsHubComponent().create() }
             val viewModel = component.viewModel
             TransactionsHubScreen(
                 viewModel = viewModel,
-                onBack = {
+                onBackClick = {
                     navController.popBackStack()
                 },
-                onAddTransaction = {
+                onAddTransactionClick = {
                     navController.navigate(NavRoute.AmountInput)
+                },
+                onEditTransactionClick = { transactionId ->
+                    // TODO: Navigate to edit transaction screen
                 }
             )
         }

@@ -28,6 +28,7 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.QuickActionsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CategorySpending
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.ChartDataPoint
@@ -45,7 +46,9 @@ import dev.esbi.mizan.ui.components.ErrorState
 fun DashboardScreen(
     viewModel: DashboardViewModel,
     onNavigateToCategory: (String) -> Unit,
-    onSeeAllTransactions: () -> Unit = {},
+    onNavigateToNewTransaction: () -> Unit = {},
+    onNavigateToTransactionsHub: () -> Unit = {},
+    onNavigateToProfile: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -55,6 +58,9 @@ fun DashboardScreen(
             when (label) {
                 is DashboardStore.Label.NavigateToCategory -> onNavigateToCategory(label.categoryId)
                 is DashboardStore.Label.ShowError -> {}
+                is DashboardStore.Label.NavigateToNewTransaction -> onNavigateToNewTransaction()
+                is DashboardStore.Label.NavigateToTransactionsHub -> onNavigateToTransactionsHub()
+                is DashboardStore.Label.NavigateToProfile -> onNavigateToProfile()
             }
         }
     }
@@ -70,7 +76,8 @@ fun DashboardScreen(
             modifier = modifier,
             data = state.dashboardData!!,
             onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) },
-            onSeeAllTransactions = onSeeAllTransactions
+            onAddTransactionClick = { viewModel.onIntent(DashboardStore.Intent.AddTransactionClicked) },
+            onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) }
         )
     }
 }
@@ -79,6 +86,7 @@ fun DashboardScreen(
 private fun DashboardScrollContent(
     data: DashboardSummary,
     onCategoryClick: (String) -> Unit,
+    onAddTransactionClick: () -> Unit = {},
     onSeeAllTransactions: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -93,6 +101,15 @@ private fun DashboardScrollContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { AnimSection(visible, 0) { HeaderSection() } }
+
+        item {
+            AnimSection(visible) {
+                QuickActionsSection(
+                    onAddTransactionClick = onAddTransactionClick,
+                    onViewHistoryClick = onSeeAllTransactions
+                )
+            }
+        }
 
         item {
             AnimSection(visible) {
