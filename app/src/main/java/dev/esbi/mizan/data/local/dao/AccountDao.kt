@@ -37,4 +37,22 @@ interface AccountDao {
     
     @Query("SELECT COUNT(*) FROM accounts")
     suspend fun getAccountCount(): Int
+
+    @Query("UPDATE accounts SET name = :name, type = :type, balance = :balance, iconName = :iconName, color = :color, isArchived = :isArchived, description = :description WHERE id = :id")
+    suspend fun updateAccount(
+        id: Long,
+        name: String,
+        type: String,
+        balance: Double,
+        iconName: String?,
+        color: String?,
+        isArchived: Boolean,
+        description: String?
+    )
+
+    @Query("DELETE FROM accounts WHERE id = :id")
+    suspend fun deleteAccount(id: Long)
+
+    @Query("UPDATE accounts SET balance = balance + :amount WHERE id = :id")
+    suspend fun updateBalance(id: Long, amount: Double)
 }

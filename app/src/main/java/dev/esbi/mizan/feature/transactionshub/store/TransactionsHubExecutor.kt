@@ -204,6 +204,9 @@ internal class TransactionsHubExecutor(
         // Generate category summaries for Summary view
         calculateCategorySummaries(monthTransactions)
 
+        // Generate account summaries for Summary view
+        calculateAccountSummaries(monthTransactions)
+
         // Generate description groups for Description view
         calculateDescriptionGroups(monthTransactions, state().descriptionSearchQuery)
     }
@@ -412,6 +415,59 @@ internal class TransactionsHubExecutor(
                 expenseSummaries = expenseSummaries,
                 incomeSummaries = incomeSummaries,
                 savingsRate = savingsRate
+            )
+        )
+    }
+
+    private fun calculateAccountSummaries(monthTransactions: List<Transaction>) {
+        val accounts = state().accounts
+
+        // Calculate expense account summaries
+        val expenseTransactions = monthTransactions.filter { it.type == Transaction.Type.EXPENSE }
+        val totalExpense = expenseTransactions.sumOf { it.amount }
+
+        val expenseAccountSummaries = expenseTransactions
+            .groupBy { it.accountId }
+            .map { (accountId, transactions) ->
+                val account = accounts.find { it.id == accountId }
+                val totalAmount = transactions.sumOf { it.amount }
+                val percentage = if (totalExpense > 0) (totalAmount / totalExpense * 100).toFloat() else 0f
+
+                TransactionsHubStore.AccountSummary(
+                    accountId = accountId,
+                    accountName = account?.name ?: "Unknown Account",
+                    totalAmount = totalAmount,
+                    percentage = percentage,
+                    transactionCount = transactions.size
+                )
+            }
+            .sortedByDescending { it.totalAmount }
+
+        // Calculate income account summaries
+        val incomeTransactions = monthTransactions.filter { it.type == Transaction.Type.INCOME }
+        val totalIncome = incomeTransactions.sumOf { it.amount }
+
+        val incomeAccountSummaries = incomeTransactions
+            .groupBy { it.accountId }
+            .map { (accountId, transactions) ->
+                val account = accounts.find { it.id == accountId }
+                val totalAmount = transactions.sumOf { it.amount }
+                val percentage = if (totalIncome > 0) (totalAmount / totalIncome * 100).toFloat() else 0f
+
+                TransactionsHubStore.AccountSummary(
+                    accountId = accountId,
+                    accountName = account?.name ?: "Unknown Account",
+                    totalAmount = totalAmount,
+                    percentage = percentage,
+                    transactionCount = transactions.size
+                )
+            }
+            .sortedByDescending { it.totalAmount }
+
+        dispatch(
+            TransactionsHubStore.Message.AccountSummariesCalculated(
+                expenseAccountSummaries = expenseAccountSummaries,
+                incomeAccountSummaries = incomeAccountSummaries
             )
         )
     }

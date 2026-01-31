@@ -36,7 +36,8 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 internal fun NewTransactionScreen(
     viewModel: AmountInputViewModel,
     onBackPressed: () -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
+    onNavigateToManageCategories: () -> Unit
 ) {
     val labels by viewModel.labels.collectAsState(initial = null)
     val state by viewModel.state.collectAsState(initial = NewTransactionStore.State())
@@ -206,6 +207,7 @@ internal fun NewTransactionScreen(
             onChildSelected = { category ->
                 accept(NewTransactionStore.Intent.SelectChildCategory(category))
             },
+            onNavigateToManageCategories = onNavigateToManageCategories,
             onBack = {
                 accept(NewTransactionStore.Intent.CloseCategorySheet)
             },

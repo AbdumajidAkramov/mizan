@@ -12,6 +12,8 @@ import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
+import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
+import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
 import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
@@ -100,6 +102,9 @@ internal fun MizanNavHost(
                 onBackPressed = {
                     navController.popBackStack()
                 },
+                onNavigateToManageCategories = {
+                    navController.navigate(NavRoute.ManageCategories)
+                },
                 onSubmit = {
                     navController.navigate(NavRoute.Transactions) {
                         popUpTo(NavRoute.Transactions) {
@@ -125,7 +130,37 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onManageCategories = {
+                    navController.navigate(NavRoute.ManageCategories)
+                }
+            )
+        }
+
+        composable<NavRoute.ManageCategories> {
+            val component = remember { appComponent.manageCategoriesComponent().create() }
+            val viewModel = component.viewModel
+
+            ManageCategoriesContent(
+                viewModel = viewModel,
+                onBack = {
                     navController.popBackStack()
+                },
+                onNavigateToEditCategory = { categoryId ->
+                    // TODO: Navigate to edit category screen if needed
+                }
+            )
+        }
+
+        composable<NavRoute.AccountManagement> {
+            val component = remember { appComponent.accountManagementComponent().create() }
+            val viewModel = component.viewModel
+
+            AccountManagementScreen(
+                viewModel = viewModel,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToEditAccount = { accountId ->
+                    // TODO: Navigate to edit account screen if needed
                 }
             )
         }

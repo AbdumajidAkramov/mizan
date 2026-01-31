@@ -8,6 +8,8 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.di.AmountInputComponent
 import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectComponent
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
 import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
+import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
+import dev.esbi.mizan.feature.managecategories.di.ManageCategoriesComponent
 import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
 import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
 
@@ -21,9 +23,11 @@ import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
         AmountInputComponent::class,
         CategorySelectComponent::class,
         // Main Screens
+        AccountManagementComponent::class,
         BudgetComponent::class,
         DashboardComponent::class,
         FinancialMirrorComponent::class,
+        ManageCategoriesComponent::class,
         ProfileComponent::class,
         StatisticsComponent::class,
         TransactionsComponent::class,

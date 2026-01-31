@@ -47,6 +47,7 @@ fun CategorySelectionSheet(
     selectedChildId: Long?,
     onParentSelected: (Category) -> Unit,
     onChildSelected: (Category) -> Unit,
+    onNavigateToManageCategories: () -> Unit,
     onBack: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -162,7 +163,8 @@ fun CategorySelectionSheet(
                             categories = parentCategories,
                             selectedCategoryId = selectedParentId,
                             onCategoryClick = handleParentClick,
-                            hasChildren = hasChildren
+                            hasChildren = hasChildren,
+                            onNavigateToManageCategories = onNavigateToManageCategories
                         )
                     }
                     is CategoryViewState.SubcategoryList -> {

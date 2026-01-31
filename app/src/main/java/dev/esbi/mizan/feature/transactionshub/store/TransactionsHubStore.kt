@@ -84,6 +84,17 @@ interface TransactionsHubStore :
     )
 
     /**
+     * Account summary for Summary view
+     */
+    data class AccountSummary(
+        val accountId: Long?,
+        val accountName: String,
+        val totalAmount: Double,
+        val percentage: Float,
+        val transactionCount: Int
+    )
+
+    /**
      * Description group for Description view
      */
     data class DescriptionGroup(
@@ -115,6 +126,8 @@ interface TransactionsHubStore :
         val expenseCategorySummaries: List<CategorySummary> = emptyList(),
         val incomeCategorySummaries: List<CategorySummary> = emptyList(),
         val savingsRate: Float = 0f,
+        val expenseAccountSummaries: List<AccountSummary> = emptyList(),
+        val incomeAccountSummaries: List<AccountSummary> = emptyList(),
         val descriptionSearchQuery: String = "",
         val descriptionGroups: List<DescriptionGroup> = emptyList(),
         val isAllDescriptionsExpanded: Boolean = false,
@@ -165,6 +178,10 @@ interface TransactionsHubStore :
             val expenseSummaries: List<CategorySummary>,
             val incomeSummaries: List<CategorySummary>,
             val savingsRate: Float
+        ) : Message
+        data class AccountSummariesCalculated(
+            val expenseAccountSummaries: List<AccountSummary>,
+            val incomeAccountSummaries: List<AccountSummary>
         ) : Message
         data class DescriptionGroupsCalculated(val groups: List<DescriptionGroup>) : Message
         data class DescriptionSearchQueryChanged(val query: String) : Message

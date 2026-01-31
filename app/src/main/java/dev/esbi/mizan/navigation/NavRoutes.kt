@@ -30,4 +30,10 @@ sealed class NavRoute() {
 
     @Serializable
     data class CategorySelect(val transactionType: String) : NavRoute()
+
+    @Serializable
+    data object ManageCategories : NavRoute()
+
+    @Serializable
+    data object AccountManagement : NavRoute()
 }

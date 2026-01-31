@@ -65,6 +65,12 @@ internal class TransactionsHubReducer : Reducer<TransactionsHubStore.State, Tran
                 savingsRate = msg.savingsRate
             )
 
+        is TransactionsHubStore.Message.AccountSummariesCalculated ->
+            copy(
+                expenseAccountSummaries = msg.expenseAccountSummaries,
+                incomeAccountSummaries = msg.incomeAccountSummaries
+            )
+
         is TransactionsHubStore.Message.DescriptionGroupsCalculated ->
             copy(descriptionGroups = msg.groups)
 

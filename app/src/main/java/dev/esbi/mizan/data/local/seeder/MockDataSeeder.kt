@@ -1,5 +1,6 @@
 package dev.esbi.mizan.data.local.seeder
 
+import android.util.Log
 import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
@@ -11,8 +12,10 @@ import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -30,11 +33,36 @@ class MockDataSeeder @Inject constructor(
         // Only seed if accounts table is empty
         if (accountDao.getAccountCount() > 0) return@withContext
 
+        Log.d(TAG, "Starting database seeding...")
         seedCurrencies()
         seedAccountGroups()
         seedCategories()
         seedAccounts()
-        seedTransactions()
+        seedHighDensityTransactions()
+        Log.d(TAG, "Database seeding complete!")
+    }
+
+    companion object {
+        private const val TAG = "MockDataSeeder"
+        
+        // Category IDs
+        const val CAT_FOOD = 1L
+        const val CAT_TRANSPORT = 2L
+        const val CAT_SHOPPING = 3L
+        const val CAT_HEALTHCARE = 4L
+        const val CAT_BILLS = 5L
+        const val CAT_ENTERTAINMENT = 6L
+        const val CAT_RENT = 7L
+        const val CAT_GROCERIES = 8L
+        const val CAT_SALARY = 10L
+        const val CAT_FREELANCE = 11L
+        const val CAT_INVESTMENT = 12L
+        const val CAT_BONUS = 13L
+
+        // Account IDs
+        const val ACC_CASH = 1L
+        const val ACC_CARD = 2L
+        const val ACC_SAVINGS = 3L
     }
 
     private suspend fun seedCurrencies() {
@@ -212,396 +240,418 @@ class MockDataSeeder @Inject constructor(
     private suspend fun seedAccounts() {
         val accounts = listOf(
             AccountEntity(
-                id = 1,
+                id = ACC_CASH,
                 groupId = 1,
-                name = "Naqd pul",
+                name = "Cash Wallet",
                 type = dev.esbi.mizan.domain.model.Account.Type.CASH,
-                balance = 5_000_000.0,
+                balance = 2_500_000.0,
                 currencyCode = "UZS",
                 iconName = "ic_cash",
-                color = "#FFC107",
+                color = "#10B981",
                 isArchived = false,
                 excludeFromTotal = false,
                 description = "Cash at hand"
             ),
             AccountEntity(
-                id = 2,
+                id = ACC_CARD,
                 groupId = 1,
                 name = "Visa Gold",
                 type = dev.esbi.mizan.domain.model.Account.Type.CARD,
-                balance = 1_200.0,
-                currencyCode = "USD",
+                balance = 8_500_000.0,
+                currencyCode = "UZS",
                 iconName = "ic_card",
-                color = "#9C27B0",
+                color = "#8B5CF6",
                 isArchived = false,
                 excludeFromTotal = false,
-                description = "Visa Gold Credit Card"
+                description = "Visa Gold Debit Card"
+            ),
+            AccountEntity(
+                id = ACC_SAVINGS,
+                groupId = 1,
+                name = "Savings",
+                type = dev.esbi.mizan.domain.model.Account.Type.SAVINGS,
+                balance = 15_000_000.0,
+                currencyCode = "UZS",
+                iconName = "ic_savings",
+                color = "#F59E0B",
+                isArchived = false,
+                excludeFromTotal = false,
+                description = "Emergency fund"
             )
         )
         accounts.forEach { accountDao.insertAccount(it) }
     }
 
-    private suspend fun seedTransactions() {
+    /**
+     * High-density transaction generation for 3 years of data
+     * Generates ~5,000+ transactions with realistic patterns
+     */
+    private suspend fun seedHighDensityTransactions() {
         val transactions = mutableListOf<TransactionEntity>()
-        val calendar = Calendar.getInstance()
         
-        // Go back 12 months
-        calendar.add(Calendar.MONTH, -11)
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
-        calendar.set(Calendar.HOUR_OF_DAY, 10)
-        calendar.set(Calendar.MINUTE, 0)
+        val endDate = LocalDate.now()
+        val startDate = endDate.minusYears(3)
+        
+        var currentDate = startDate
+        var transactionId = 1L
 
-        // Financial Recovery Scenario:
-        // Months 1-4: High expenses, low savings (struggling)
-        // Months 5-8: Expenses stabilize, income slightly increases
-        // Months 9-12: Good savings rate, controlled expenses
+        Log.d(TAG, "Generating transactions from $startDate to $endDate...")
 
-        for (monthOffset in 0 until 12) {
-            val phase = when (monthOffset) {
-                in 0..3 -> FinancialPhase.STRUGGLING
-                in 4..7 -> FinancialPhase.STABILIZING
-                else -> FinancialPhase.THRIVING
+        while (!currentDate.isAfter(endDate)) {
+            val dayOfMonth = currentDate.dayOfMonth
+            val dayOfWeek = currentDate.dayOfWeek
+
+            // ============ DAILY EXPENSES (Every day) ============
+            val dailyExpenseCount = (1..3).random()
+            repeat(dailyExpenseCount) {
+                transactions.add(
+                    createDailyExpense(currentDate, transactionId++)
+                )
             }
 
-            // Generate monthly salary (1st of month)
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
-            transactions.add(createSalaryTransaction(calendar.timeInMillis, phase))
-
-            // Generate rent (5th of month)
-            calendar.set(Calendar.DAY_OF_MONTH, 5)
-            transactions.add(createRentTransaction(calendar.timeInMillis, phase))
-
-            // Generate bills (10th of month)
-            calendar.set(Calendar.DAY_OF_MONTH, 10)
-            transactions.add(createBillsTransaction(calendar.timeInMillis, phase))
-
-            // Generate weekly groceries (4 times per month)
-            for (week in 0..3) {
-                calendar.set(Calendar.DAY_OF_MONTH, 7 + (week * 7).coerceAtMost(23))
-                transactions.add(createGroceriesTransaction(calendar.timeInMillis, phase))
+            // ============ WEEKLY GROCERIES (Every Sunday) ============
+            if (dayOfWeek == DayOfWeek.SUNDAY) {
+                transactions.add(
+                    createWeeklyGroceries(currentDate, transactionId++)
+                )
             }
 
-            // Generate daily food transactions (15-25 per month)
-            val foodDays = (15..25).random()
-            val usedDays = mutableSetOf<Int>()
-            repeat(foodDays) {
-                var day = (1..28).random()
-                while (usedDays.contains(day)) day = (1..28).random()
-                usedDays.add(day)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
-                transactions.add(createFoodTransaction(calendar.timeInMillis, phase))
+            // ============ MONTHLY OBLIGATIONS (1st of month) ============
+            if (dayOfMonth == 1) {
+                // Rent
+                transactions.add(
+                    createMonthlyRent(currentDate, transactionId++)
+                )
+                // Utilities
+                transactions.add(
+                    createMonthlyUtilities(currentDate, transactionId++)
+                )
             }
 
-            // Generate transport transactions (8-15 per month)
-            val transportDays = (8..15).random()
-            repeat(transportDays) {
-                calendar.set(Calendar.DAY_OF_MONTH, (1..28).random())
-                transactions.add(createTransportTransaction(calendar.timeInMillis, phase))
+            // ============ INCOME STREAMS (7th, 14th, 21st, 28th) ============
+            if (dayOfMonth in listOf(7, 14, 21, 28)) {
+                transactions.add(
+                    createWeeklyIncome(currentDate, transactionId++)
+                )
             }
 
-            // Generate shopping (2-5 per month, more in struggling phase)
-            val shoppingCount = when (phase) {
-                FinancialPhase.STRUGGLING -> (4..7).random()
-                FinancialPhase.STABILIZING -> (2..4).random()
-                FinancialPhase.THRIVING -> (1..3).random()
-            }
-            repeat(shoppingCount) {
-                calendar.set(Calendar.DAY_OF_MONTH, (1..28).random())
-                transactions.add(createShoppingTransaction(calendar.timeInMillis, phase))
+            // ============ OCCASIONAL EXPENSES ============
+            // Shopping (2-3 times per week on weekends)
+            if (dayOfWeek in listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY) && Random.nextFloat() < 0.4f) {
+                transactions.add(
+                    createShoppingExpense(currentDate, transactionId++)
+                )
             }
 
-            // Generate entertainment (1-4 per month)
-            val entertainmentCount = when (phase) {
-                FinancialPhase.STRUGGLING -> (3..5).random()
-                FinancialPhase.STABILIZING -> (2..3).random()
-                FinancialPhase.THRIVING -> (1..2).random()
-            }
-            repeat(entertainmentCount) {
-                calendar.set(Calendar.DAY_OF_MONTH, (1..28).random())
-                transactions.add(createEntertainmentTransaction(calendar.timeInMillis, phase))
+            // Entertainment (Friday/Saturday evenings)
+            if (dayOfWeek in listOf(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY) && Random.nextFloat() < 0.3f) {
+                transactions.add(
+                    createEntertainmentExpense(currentDate, transactionId++)
+                )
             }
 
-            // Generate healthcare (0-2 per month)
-            if (Random.nextFloat() < 0.4f) {
-                calendar.set(Calendar.DAY_OF_MONTH, (1..28).random())
-                transactions.add(createHealthcareTransaction(calendar.timeInMillis))
+            // Healthcare (random, ~2-3 times per month)
+            if (Random.nextFloat() < 0.08f) {
+                transactions.add(
+                    createHealthcareExpense(currentDate, transactionId++)
+                )
             }
 
-            // Generate freelance income (more in later phases)
-            val freelanceChance = when (phase) {
-                FinancialPhase.STRUGGLING -> 0.2f
-                FinancialPhase.STABILIZING -> 0.5f
-                FinancialPhase.THRIVING -> 0.7f
-            }
-            if (Random.nextFloat() < freelanceChance) {
-                calendar.set(Calendar.DAY_OF_MONTH, (15..25).random())
-                transactions.add(createFreelanceTransaction(calendar.timeInMillis, phase))
+            // Freelance income (random, ~2-4 times per month)
+            if (Random.nextFloat() < 0.1f) {
+                transactions.add(
+                    createFreelanceIncome(currentDate, transactionId++)
+                )
             }
 
-            // Generate bonus (occasional, more in thriving phase)
-            if (phase == FinancialPhase.THRIVING && Random.nextFloat() < 0.3f) {
-                calendar.set(Calendar.DAY_OF_MONTH, (20..28).random())
-                transactions.add(createBonusTransaction(calendar.timeInMillis))
-            }
-
-            // Move to next month
-            calendar.add(Calendar.MONTH, 1)
-            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            currentDate = currentDate.plusDays(1)
         }
 
-        // Shuffle and insert all transactions
-        transactions.shuffled().forEach { transactionsDao.insertTransaction(it) }
+        Log.d(TAG, "Generated ${transactions.size} transactions. Inserting in batch...")
+        
+        // Batch insert for performance
+        transactionsDao.insertTransactions(transactions)
+        
+        Log.d(TAG, "Batch insert complete!")
     }
 
-    private enum class FinancialPhase {
-        STRUGGLING, STABILIZING, THRIVING
-    }
+    // ============ DAILY EXPENSE GENERATORS ============
 
-    // ========== INCOME TRANSACTIONS ==========
-
-    private fun createSalaryTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (2_800_000..3_200_000).random().toDouble()
-            FinancialPhase.STABILIZING -> (3_200_000..3_600_000).random().toDouble()
-            FinancialPhase.THRIVING -> (3_600_000..4_200_000).random().toDouble()
+    private fun createDailyExpense(date: LocalDate, id: Long): TransactionEntity {
+        val isFood = Random.nextFloat() < 0.7f
+        
+        return if (isFood) {
+            createFoodExpense(date, id)
+        } else {
+            createTransportExpense(date, id)
         }
-        val notes = listOf("Monthly salary", "Salary payment", "Work salary", "Paycheck")
-        return createTransaction(
+    }
+
+    private fun createFoodExpense(date: LocalDate, id: Long): TransactionEntity {
+        // Amount: 25,000 - 250,000 UZS (~$2-$20)
+        val amount = (25_000..250_000).random().toDouble()
+        
+        val restaurants = listOf("Osmos", "Rayhon", "Milliy Taomlar", "Evos", "KFC", "Burger House", "Sushi Master", "Doner Kebab")
+        val foodTypes = listOf("Lunch", "Coffee", "Breakfast", "Dinner", "Snack")
+        val companions = listOf("", " with Ali", " with Sardor", " with colleagues", " solo", " with team")
+        
+        val note = "${foodTypes.random()} at ${restaurants.random()}${companions.random()}"
+        
+        return createTransactionEntity(
+            id = id,
+            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+            amount = amount,
+            date = date,
+            hour = (8..20).random(),
+            note = note,
+            categoryId = CAT_FOOD,
+            accountId = if (Random.nextFloat() < 0.6f) ACC_CASH else ACC_CARD
+        )
+    }
+
+    private fun createTransportExpense(date: LocalDate, id: Long): TransactionEntity {
+        // Amount: 10,000 - 100,000 UZS (~$1-$8)
+        val amount = (10_000..100_000).random().toDouble()
+        
+        val transportTypes = listOf(
+            "Yandex taxi", "Uber ride", "Metro", "Bus fare",
+            "Taxi to work", "Taxi home", "Taxi to meeting",
+            "Petrol", "Parking fee"
+        )
+        val destinations = listOf("", " to office", " to mall", " to meeting", " downtown", " to airport")
+        
+        val note = "${transportTypes.random()}${destinations.random()}"
+        
+        return createTransactionEntity(
+            id = id,
+            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+            amount = amount,
+            date = date,
+            hour = (7..22).random(),
+            note = note,
+            categoryId = CAT_TRANSPORT,
+            accountId = ACC_CASH
+        )
+    }
+
+    // ============ WEEKLY EXPENSE GENERATORS ============
+
+    private fun createWeeklyGroceries(date: LocalDate, id: Long): TransactionEntity {
+        // Amount: 1,000,000 - 2,500,000 UZS (~$80-$200)
+        val amount = (1_000_000..2_500_000).random().toDouble()
+        
+        val stores = listOf("Makro", "Korzinka", "Havas", "Carrefour", "Mega Planet")
+        val note = "Weekly groceries at ${stores.random()}"
+        
+        return createTransactionEntity(
+            id = id,
+            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+            amount = amount,
+            date = date,
+            hour = (10..18).random(),
+            note = note,
+            categoryId = CAT_GROCERIES,
+            accountId = ACC_CARD
+        )
+    }
+
+    // ============ MONTHLY EXPENSE GENERATORS ============
+
+    private fun createMonthlyRent(date: LocalDate, id: Long): TransactionEntity {
+        // Fixed rent: ~15,000,000 UZS (~$1,200)
+        val amount = (14_500_000..15_500_000).random().toDouble()
+        
+        return createTransactionEntity(
+            id = id,
+            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+            amount = amount,
+            date = date,
+            hour = 10,
+            note = "Monthly rent payment",
+            categoryId = CAT_RENT,
+            accountId = ACC_CARD
+        )
+    }
+
+    private fun createMonthlyUtilities(date: LocalDate, id: Long): TransactionEntity {
+        // Utilities: 1,250,000 - 1,875,000 UZS (~$100-$150)
+        val amount = (1_250_000..1_875_000).random().toDouble()
+        
+        val utilityTypes = listOf(
+            "Electric bill", "Gas bill", "Water bill",
+            "Internet bill", "Phone bill", "Utilities combined"
+        )
+        
+        return createTransactionEntity(
+            id = id,
+            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+            amount = amount,
+            date = date,
+            hour = 11,
+            note = utilityTypes.random(),
+            categoryId = CAT_BILLS,
+            accountId = ACC_CARD
+        )
+    }
+
+    // ============ INCOME GENERATORS ============
+
+    private fun createWeeklyIncome(date: LocalDate, id: Long): TransactionEntity {
+        // Weekly salary portion: 6,250,000 - 10,000,000 UZS (~$500-$800)
+        val amount = (6_250_000..10_000_000).random().toDouble()
+        
+        val notes = listOf(
+            "Weekly salary", "Salary payment", "Paycheck",
+            "Work income", "Company transfer"
+        )
+        
+        return createTransactionEntity(
+            id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
             amount = amount,
             date = date,
+            hour = 14,
             note = notes.random(),
-            categoryId = 10,
-            accountId = 1
+            categoryId = CAT_SALARY,
+            accountId = ACC_CARD
         )
     }
 
-    private fun createFreelanceTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (200_000..500_000).random().toDouble()
-            FinancialPhase.STABILIZING -> (400_000..800_000).random().toDouble()
-            FinancialPhase.THRIVING -> (600_000..1_500_000).random().toDouble()
-        }
-        val notes = listOf(
-            "Freelance project", "Design work", "Website project",
-            "Logo design", "App development", "Consulting fee",
-            "Project payment", "Client work"
+    private fun createFreelanceIncome(date: LocalDate, id: Long): TransactionEntity {
+        // Freelance: 1,250,000 - 6,250,000 UZS (~$100-$500)
+        val amount = (1_250_000..6_250_000).random().toDouble()
+        
+        val projectTypes = listOf(
+            "Website project", "App development", "Design work",
+            "Logo design", "Consulting fee", "Translation work",
+            "Video editing", "Content writing", "SEO project"
         )
-        return createTransaction(
+        val clients = listOf("", " for TechCorp", " for StartupXYZ", " for local client", " for overseas client")
+        
+        val note = "${projectTypes.random()}${clients.random()}"
+        
+        return createTransactionEntity(
+            id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
             amount = amount,
             date = date,
-            note = notes.random(),
-            categoryId = 11,
-            accountId = if (Random.nextBoolean()) 1 else 2
+            hour = (10..18).random(),
+            note = note,
+            categoryId = CAT_FREELANCE,
+            accountId = if (Random.nextBoolean()) ACC_CARD else ACC_CASH
         )
     }
 
-    private fun createBonusTransaction(date: Long): TransactionEntity {
-        val amount = (500_000..1_500_000).random().toDouble()
-        val notes = listOf("Performance bonus", "Year-end bonus", "Project bonus", "Quarterly bonus")
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
-            amount = amount,
-            date = date,
-            note = notes.random(),
-            categoryId = 13,
-            accountId = 1
+    // ============ OCCASIONAL EXPENSE GENERATORS ============
+
+    private fun createShoppingExpense(date: LocalDate, id: Long): TransactionEntity {
+        // Shopping: 250,000 - 2,500,000 UZS (~$20-$200)
+        val amount = (250_000..2_500_000).random().toDouble()
+        
+        val items = listOf(
+            "New clothes", "Shoes", "Electronics", "Home decor",
+            "Kitchen items", "Books", "Accessories", "Tech gadget",
+            "Gift for friend", "Household items", "Sports gear"
         )
-    }
-
-    // ========== EXPENSE TRANSACTIONS ==========
-
-    private fun createRentTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> 1_200_000.0
-            FinancialPhase.STABILIZING -> 1_200_000.0
-            FinancialPhase.THRIVING -> 1_000_000.0 // Moved to cheaper place
-        }
-        return createTransaction(
+        val stores = listOf("", " at Samarkand Darvoza", " at Next", " at Mega Planet", " online")
+        
+        val note = "${items.random()}${stores.random()}"
+        
+        return createTransactionEntity(
+            id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
             amount = amount,
             date = date,
-            note = "Monthly rent",
-            categoryId = 7,
-            accountId = 1
+            hour = (11..20).random(),
+            note = note,
+            categoryId = CAT_SHOPPING,
+            accountId = ACC_CARD
         )
     }
 
-    private fun createBillsTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val baseAmount = when (phase) {
-            FinancialPhase.STRUGGLING -> (350_000..500_000).random()
-            FinancialPhase.STABILIZING -> (280_000..400_000).random()
-            FinancialPhase.THRIVING -> (200_000..320_000).random()
-        }
-        val notes = listOf(
-            "Electric bill", "Internet bill", "Gas bill",
-            "Water bill", "Utilities", "Phone bill"
+    private fun createEntertainmentExpense(date: LocalDate, id: Long): TransactionEntity {
+        // Entertainment: 125,000 - 625,000 UZS (~$10-$50)
+        val amount = (125_000..625_000).random().toDouble()
+        
+        val activities = listOf(
+            "Movie night", "Bowling", "Concert tickets", "Comedy show",
+            "Night out", "Karaoke", "Game center", "Escape room",
+            "Billiards", "Netflix subscription", "Spotify"
         )
-        return createTransaction(
+        val companions = listOf("", " with friends", " with family", " solo", " date night")
+        
+        val note = "${activities.random()}${companions.random()}"
+        
+        return createTransactionEntity(
+            id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = baseAmount.toDouble(),
+            amount = amount,
             date = date,
-            note = notes.random(),
-            categoryId = 5,
-            accountId = 1
+            hour = (18..23).random(),
+            note = note,
+            categoryId = CAT_ENTERTAINMENT,
+            accountId = if (Random.nextFloat() < 0.5f) ACC_CASH else ACC_CARD
         )
     }
 
-    private fun createGroceriesTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (250_000..400_000).random()
-            FinancialPhase.STABILIZING -> (200_000..350_000).random()
-            FinancialPhase.THRIVING -> (180_000..300_000).random()
-        }
-        val notes = listOf(
-            "Weekly groceries", "Makro shopping", "Korzinka",
-            "Grocery shopping", "Food supplies", "Supermarket"
-        )
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount.toDouble(),
-            date = date,
-            note = notes.random(),
-            categoryId = 8,
-            accountId = 1
-        )
-    }
-
-    private fun createFoodTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (40_000..120_000).random()
-            FinancialPhase.STABILIZING -> (35_000..90_000).random()
-            FinancialPhase.THRIVING -> (30_000..75_000).random()
-        }
-        val notes = listOf(
-            "Lunch at cafe", "Coffee break", "Dinner out",
-            "Lunch with Ali", "Pizza night", "Restaurant",
-            "Fast food", "Breakfast", "Snacks",
-            "Coffee with friends", "Team lunch", "Quick bite",
-            "Sushi dinner", "Lunch meeting", ""
-        )
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount.toDouble(),
-            date = date,
-            note = notes.random(),
-            categoryId = 1,
-            accountId = if (Random.nextFloat() < 0.7f) 1 else 2
-        )
-    }
-
-    private fun createTransportTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (15_000..80_000).random()
-            FinancialPhase.STABILIZING -> (10_000..60_000).random()
-            FinancialPhase.THRIVING -> (8_000..45_000).random()
-        }
-        val notes = listOf(
-            "Taxi to work", "Yandex taxi", "Metro",
-            "Bus fare", "Uber ride", "Taxi home",
-            "Petrol", "Gas station", "Parking",
-            "Taxi to meeting", "", "Transport"
-        )
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount.toDouble(),
-            date = date,
-            note = notes.random(),
-            categoryId = 2,
-            accountId = 1
-        )
-    }
-
-    private fun createShoppingTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (150_000..600_000).random()
-            FinancialPhase.STABILIZING -> (100_000..400_000).random()
-            FinancialPhase.THRIVING -> (80_000..300_000).random()
-        }
-        val notes = listOf(
-            "New clothes", "Shoes", "Electronics",
-            "Home decor", "Amazon order", "Online shopping",
-            "Gift for friend", "Household items", "",
-            "Tech gadget", "Book purchase", "Accessories"
-        )
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount.toDouble(),
-            date = date,
-            note = notes.random(),
-            categoryId = 3,
-            accountId = if (Random.nextFloat() < 0.5f) 1 else 2
-        )
-    }
-
-    private fun createEntertainmentTransaction(date: Long, phase: FinancialPhase): TransactionEntity {
-        val amount = when (phase) {
-            FinancialPhase.STRUGGLING -> (80_000..250_000).random()
-            FinancialPhase.STABILIZING -> (60_000..180_000).random()
-            FinancialPhase.THRIVING -> (50_000..150_000).random()
-        }
-        val notes = listOf(
-            "Movie night", "Netflix subscription", "Spotify",
-            "Concert tickets", "Game purchase", "Bowling",
-            "Streaming service", "Gaming", "",
-            "Night out", "Party", "Weekend fun"
-        )
-        return createTransaction(
-            type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount.toDouble(),
-            date = date,
-            note = notes.random(),
-            categoryId = 6,
-            accountId = if (Random.nextFloat() < 0.6f) 1 else 2
-        )
-    }
-
-    private fun createHealthcareTransaction(date: Long): TransactionEntity {
-        val amount = (100_000..500_000).random().toDouble()
-        val notes = listOf(
+    private fun createHealthcareExpense(date: LocalDate, id: Long): TransactionEntity {
+        // Healthcare: 125,000 - 1,250,000 UZS (~$10-$100)
+        val amount = (125_000..1_250_000).random().toDouble()
+        
+        val types = listOf(
             "Doctor visit", "Pharmacy", "Medicine",
             "Dentist", "Health checkup", "Vitamins",
-            "Medical supplies", ""
+            "Eye exam", "Lab tests", "Physiotherapy"
         )
-        return createTransaction(
+        val clinics = listOf("", " at Akfa Medline", " at Premium Clinic", " at local pharmacy")
+        
+        val note = "${types.random()}${clinics.random()}"
+        
+        return createTransactionEntity(
+            id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
             amount = amount,
             date = date,
-            note = notes.random(),
-            categoryId = 4,
-            accountId = 1
+            hour = (9..17).random(),
+            note = note,
+            categoryId = CAT_HEALTHCARE,
+            accountId = ACC_CARD
         )
     }
 
-    // ========== HELPER ==========
+    // ============ HELPER ============
 
-    private fun createTransaction(
+    private fun createTransactionEntity(
+        id: Long,
         type: dev.esbi.mizan.domain.model.Transaction.Type,
         amount: Double,
-        date: Long,
+        date: LocalDate,
+        hour: Int,
         note: String,
         categoryId: Long,
         accountId: Long
     ): TransactionEntity {
-        // Add some time randomness to the date
-        val randomizedDate = date + (0..TimeUnit.HOURS.toMillis(12)).random()
+        val dateTime = LocalDateTime.of(
+            date.year, date.month, date.dayOfMonth,
+            hour, (0..59).random(), (0..59).random()
+        )
+        val epochMillis = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         
         return TransactionEntity(
-            id = 0,
+            id = 0, // Auto-generate
             type = type,
             amount = amount,
             currencyCode = "UZS",
             exchangeRate = 1.0,
             targetAmount = null,
-            date = randomizedDate,
-            note = note.ifEmpty { null },
+            date = epochMillis,
+            note = note.trim().ifEmpty { null },
             description = null,
             photoPaths = emptyList(),
             accountId = accountId,
             categoryId = categoryId,
             targetAccountId = null,
-            isBookmarked = Random.nextFloat() < 0.05f,
+            isBookmarked = Random.nextFloat() < 0.02f,
             recurrenceRule = null,
             isInstallment = false,
             installmentTotalMonths = null,

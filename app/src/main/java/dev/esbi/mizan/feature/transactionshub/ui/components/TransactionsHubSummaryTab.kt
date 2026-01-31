@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.transactionshub.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -53,6 +53,9 @@ fun TransactionsHubSummaryTab(
     summary: TransactionsHubStore.MonthlySummary,
     expenseCategorySummaries: List<TransactionsHubStore.CategorySummary>,
     incomeCategorySummaries: List<TransactionsHubStore.CategorySummary>,
+    weeklySummaries: List<TransactionsHubStore.WeeklySummary>,
+    expenseAccountSummaries: List<TransactionsHubStore.AccountSummary>,
+    incomeAccountSummaries: List<TransactionsHubStore.AccountSummary>,
     savingsRate: Float,
     transactionCount: Int,
     onPreviousMonth: () -> Unit,
@@ -75,6 +78,13 @@ fun TransactionsHubSummaryTab(
         AnalyticsMode.Expense -> Color(0xFFF5576C)
         AnalyticsMode.Income -> MizanTheme.premium.colors.emerald
     }
+
+    val currentAccountSummaries = when (analyticsMode) {
+        AnalyticsMode.Expense -> expenseAccountSummaries
+        AnalyticsMode.Income -> incomeAccountSummaries
+    }
+
+    val topCategories = currentSummaries.take(5)
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -146,7 +156,7 @@ fun TransactionsHubSummaryTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Category Breakdown",
+                        text = "Category\nBreakdown",
                         style = MizanTheme.typography.headingLg,
                         color = MizanTheme.premium.text.primary
                     )
@@ -195,6 +205,135 @@ fun TransactionsHubSummaryTab(
                         Text(
                             text = "No ${analyticsMode.name.lowercase()} data for this month",
                             style = MizanTheme.typography.bodyMd,
+                            color = MizanTheme.premium.text.tertiary
+                        )
+                    }
+                }
+            }
+        }
+
+        // Weekly Trends Section
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MizanTheme.premium.spacing.md)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+                    .background(MizanTheme.premium.colors.surface2)
+                    .border(
+                        width = 1.dp,
+                        color = MizanTheme.premium.glass.border,
+                        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+                    )
+                    .padding(MizanTheme.premium.spacing.lg)
+            ) {
+                Text(
+                    text = "Weekly Trends",
+                    style = MizanTheme.typography.headingLg,
+                    color = MizanTheme.premium.text.primary
+                )
+
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
+
+                WeeklyTrendsChart(
+                    weeklySummaries = weeklySummaries,
+                    chartHeight = 200.dp
+                )
+            }
+        }
+
+        // Top 5 Categories Section
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MizanTheme.premium.spacing.md)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+                    .background(MizanTheme.premium.colors.surface2)
+                    .border(
+                        width = 1.dp,
+                        color = MizanTheme.premium.glass.border,
+                        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+                    )
+                    .padding(MizanTheme.premium.spacing.lg)
+            ) {
+                Text(
+                    text = "Top 5 Categories",
+                    style = MizanTheme.typography.headingLg,
+                    color = MizanTheme.premium.text.primary
+                )
+
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+                if (topCategories.isNotEmpty()) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
+                    ) {
+                        topCategories.forEachIndexed { index, category ->
+                            TopCategoryItem(
+                                rank = index + 1,
+                                categorySummary = category
+                            )
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = MizanTheme.premium.spacing.lg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No category data",
+                            style = MizanTheme.typography.bodySm,
+                            color = MizanTheme.premium.text.tertiary
+                        )
+                    }
+                }
+            }
+        }
+
+        // Account Usage Section
+        item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = MizanTheme.premium.spacing.md)
+                    .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+                    .background(MizanTheme.premium.colors.surface2)
+                    .border(
+                        width = 1.dp,
+                        color = MizanTheme.premium.glass.border,
+                        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+                    )
+                    .padding(MizanTheme.premium.spacing.lg)
+            ) {
+                Text(
+                    text = "Account Usage",
+                    style = MizanTheme.typography.headingLg,
+                    color = MizanTheme.premium.text.primary
+                )
+
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+                if (currentAccountSummaries.isNotEmpty()) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
+                    ) {
+                        currentAccountSummaries.forEach { account ->
+                            AccountUsageItem(accountSummary = account)
+                        }
+                    }
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = MizanTheme.premium.spacing.lg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No account data",
+                            style = MizanTheme.typography.bodySm,
                             color = MizanTheme.premium.text.tertiary
                         )
                     }
@@ -410,7 +549,13 @@ private fun NetSavingsCard(
             }
 
             Text(
-                text = "${if (isPositive) "+" else "-"}$${formatCompactAmountSummary(kotlin.math.abs(netSavings))}",
+                text = "${if (isPositive) "+" else "-"}$${
+                    formatCompactAmountSummary(
+                        kotlin.math.abs(
+                            netSavings
+                        )
+                    )
+                }",
                 style = MizanTheme.typography.headingLg,
                 color = color,
                 fontWeight = FontWeight.Bold
@@ -547,11 +692,191 @@ private fun CategoryLegendItem(
     }
 }
 
-private fun formatCompactAmountSummary(amount: Double): String {
-    return when {
-        amount >= 1000000 -> "${(amount / 1000000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}M"
-        amount >= 10000 -> "${(amount / 1000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}k"
-        amount >= 1000 -> "${String.format("%.2f", amount / 1000)}k"
-        else -> amount.toLong().toString()
+@SuppressLint("DefaultLocale")
+internal fun formatCompactAmountSummary(amount: Double): String {
+    val absAmount = kotlin.math.abs(amount)
+    val result = when {
+        absAmount >= 1000000 -> "${(absAmount / 1000000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}M"
+        absAmount >= 10000 -> "${(absAmount / 1000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}k"
+        absAmount >= 1000 -> "${String.format("%.2f", absAmount / 1000)}k"
+        else -> absAmount.toLong().toString()
+    }
+    return if (amount >= 0) result else "-$result"
+}
+
+@Composable
+private fun TopCategoryItem(
+    rank: Int,
+    categorySummary: TransactionsHubStore.CategorySummary,
+    modifier: Modifier = Modifier
+) {
+    val categoryColor = remember(categorySummary.categoryColor) {
+        try {
+            Color(android.graphics.Color.parseColor(categorySummary.categoryColor))
+        } catch (e: Exception) {
+            Color(0xFFFF6B9D)
+        }
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
+            .background(MizanTheme.premium.colors.surface3)
+            .padding(MizanTheme.premium.spacing.md),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Rank Badge
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(categoryColor.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = rank.toString(),
+                style = MizanTheme.typography.bodyLg,
+                color = categoryColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.sm))
+
+        // Category Info
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = categorySummary.categoryName,
+                style = MizanTheme.typography.bodyMd,
+                color = MizanTheme.premium.text.primary,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = "${
+                    String.format(
+                        "%.1f",
+                        categorySummary.percentage
+                    )
+                }% of total • ${categorySummary.transactionCount} txn${if (categorySummary.transactionCount != 1) "s" else ""}",
+                style = MizanTheme.typography.labelSm,
+                color = MizanTheme.premium.text.tertiary
+            )
+        }
+
+        // Amount
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "$${formatCompactAmountSummary(categorySummary.totalAmount)}",
+                style = MizanTheme.typography.bodyLg,
+                color = MizanTheme.premium.text.primary,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.xs))
+            Icon(
+                painter = painterResource(id = R.drawable.ic_chevron_right),
+                contentDescription = null,
+                tint = MizanTheme.premium.text.tertiary,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun AccountUsageItem(
+    accountSummary: TransactionsHubStore.AccountSummary,
+    modifier: Modifier = Modifier
+) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = (accountSummary.percentage.coerceIn(0f, 100f) / 100f),
+        animationSpec = tween(700),
+        label = "accountProgress"
+    )
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
+            .background(MizanTheme.premium.colors.surface3)
+            .padding(MizanTheme.premium.spacing.md)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Account Info
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_wallet),
+                        contentDescription = null,
+                        tint = MizanTheme.premium.colors.emerald,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.sm))
+
+                Column {
+                    Text(
+                        text = accountSummary.accountName,
+                        style = MizanTheme.typography.bodyMd,
+                        color = MizanTheme.premium.text.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "${accountSummary.transactionCount} transaction${if (accountSummary.transactionCount != 1) "s" else ""}",
+                        style = MizanTheme.typography.labelSm,
+                        color = MizanTheme.premium.text.tertiary
+                    )
+                }
+            }
+
+            // Amount and Percentage
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "$${formatCompactAmountSummary(accountSummary.totalAmount)}",
+                        style = MizanTheme.typography.bodyLg,
+                        color = MizanTheme.premium.text.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "${String.format("%.1f", accountSummary.percentage)}%",
+                        style = MizanTheme.typography.labelSm,
+                        color = MizanTheme.premium.text.tertiary
+                    )
+                }
+                Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.xs))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chevron_right),
+                    contentDescription = null,
+                    tint = MizanTheme.premium.text.tertiary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+
+        // Progress Bar
+        LinearProgressIndicator(
+            progress = { animatedProgress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp)),
+            color = MizanTheme.premium.colors.emerald,
+            trackColor = MizanTheme.premium.colors.surface4,
+            strokeCap = StrokeCap.Round
+        )
     }
 }

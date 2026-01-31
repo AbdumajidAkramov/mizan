@@ -7,6 +7,8 @@ import dev.esbi.mizan.MainActivity
 import dev.esbi.mizan.feature.budget.di.BudgetComponent
 import dev.esbi.mizan.feature.dashboard.di.DashboardComponent
 import dev.esbi.mizan.feature.financialmirror.di.FinancialMirrorComponent
+import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
+import dev.esbi.mizan.feature.managecategories.di.ManageCategoriesComponent
 import dev.esbi.mizan.feature.newtransaction.amountinput.di.AmountInputComponent
 import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectComponent
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
@@ -39,9 +41,11 @@ internal interface AppComponent {
     fun categorySelectComponent(): CategorySelectComponent.Factory
 
     // Subcomponent factories for Main Screens
+    fun accountManagementComponent(): AccountManagementComponent.Factory
     fun budgetComponent(): BudgetComponent.Factory
     fun dashboardComponent(): DashboardComponent.Factory
     fun financialMirrorComponent(): FinancialMirrorComponent.Factory
+    fun manageCategoriesComponent(): ManageCategoriesComponent.Factory
     fun profileComponent(): ProfileComponent.Factory
     fun statisticsComponent(): StatisticsComponent.Factory
     fun transactionsComponent(): TransactionsComponent.Factory

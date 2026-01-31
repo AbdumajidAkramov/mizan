@@ -40,7 +40,7 @@ fun SummaryCardsSection(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+        horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
     ) {
         // Income Card
         SummaryCard(
@@ -115,7 +115,7 @@ private fun SummaryCard(
 
         // Amount
         Text(
-            text = numberFormat.format(amount),
+            text = formatCompactAmountSummary(amount),
             style = MizanTheme.typography.headingMd,
             color = color,
             fontWeight = FontWeight.Bold

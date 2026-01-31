@@ -26,10 +26,16 @@ interface CategoryDao {
     suspend fun getCategoryById(id: String): CategoryEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCategory(category: CategoryEntity)
+    suspend fun insertCategory(category: CategoryEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategories(categories: List<CategoryEntity>)
+
+    @Query("UPDATE categories SET name = :name, iconName = :iconName, color = :color, type = :type, orderIndex = :orderIndex, parentId = :parentId WHERE id = :id")
+    suspend fun updateCategory(id: Long, name: String, iconName: String?, color: String, type: String, orderIndex: Int, parentId: Long?)
+
+    @Query("DELETE FROM categories WHERE id = :id")
+    suspend fun deleteCategory(id: Long)
 
     @Query("DELETE FROM categories")
     suspend fun clearAllCategories()
