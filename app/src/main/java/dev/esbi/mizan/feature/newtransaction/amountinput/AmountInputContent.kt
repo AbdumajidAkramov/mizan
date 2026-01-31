@@ -201,11 +201,11 @@ internal fun AmountInputContent(
 
                         Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
-                        // Next Button
+                        // Next Button - Smart validation
                         NextButton(
                             enabled = state.keypadState.canSubmit,
                             onClick = {
-                                accept(NewTransactionStore.Intent.TransactionTypesShow)
+                                accept(NewTransactionStore.Intent.SmartNext)
                             }
                         )
                     }
@@ -266,7 +266,7 @@ internal fun AmountInputContent(
                                     )
                                 )
                             },
-                            onNext = { }
+                            onNext = { accept(NewTransactionStore.Intent.SmartNext) }
                         )
                     }
                 }

@@ -357,6 +357,11 @@ internal class NewTransactionExecutor @Inject constructor(
                 )
                 dispatch(NewTransactionStore.Message.SetCategorySheetVisible(false))
             }
+
+            is NewTransactionStore.Intent.SmartNext -> {
+                handleSmartNext()
+            }
+            
             // Delegate Calculator logic
             is NewTransactionStore.AmountInputIntent -> {
                 handleAmountInputIntent(intent)
@@ -536,5 +541,45 @@ internal class NewTransactionExecutor @Inject constructor(
 
     private fun selectSubCategory(category: Category) {
         dispatch(NewTransactionStore.CategoryChooserMessage.SubCategorySelected(category))
+    }
+
+    /**
+     * Smart validation chain for the "Next" button.
+     * Checks all required fields in order and opens the appropriate selector
+     * if something is missing, or navigates to Confirm if all fields are valid.
+     * 
+     * Validation Order:
+     * 1. Amount > 0
+     * 2. Category selected
+     * 3. Account selected
+     * 4. All valid -> Navigate to Confirm
+     */
+    private fun handleSmartNext() {
+        val currentState = state()
+
+        // Step 1: Check if amount is valid (> 0)
+        if (currentState.keypadState.amount <= 0.0) {
+            // Show error - amount is required
+            publish(NewTransactionStore.Label.ShowError("Please enter an amount"))
+            return
+        }
+
+        // Step 2: Check if category is selected
+        if (currentState.categoryChooserState.selectedCategory == null) {
+            // Open category sheet
+            dispatch(NewTransactionStore.Message.SetCategorySheetVisible(true))
+            return
+        }
+
+        // Step 3: Check if account is selected
+        if (currentState.selectedAccountId == null) {
+            // Open account sheet
+            dispatch(NewTransactionStore.Message.SetAccountSheetVisible(true))
+            return
+        }
+
+        // Step 4: All checks passed - navigate to Confirm
+        pages.push(TransactionStep.ConfirmSave())
+        updateCurrentPage()
     }
 }

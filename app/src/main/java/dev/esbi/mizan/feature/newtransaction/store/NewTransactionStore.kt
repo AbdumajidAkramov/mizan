@@ -95,6 +95,12 @@ interface NewTransactionStore :
         data object CloseCategorySheet : Intent
         class SelectParentCategory(val category: Category) : Intent
         class SelectChildCategory(val category: Category) : Intent
+        
+        /**
+         * Smart validation: checks all required fields and opens the appropriate selector
+         * if something is missing, or navigates to Confirm if all fields are valid.
+         */
+        data object SmartNext : Intent
     }
 
     sealed interface AmountInputIntent : Intent {
