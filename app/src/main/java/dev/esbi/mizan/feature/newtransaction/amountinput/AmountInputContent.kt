@@ -20,11 +20,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
@@ -52,7 +61,10 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputSt
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.InputModeContent
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputState
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.utils.annotatedString
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,251 +81,273 @@ internal fun AmountInputContent(
 ) {
     var showTemplates by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Header Section
-        AmountInputHeader(
-            showTemplates = showTemplates,
-            onTemplatesToggle = { showTemplates = !showTemplates },
-            onClose = { accept(NewTransactionStore.Intent.Back) }
-        )
-
-        // Templates Carousel (Animated)
-        AnimatedVisibility(
-            visible = showTemplates,
-            enter = expandVertically(),
-            exit = shrinkVertically()
-        ) {
-            TemplatesCarousel(
-                onTemplateClick = { /* TODO: Apply template */ },
-                onManageClick = { /* TODO: Navigate to manage templates */ }
+    Scaffold(
+        topBar = {
+            AmountInputHeader(
+                showTemplates = showTemplates,
+                onTemplatesToggle = { showTemplates = !showTemplates },
+                onClose = {}
             )
         }
-
-        // Amount Display Section (flex-1)
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = MizanTheme.premium.spacing.lg),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .background(MizanTheme.premium.background.primary)
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Calculation String (if any)
-            if (state.keypadState.displayText.isNotEmpty()) {
-                Text(
-                    text = state.keypadState.displayText,
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.tertiary,
-                    modifier = Modifier.padding(bottom = 8.dp)
+            // Templates Carousel (Animated)
+            AnimatedVisibility(
+                visible = showTemplates,
+                enter = expandVertically(),
+                exit = shrinkVertically()
+            ) {
+                TemplatesCarousel(
+                    onTemplateClick = { /* TODO: Apply template */ },
+                    onManageClick = { /* TODO: Navigate to manage templates */ }
                 )
             }
 
-            // Large Amount Display
-            val formattedAmount = state.keypadState.amountText.annotatedString(
-                currency = state.keypadState.currency
-            )
-            AutoResizingText(
-                text = formattedAmount,
-                style = MizanTheme.typography.displayXl.copy(
-                    fontSize = 64.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 64.sp
-                ),
-                color = MizanTheme.premium.text.primary,
-                maxLines = 1,
-                minFontSize = 24.sp,
-                modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.md)
-            )
-
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
-
-            // Transaction Context Row (Type, Category, Account chips)
-            TransactionContextRow(
-                transactionType = state.transactionType,
-                selectedCategory = selectedCategory,
-                selectedSubCategory = selectedSubCategory,
-                selectedAccount = selectedAccount,
-                onTypeClick = onTypeClick,
-                onCategoryClick = onCategoryClick,
-                onAccountClick = onAccountClick
-            )
-
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
-
-            // Input Mode Selector (Calculator, Mic, Camera icons)
-            InputModeContent(
-                inputMode = state.inputMode,
-                onModeChange = { mode ->
-                    accept(NewTransactionStore.Intent.OnModeChange(mode))
-                }
-            )
-        }
-
-        // Keypad Section - Bottom with glass effect
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MizanTheme.premium.glass.bg,
-                    shape = RoundedCornerShape(
-                        topStart = MizanTheme.premium.radius.xxl,
-                        topEnd = MizanTheme.premium.radius.xxl
+            // Amount Display Section (flex-1)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = MizanTheme.premium.spacing.lg),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // Calculation String (if any)
+                if (state.keypadState.displayText.isNotEmpty()) {
+                    Text(
+                        text = state.keypadState.displayText,
+                        style = MizanTheme.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
+                }
+
+                // Large Amount Display
+                val formattedAmount = state.keypadState.amountText.annotatedString(
+                    currency = state.keypadState.currency
                 )
-                .border(
-                    color = MizanTheme.premium.glass.border,
-                    width = 1.dp,
-                    shape = RoundedCornerShape(
-                        topStart = MizanTheme.premium.radius.xxl,
-                        topEnd = MizanTheme.premium.radius.xxl
-                    )
+                AutoResizingText(
+                    text = formattedAmount,
+                    style = MizanTheme.typography.displayXl.copy(
+                        fontSize = 64.sp,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 64.sp
+                    ),
+                    color = MizanTheme.premium.text.primary,
+                    maxLines = 1,
+                    minFontSize = 24.sp,
+                    modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.md)
                 )
-                .padding(MizanTheme.premium.spacing.lg)
-        ) {
-            when (state.inputMode) {
-                InputMode.Manual -> {
-                    PremiumCalculatorKeypad(
-                        onNumberClick = {
-                            accept(NewTransactionStore.AmountInputIntent.OnNumberClick(it))
-                        }
+
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+
+                // Transaction Context Row (Type, Category, Account chips)
+                TransactionContextRow(
+                    transactionType = state.transactionType,
+                    selectedCategory = selectedCategory,
+                    selectedSubCategory = selectedSubCategory,
+                    selectedAccount = selectedAccount,
+                    onTypeClick = onTypeClick,
+                    onCategoryClick = onCategoryClick,
+                    onAccountClick = onAccountClick
+                )
+
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+                // Input Mode Selector (Calculator, Mic, Camera icons)
+                InputModeContent(
+                    inputMode = state.inputMode,
+                    onModeChange = { mode ->
+                        accept(NewTransactionStore.Intent.OnModeChange(mode))
+                    }
+                )
+            }
+
+            // Keypad Section - Bottom with glass effect
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MizanTheme.premium.glass.bg,
+                        shape = RoundedCornerShape(
+                            topStart = MizanTheme.premium.radius.xxl,
+                            topEnd = MizanTheme.premium.radius.xxl
+                        )
                     )
-
-                    Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
-
-                    // Next Button
-                    NextButton(
-                        enabled = state.keypadState.canSubmit,
-                        onClick = {
-                            accept(NewTransactionStore.Intent.TransactionTypesShow)
-                        }
+                    .border(
+                        color = MizanTheme.premium.glass.border,
+                        width = 1.dp,
+                        shape = RoundedCornerShape(
+                            topStart = MizanTheme.premium.radius.xxl,
+                            topEnd = MizanTheme.premium.radius.xxl
+                        )
                     )
-                }
+                    .padding(MizanTheme.premium.spacing.lg)
+            ) {
+                when (state.inputMode) {
+                    InputMode.Manual -> {
+                        PremiumCalculatorKeypad(
+                            onNumberClick = {
+                                accept(NewTransactionStore.AmountInputIntent.OnNumberClick(it))
+                            }
+                        )
 
-                InputMode.Voice -> {
-                    VoiceInputStep(
-                        state = state.voiceInputState,
-                        onStartListening = {
-                            accept(NewTransactionStore.VoiceRecognitionIntent.OnStartListening)
-                        },
-                        onStopListening = {
-                            accept(NewTransactionStore.VoiceRecognitionIntent.OnStopListening)
-                        },
-                        onVoiceRecognitionError = { error ->
-                            accept(
-                                NewTransactionStore.VoiceRecognitionIntent.OnVoiceRecognitionError(
-                                    error
+                        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+                        // Next Button
+                        NextButton(
+                            enabled = state.keypadState.canSubmit,
+                            onClick = {
+                                accept(NewTransactionStore.Intent.TransactionTypesShow)
+                            }
+                        )
+                    }
+
+                    InputMode.Voice -> {
+                        VoiceInputStep(
+                            state = state.voiceInputState,
+                            onStartListening = {
+                                accept(NewTransactionStore.VoiceRecognitionIntent.OnStartListening)
+                            },
+                            onStopListening = {
+                                accept(NewTransactionStore.VoiceRecognitionIntent.OnStopListening)
+                            },
+                            onVoiceRecognitionError = { error ->
+                                accept(
+                                    NewTransactionStore.VoiceRecognitionIntent.OnVoiceRecognitionError(
+                                        error
+                                    )
                                 )
-                            )
-                        },
-                        onSubmitVoice = { voiceText ->
-                            accept(
-                                NewTransactionStore.VoiceRecognitionIntent.OnVoiceResult(
-                                    voiceText
+                            },
+                            onSubmitVoice = { voiceText ->
+                                accept(
+                                    NewTransactionStore.VoiceRecognitionIntent.OnVoiceResult(
+                                        voiceText
+                                    )
                                 )
-                            )
-                        }
-                    )
-                }
+                            }
+                        )
+                    }
 
-                InputMode.Scan -> {
-                    CameraInputStep(
-                        state = state.cameraInputState,
-                        onStartScanning = { accept(NewTransactionStore.CameraScanIntent.OnStartCameraScan) },
-                        onStopScanning = { accept(NewTransactionStore.CameraScanIntent.OnStopCameraScan) },
-                        onAmountExtracted = {
-                            accept(NewTransactionStore.CameraScanIntent.OnAmountExtracted(it))
-                        },
-                        onScanResult = { text, confidence ->
-                            accept(
-                                NewTransactionStore.CameraScanIntent.OnReceiptScanResult(
-                                    text,
-                                    confidence
+                    InputMode.Scan -> {
+                        CameraInputStep(
+                            state = state.cameraInputState,
+                            onStartScanning = { accept(NewTransactionStore.CameraScanIntent.OnStartCameraScan) },
+                            onStopScanning = { accept(NewTransactionStore.CameraScanIntent.OnStopCameraScan) },
+                            onAmountExtracted = {
+                                accept(NewTransactionStore.CameraScanIntent.OnAmountExtracted(it))
+                            },
+                            onScanResult = { text, confidence ->
+                                accept(
+                                    NewTransactionStore.CameraScanIntent.OnReceiptScanResult(
+                                        text,
+                                        confidence
+                                    )
                                 )
-                            )
-                        },
-                        onQRCodeScanned = { qrText ->
-                            accept(NewTransactionStore.CameraScanIntent.OnQrCodeScanned(qrText))
-                        },
-                        onError = { error ->
-                            accept(NewTransactionStore.CameraScanIntent.OnCameraScanError(error))
-                        },
-                        onNext = { }
-                    )
+                            },
+                            onQRCodeScanned = { qrText ->
+                                accept(
+                                    NewTransactionStore.CameraScanIntent.OnQrCodeScanned(
+                                        qrText
+                                    )
+                                )
+                            },
+                            onError = { error ->
+                                accept(
+                                    NewTransactionStore.CameraScanIntent.OnCameraScanError(
+                                        error
+                                    )
+                                )
+                            },
+                            onNext = { }
+                        )
+                    }
                 }
             }
         }
     }
+
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AmountInputHeader(
     showTemplates: Boolean,
     onTemplatesToggle: () -> Unit,
     onClose: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = MizanTheme.premium.spacing.lg,
-                vertical = MizanTheme.premium.spacing.md
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "New Transaction",
-            style = MizanTheme.typography.headingSm,
-            color = MizanTheme.premium.text.primary,
-            fontWeight = FontWeight.Medium
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Templates Toggle Button
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (showTemplates) MizanTheme.premium.colors.emerald
-                        else MizanTheme.premium.colors.surface2
+    TopAppBar(
+        title = {
+            Text(
+                text = "New Transaction",
+                style = MizanTheme.premium.typography.headingSm,
+                color = MizanTheme.premium.text.primary
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onClose) {
+                MizanIcon(
+                    icon = IconValue(Icons.ic_arrow_back),
+                    contentDescription = "Back",
+                    tint = MizanTheme.premium.text.primary
+                )
+            }
+        },
+        actions = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Templates Toggle Button
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (showTemplates) MizanTheme.premium.colors.emerald
+                            else MizanTheme.premium.colors.surface2
+                        )
+                        .clickable { onTemplatesToggle() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_wand_sparkles),
+                        contentDescription = "Templates",
+                        tint = if (showTemplates) Color.White
+                        else MizanTheme.premium.text.secondary,
+                        modifier = Modifier.size(18.dp)
                     )
-                    .clickable { onTemplatesToggle() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_wand_sparkles),
-                    contentDescription = "Templates",
-                    tint = if (showTemplates) Color.White
-                    else MizanTheme.premium.text.secondary,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
+                }
 
-            // Close Button
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MizanTheme.premium.colors.surface2)
-                    .clickable { onClose() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Close",
-                    tint = MizanTheme.premium.text.secondary,
-                    modifier = Modifier.size(20.dp)
-                )
+                // Close Button
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(MizanTheme.premium.colors.surface2)
+                        .clickable { onClose() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = "Close",
+                        tint = MizanTheme.premium.text.secondary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
-        }
-    }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MizanTheme.premium.background.primary
+        )
+    )
 }
 
 @Composable
@@ -523,14 +557,14 @@ private fun TransactionContextRow(
         TransactionType.EXPENSE -> "Expense"
         TransactionType.INCOME -> "Income"
         TransactionType.TRANSFER -> "Transfer"
-        null -> "Select Type"
+        null -> "Expense"
     }
 
     val typeIcon = when (transactionType) {
         TransactionType.EXPENSE -> R.drawable.ic_trend_up
         TransactionType.INCOME -> R.drawable.ic_down_trend
         TransactionType.TRANSFER -> R.drawable.ic_swap_horizontal
-        null -> R.drawable.ic_chevron_right
+        null -> R.drawable.ic_trend_up
     }
 
     Column(
@@ -538,12 +572,12 @@ private fun TransactionContextRow(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
     ) {
-        // First row: Type and Category chips
+        // First row: Type, Category, Account chips
         Row(
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Transaction Type Chip (outlined)
+            // Transaction Type Chip (outlined with dropdown)
             TransactionTypeChip(
                 label = typeName,
                 color = typeColor,
@@ -551,22 +585,19 @@ private fun TransactionContextRow(
                 onClick = onTypeClick
             )
 
-            // Category Chip (filled) - only show if category is selected
-            if (selectedCategory != null) {
-                CategoryChip(
-                    categoryName = selectedCategory.name,
-                    subCategoryName = selectedSubCategory?.name,
-                    onClick = onCategoryClick
-                )
-            }
-        }
+            // Category Chip - filled or placeholder
+            CategoryChip(
+                categoryName = selectedCategory?.name,
+                subCategoryName = selectedSubCategory?.name,
+                onClick = onCategoryClick
+            )
 
-        // Second row: Account chip
-        AccountChip(
-            accountName = selectedAccount?.name ?: "Select Account",
-            accountIcon = selectedAccount?.iconName,
-            onClick = onAccountClick
-        )
+            // Account Chip - filled or placeholder
+            AccountChip(
+                accountName = selectedAccount?.name,
+                onClick = onAccountClick
+            )
+        }
     }
 }
 
@@ -587,7 +618,7 @@ private fun TransactionTypeChip(
             )
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -607,20 +638,43 @@ private fun TransactionTypeChip(
 
 @Composable
 private fun CategoryChip(
-    categoryName: String,
+    categoryName: String?,
     subCategoryName: String?,
     onClick: () -> Unit
 ) {
-    val displayText = if (subCategoryName != null) {
-        "$categoryName • $subCategoryName"
-    } else {
-        categoryName
+    val isPlaceholder = categoryName == null
+    val displayText = when {
+        categoryName == null -> "+ Category"
+        subCategoryName != null -> "$categoryName • $subCategoryName"
+        else -> categoryName
     }
+
+    val borderColor = MizanTheme.premium.text.tertiary
+    val cornerRadius = 50f // Full rounded
 
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
-            .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
+            .then(
+                if (isPlaceholder) {
+                    Modifier.drawBehind {
+                        drawRoundRect(
+                            color = borderColor,
+                            style = Stroke(
+                                width = 1.dp.toPx(),
+                                pathEffect = PathEffect.dashPathEffect(
+                                    floatArrayOf(8f, 6f),
+                                    0f
+                                )
+                            ),
+                            cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                        )
+                    }
+                } else {
+                    Modifier
+                        .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+                        .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
+                }
+            )
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -629,7 +683,8 @@ private fun CategoryChip(
         Text(
             text = displayText,
             style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.colors.emerald,
+            color = if (isPlaceholder) MizanTheme.premium.text.tertiary
+            else MizanTheme.premium.colors.emerald,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -639,29 +694,55 @@ private fun CategoryChip(
 
 @Composable
 private fun AccountChip(
-    accountName: String,
-    accountIcon: String?,
+    accountName: String?,
     onClick: () -> Unit
 ) {
+    val isPlaceholder = accountName == null
+    val displayText = accountName ?: "+ Account"
+    val borderColor = MizanTheme.premium.text.tertiary
+    val cornerRadius = 50f // Full rounded
+
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
-            .background(MizanTheme.premium.colors.surface2)
+            .then(
+                if (isPlaceholder) {
+                    Modifier.drawBehind {
+                        drawRoundRect(
+                            color = borderColor,
+                            style = Stroke(
+                                width = 1.dp.toPx(),
+                                pathEffect = PathEffect.dashPathEffect(
+                                    floatArrayOf(8f, 6f),
+                                    0f
+                                )
+                            ),
+                            cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                        )
+                    }
+                } else {
+                    Modifier
+                        .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+                        .background(MizanTheme.premium.colors.surface2)
+                }
+            )
             .clickable { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_wallet),
-            contentDescription = null,
-            tint = MizanTheme.premium.text.secondary,
-            modifier = Modifier.size(14.dp)
-        )
+        if (!isPlaceholder) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_wallet),
+                contentDescription = null,
+                tint = MizanTheme.premium.text.secondary,
+                modifier = Modifier.size(14.dp)
+            )
+        }
         Text(
-            text = accountName,
+            text = displayText,
             style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.primary,
+            color = if (isPlaceholder) MizanTheme.premium.text.tertiary
+            else MizanTheme.premium.text.primary,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

@@ -140,6 +140,12 @@ internal class NewTransactionExecutor @Inject constructor(
         when (action) {
             is NewTransactionStore.Action.Init -> {
                 pages.push(TransactionStep.AmountInput())
+                scope.launch {
+                    categoryRepository.getAllCategories()
+                        .collect {
+                            dispatch(NewTransactionStore.CategoryChooserMessage.CategoriesLoaded(it))
+                        }
+                }
             }
         }
     }
@@ -309,6 +315,47 @@ internal class NewTransactionExecutor @Inject constructor(
 
             is NewTransactionStore.Intent.UpdateSaveAsTemplate -> {
                 dispatch(NewTransactionStore.Message.SetSaveAsTemplate(intent.saveAsTemplate))
+            }
+
+            is NewTransactionStore.Intent.ShowTypeSelector -> {
+                dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(true))
+            }
+
+            is NewTransactionStore.Intent.HideTypeSelector -> {
+                dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(false))
+            }
+
+            is NewTransactionStore.Intent.SelectTransactionType -> {
+                dispatch(NewTransactionStore.Message.UpdateTransactionType(intent.type))
+                dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(false))
+            }
+
+            is NewTransactionStore.Intent.OpenCategorySheet -> {
+                dispatch(NewTransactionStore.Message.SetCategorySheetVisible(true))
+            }
+
+            is NewTransactionStore.Intent.CloseCategorySheet -> {
+                dispatch(NewTransactionStore.Message.SetCategorySheetVisible(false))
+            }
+
+            is NewTransactionStore.Intent.SelectParentCategory -> {
+                // Update category chooser state
+                dispatch(
+                    NewTransactionStore.CategoryChooserMessage.ParentCategorySelected(
+                        category = intent.category
+                    )
+                )
+                dispatch(NewTransactionStore.Message.SetCategorySheetVisible(false))
+            }
+
+            is NewTransactionStore.Intent.SelectChildCategory -> {
+                // Update category chooser state with child
+                dispatch(
+                    NewTransactionStore.CategoryChooserMessage.SubCategorySelected(
+                        category = intent.category
+                    )
+                )
+                dispatch(NewTransactionStore.Message.SetCategorySheetVisible(false))
             }
             // Delegate Calculator logic
             is NewTransactionStore.AmountInputIntent -> {

@@ -34,6 +34,8 @@ interface NewTransactionStore :
         val targetAccountId: Long? = null,
         val accounts: List<Account> = emptyList(),
         val isAccountSheetVisible: Boolean = false,
+        val isTypeSelectorVisible: Boolean = false,
+        val isCategorySheetVisible: Boolean = false,
         val saveAsTemplate: Boolean = false,
         val isLoading: Boolean = false,
         val error: String? = null
@@ -86,6 +88,13 @@ interface NewTransactionStore :
         data object CloseAccountSelection : Intent
         class SelectAccount(val accountId: Long) : Intent
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Intent
+        data object ShowTypeSelector : Intent
+        data object HideTypeSelector : Intent
+        class SelectTransactionType(val type: TransactionType) : Intent
+        data object OpenCategorySheet : Intent
+        data object CloseCategorySheet : Intent
+        class SelectParentCategory(val category: Category) : Intent
+        class SelectChildCategory(val category: Category) : Intent
     }
 
     sealed interface AmountInputIntent : Intent {
@@ -112,6 +121,8 @@ interface NewTransactionStore :
         class UpdateTargetAccount(val accountId: Long?) : Message
         class UpdateAccounts(val accounts: List<Account>) : Message
         class SetAccountSheetVisible(val visible: Boolean) : Message
+        class SetTypeSelectorVisible(val visible: Boolean) : Message
+        class SetCategorySheetVisible(val visible: Boolean) : Message
         class SetSaveAsTemplate(val saveAsTemplate: Boolean) : Message
         class SetLoading(val isLoading: Boolean) : Message
         class SetError(val error: String?) : Message
