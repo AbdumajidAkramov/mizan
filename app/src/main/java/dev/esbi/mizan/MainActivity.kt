@@ -22,18 +22,12 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsManager: AppSettingsManager
 
-//    @Inject
-//    lateinit var databaseSeedingManager: DatabaseSeedingManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val appComponent = (application as MizanApplication).appComponent
         appComponent.inject(this)
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
-
-        // Ensure database is seeded
-//        databaseSeedingManager.ensureDatabaseSeeded(this)
 
         lifecycleScope.launch {
             settingsManager.settings.collect {

@@ -1,5 +1,10 @@
 package dev.esbi.mizan.feature.dashboard.presentation.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
@@ -52,6 +59,21 @@ fun DashboardScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
+
+    // --- Notification Permission Request (Android 13+) ---
+    val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { /* granted or denied — no action needed for now */ }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(permission)
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
