@@ -2,7 +2,6 @@ package dev.esbi.mizan.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
@@ -184,6 +183,12 @@ class DatabaseModule {
         categoryDao: CategoryDao,
         transactionsDao: TransactionsDao
     ): MockDataSeeder {
-        return MockDataSeeder(currencyDao, accountDao, accountGroupDao, categoryDao, transactionsDao)
+        return MockDataSeeder(
+            currencyDao,
+            accountDao,
+            accountGroupDao,
+            categoryDao,
+            transactionsDao
+        )
     }
 }
