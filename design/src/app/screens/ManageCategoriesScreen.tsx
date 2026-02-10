@@ -26,6 +26,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ArrowLeft, Plus, GripVertical, Edit2, Trash2, ChevronRight } from 'lucide-react';
 import { AddEditCategoryModal, type CategoryData } from '../components/premium/AddEditCategoryModal';
+import { PremiumConfirmDialog } from '../components/premium/PremiumConfirmDialog';
 import { CategoryIcon } from '../components/atoms/CategoryIcon';
 import { CATEGORY_METADATA, CATEGORY_SUBCATEGORIES } from '../../mocks/data';
 import type { TransactionCategory } from '../../types/domain';
@@ -274,6 +275,8 @@ export function ManageCategoriesScreen({ onBack }: ManageCategoriesScreenProps) 
   const [showAddEditModal, setShowAddEditModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryData | undefined>();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<string | undefined>();
 
   /**
    * Handle reordering categories
@@ -307,8 +310,8 @@ export function ManageCategoriesScreen({ onBack }: ManageCategoriesScreenProps) 
    * Handle delete category
    */
   const handleDeleteCategory = (id: string) => {
-    // TODO: Show confirmation dialog
-    setCategories((prev) => prev.filter((cat) => cat.id !== id));
+    setCategoryToDelete(id);
+    setShowDeleteConfirm(true);
   };
 
   /**
@@ -371,6 +374,25 @@ export function ManageCategoriesScreen({ onBack }: ManageCategoriesScreenProps) 
   const handleAddNew = () => {
     setEditingCategory(undefined);
     setShowAddEditModal(true);
+  };
+
+  /**
+   * Handle confirm delete
+   */
+  const handleConfirmDelete = () => {
+    if (categoryToDelete) {
+      setCategories((prev) => prev.filter((cat) => cat.id !== categoryToDelete));
+    }
+    setShowDeleteConfirm(false);
+    setCategoryToDelete(undefined);
+  };
+
+  /**
+   * Handle cancel delete
+   */
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setCategoryToDelete(undefined);
   };
 
   return (
@@ -511,6 +533,15 @@ export function ManageCategoriesScreen({ onBack }: ManageCategoriesScreenProps) 
             setEditingCategory(undefined);
           }}
           onSave={handleSaveCategory}
+        />
+
+        {/* Delete Confirm Dialog */}
+        <PremiumConfirmDialog
+          isOpen={showDeleteConfirm}
+          title="Delete Category"
+          message="Are you sure you want to delete this category? This action cannot be undone."
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
         />
       </div>
     </DndProvider>

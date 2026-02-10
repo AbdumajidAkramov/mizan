@@ -37,7 +37,8 @@ internal fun NewTransactionScreen(
     viewModel: AmountInputViewModel,
     onBackPressed: () -> Unit,
     onSubmit: () -> Unit,
-    onNavigateToManageCategories: () -> Unit
+    onNavigateToManageCategories: () -> Unit,
+    onNavigateToAccountManage: () -> Unit
 ) {
     val labels by viewModel.labels.collectAsState(initial = null)
     val state by viewModel.state.collectAsState(initial = NewTransactionStore.State())
@@ -54,6 +55,7 @@ internal fun NewTransactionScreen(
         when (labels) {
             NewTransactionStore.Label.MapsToNextStep -> onSubmit()
             NewTransactionStore.Label.TransactionSaved -> onSubmit()
+            NewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
             NewTransactionStore.Label.Back -> onBackPressed()
             is NewTransactionStore.Label.ShowError -> {
                 Toast.makeText(
@@ -233,7 +235,7 @@ internal fun NewTransactionScreen(
                 },
                 onAddAccountClick = {
                     // TODO: Navigate to add account
-                    accept(NewTransactionStore.Intent.CloseAccountSelection)
+                    accept(NewTransactionStore.Intent.OpenAccountManageScreen)
                 },
                 onClose = { accept(NewTransactionStore.Intent.CloseAccountSelection) }
             )

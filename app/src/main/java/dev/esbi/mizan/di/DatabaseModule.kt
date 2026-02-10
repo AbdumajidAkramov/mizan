@@ -2,7 +2,6 @@ package dev.esbi.mizan.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
@@ -15,6 +14,8 @@ import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
+import dev.esbi.mizan.data.local.dao.GoalDao
+import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.seeder.MockDataSeeder
@@ -50,6 +51,38 @@ class DatabaseModule {
         }
     }
 
+    private val migration3to4 = object : androidx.room.migration.Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `goals` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `name` TEXT NOT NULL,
+                    `targetAmount` REAL NOT NULL,
+                    `currentAmount` REAL NOT NULL,
+                    `deadline` INTEGER,
+                    `icon` TEXT NOT NULL,
+                    `color` TEXT NOT NULL
+                )
+                """.trimIndent()
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `subscriptions` (
+                    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `name` TEXT NOT NULL,
+                    `amount` REAL NOT NULL,
+                    `billingCycle` TEXT NOT NULL,
+                    `nextRenewalDate` INTEGER NOT NULL,
+                    `icon` TEXT NOT NULL,
+                    `color` TEXT NOT NULL,
+                    `category` TEXT NOT NULL DEFAULT ''
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -59,7 +92,7 @@ class DatabaseModule {
             "mizan_database"
         )
 //            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2, migration2to3)
+            .addMigrations(migration1to2, migration2to3, migration3to4)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)
@@ -125,6 +158,18 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideGoalDao(database: MizanDatabase): GoalDao {
+        return database.goalDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubscriptionDao(database: MizanDatabase): SubscriptionDao {
+        return database.subscriptionDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {
         return DatabaseSeedingManager(database)
     }
@@ -138,6 +183,12 @@ class DatabaseModule {
         categoryDao: CategoryDao,
         transactionsDao: TransactionsDao
     ): MockDataSeeder {
-        return MockDataSeeder(currencyDao, accountDao, accountGroupDao, categoryDao, transactionsDao)
+        return MockDataSeeder(
+            currencyDao,
+            accountDao,
+            accountGroupDao,
+            categoryDao,
+            transactionsDao
+        )
     }
 }

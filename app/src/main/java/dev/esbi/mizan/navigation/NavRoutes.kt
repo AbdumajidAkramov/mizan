@@ -36,4 +36,13 @@ sealed class NavRoute() {
 
     @Serializable
     data object AccountManagement : NavRoute()
+
+    @Serializable
+    data object FinancialGoals : NavRoute()
+
+    @Serializable
+    data object Subscriptions : NavRoute()
+
+    @Serializable
+    data object Transfer : NavRoute()
 }

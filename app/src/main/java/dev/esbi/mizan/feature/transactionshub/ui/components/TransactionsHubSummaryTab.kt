@@ -39,9 +39,6 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /**
  * Summary Tab for TransactionsHub
@@ -49,7 +46,6 @@ import java.util.Locale
  */
 @Composable
 fun TransactionsHubSummaryTab(
-    currentMonth: YearMonth,
     summary: TransactionsHubStore.MonthlySummary,
     expenseCategorySummaries: List<TransactionsHubStore.CategorySummary>,
     incomeCategorySummaries: List<TransactionsHubStore.CategorySummary>,
@@ -58,8 +54,6 @@ fun TransactionsHubSummaryTab(
     incomeAccountSummaries: List<TransactionsHubStore.AccountSummary>,
     savingsRate: Float,
     transactionCount: Int,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var analyticsMode by remember { mutableStateOf(AnalyticsMode.Expense) }
@@ -90,16 +84,6 @@ fun TransactionsHubSummaryTab(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
     ) {
-        // Month Selector Header
-        item {
-            SummaryMonthHeader(
-                currentMonth = currentMonth,
-                transactionCount = transactionCount,
-                onPreviousMonth = onPreviousMonth,
-                onNextMonth = onNextMonth
-            )
-        }
-
         // Key Metrics Cards
         item {
             Column(
@@ -351,72 +335,6 @@ fun TransactionsHubSummaryTab(
 private enum class AnalyticsMode {
     Expense,
     Income
-}
-
-@Composable
-private fun SummaryMonthHeader(
-    currentMonth: YearMonth,
-    transactionCount: Int,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()) }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MizanTheme.premium.background.primary)
-            .padding(MizanTheme.premium.spacing.md),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface2)
-                .clickable { onPreviousMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_left),
-                contentDescription = "Previous Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = currentMonth.format(monthFormatter),
-                style = MizanTheme.typography.headingMd,
-                color = MizanTheme.premium.text.primary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "$transactionCount transactions",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface2)
-                .clickable { onNextMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_right),
-                contentDescription = "Next Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-    }
 }
 
 @Composable

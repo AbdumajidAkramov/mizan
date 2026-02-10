@@ -53,7 +53,9 @@ import dev.esbi.mizan.ui.utils.Icons
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToBudgetManagementScreen: () -> Unit = {},
+    onNavigateToFinancialGoalsScreen: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState(initial = ProfileStore.State())
 
@@ -70,6 +72,15 @@ fun ProfileScreen(
 
                 is ProfileStore.Label.NavigateToSetting -> {
                     // Handle navigation to settings
+                    when (label.action) {
+                        SettingAction.BUDGET_MANAGEMENT -> {
+                            onNavigateToBudgetManagementScreen()
+                        }
+                        SettingAction.FINANCIAL_GOALS -> {
+                            onNavigateToFinancialGoalsScreen()
+                        }
+                        else -> Unit
+                    }
                 }
             }
         }

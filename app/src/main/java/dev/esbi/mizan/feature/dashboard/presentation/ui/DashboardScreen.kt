@@ -1,5 +1,10 @@
 package dev.esbi.mizan.feature.dashboard.presentation.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
@@ -28,6 +35,7 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.PremiumFeaturesSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.QuickActionsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CategorySpending
@@ -49,9 +57,27 @@ fun DashboardScreen(
     onNavigateToNewTransaction: () -> Unit = {},
     onNavigateToTransactionsHub: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
+    onNavigateToGoals: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToTransfer: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
+
+    // --- Notification Permission Request (Android 13+) ---
+    val context = LocalContext.current
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { /* granted or denied — no action needed for now */ }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(permission)
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
@@ -77,7 +103,10 @@ fun DashboardScreen(
             data = state.dashboardData!!,
             onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) },
             onAddTransactionClick = { viewModel.onIntent(DashboardStore.Intent.AddTransactionClicked) },
-            onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) }
+            onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) },
+            onNavigateToGoals = onNavigateToGoals,
+            onNavigateToSubscriptions = onNavigateToSubscriptions,
+            onNavigateToTransfer = onNavigateToTransfer
         )
     }
 }
@@ -88,6 +117,9 @@ private fun DashboardScrollContent(
     onCategoryClick: (String) -> Unit,
     onAddTransactionClick: () -> Unit = {},
     onSeeAllTransactions: () -> Unit = {},
+    onNavigateToGoals: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToTransfer: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -106,7 +138,8 @@ private fun DashboardScrollContent(
             AnimSection(visible) {
                 QuickActionsSection(
                     onAddTransactionClick = onAddTransactionClick,
-                    onViewHistoryClick = onSeeAllTransactions
+                    onViewHistoryClick = onSeeAllTransactions,
+                    onTransferClick = onNavigateToTransfer
                 )
             }
         }
@@ -225,5 +258,14 @@ private fun DashboardScrollContent(
         item { AnimSection(visible) { InsightsSection() } }
         item { AnimSection(visible) { TransactionsSection(data.recentTransactions, onSeeAllClick = onSeeAllTransactions) } }
 
+        // Premium Features Entry Points
+        item {
+            AnimSection(visible) {
+                PremiumFeaturesSection(
+                    onGoalsClick = onNavigateToGoals,
+                    onSubscriptionsClick = onNavigateToSubscriptions
+                )
+            }
+        }
     }
 }

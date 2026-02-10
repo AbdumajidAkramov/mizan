@@ -85,6 +85,7 @@ interface NewTransactionStore :
         class UpdateSelectedAccount(val accountId: Long?) : Intent
         class UpdateTargetAccount(val accountId: Long?) : Intent
         data object OpenAccountSelection : Intent
+        data object OpenAccountManageScreen : Intent
         data object CloseAccountSelection : Intent
         class SelectAccount(val accountId: Long) : Intent
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Intent
@@ -156,5 +157,6 @@ interface NewTransactionStore :
         object Back : Label
         class ShowError(val message: String) : Label
         object TransactionSaved : Label
+        object NavigateToAccountManage : Label
     }
 }

@@ -29,6 +29,7 @@ import { PremiumCalendarView } from '../components/premium/PremiumCalendarView';
 import { PremiumMonthlyView } from '../components/premium/PremiumMonthlyView';
 import { MobilePremiumSummaryView } from '../components/premium/MobilePremiumSummaryView';
 import { PremiumDescriptionView } from '../components/premium/PremiumDescriptionView';
+import { GlobalTimeSelector } from '../components/premium/GlobalTimeSelector';
 
 // Transaction Hub Tab Type
 type TransactionHubTab = 'daily' | 'calendar' | 'monthly' | 'summary' | 'description';
@@ -269,6 +270,11 @@ export function PremiumTransactionsHubScreen({
     .reduce((sum, t) => sum + t.amount, 0);
 
   const monthlyTotal = monthlyIncome - monthlyExpense;
+
+  // Calculate days with transactions
+  const daysWithTransactions = new Set(
+    currentMonthTransactions.map((txn) => new Date(txn.timestamp).toDateString())
+  ).size;
 
   // Group transactions by date for Daily View
   const groupedByDate = currentMonthTransactions.reduce((groups, txn) => {
@@ -613,7 +619,7 @@ export function PremiumTransactionsHubScreen({
               </p>
             </div>
             <p className="heading-md text-[var(--premium-emerald)]">
-              ${monthlyIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              ${Number(monthlyIncome || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
 
@@ -633,7 +639,7 @@ export function PremiumTransactionsHubScreen({
               </p>
             </div>
             <p className="heading-md text-[#f5576c]">
-              ${monthlyExpense.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              ${Number(monthlyExpense || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
 
@@ -642,26 +648,34 @@ export function PremiumTransactionsHubScreen({
             className={`
               p-[var(--premium-space-md)]
               rounded-[var(--premium-radius-lg)]
-              ${monthlyTotal >= 0 ? 'bg-[var(--premium-emerald)]/10 border border-[var(--premium-emerald)]/20' : 'bg-[#f5576c]/10 border border-[#f5576c]/20'}
+              ${Number(monthlyTotal || 0) >= 0 ? 'bg-[var(--premium-emerald)]/10 border border-[var(--premium-emerald)]/20' : 'bg-[#f5576c]/10 border border-[#f5576c]/20'}
             `}
           >
             <div className="flex items-center gap-[8px] mb-[4px]">
-              <Wallet size={16} className={monthlyTotal >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'} />
+              <Wallet size={16} className={Number(monthlyTotal || 0) >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'} />
               <p
                 className={`
                   body-xs uppercase tracking-wide font-medium
-                  ${monthlyTotal >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'}
+                  ${Number(monthlyTotal || 0) >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'}
                 `}
               >
                 Total
               </p>
             </div>
-            <p className={`heading-md ${monthlyTotal >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'}`}>
-              ${Math.abs(monthlyTotal).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            <p className={`heading-md ${Number(monthlyTotal || 0) >= 0 ? 'text-[var(--premium-emerald)]' : 'text-[#f5576c]'}`}>
+              ${Math.abs(Number(monthlyTotal || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
         </div>
       </div>
+
+      {/* Global Time Selector */}
+      <GlobalTimeSelector
+        selectedDate={selectedMonth}
+        onDateChange={(newDate) => setSelectedMonth(newDate)}
+        daysWithTransactions={daysWithTransactions}
+        totalAmount={monthlyTotal}
+      />
 
       {/* Tab Navigation */}
       <div

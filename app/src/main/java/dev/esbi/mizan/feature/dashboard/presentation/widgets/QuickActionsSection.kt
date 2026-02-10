@@ -5,11 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,6 +36,7 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 fun QuickActionsSection(
     onAddTransactionClick: () -> Unit,
     onViewHistoryClick: () -> Unit,
+    onTransferClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -47,9 +46,18 @@ fun QuickActionsSection(
         // Add Transaction - Primary Action
         QuickActionButton(
             icon = R.drawable.ic_add,
-            label = "Add Transaction",
+            label = "Add",
             isPrimary = true,
             onClick = onAddTransactionClick,
+            modifier = Modifier.weight(1f)
+        )
+
+        // Transfer - Secondary Action
+        QuickActionButton(
+            icon = R.drawable.ic_swap,
+            label = "Transfer",
+            isPrimary = false,
+            onClick = onTransferClick,
             modifier = Modifier.weight(1f)
         )
 

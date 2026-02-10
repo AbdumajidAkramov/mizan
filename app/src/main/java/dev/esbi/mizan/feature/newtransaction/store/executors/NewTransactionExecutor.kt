@@ -303,6 +303,9 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.Intent.OpenAccountSelection -> {
                 dispatch(NewTransactionStore.Message.SetAccountSheetVisible(true))
             }
+            is NewTransactionStore.Intent.OpenAccountManageScreen -> {
+                publish(NewTransactionStore.Label.NavigateToAccountManage)
+            }
 
             is NewTransactionStore.Intent.CloseAccountSelection -> {
                 dispatch(NewTransactionStore.Message.SetAccountSheetVisible(false))
