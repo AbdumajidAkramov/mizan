@@ -1,4 +1,4 @@
-ichapackage dev.esbi.mizan.navigation
+package dev.esbi.mizan.navigation
 
 import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.utils.Icons
