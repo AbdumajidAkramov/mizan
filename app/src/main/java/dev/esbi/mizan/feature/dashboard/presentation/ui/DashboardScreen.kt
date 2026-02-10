@@ -59,6 +59,7 @@ fun DashboardScreen(
     onNavigateToProfile: () -> Unit = {},
     onNavigateToGoals: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToTransfer: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -104,7 +105,8 @@ fun DashboardScreen(
             onAddTransactionClick = { viewModel.onIntent(DashboardStore.Intent.AddTransactionClicked) },
             onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) },
             onNavigateToGoals = onNavigateToGoals,
-            onNavigateToSubscriptions = onNavigateToSubscriptions
+            onNavigateToSubscriptions = onNavigateToSubscriptions,
+            onNavigateToTransfer = onNavigateToTransfer
         )
     }
 }
@@ -117,6 +119,7 @@ private fun DashboardScrollContent(
     onSeeAllTransactions: () -> Unit = {},
     onNavigateToGoals: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToTransfer: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -135,7 +138,8 @@ private fun DashboardScrollContent(
             AnimSection(visible) {
                 QuickActionsSection(
                     onAddTransactionClick = onAddTransactionClick,
-                    onViewHistoryClick = onSeeAllTransactions
+                    onViewHistoryClick = onSeeAllTransactions,
+                    onTransferClick = onNavigateToTransfer
                 )
             }
         }

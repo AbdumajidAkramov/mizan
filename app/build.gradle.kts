@@ -44,6 +44,11 @@ android {
     bundle {
         language.enableSplit = false
     }
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
     buildFeatures {
         compose = true
     }

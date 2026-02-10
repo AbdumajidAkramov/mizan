@@ -10,6 +10,7 @@ import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectCom
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
 import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
 import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
+import dev.esbi.mizan.feature.transfer.di.TransferComponent
 import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
 import dev.esbi.mizan.feature.managecategories.di.ManageCategoriesComponent
 import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
@@ -31,6 +32,7 @@ import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
         FinancialMirrorComponent::class,
         GoalsComponent::class,
         SubscriptionsComponent::class,
+        TransferComponent::class,
         ManageCategoriesComponent::class,
         ProfileComponent::class,
         StatisticsComponent::class,

@@ -14,6 +14,7 @@ import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
+import dev.esbi.mizan.feature.transfer.presentation.ui.TransferScreen
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
 import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
@@ -57,6 +58,9 @@ internal fun MizanNavHost(
                 },
                 onNavigateToSubscriptions = {
                     navController.navigate(NavRoute.Subscriptions)
+                },
+                onNavigateToTransfer = {
+                    navController.navigate(NavRoute.Transfer)
                 }
             )
         }
@@ -173,6 +177,16 @@ internal fun MizanNavHost(
             SubscriptionTrackerScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<NavRoute.Transfer> {
+            val component = remember { appComponent.transferComponent().create() }
+            val viewModel = component.viewModel
+            TransferScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onTransferSuccess = { navController.popBackStack() }
             )
         }
 

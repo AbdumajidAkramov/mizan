@@ -38,6 +38,7 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 fun QuickActionsSection(
     onAddTransactionClick: () -> Unit,
     onViewHistoryClick: () -> Unit,
+    onTransferClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -47,9 +48,18 @@ fun QuickActionsSection(
         // Add Transaction - Primary Action
         QuickActionButton(
             icon = R.drawable.ic_add,
-            label = "Add Transaction",
+            label = "Add",
             isPrimary = true,
             onClick = onAddTransactionClick,
+            modifier = Modifier.weight(1f)
+        )
+
+        // Transfer - Secondary Action
+        QuickActionButton(
+            icon = R.drawable.ic_swap,
+            label = "Transfer",
+            isPrimary = false,
+            onClick = onTransferClick,
             modifier = Modifier.weight(1f)
         )
 
