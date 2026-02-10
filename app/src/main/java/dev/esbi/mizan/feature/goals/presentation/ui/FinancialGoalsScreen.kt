@@ -30,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -102,7 +101,9 @@ fun FinancialGoalsScreen(
             // Active Goals Section Header
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -141,7 +142,8 @@ fun FinancialGoalsScreen(
             item {
                 QuickStatsRow(
                     completedCount = state.goals.count { it.isCompleted },
-                    avgProgress = if (state.goals.isNotEmpty()) state.goals.map { it.progressPercent }.average() else 0.0
+                    avgProgress = if (state.goals.isNotEmpty()) state.goals.map { it.progressPercent }
+                        .average() else 0.0
                 )
             }
         }
@@ -152,7 +154,12 @@ fun FinancialGoalsScreen(
         AddSavingsDialog(
             onDismiss = { viewModel.onIntent(GoalsStore.Intent.DismissDialog) },
             onConfirm = { amount ->
-                viewModel.onIntent(GoalsStore.Intent.AddAmountToGoal(state.selectedGoalId!!, amount))
+                viewModel.onIntent(
+                    GoalsStore.Intent.AddAmountToGoal(
+                        state.selectedGoalId!!,
+                        amount
+                    )
+                )
             }
         )
     }
@@ -238,10 +245,17 @@ private fun OverallProgressCard(
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xxl))
             .background(
                 Brush.linearGradient(
-                    colors = listOf(Color.White.copy(alpha = 0.10f), Color.White.copy(alpha = 0.05f))
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.10f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
                 )
             )
-            .border(1.dp, Color.White.copy(alpha = 0.20f), RoundedCornerShape(MizanTheme.premium.radius.xxl))
+            .border(
+                1.dp,
+                Color.White.copy(alpha = 0.20f),
+                RoundedCornerShape(MizanTheme.premium.radius.xxl)
+            )
     ) {
         // Glow effect
         Box(
@@ -362,7 +376,11 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
     val progress = goal.progressPercent
     val completed = goal.isCompleted
     val progressColor = if (completed) Color(0xFF10B981) else Color(0xFF0EA5E9)
-    val iconColor = try { Color(android.graphics.Color.parseColor(goal.color)) } catch (_: Exception) { Color(0xFF0EA5E9) }
+    val iconColor = try {
+        Color(android.graphics.Color.parseColor(goal.color))
+    } catch (_: Exception) {
+        Color(0xFF0EA5E9)
+    }
     val animatedProgress by animateFloatAsState(
         targetValue = (progress / 100.0).toFloat().coerceIn(0f, 1f),
         animationSpec = tween(600),
@@ -374,7 +392,11 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .background(MizanTheme.premium.glass.bg)
-            .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .border(
+                1.dp,
+                MizanTheme.premium.glass.border,
+                RoundedCornerShape(MizanTheme.premium.radius.xl)
+            )
             .clickable { onClick() }
             .padding(MizanTheme.premium.spacing.lg)
     ) {
@@ -390,7 +412,11 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
                         .size(48.dp)
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                         .background(iconColor.copy(alpha = 0.15f))
-                        .border(1.dp, iconColor.copy(alpha = 0.25f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                        .border(
+                            1.dp,
+                            iconColor.copy(alpha = 0.25f),
+                            RoundedCornerShape(MizanTheme.premium.radius.lg)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(goalIconEmoji(goal.icon), fontSize = 24.sp)
@@ -413,10 +439,19 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(50))
                                     .background(Color(0xFF10B981).copy(alpha = 0.2f))
-                                    .border(1.dp, Color(0xFF10B981).copy(alpha = 0.3f), RoundedCornerShape(50))
+                                    .border(
+                                        1.dp,
+                                        Color(0xFF10B981).copy(alpha = 0.3f),
+                                        RoundedCornerShape(50)
+                                    )
                                     .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
-                                Text("✓", style = MizanTheme.premium.typography.labelSm, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                                Text(
+                                    "✓",
+                                    style = MizanTheme.premium.typography.labelSm,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF10B981)
+                                )
                             }
                         }
                     }
@@ -495,7 +530,8 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
                     )
                 } else {
                     goal.deadline?.let { deadline ->
-                        val daysLeft = ((deadline - System.currentTimeMillis()) / 86_400_000).toInt()
+                        val daysLeft =
+                            ((deadline - System.currentTimeMillis()) / 86_400_000).toInt()
                         if (daysLeft > 0) {
                             Text(
                                 "$daysLeft days left",
@@ -567,7 +603,11 @@ private fun TipCard(overallProgress: Double) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .background(MizanTheme.premium.glass.bg)
-            .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .border(
+                1.dp,
+                MizanTheme.premium.glass.border,
+                RoundedCornerShape(MizanTheme.premium.radius.xl)
+            )
             .padding(MizanTheme.premium.spacing.lg)
     ) {
         Row {
@@ -616,7 +656,11 @@ private fun QuickStatsRow(completedCount: Int, avgProgress: Double) {
                 .weight(1f)
                 .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
                 .background(MizanTheme.premium.glass.bg)
-                .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+                .border(
+                    1.dp,
+                    MizanTheme.premium.glass.border,
+                    RoundedCornerShape(MizanTheme.premium.radius.xl)
+                )
                 .padding(MizanTheme.premium.spacing.lg)
         ) {
             Column {
@@ -625,16 +669,33 @@ private fun QuickStatsRow(completedCount: Int, avgProgress: Double) {
                         .size(40.dp)
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                         .background(emerald.copy(alpha = 0.2f))
-                        .border(1.dp, emerald.copy(alpha = 0.3f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                        .border(
+                            1.dp,
+                            emerald.copy(alpha = 0.3f),
+                            RoundedCornerShape(MizanTheme.premium.radius.lg)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("🏆", fontSize = 20.sp)
                 }
                 Spacer(Modifier.height(12.dp))
-                Text("Completed", style = MizanTheme.premium.typography.bodySm, color = Color.White.copy(alpha = 0.4f))
+                Text(
+                    "Completed",
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = Color.White.copy(alpha = 0.4f)
+                )
                 Spacer(Modifier.height(4.dp))
-                Text("$completedCount", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(if (completedCount == 1) "goal" else "goals", style = MizanTheme.premium.typography.bodySm, color = Color.White.copy(alpha = 0.3f))
+                Text(
+                    "$completedCount",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    if (completedCount == 1) "goal" else "goals",
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = Color.White.copy(alpha = 0.3f)
+                )
             }
         }
 
@@ -644,7 +705,11 @@ private fun QuickStatsRow(completedCount: Int, avgProgress: Double) {
                 .weight(1f)
                 .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
                 .background(MizanTheme.premium.glass.bg)
-                .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+                .border(
+                    1.dp,
+                    MizanTheme.premium.glass.border,
+                    RoundedCornerShape(MizanTheme.premium.radius.xl)
+                )
                 .padding(MizanTheme.premium.spacing.lg)
         ) {
             Column {
@@ -653,16 +718,33 @@ private fun QuickStatsRow(completedCount: Int, avgProgress: Double) {
                         .size(40.dp)
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                         .background(skyBlue.copy(alpha = 0.2f))
-                        .border(1.dp, skyBlue.copy(alpha = 0.3f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                        .border(
+                            1.dp,
+                            skyBlue.copy(alpha = 0.3f),
+                            RoundedCornerShape(MizanTheme.premium.radius.lg)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("📈", fontSize = 20.sp)
                 }
                 Spacer(Modifier.height(12.dp))
-                Text("Avg. Progress", style = MizanTheme.premium.typography.bodySm, color = Color.White.copy(alpha = 0.4f))
+                Text(
+                    "Avg. Progress",
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = Color.White.copy(alpha = 0.4f)
+                )
                 Spacer(Modifier.height(4.dp))
-                Text("${avgProgress.roundToInt()}%", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text("across all goals", style = MizanTheme.premium.typography.bodySm, color = Color.White.copy(alpha = 0.3f))
+                Text(
+                    "${avgProgress.roundToInt()}%",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                Text(
+                    "across all goals",
+                    style = MizanTheme.premium.typography.bodySm,
+                    color = Color.White.copy(alpha = 0.3f)
+                )
             }
         }
     }

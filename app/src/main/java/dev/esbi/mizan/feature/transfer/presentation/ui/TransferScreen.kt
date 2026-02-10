@@ -1,14 +1,11 @@
 package dev.esbi.mizan.feature.transfer.presentation.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,7 +13,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -41,9 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -245,7 +239,12 @@ private fun TransferTopBar(
                     )
                 } else {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("✓", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(
+                            "✓",
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(Modifier.width(6.dp))
                         Text(
                             "Transfer",
@@ -256,7 +255,9 @@ private fun TransferTopBar(
                 }
             }
         } else {
-            Spacer(Modifier.size(40.dp).align(Alignment.CenterEnd))
+            Spacer(Modifier
+                .size(40.dp)
+                .align(Alignment.CenterEnd))
         }
     }
 }
@@ -352,7 +353,11 @@ private fun AccountCarouselSection(
                     .height(100.dp)
                     .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
                     .background(MizanTheme.premium.glass.bg)
-                    .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl)),
+                    .border(
+                        1.dp,
+                        MizanTheme.premium.glass.border,
+                        RoundedCornerShape(MizanTheme.premium.radius.xl)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -429,7 +434,11 @@ private fun AccountCard(
                     .size(40.dp)
                     .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                     .background(accentColor.copy(alpha = 0.2f))
-                    .border(1.dp, accentColor.copy(alpha = 0.3f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                    .border(
+                        1.dp,
+                        accentColor.copy(alpha = 0.3f),
+                        RoundedCornerShape(MizanTheme.premium.radius.lg)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(accountTypeEmoji(account.type), fontSize = 20.sp)
@@ -533,6 +542,7 @@ private fun TransferHelperContent(state: TransferStore.State) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
         state.destinationAccount == null -> {
             Text(
                 "Now select destination account",
@@ -542,6 +552,7 @@ private fun TransferHelperContent(state: TransferStore.State) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
         state.canSubmit -> {
             // Confirmation card
             Box(
@@ -549,10 +560,17 @@ private fun TransferHelperContent(state: TransferStore.State) {
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
                     .background(Emerald.copy(alpha = 0.05f))
-                    .border(1.dp, Emerald.copy(alpha = 0.20f), RoundedCornerShape(MizanTheme.premium.radius.xl))
+                    .border(
+                        1.dp,
+                        Emerald.copy(alpha = 0.20f),
+                        RoundedCornerShape(MizanTheme.premium.radius.xl)
+                    )
                     .padding(MizanTheme.premium.spacing.lg)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(
                         "Ready to transfer",
                         style = MizanTheme.premium.typography.labelMd,
@@ -573,6 +591,7 @@ private fun TransferHelperContent(state: TransferStore.State) {
                 }
             }
         }
+
         state.amount <= 0 && state.sourceAccount != null && state.destinationAccount != null -> {
             Text(
                 "Enter amount to transfer",
@@ -592,7 +611,11 @@ private fun TransferHelperContent(state: TransferStore.State) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                 .background(Color(0xFFEF4444).copy(alpha = 0.1f))
-                .border(1.dp, Color(0xFFEF4444).copy(alpha = 0.2f), RoundedCornerShape(MizanTheme.premium.radius.lg))
+                .border(
+                    1.dp,
+                    Color(0xFFEF4444).copy(alpha = 0.2f),
+                    RoundedCornerShape(MizanTheme.premium.radius.lg)
+                )
                 .padding(MizanTheme.premium.spacing.md)
         ) {
             Text(

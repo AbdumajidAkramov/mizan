@@ -31,7 +31,7 @@ interface TransferStore : Store<TransferStore.Intent, TransferStore.State, Trans
             get() = sourceAccount != null
                     && destinationAccount != null
                     && amount > 0
-                    && sourceAccount!!.id != destinationAccount!!.id
+                    && sourceAccount.id != destinationAccount.id
                     && !isLoading
 
         val availableDestinations: List<Account>

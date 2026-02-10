@@ -52,7 +52,6 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.roundToInt
 
 @Composable
 fun SubscriptionTrackerScreen(
@@ -96,7 +95,9 @@ fun SubscriptionTrackerScreen(
             // Active Subscriptions Section Header
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -197,10 +198,17 @@ private fun MonthlySummaryCard(
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xxl))
             .background(
                 Brush.linearGradient(
-                    colors = listOf(Color.White.copy(alpha = 0.10f), Color.White.copy(alpha = 0.05f))
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.10f),
+                        Color.White.copy(alpha = 0.05f)
+                    )
                 )
             )
-            .border(1.dp, Color.White.copy(alpha = 0.20f), RoundedCornerShape(MizanTheme.premium.radius.xxl))
+            .border(
+                1.dp,
+                Color.White.copy(alpha = 0.20f),
+                RoundedCornerShape(MizanTheme.premium.radius.xxl)
+            )
     ) {
         // Glow effect
         Box(
@@ -222,7 +230,11 @@ private fun MonthlySummaryCard(
                         .size(44.dp)
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                         .background(emerald.copy(alpha = 0.2f))
-                        .border(1.dp, emerald.copy(alpha = 0.3f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                        .border(
+                            1.dp,
+                            emerald.copy(alpha = 0.3f),
+                            RoundedCornerShape(MizanTheme.premium.radius.lg)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("💳", fontSize = 20.sp)
@@ -289,7 +301,11 @@ private fun MonthlySummaryCard(
 
 @Composable
 private fun SubscriptionItem(subscription: Subscription) {
-    val iconColor = try { Color(android.graphics.Color.parseColor(subscription.color)) } catch (_: Exception) { Color(0xFF10B981) }
+    val iconColor = try {
+        Color(android.graphics.Color.parseColor(subscription.color))
+    } catch (_: Exception) {
+        Color(0xFF10B981)
+    }
     val now = System.currentTimeMillis()
     val daysUntil = ((subscription.nextRenewalDate - now) / 86_400_000).toInt().coerceAtLeast(0)
 
@@ -312,7 +328,11 @@ private fun SubscriptionItem(subscription: Subscription) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .background(MizanTheme.premium.glass.bg)
-            .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .border(
+                1.dp,
+                MizanTheme.premium.glass.border,
+                RoundedCornerShape(MizanTheme.premium.radius.xl)
+            )
             .padding(MizanTheme.premium.spacing.md)
     ) {
         Column {
@@ -327,7 +347,11 @@ private fun SubscriptionItem(subscription: Subscription) {
                         .size(52.dp)
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
                         .background(iconColor.copy(alpha = 0.15f))
-                        .border(1.dp, iconColor.copy(alpha = 0.25f), RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                        .border(
+                            1.dp,
+                            iconColor.copy(alpha = 0.25f),
+                            RoundedCornerShape(MizanTheme.premium.radius.lg)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(subscriptionIconEmoji(subscription.icon), fontSize = 26.sp)
@@ -349,7 +373,10 @@ private fun SubscriptionItem(subscription: Subscription) {
                     }
                     Spacer(Modifier.height(2.dp))
                     Text(
-                        "${subscription.billingCycle.name.lowercase().replaceFirstChar { it.uppercase() }} • Next: ${formatShortDate(subscription.nextRenewalDate)}",
+                        "${
+                            subscription.billingCycle.name.lowercase()
+                                .replaceFirstChar { it.uppercase() }
+                        } • Next: ${formatShortDate(subscription.nextRenewalDate)}",
                         style = MizanTheme.premium.typography.bodySm,
                         color = Color.White.copy(alpha = 0.4f)
                     )
@@ -486,7 +513,11 @@ private fun InsightsCard(monthlyTotal: Double) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .background(MizanTheme.premium.glass.bg)
-            .border(1.dp, MizanTheme.premium.glass.border, RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .border(
+                1.dp,
+                MizanTheme.premium.glass.border,
+                RoundedCornerShape(MizanTheme.premium.radius.xl)
+            )
             .padding(MizanTheme.premium.spacing.lg)
     ) {
         Row {
