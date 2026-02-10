@@ -35,6 +35,7 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
+import dev.esbi.mizan.feature.dashboard.presentation.widgets.PremiumFeaturesSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.QuickActionsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CategorySpending
@@ -56,6 +57,8 @@ fun DashboardScreen(
     onNavigateToNewTransaction: () -> Unit = {},
     onNavigateToTransactionsHub: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
+    onNavigateToGoals: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.collectAsState()
@@ -99,7 +102,9 @@ fun DashboardScreen(
             data = state.dashboardData!!,
             onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) },
             onAddTransactionClick = { viewModel.onIntent(DashboardStore.Intent.AddTransactionClicked) },
-            onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) }
+            onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) },
+            onNavigateToGoals = onNavigateToGoals,
+            onNavigateToSubscriptions = onNavigateToSubscriptions
         )
     }
 }
@@ -110,6 +115,8 @@ private fun DashboardScrollContent(
     onCategoryClick: (String) -> Unit,
     onAddTransactionClick: () -> Unit = {},
     onSeeAllTransactions: () -> Unit = {},
+    onNavigateToGoals: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -247,5 +254,14 @@ private fun DashboardScrollContent(
         item { AnimSection(visible) { InsightsSection() } }
         item { AnimSection(visible) { TransactionsSection(data.recentTransactions, onSeeAllClick = onSeeAllTransactions) } }
 
+        // Premium Features Entry Points
+        item {
+            AnimSection(visible) {
+                PremiumFeaturesSection(
+                    onGoalsClick = onNavigateToGoals,
+                    onSubscriptionsClick = onNavigateToSubscriptions
+                )
+            }
+        }
     }
 }

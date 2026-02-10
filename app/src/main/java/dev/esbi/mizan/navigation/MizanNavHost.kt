@@ -12,6 +12,8 @@ import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
+import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
+import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
 import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
@@ -49,6 +51,12 @@ internal fun MizanNavHost(
                 },
                 onNavigateToProfile = {
                     // TODO: Navigate to Profile screen when implemented
+                },
+                onNavigateToGoals = {
+                    navController.navigate(NavRoute.FinancialGoals)
+                },
+                onNavigateToSubscriptions = {
+                    navController.navigate(NavRoute.Subscriptions)
                 }
             )
         }
@@ -147,6 +155,24 @@ internal fun MizanNavHost(
                 onNavigateToEditCategory = { categoryId ->
                     // TODO: Navigate to edit category screen if needed
                 }
+            )
+        }
+
+        composable<NavRoute.FinancialGoals> {
+            val component = remember { appComponent.goalsComponent().create() }
+            val viewModel = component.viewModel
+            FinancialGoalsScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable<NavRoute.Subscriptions> {
+            val component = remember { appComponent.subscriptionsComponent().create() }
+            val viewModel = component.viewModel
+            SubscriptionTrackerScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 
