@@ -15,6 +15,13 @@ import { PremiumAddTransactionScreen, type EditableTransaction } from './screens
 import { PremiumTransactionsHubScreen } from './screens/PremiumTransactionsHubScreen';
 import { ManageCategoriesScreen } from './screens/ManageCategoriesScreen';
 import { ManageTemplatesScreen } from './screens/ManageTemplatesScreen';
+import { PremiumAccountManagementScreen } from './screens/PremiumAccountManagementScreen';
+import { PremiumBudgetManagementScreen } from './screens/PremiumBudgetManagementScreen';
+import { PremiumCreateBudgetScreen } from './screens/PremiumCreateBudgetScreen';
+import { PremiumAdvancedStatisticsScreen } from './screens/PremiumAdvancedStatisticsScreen';
+import { PremiumSubscriptionTrackerScreen } from './screens/PremiumSubscriptionTrackerScreen';
+import { PremiumMizanProPaywallScreen } from './screens/PremiumMizanProPaywallScreen';
+import { PremiumFinancialGoalsScreen } from './screens/PremiumFinancialGoalsScreen';
 import { PremiumBottomNav, type PremiumNavTab } from './components/premium/PremiumBottomNav';
 import { PremiumButton } from './components/premium/PremiumButton';
 import { PremiumCard } from './components/premium/PremiumCard';
@@ -35,6 +42,13 @@ function PremiumAppContent() {
   const [showManageCategories, setShowManageCategories] = useState(false);
   const [showManageTemplates, setShowManageTemplates] = useState(false);
   const [showTransactionsHub, setShowTransactionsHub] = useState(false);
+  const [showAccountManagement, setShowAccountManagement] = useState(false);
+  const [showBudgetManagement, setShowBudgetManagement] = useState(false);
+  const [showCreateBudget, setShowCreateBudget] = useState(false);
+  const [showAdvancedStatistics, setShowAdvancedStatistics] = useState(false);
+  const [showSubscriptionTracker, setShowSubscriptionTracker] = useState(false);
+  const [showMizanProPaywall, setShowMizanProPaywall] = useState(false);
+  const [showFinancialGoals, setShowFinancialGoals] = useState(true); // Show Financial Goals by default
   const [lastSavedTransactionId, setLastSavedTransactionId] = useState<string | undefined>();
   const [addExpenseStep, setAddExpenseStep] = useState<'type' | 'amount' | 'category' | 'details'>('type');
   const [transactionType, setTransactionType] = useState<'expense' | 'income' | 'transfer'>('expense');
@@ -555,6 +569,10 @@ function PremiumAppContent() {
             setShowAddTransaction(false);
             setShowManageTemplates(true);
           }}
+          onManageAccounts={() => {
+            setShowAddTransaction(false);
+            setShowAccountManagement(true);
+          }}
           editTransaction={editingTransaction}
           onDelete={handleDeleteTransaction}
         />
@@ -594,6 +612,122 @@ function PremiumAppContent() {
           }}
           initialTab="daily"
           highlightTransactionId={lastSavedTransactionId}
+        />
+      )}
+
+      {/* Account Management Screen (Full-screen overlay) */}
+      {showAccountManagement && (
+        <PremiumAccountManagementScreen
+          onBack={() => setShowAccountManagement(false)}
+          onAddAccount={() => {
+            console.log('Navigate to Add Account screen');
+            // TODO: Implement Add Account flow
+          }}
+          onEditAccount={(accountId) => {
+            console.log('Edit account:', accountId);
+            // TODO: Implement Edit Account flow
+          }}
+          onArchiveAccount={(accountId) => {
+            console.log('Archive account:', accountId);
+            // TODO: Implement Archive Account logic
+          }}
+        />
+      )}
+
+      {/* Budget Management Screen (Full-screen overlay) */}
+      {showBudgetManagement && (
+        <PremiumBudgetManagementScreen
+          onBack={() => setShowBudgetManagement(false)}
+          onNavigateToCreateBudget={() => {
+            console.log('Navigate to Create Budget screen');
+            // TODO: Implement Create Budget flow
+          }}
+          onEditBudget={(budgetId) => {
+            console.log('Edit budget:', budgetId);
+            // TODO: Implement Edit Budget flow
+          }}
+        />
+      )}
+
+      {/* Create Budget Screen (Full-screen overlay) */}
+      {showCreateBudget && (
+        <PremiumCreateBudgetScreen
+          onBack={() => setShowCreateBudget(false)}
+          onSelectCategory={() => {
+            console.log('Open category selector');
+            // TODO: Implement category selector modal
+          }}
+          onCreate={(budget) => {
+            console.log('Budget created:', budget);
+            // TODO: Save budget to state/database
+            setShowCreateBudget(false);
+            setShowBudgetManagement(true);
+          }}
+        />
+      )}
+
+      {/* Advanced Statistics Screen (Full-screen overlay) */}
+      {showAdvancedStatistics && (
+        <PremiumAdvancedStatisticsScreen
+          onBack={() => setShowAdvancedStatistics(false)}
+          onOpenFilter={() => {
+            console.log('Open account filter');
+            // TODO: Implement account filter modal
+          }}
+        />
+      )}
+
+      {/* Subscription Tracker Screen (Full-screen overlay) */}
+      {showSubscriptionTracker && (
+        <PremiumSubscriptionTrackerScreen
+          onBack={() => setShowSubscriptionTracker(false)}
+          onSubscriptionDetail={(subscriptionId) => {
+            console.log('View subscription details:', subscriptionId);
+            // TODO: Implement subscription detail screen
+          }}
+          onNavigateToCreateSubscription={() => {
+            console.log('Navigate to Create Subscription screen');
+            // TODO: Implement Create Subscription flow
+          }}
+        />
+      )}
+
+      {/* Mizan Pro Paywall Screen (Full-screen overlay) */}
+      {showMizanProPaywall && (
+        <PremiumMizanProPaywallScreen
+          onClose={() => setShowMizanProPaywall(false)}
+          onStartTrial={(planId) => {
+            console.log('Starting trial for plan:', planId);
+            // TODO: Implement subscription purchase flow
+            setShowMizanProPaywall(false);
+          }}
+          onRestorePurchase={() => {
+            console.log('Restore purchase');
+            // TODO: Implement restore purchase logic
+          }}
+          onTermsOfService={() => {
+            console.log('Open Terms of Service');
+            // TODO: Implement Terms of Service modal/screen
+          }}
+          onPrivacyPolicy={() => {
+            console.log('Open Privacy Policy');
+            // TODO: Implement Privacy Policy modal/screen
+          }}
+        />
+      )}
+
+      {/* Financial Goals Screen (Full-screen overlay) */}
+      {showFinancialGoals && (
+        <PremiumFinancialGoalsScreen
+          onBack={() => setShowFinancialGoals(false)}
+          onGoalDetail={(goalId) => {
+            console.log('View goal details:', goalId);
+            // TODO: Implement goal detail screen
+          }}
+          onNavigateToCreateGoal={() => {
+            console.log('Navigate to Create Goal screen');
+            // TODO: Implement Create Goal flow
+          }}
         />
       )}
     </div>

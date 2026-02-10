@@ -309,6 +309,8 @@ export interface PremiumAddTransactionScreenProps {
   onManageCategories?: () => void;
   /** Optional callback to navigate to Manage Templates screen */
   onManageTemplates?: () => void;
+  /** Optional callback to navigate to Manage Accounts screen */
+  onManageAccounts?: () => void;
   /** Optional transaction to edit (enables Edit Mode) */
   editTransaction?: EditableTransaction;
   /** Optional callback for deleting transaction (Edit Mode only) */
@@ -323,6 +325,7 @@ export function PremiumAddTransactionScreen({
   onSave,
   onManageCategories,
   onManageTemplates,
+  onManageAccounts,
   editTransaction,
   onDelete,
 }: PremiumAddTransactionScreenProps) {
@@ -382,6 +385,7 @@ export function PremiumAddTransactionScreen({
 
   // Account BottomSheet State
   const [showAccountBottomSheet, setShowAccountBottomSheet] = useState(false);
+  const [accountSelectionMode, setAccountSelectionMode] = useState<'single' | 'from' | 'to'>('single'); // Track which account we're selecting
   
   // Interactive Chip States
   const [showTransactionTypeSelector, setShowTransactionTypeSelector] = useState(false);
@@ -688,6 +692,17 @@ export function PremiumAddTransactionScreen({
   };
 
   const handleAccountChipClick = () => {
+    setAccountSelectionMode('single');
+    setShowAccountBottomSheet(true);
+  };
+
+  const handleFromAccountChipClick = () => {
+    setAccountSelectionMode('from');
+    setShowAccountBottomSheet(true);
+  };
+
+  const handleToAccountChipClick = () => {
+    setAccountSelectionMode('to');
     setShowAccountBottomSheet(true);
   };
 
@@ -702,14 +717,15 @@ export function PremiumAddTransactionScreen({
     // For Transfer type: check transfer-specific fields
     if (transactionType === "transfer") {
       if (!fromAccountId) {
-        // Need From Account - would open transfer flow
-        // For now, transfer uses the details screen
-        setShowConfirmScreen(true);
+        // Need From Account - open From Account selector
+        setAccountSelectionMode('from');
+        setShowAccountBottomSheet(true);
         return;
       }
       if (!toAccountId) {
-        // Need To Account
-        setShowConfirmScreen(true);
+        // Need To Account - open To Account selector
+        setAccountSelectionMode('to');
+        setShowAccountBottomSheet(true);
         return;
       }
       // Everything filled - go to confirm
@@ -726,6 +742,7 @@ export function PremiumAddTransactionScreen({
 
     if (!selectedAccountId) {
       // Missing account - open account selector
+      setAccountSelectionMode('single');
       setShowAccountBottomSheet(true);
       return;
     }
@@ -743,6 +760,7 @@ export function PremiumAddTransactionScreen({
     if (!selectedAccountId) {
       // Account is missing - open account selector immediately
       setTimeout(() => {
+        setAccountSelectionMode('single');
         setShowAccountBottomSheet(true);
       }, 300); // Small delay for smooth transition
     } else {
@@ -755,15 +773,45 @@ export function PremiumAddTransactionScreen({
 
   // Auto-progression after account selection
   const handleAccountSelected = (accountId: string) => {
-    setSelectedAccountId(accountId);
-    
-    // Smart auto-progression: check if everything is complete
-    const hasAmount = parseFloat(displayValue) > 0;
-    if (hasAmount && selectedCategory) {
-      // Everything filled - go to confirm screen
-      setTimeout(() => {
-        setShowConfirmScreen(true);
-      }, 300);
+    // Handle different selection modes
+    if (accountSelectionMode === 'from') {
+      setFromAccountId(accountId);
+      // For transfers, check if we need to prompt for To Account
+      const hasAmount = parseFloat(displayValue) > 0;
+      if (hasAmount && !toAccountId) {
+        // Open To Account selector next
+        setTimeout(() => {
+          setAccountSelectionMode('to');
+          setShowAccountBottomSheet(true);
+        }, 300);
+      } else if (hasAmount && toAccountId && accountId !== toAccountId) {
+        // Everything filled - go to confirm
+        setTimeout(() => {
+          setShowConfirmScreen(true);
+        }, 300);
+      }
+    } else if (accountSelectionMode === 'to') {
+      setToAccountId(accountId);
+      // For transfers, check if everything is complete
+      const hasAmount = parseFloat(displayValue) > 0;
+      if (hasAmount && fromAccountId && accountId !== fromAccountId) {
+        // Everything filled - go to confirm screen
+        setTimeout(() => {
+          setShowConfirmScreen(true);
+        }, 300);
+      }
+    } else {
+      // Single account mode (expense/income)
+      setSelectedAccountId(accountId);
+      
+      // Smart auto-progression: check if everything is complete
+      const hasAmount = parseFloat(displayValue) > 0;
+      if (hasAmount && selectedCategory) {
+        // Everything filled - go to confirm screen
+        setTimeout(() => {
+          setShowConfirmScreen(true);
+        }, 300);
+      }
     }
   };
 
@@ -1128,67 +1176,206 @@ export function PremiumAddTransactionScreen({
                   )
                 )}
 
-                {/* Account Chip - Interactive when selected, placeholder when not */}
-                {selectedAccountId ? (() => {
-                  const account = MOCK_ACCOUNTS.find(acc => acc.id === selectedAccountId);
-                  if (!account) return null;
-                  const Icon = account.icon;
-                  
-                  return (
+                {/* Account Chips - Conditional for Transfer vs Expense/Income */}
+                {transactionType === "transfer" ? (
+                  /* Transfer: Show From Account and To Account chips */
+                  <>
+                    {/* From Account Chip */}
+                    {fromAccountId ? (() => {
+                      const account = MOCK_ACCOUNTS.find(acc => acc.id === fromAccountId);
+                      if (!account) return null;
+                      const Icon = account.icon;
+                      
+                      return (
+                        <button
+                          onClick={handleFromAccountChipClick}
+                          className="
+                            group
+                            px-[12px] py-[6px]
+                            rounded-[var(--premium-radius-full)]
+                            bg-[var(--premium-surface-3)]
+                            border border-[var(--premium-error)]/20
+                            flex items-center gap-[6px]
+                            hover:bg-[var(--premium-surface-4)]
+                            hover:border-[var(--premium-error)]/40
+                            hover:shadow-[0_0_0_4px_rgba(255,107,107,0.1)]
+                            active:scale-95
+                            transition-all duration-200
+                            cursor-pointer
+                            animate-[fadeIn_0.2s_ease-out]
+                          "
+                        >
+                          <ArrowUpRight size={12} className="text-[var(--premium-error)]" />
+                          <div 
+                            className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
+                            style={{ backgroundColor: `${account.color}20` }}
+                          >
+                            <Icon size={10} style={{ color: account.color }} />
+                          </div>
+                          <span className="body-xs font-medium text-[var(--premium-text-primary)]">
+                            {account.name}
+                          </span>
+                          <ChevronDown 
+                            size={12} 
+                            className="text-[var(--premium-text-tertiary)] opacity-60 group-hover:opacity-100 transition-opacity"
+                          />
+                        </button>
+                      );
+                    })() : (
+                      <button
+                        onClick={handleFromAccountChipClick}
+                        className="
+                          group
+                          px-[12px] py-[6px]
+                          rounded-[var(--premium-radius-full)]
+                          bg-[var(--premium-surface-2)]
+                          border-2 border-dashed border-[var(--premium-border)]
+                          flex items-center gap-[6px]
+                          hover:bg-[var(--premium-error)]/10
+                          hover:border-[var(--premium-error)]/50
+                          active:scale-95
+                          transition-all duration-200
+                          cursor-pointer
+                        "
+                      >
+                        <ArrowUpRight size={12} className="text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-error)]" />
+                        <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-error)]">
+                          From Account
+                        </span>
+                      </button>
+                    )}
+
+                    {/* Arrow Icon between chips */}
+                    <ArrowLeftRight size={14} className="text-[var(--premium-text-tertiary)]" />
+
+                    {/* To Account Chip */}
+                    {toAccountId ? (() => {
+                      const account = MOCK_ACCOUNTS.find(acc => acc.id === toAccountId);
+                      if (!account) return null;
+                      const Icon = account.icon;
+                      
+                      return (
+                        <button
+                          onClick={handleToAccountChipClick}
+                          className="
+                            group
+                            px-[12px] py-[6px]
+                            rounded-[var(--premium-radius-full)]
+                            bg-[var(--premium-surface-3)]
+                            border border-[var(--premium-emerald)]/20
+                            flex items-center gap-[6px]
+                            hover:bg-[var(--premium-surface-4)]
+                            hover:border-[var(--premium-emerald)]/40
+                            hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                            active:scale-95
+                            transition-all duration-200
+                            cursor-pointer
+                            animate-[fadeIn_0.2s_ease-out]
+                          "
+                        >
+                          <ArrowDownLeft size={12} className="text-[var(--premium-emerald)]" />
+                          <div 
+                            className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
+                            style={{ backgroundColor: `${account.color}20` }}
+                          >
+                            <Icon size={10} style={{ color: account.color }} />
+                          </div>
+                          <span className="body-xs font-medium text-[var(--premium-text-primary)]">
+                            {account.name}
+                          </span>
+                          <ChevronDown 
+                            size={12} 
+                            className="text-[var(--premium-text-tertiary)] opacity-60 group-hover:opacity-100 transition-opacity"
+                          />
+                        </button>
+                      );
+                    })() : (
+                      <button
+                        onClick={handleToAccountChipClick}
+                        className="
+                          group
+                          px-[12px] py-[6px]
+                          rounded-[var(--premium-radius-full)]
+                          bg-[var(--premium-surface-2)]
+                          border-2 border-dashed border-[var(--premium-border)]
+                          flex items-center gap-[6px]
+                          hover:bg-[var(--premium-emerald)]/10
+                          hover:border-[var(--premium-emerald)]/50
+                          active:scale-95
+                          transition-all duration-200
+                          cursor-pointer
+                        "
+                      >
+                        <ArrowDownLeft size={12} className="text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]" />
+                        <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]">
+                          To Account
+                        </span>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  /* Expense/Income: Show single Account chip */
+                  selectedAccountId ? (() => {
+                    const account = MOCK_ACCOUNTS.find(acc => acc.id === selectedAccountId);
+                    if (!account) return null;
+                    const Icon = account.icon;
+                    
+                    return (
+                      <button
+                        onClick={handleAccountChipClick}
+                        className="
+                          group
+                          px-[12px] py-[6px]
+                          rounded-[var(--premium-radius-full)]
+                          bg-[var(--premium-surface-3)]
+                          border border-[var(--premium-glass-border)]
+                          flex items-center gap-[6px]
+                          hover:bg-[var(--premium-surface-4)]
+                          hover:border-[var(--premium-emerald)]/30
+                          hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                          active:scale-95
+                          transition-all duration-200
+                          cursor-pointer
+                          animate-[fadeIn_0.2s_ease-out]
+                        "
+                      >
+                        <div 
+                          className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
+                          style={{ backgroundColor: `${account.color}20` }}
+                        >
+                          <Icon size={10} style={{ color: account.color }} />
+                        </div>
+                        <span className="body-xs font-medium text-[var(--premium-text-primary)]">
+                          {account.name}
+                        </span>
+                        <ChevronDown 
+                          size={12} 
+                          className="text-[var(--premium-text-tertiary)] opacity-60 group-hover:opacity-100 transition-opacity"
+                        />
+                      </button>
+                    );
+                  })() : (
                     <button
                       onClick={handleAccountChipClick}
                       className="
                         group
                         px-[12px] py-[6px]
                         rounded-[var(--premium-radius-full)]
-                        bg-[var(--premium-surface-3)]
-                        border border-[var(--premium-glass-border)]
+                        bg-[var(--premium-surface-2)]
+                        border-2 border-dashed border-[var(--premium-border)]
                         flex items-center gap-[6px]
-                        hover:bg-[var(--premium-surface-4)]
-                        hover:border-[var(--premium-emerald)]/30
-                        hover:shadow-[0_0_0_4px_rgba(16,185,129,0.1)]
+                        hover:bg-[var(--premium-emerald)]/10
+                        hover:border-[var(--premium-emerald)]/50
                         active:scale-95
                         transition-all duration-200
                         cursor-pointer
-                        animate-[fadeIn_0.2s_ease-out]
                       "
                     >
-                      <div 
-                        className="w-[16px] h-[16px] rounded-[4px] flex items-center justify-center"
-                        style={{ backgroundColor: `${account.color}20` }}
-                      >
-                        <Icon size={10} style={{ color: account.color }} />
-                      </div>
-                      <span className="body-xs font-medium text-[var(--premium-text-primary)]">
-                        {account.name}
+                      <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]">
+                        + Account
                       </span>
-                      <ChevronDown 
-                        size={12} 
-                        className="text-[var(--premium-text-tertiary)] opacity-60 group-hover:opacity-100 transition-opacity"
-                      />
                     </button>
-                  );
-                })() : (
-                  <button
-                    onClick={handleAccountChipClick}
-                    className="
-                      group
-                      px-[12px] py-[6px]
-                      rounded-[var(--premium-radius-full)]
-                      bg-[var(--premium-surface-2)]
-                      border-2 border-dashed border-[var(--premium-border)]
-                      flex items-center gap-[6px]
-                      hover:bg-[var(--premium-emerald)]/10
-                      hover:border-[var(--premium-emerald)]/50
-                      active:scale-95
-                      transition-all duration-200
-                      cursor-pointer
-                    "
-                  >
-                    <span className="body-xs font-medium text-[var(--premium-text-tertiary)] group-hover:text-[var(--premium-emerald)]">
-                      + Account
-                    </span>
-                  </button>
+                  )
                 )}
               </div>
 
@@ -2345,17 +2532,33 @@ export function PremiumAddTransactionScreen({
         )}
       </div>
 
-      {/* Account BottomSheet for Expense/Income flows */}
+      {/* Account BottomSheet for Expense/Income/Transfer flows */}
       <PremiumAccountBottomSheet
         isOpen={showAccountBottomSheet}
         onClose={() => setShowAccountBottomSheet(false)}
         accounts={MOCK_ACCOUNTS}
-        selectedAccountId={selectedAccountId}
+        selectedAccountId={
+          accountSelectionMode === 'from' 
+            ? fromAccountId 
+            : accountSelectionMode === 'to' 
+              ? toAccountId 
+              : selectedAccountId
+        }
         onSelectAccount={(accountId) => {
           setShowAccountBottomSheet(false);
           handleAccountSelected(accountId);
         }}
-        title="Select Account"
+        title={
+          accountSelectionMode === 'from' 
+            ? "Select From Account" 
+            : accountSelectionMode === 'to' 
+              ? "Select To Account" 
+              : "Select Account"
+        }
+        onAddAccount={() => {
+          setShowAccountBottomSheet(false);
+          onManageAccounts?.();
+        }}
       />
 
       {/* Transaction Type Selector Overlay */}
@@ -2404,6 +2607,7 @@ export function PremiumAddTransactionScreen({
           }
         }}
         onClose={() => setShowCategorySelector(false)}
+        onNavigateToManageCategories={onManageCategories}
       />
 
       {/* Subcategory Selector Overlay */}

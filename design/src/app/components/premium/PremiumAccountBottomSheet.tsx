@@ -9,7 +9,7 @@
  */
 
 import { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 
 // Account Interface
 interface Account {
@@ -38,6 +38,8 @@ export interface PremiumAccountBottomSheetProps {
   title?: string;
   /** Optional accounts to exclude (for transfers) */
   excludeAccountIds?: string[];
+  /** Optional callback when user wants to add a new account */
+  onAddAccount?: () => void;
 }
 
 /**
@@ -51,6 +53,7 @@ export function PremiumAccountBottomSheet({
   onSelectAccount,
   title = 'Select Account',
   excludeAccountIds = [],
+  onAddAccount,
 }: PremiumAccountBottomSheetProps) {
   // Prevent body scroll when bottom sheet is open
   useEffect(() => {
@@ -296,6 +299,52 @@ export function PremiumAccountBottomSheet({
                 </div>
               );
             })}
+
+            {/* Add New Account Inline Button */}
+            {onAddAccount && (
+              <button
+                onClick={() => {
+                  onAddAccount();
+                  onClose();
+                }}
+                className="
+                  w-full
+                  p-[var(--premium-space-md)]
+                  rounded-[var(--premium-radius-xl)]
+                  flex items-center gap-[var(--premium-space-md)]
+                  transition-all duration-200
+                  bg-[var(--premium-surface-2)]/40
+                  border-2 border-dashed border-[var(--premium-emerald)]/30
+                  hover:bg-[var(--premium-emerald)]/5
+                  hover:border-[var(--premium-emerald)]/50
+                  active:scale-[0.98]
+                "
+              >
+                {/* Plus Icon in Circular Container */}
+                <div
+                  className="
+                    w-[48px] h-[48px]
+                    rounded-full
+                    bg-[var(--premium-emerald)]/10
+                    border border-[var(--premium-emerald)]/30
+                    flex items-center justify-center
+                    flex-shrink-0
+                  "
+                >
+                  <Plus size={20} className="text-[var(--premium-emerald)]" strokeWidth={2.5} />
+                </div>
+
+                {/* Label */}
+                <div className="flex-1 text-left">
+                  <p className="body-md font-medium text-[var(--premium-emerald)]">
+                    Add New Account
+                  </p>
+                  <p className="body-sm text-[var(--premium-text-tertiary)]">
+                    Create a new wallet or card
+                  </p>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </div>
