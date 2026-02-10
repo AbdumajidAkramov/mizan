@@ -40,9 +40,6 @@ import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 /**
  * Monthly Tab for TransactionsHub
@@ -50,33 +47,17 @@ import java.util.Locale
  */
 @Composable
 fun TransactionsHubMonthlyTab(
-    currentMonth: YearMonth,
     weeklySummaries: List<TransactionsHubStore.WeeklySummary>,
-    summary: TransactionsHubStore.MonthlySummary,
-    transactionCount: Int,
     accounts: List<Account>,
     categories: List<Category>,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
     onToggleWeek: (Int) -> Unit,
     onTransactionClick: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Weekly Sections
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        // Month Selector Header
-        MonthlyMonthHeader(
-            currentMonth = currentMonth,
-            transactionCount = transactionCount,
-            onPreviousMonth = onPreviousMonth,
-            onNextMonth = onNextMonth
-        )
-
-        // Monthly Summary
-        MonthlyIncomeExpenseSummary(summary = summary)
-
-        // Weekly Sections
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -123,134 +104,6 @@ fun TransactionsHubMonthlyTab(
             }
 
             item { Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg)) }
-        }
-    }
-}
-
-@Composable
-private fun MonthlyMonthHeader(
-    currentMonth: YearMonth,
-    transactionCount: Int,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()) }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MizanTheme.premium.colors.surface2)
-            .padding(MizanTheme.premium.spacing.md),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Previous Month Button
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface3)
-                .clickable { onPreviousMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_left),
-                contentDescription = "Previous Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        // Month/Year Title
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = currentMonth.format(monthFormatter),
-                style = MizanTheme.typography.headingMd,
-                color = MizanTheme.premium.text.primary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "$transactionCount transactions",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-        }
-
-        // Next Month Button
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface3)
-                .clickable { onNextMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_right),
-                contentDescription = "Next Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun MonthlyIncomeExpenseSummary(
-    summary: TransactionsHubStore.MonthlySummary,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MizanTheme.premium.colors.surface2)
-            .padding(MizanTheme.premium.spacing.md),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        // Income
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Income",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-            Text(
-                text = "$${formatCompactAmountMonthly(summary.totalIncome)}",
-                style = MizanTheme.typography.bodyLg,
-                color = MizanTheme.premium.colors.emerald,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // Expense
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Expense",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-            Text(
-                text = "$${formatCompactAmountMonthly(summary.totalExpense)}",
-                style = MizanTheme.typography.bodyLg,
-                color = Color(0xFFF5576C),
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        // Balance
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Balance",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-            Text(
-                text = "${if (summary.balance >= 0) "+" else "-"}$${formatCompactAmountMonthly(kotlin.math.abs(summary.balance))}",
-                style = MizanTheme.typography.bodyLg,
-                color = if (summary.balance >= 0) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
-                fontWeight = FontWeight.Bold
-            )
         }
     }
 }

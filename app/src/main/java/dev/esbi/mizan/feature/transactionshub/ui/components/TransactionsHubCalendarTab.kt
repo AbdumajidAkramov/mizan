@@ -42,7 +42,6 @@ import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.time.Instant
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -53,21 +52,15 @@ import java.util.Locale
  */
 @Composable
 fun TransactionsHubCalendarTab(
-    currentMonth: YearMonth,
     calendarDays: List<TransactionsHubStore.CalendarDaySummary?>,
-    daysWithTransactions: Int,
     selectedDate: LocalDate,
     transactions: List<Transaction>,
     accounts: List<Account>,
     categories: List<Category>,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
     onDateSelected: (LocalDate) -> Unit,
     onTransactionClick: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()) }
-
     // Filter transactions for selected date
     val selectedDateTransactions = remember(selectedDate, transactions) {
         transactions.filter { txn ->
@@ -84,17 +77,6 @@ fun TransactionsHubCalendarTab(
             .padding(horizontal = MizanTheme.premium.spacing.lg),
         verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
     ) {
-        // Month Selector Header
-        item {
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
-            CalendarMonthHeader(
-                currentMonth = currentMonth,
-                daysWithTransactions = daysWithTransactions,
-                onPreviousMonth = onPreviousMonth,
-                onNextMonth = onNextMonth
-            )
-        }
-
         // Calendar Grid
         item {
             CalendarGrid(
@@ -154,81 +136,6 @@ fun TransactionsHubCalendarTab(
         // Bottom spacing
         item {
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
-        }
-    }
-}
-
-@Composable
-private fun CalendarMonthHeader(
-    currentMonth: YearMonth,
-    daysWithTransactions: Int,
-    onPreviousMonth: () -> Unit,
-    onNextMonth: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault()) }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
-            .background(MizanTheme.premium.colors.surface2)
-            .border(
-                width = 1.dp,
-                color = MizanTheme.premium.glass.border,
-                shape = RoundedCornerShape(MizanTheme.premium.radius.lg)
-            )
-            .padding(MizanTheme.premium.spacing.md),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        // Previous Month Button
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface3)
-                .clickable { onPreviousMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_left),
-                contentDescription = "Previous Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        // Month/Year Title
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = currentMonth.format(monthFormatter),
-                style = MizanTheme.typography.headingMd,
-                color = MizanTheme.premium.text.primary,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "$daysWithTransactions days with transactions",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary
-            )
-        }
-
-        // Next Month Button
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface3)
-                .clickable { onNextMonth() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_right),
-                contentDescription = "Next Month",
-                tint = MizanTheme.premium.text.primary,
-                modifier = Modifier.size(20.dp)
-            )
         }
     }
 }

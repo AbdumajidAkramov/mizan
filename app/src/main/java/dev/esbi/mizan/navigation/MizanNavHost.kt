@@ -9,19 +9,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
+import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
-import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
-import dev.esbi.mizan.feature.transfer.presentation.ui.TransferScreen
-import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
 import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
+import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
+import dev.esbi.mizan.feature.transfer.presentation.ui.TransferScreen
 
 @Composable
 internal fun MizanNavHost(
@@ -98,13 +98,20 @@ internal fun MizanNavHost(
         composable<NavRoute.Profile> {
             val component = remember { appComponent.profileComponent().create() }
             val viewModel = component.viewModel
-            ProfileScreen(viewModel)
+            ProfileScreen(
+                viewModel,
+                onNavigateToBudgetManagementScreen = {
+                    navController.navigate(NavRoute.Budget)
+                },
+                onNavigateToFinancialGoalsScreen = {
+                    navController.navigate(NavRoute.FinancialGoals)
+                }
+            )
         }
         composable<NavRoute.CategoryDetail> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategoryDetail>()
             // TODO: Implement CategoryDetailScreen when needed
         }
-
         composable<NavRoute.AmountInput> {
             val component = remember { appComponent.amountInputComponent().create() }
             val viewModel = component.viewModel
@@ -117,6 +124,10 @@ internal fun MizanNavHost(
                 onNavigateToManageCategories = {
                     navController.navigate(NavRoute.ManageCategories)
                 },
+                onNavigateToAccountManage = {
+                    navController.navigate(NavRoute.AccountManagement)
+                },
+
                 onSubmit = {
                     navController.navigate(NavRoute.Transactions) {
                         popUpTo(NavRoute.Transactions) {
@@ -126,7 +137,6 @@ internal fun MizanNavHost(
                 }
             )
         }
-
         composable<NavRoute.CategorySelect> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategorySelect>()
 
@@ -146,7 +156,6 @@ internal fun MizanNavHost(
                 }
             )
         }
-
         composable<NavRoute.ManageCategories> {
             val component = remember { appComponent.manageCategoriesComponent().create() }
             val viewModel = component.viewModel
@@ -161,7 +170,6 @@ internal fun MizanNavHost(
                 }
             )
         }
-
         composable<NavRoute.FinancialGoals> {
             val component = remember { appComponent.goalsComponent().create() }
             val viewModel = component.viewModel
@@ -170,7 +178,6 @@ internal fun MizanNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-
         composable<NavRoute.Subscriptions> {
             val component = remember { appComponent.subscriptionsComponent().create() }
             val viewModel = component.viewModel
@@ -179,7 +186,6 @@ internal fun MizanNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-
         composable<NavRoute.Transfer> {
             val component = remember { appComponent.transferComponent().create() }
             val viewModel = component.viewModel
@@ -189,7 +195,6 @@ internal fun MizanNavHost(
                 onTransferSuccess = { navController.popBackStack() }
             )
         }
-
         composable<NavRoute.AccountManagement> {
             val component = remember { appComponent.accountManagementComponent().create() }
             val viewModel = component.viewModel
