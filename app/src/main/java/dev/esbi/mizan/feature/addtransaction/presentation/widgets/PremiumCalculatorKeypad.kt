@@ -16,16 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.feature.addtransaction.domain.model.CLEAR_KEY
+import dev.esbi.mizan.feature.addtransaction.domain.model.DEL_KEY
+import dev.esbi.mizan.feature.addtransaction.domain.model.EQUAL_KEY
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
-
-internal const val DEL_KEY = "DEL"
-internal const val CLEAR_KEY = "C"
-internal const val EQUALS_KEY = "="
-
 
 @Composable
 fun PremiumCalculatorKeypad(
@@ -33,11 +31,11 @@ fun PremiumCalculatorKeypad(
     onNumberClick: (Keypad) -> Unit,
 ) {
     val keys = listOf(
-        "C", "DEL", ".", "/",
+        CLEAR_KEY, "*", "/", DEL_KEY,
         "7", "8", "9", "-",
         "4", "5", "6", "+",
-        "1", "2", "3", "*",
-        "00", "0", "000", "="
+        "1", "2", "3", ".",
+        "00", "0", "000", EQUAL_KEY
     )
 
     Column(
@@ -55,9 +53,9 @@ fun PremiumCalculatorKeypad(
             ) {
                 rowKeys.forEach { key ->
                     // Determine styling
-                    val isOperator = listOf("+", "-", "*", "/", "=").contains(key)
+                    val isOperator = listOf("+", "-", "*", "/", EQUAL_KEY).contains(key)
                     val isDelete = key == DEL_KEY || key == CLEAR_KEY
-                    val isEquals = key == "="
+                    val isEquals = key == EQUAL_KEY
                     val isZero = key == "0"
 
                     val bgColor = when {

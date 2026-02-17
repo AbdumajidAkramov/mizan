@@ -112,10 +112,21 @@ class MockDataSeeder @Inject constructor(
                 orderIndex = 0
             ),
             CategoryEntity(
+                id = 100,
+                name = "Eating out",
+                type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
+                parentId = 1,
+                iconName = "ic_food",
+                color = "#FF6B9D",
+                budgetLimit = null,
+                isArchived = false,
+                orderIndex = 0
+            ),
+            CategoryEntity(
                 id = 2,
                 name = "Transport",
                 type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-                parentId = null,
+                parentId = 1,
                 iconName = "ic_transport",
                 color = "#4FACFE",
                 budgetLimit = null,

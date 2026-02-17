@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.inputcontent
+package dev.esbi.mizan.feature.newtransaction.inputpart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,7 +58,7 @@ fun AmountPad(
                     PremiumCalculatorKeypad(onNumberClick = {
                         accept(NewTransactionStore.AmountInputIntent.OnNumberClick(it))
                     })
-                    val bgColor = if (state.keypadState.canSubmit) {
+                    val bgColor = if (state.canSubmit) {
                         MizanTheme.premium.colors.emerald
                     } else {
                         MizanTheme.premium.colors.surface2
@@ -81,7 +81,7 @@ fun AmountPad(
                             text = "Next",
                             style = MizanTheme.typography.bodyLg,
                             fontWeight = FontWeight.Medium,
-                            color = if (state.keypadState.canSubmit) {
+                            color = if (state.canSubmit) {
                                 Color.White
                             } else {
                                 MizanTheme.premium.text.muted

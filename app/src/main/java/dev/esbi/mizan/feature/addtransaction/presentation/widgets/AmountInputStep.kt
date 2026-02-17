@@ -159,7 +159,9 @@ internal fun AmountInputStep(
                     Column {
                         PremiumCalculatorKeypad(
                             modifier = Modifier,
-                            onNumberClick = onNumberClick,
+                            onNumberClick = {
+                                onNumberClick(it)
+                            },
                         )
                         Spacer(Modifier.height(16.dp))
                         Button(

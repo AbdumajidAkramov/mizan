@@ -1,5 +1,9 @@
 package dev.esbi.mizan.feature.addtransaction.domain.model
 
+internal const val DEL_KEY = "DEL"
+internal const val CLEAR_KEY = "C"
+internal const val EQUAL_KEY = "OK"
+
 enum class Keypad {
     DEL,
     CLEAR,
@@ -45,9 +49,9 @@ enum class Keypad {
 
         fun key(value: String): Keypad {
             return when (value) {
-                "C" -> CLEAR
-                "DEL" -> DEL
-                "=" -> EQUALS
+                CLEAR_KEY -> CLEAR
+                DEL_KEY -> DEL
+                EQUAL_KEY -> EQUALS
                 "/" -> DIVIDE
                 "*" -> MULTIPLY
                 "-" -> MINUS

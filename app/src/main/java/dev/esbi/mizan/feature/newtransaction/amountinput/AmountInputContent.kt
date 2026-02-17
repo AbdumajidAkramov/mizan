@@ -50,16 +50,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.InputModeContent
-import dev.esbi.mizan.feature.newtransaction.store.AmountInputState
+import dev.esbi.mizan.feature.newtransaction.input.TransactionContextRow
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
@@ -70,16 +67,19 @@ import dev.esbi.mizan.utils.annotatedString
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AmountInputContent(
-    state: AmountInputState = AmountInputState(),
-    selectedAccount: Account? = null,
-    selectedCategory: Category? = null,
-    selectedSubCategory: Category? = null,
-    onTypeClick: () -> Unit = {},
-    onCategoryClick: () -> Unit = {},
-    onAccountClick: () -> Unit = {},
-    accept: (NewTransactionStore.Intent) -> Unit
+    state: NewTransactionStore.State,
+    accept: (NewTransactionStore.Intent) -> Unit,
 ) {
     var showTemplates by remember { mutableStateOf(false) }
+    val selectedAccount = state.accounts.find { it.id == state.selectedAccountId }
+    val selectedCategory = state.categoryChooserState.selectedCategory
+    val selectedSubCategory =
+        state.categoryChooserState.selectedChildId?.let { childId ->
+            state.categoryChooserState.categories.find { it.id == childId }
+        }
+    // Transfer-specific accounts
+    val fromAccount = state.accounts.find { it.id == state.selectedAccountId }
+    val toAccount = state.accounts.find { it.id == state.targetAccountId }
 
     Scaffold(
         topBar = {
@@ -120,9 +120,9 @@ internal fun AmountInputContent(
                 verticalArrangement = Arrangement.Center
             ) {
                 // Calculation String (if any)
-                if (state.keypadState.displayText.isNotEmpty()) {
+                if (state.displayText.isNotEmpty()) {
                     Text(
-                        text = state.keypadState.displayText,
+                        text = state.displayText,
                         style = MizanTheme.typography.bodySm,
                         color = MizanTheme.premium.text.tertiary,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -130,8 +130,8 @@ internal fun AmountInputContent(
                 }
 
                 // Large Amount Display
-                val formattedAmount = state.keypadState.amountText.annotatedString(
-                    currency = state.keypadState.currency
+                val formattedAmount = state.amountText.annotatedString(
+                    currency = state.currency
                 )
                 AutoResizingText(
                     text = formattedAmount,
@@ -154,9 +154,13 @@ internal fun AmountInputContent(
                     selectedCategory = selectedCategory,
                     selectedSubCategory = selectedSubCategory,
                     selectedAccount = selectedAccount,
-                    onTypeClick = onTypeClick,
-                    onCategoryClick = onCategoryClick,
-                    onAccountClick = onAccountClick
+                    fromAccount = fromAccount,
+                    toAccount = toAccount,
+
+                    onTypeClick = { accept(NewTransactionStore.Intent.ShowTypeSelector) },
+                    onCategoryClick = { accept(NewTransactionStore.Intent.OpenCategorySheet) },
+                    onFromAccountClick = { accept(NewTransactionStore.Intent.OpenTargetAccountSelection) },
+                    onToAccountClick = { accept(NewTransactionStore.Intent.OpenTargetAccountSelection) }
                 )
 
                 Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
@@ -203,7 +207,7 @@ internal fun AmountInputContent(
 
                         // Next Button - Smart validation
                         NextButton(
-                            enabled = state.keypadState.canSubmit,
+                            enabled = state.canSubmit,
                             onClick = {
                                 accept(NewTransactionStore.Intent.SmartNext)
                             }
@@ -278,7 +282,7 @@ internal fun AmountInputContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AmountInputHeader(
+fun AmountInputHeader(
     showTemplates: Boolean,
     onTemplatesToggle: () -> Unit,
     onClose: () -> Unit
@@ -302,6 +306,7 @@ private fun AmountInputHeader(
         },
         actions = {
             Row(
+                modifier = Modifier.padding(end = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -325,23 +330,6 @@ private fun AmountInputHeader(
                         modifier = Modifier.size(18.dp)
                     )
                 }
-
-                // Close Button
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(MizanTheme.premium.colors.surface2)
-                        .clickable { onClose() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_close),
-                        contentDescription = "Close",
-                        tint = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -351,7 +339,7 @@ private fun AmountInputHeader(
 }
 
 @Composable
-private fun TemplatesCarousel(
+fun TemplatesCarousel(
     onTemplateClick: (QuickTemplate) -> Unit,
     onManageClick: () -> Unit
 ) {
@@ -359,10 +347,6 @@ private fun TemplatesCarousel(
         modifier = Modifier
             .fillMaxWidth()
             .background(MizanTheme.premium.background.primary)
-            .border(
-                width = 1.dp,
-                color = MizanTheme.premium.glass.border
-            )
             .padding(
                 horizontal = MizanTheme.premium.spacing.lg,
                 vertical = MizanTheme.premium.spacing.md
@@ -404,6 +388,11 @@ private fun TemplatesCarousel(
                 )
             }
         }
+        Spacer(
+            modifier = Modifier
+                .height(1.dp)
+                .background(color = MizanTheme.premium.background.secondary)
+        )
     }
 }
 
@@ -535,74 +524,65 @@ private fun NextButton(
     }
 }
 
-// Transaction Context Row - Shows Type, Category, Account chips
 @Composable
-private fun TransactionContextRow(
-    transactionType: TransactionType?,
-    selectedCategory: Category?,
-    selectedSubCategory: Category?,
-    selectedAccount: Account?,
-    onTypeClick: () -> Unit,
-    onCategoryClick: () -> Unit,
-    onAccountClick: () -> Unit
+private fun TransferAccountChip(
+    label: String,
+    isPlaceholder: Boolean,
+    iconRes: Int,
+    onClick: () -> Unit
 ) {
-    val typeColor = when (transactionType) {
-        TransactionType.EXPENSE -> Color(0xFFF5576C) // Coral/Red
-        TransactionType.INCOME -> MizanTheme.premium.colors.emerald
-        TransactionType.TRANSFER -> MizanTheme.premium.colors.primary
-        null -> MizanTheme.premium.text.secondary
-    }
+    val borderColor = MizanTheme.premium.text.tertiary
+    val cornerRadius = 50f
 
-    val typeName = when (transactionType) {
-        TransactionType.EXPENSE -> "Expense"
-        TransactionType.INCOME -> "Income"
-        TransactionType.TRANSFER -> "Transfer"
-        null -> "Expense"
-    }
-
-    val typeIcon = when (transactionType) {
-        TransactionType.EXPENSE -> R.drawable.ic_trend_up
-        TransactionType.INCOME -> R.drawable.ic_down_trend
-        TransactionType.TRANSFER -> R.drawable.ic_swap_horizontal
-        null -> R.drawable.ic_trend_up
-    }
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
+    Row(
+        modifier = Modifier
+            .then(
+                if (isPlaceholder) {
+                    Modifier.drawBehind {
+                        drawRoundRect(
+                            color = borderColor,
+                            style = Stroke(
+                                width = 1.dp.toPx(),
+                                pathEffect = PathEffect.dashPathEffect(
+                                    floatArrayOf(8f, 6f),
+                                    0f
+                                )
+                            ),
+                            cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                        )
+                    }
+                } else {
+                    Modifier
+                        .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
+                        .background(MizanTheme.premium.colors.surface2)
+                }
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // First row: Type, Category, Account chips
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Transaction Type Chip (outlined with dropdown)
-            TransactionTypeChip(
-                label = typeName,
-                color = typeColor,
-                iconRes = typeIcon,
-                onClick = onTypeClick
-            )
-
-            // Category Chip - filled or placeholder
-            CategoryChip(
-                categoryName = selectedCategory?.name,
-                subCategoryName = selectedSubCategory?.name,
-                onClick = onCategoryClick
-            )
-
-            // Account Chip - filled or placeholder
-            AccountChip(
-                accountName = selectedAccount?.name,
-                onClick = onAccountClick
-            )
-        }
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            tint = if (isPlaceholder) MizanTheme.premium.text.tertiary
+            else MizanTheme.premium.text.secondary,
+            modifier = Modifier.size(14.dp)
+        )
+        Text(
+            text = label,
+            style = MizanTheme.typography.bodySm,
+            color = if (isPlaceholder) MizanTheme.premium.text.tertiary
+            else MizanTheme.premium.text.primary,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
 @Composable
-private fun TransactionTypeChip(
+fun TransactionTypeChip(
     label: String,
     color: Color,
     iconRes: Int,
@@ -633,11 +613,18 @@ private fun TransactionTypeChip(
             color = color,
             fontWeight = FontWeight.Medium
         )
+        // Dropdown chevron indicator
+        Icon(
+            painter = painterResource(id = R.drawable.ic_chevron_down),
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(14.dp)
+        )
     }
 }
 
 @Composable
-private fun CategoryChip(
+fun CategoryChip(
     categoryName: String?,
     subCategoryName: String?,
     onClick: () -> Unit
@@ -693,7 +680,7 @@ private fun CategoryChip(
 }
 
 @Composable
-private fun AccountChip(
+fun AccountChip(
     accountName: String?,
     onClick: () -> Unit
 ) {
@@ -763,7 +750,7 @@ data class QuickTemplate(
 )
 
 // Mock templates for preview
-private val mockTemplates = listOf(
+val mockTemplates = listOf(
     QuickTemplate(
         id = "1",
         name = "Daily Lunch",

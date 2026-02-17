@@ -25,7 +25,7 @@ internal class NavigationHandler @Inject constructor() {
     fun handleSubmit(state: AmountInputState): NewTransactionStore.Label? {
         return when (state.inputMode) {
             InputMode.Manual -> {
-                if (state.keypadState.canSubmit) {
+                if (state.canSubmit) {
                     NewTransactionStore.Label.MapsToNextStep
                 } else {
                     null
@@ -50,7 +50,7 @@ internal class NavigationHandler @Inject constructor() {
      */
     fun canSubmit(state: AmountInputState): Boolean {
         return when (state.inputMode) {
-            InputMode.Manual -> state.keypadState.canSubmit
+            InputMode.Manual -> state.canSubmit
             InputMode.Voice -> state.voiceInputState.isValid
             InputMode.Scan -> true // TODO: Implement scan validation
         }

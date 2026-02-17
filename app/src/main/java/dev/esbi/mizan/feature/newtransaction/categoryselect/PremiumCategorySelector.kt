@@ -57,24 +57,6 @@ fun PremiumCategorySelector(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        // Header
-        Text(
-            text = "Select Category",
-            style = MizanTheme.typography.headingLg,
-            color = MizanTheme.premium.text.primary,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = "Choose a category for this transaction",
-            style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.tertiary
-        )
-
-        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
-
         // Category List
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -209,6 +191,7 @@ fun CategoryItemCard(
 
 @Composable
 fun PremiumAddCategoryItem(
+    modifier: Modifier = Modifier,
     onNavigateToManageCategories: (() -> Unit)?,
 ) {
     onNavigateToManageCategories?.let { navigate ->
@@ -223,7 +206,7 @@ fun PremiumAddCategoryItem(
 
         Surface(
             onClick = navigate,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .dashedBorder(
                     color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),

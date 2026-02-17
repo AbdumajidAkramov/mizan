@@ -1,15 +1,17 @@
 package dev.esbi.mizan.feature.newtransaction.accountselect
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,16 +27,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.feature.addtransaction.presentation.widgets.dashedBorder
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -49,7 +56,8 @@ fun AccountSelectionContent(
     selectedAccountId: Long?,
     onAccountClick: (Account) -> Unit,
     onAddAccountClick: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
@@ -66,83 +74,53 @@ fun AccountSelectionContent(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MizanTheme.premium.background.primary)
+    // Account List
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Drag Handle
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MizanTheme.premium.colors.surface3)
-            )
+        // Cash Section
+        groupedAccounts[AccountGroupType.CASH]?.let { cashAccounts ->
+            item {
+                AccountSectionHeader(
+                    title = "CASH",
+                    iconRes = R.drawable.ic_attach_money
+                )
+            }
+            items(cashAccounts, key = { it.id }) { account ->
+                AccountCard(
+                    account = account,
+                    isSelected = account.id == selectedAccountId,
+                    currencyFormat = currencyFormat,
+                    onClick = { onAccountClick(account) }
+                )
+            }
         }
 
-        // Header
-        AccountSelectionHeader(onClose = onClose)
-
-        // Account List
-        LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(
-                horizontal = MizanTheme.premium.spacing.lg,
-                vertical = MizanTheme.premium.spacing.md
-            ),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Cash Section
-            groupedAccounts[AccountGroupType.CASH]?.let { cashAccounts ->
-                item {
-                    AccountSectionHeader(
-                        title = "CASH",
-                        iconRes = R.drawable.ic_attach_money
-                    )
-                }
-                items(cashAccounts, key = { it.id }) { account ->
-                    AccountCard(
-                        account = account,
-                        isSelected = account.id == selectedAccountId,
-                        currencyFormat = currencyFormat,
-                        onClick = { onAccountClick(account) }
-                    )
-                }
-            }
-
-            // Bank Accounts Section
-            groupedAccounts[AccountGroupType.BANK]?.let { bankAccounts ->
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AccountSectionHeader(
-                        title = "BANK ACCOUNTS",
-                        iconRes = R.drawable.ic_home
-                    )
-                }
-                items(bankAccounts, key = { it.id }) { account ->
-                    AccountCard(
-                        account = account,
-                        isSelected = account.id == selectedAccountId,
-                        currencyFormat = currencyFormat,
-                        onClick = { onAccountClick(account) }
-                    )
-                }
-            }
-
-            // Add Account Button
+        // Bank Accounts Section
+        groupedAccounts[AccountGroupType.BANK]?.let { bankAccounts ->
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-                AddAccountButton(onClick = onAddAccountClick)
+                Spacer(modifier = Modifier.height(8.dp))
+                AccountSectionHeader(
+                    title = "BANK ACCOUNTS",
+                    iconRes = R.drawable.ic_home
+                )
             }
+            items(bankAccounts, key = { it.id }) { account ->
+                AccountCard(
+                    account = account,
+                    isSelected = account.id == selectedAccountId,
+                    currencyFormat = currencyFormat,
+                    onClick = { onAccountClick(account) }
+                )
+            }
+        }
+
+        // Add Account Button
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+            AddAccountButton(onClick = onAddAccountClick)
         }
     }
 }
@@ -273,8 +251,8 @@ private fun AccountCard(
                 Text(
                     text = account.name,
                     style = MizanTheme.typography.bodyMd,
-                    color = if (isSelected) MizanTheme.premium.colors.emerald 
-                            else MizanTheme.premium.text.primary,
+                    color = if (isSelected) MizanTheme.premium.colors.emerald
+                    else MizanTheme.premium.text.primary,
                     fontWeight = FontWeight.Medium
                 )
                 Spacer(modifier = Modifier.height(2.dp))
@@ -308,18 +286,30 @@ private fun AccountCard(
 
 @Composable
 private fun AddAccountButton(onClick: () -> Unit) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.98f else 1f,
+        label = "scale_animation"
+    )
     Surface(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
-            .border(
-                width = 2.dp,
-                color = MizanTheme.premium.glass.border,
-                shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+            .dashedBorder(
+                color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
+                strokeWidth = 2.dp,
+                dashLength = 8.dp,  // Chiziq uzunligi
+                gapLength = 6.dp,   // Chiziqlar orasidagi masofa
+                cornerRadius = MizanTheme.premium.radius.xl
             )
-            .clickable { onClick() },
-        color = Color.Transparent,
-        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+            .graphicsLayer(scaleX = scale, scaleY = scale),
+        // PremiumDesignSystem dagi radiuslardan foydalanamiz
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl),
+        // Emerald rangining 40% transparent holati (bg-emerald/40)
+        color = MizanTheme.premium.colors.emerald.copy(alpha = 0.05f),
+        interactionSource = interactionSource
     ) {
         Row(
             modifier = Modifier
@@ -396,8 +386,82 @@ private fun formatBalance(balance: Double, currencySymbol: String): String {
     }.format(kotlin.math.abs(balance))
 
     return if (balance < 0) {
-        "-$currencySymbol$formatted"
+        "-$formatted $currencySymbol"
     } else {
-        "$currencySymbol$formatted"
+        "$formatted $currencySymbol"
+    }
+}
+
+
+@Preview(showBackground = false)
+@Composable
+fun AccountSelectionContentPreview() {
+
+    val uzs = Currency(
+        code = "UZS",
+        name = "O'zbek so'mi",
+        symbol = "so'm",
+        rateToBase = 1.0,
+        isBaseCurrency = true
+    )
+
+    val usd = Currency(
+        code = "USD",
+        name = "US Dollar",
+        symbol = "$",
+        rateToBase = 12_500.0,
+        isBaseCurrency = false
+    )
+
+    val mockAccounts = listOf(
+        Account(
+            id = 1L,
+            groupId = 100L,
+            name = "Cash Wallet",
+            type = Account.Type.CASH,
+            balance = 250_000.0,
+            currency = uzs,
+            iconName = "ic_cash",
+            color = "#4CAF50",
+            isArchived = false,
+            excludeFromTotal = false,
+            description = "Main daily cash"
+        ),
+        Account(
+            id = 2L,
+            groupId = 100L,
+            name = "Humo Card",
+            type = Account.Type.CARD,
+            balance = 1_450_000.0,
+            currency = uzs,
+            iconName = "ic_card",
+            color = "#2196F3",
+            isArchived = false,
+            excludeFromTotal = false,
+            description = null
+        ),
+        Account(
+            id = 3L,
+            groupId = 200L,
+            name = "Visa USD",
+            type = Account.Type.CARD,
+            balance = 320.0,
+            currency = usd,
+            iconName = "ic_visa",
+            color = "#FF9800",
+            isArchived = false,
+            excludeFromTotal = false,
+            description = "Online payments"
+        )
+    )
+
+    dev.esbi.mizan.ui.theme.MizanTheme() {
+        AccountSelectionContent(
+            accounts = mockAccounts,
+            selectedAccountId = 2L,
+            onAccountClick = {},
+            onAddAccountClick = {},
+            onClose = {}
+        )
     }
 }

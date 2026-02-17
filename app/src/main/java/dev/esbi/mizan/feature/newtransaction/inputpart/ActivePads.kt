@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.inputcontent
+package dev.esbi.mizan.feature.newtransaction.inputpart
 
 sealed interface ActivePads {
     class DatePad : ActivePads

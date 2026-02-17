@@ -16,19 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContentV2
+import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.confirm.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanDatePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
-import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeContent
 import dev.esbi.mizan.feature.newtransaction.transactiontype.PremiumTransactionTypeSelector
+import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeContent
+import dev.esbi.mizan.feature.premiumaddtransaction.PremiumNewTransaction
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,18 +44,12 @@ internal fun NewTransactionScreen(
     val state by viewModel.state.collectAsState(initial = NewTransactionStore.State())
     val accept = viewModel::onIntent
     val context = LocalContext.current
-    var showDatePicker by remember { mutableStateOf(false) }
-    val accountSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    // Get selected account name
-    val selectedAccountName = remember(state.selectedAccountId, state.accounts) {
-        state.accounts.find { it.id == state.selectedAccountId }?.name
-    }
     LaunchedEffect(labels) {
         when (labels) {
             NewTransactionStore.Label.MapsToNextStep -> onSubmit()
             NewTransactionStore.Label.TransactionSaved -> onSubmit()
             NewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
+            NewTransactionStore.Label.NavigateToManageCategories -> onNavigateToManageCategories()
             NewTransactionStore.Label.Back -> onBackPressed()
             is NewTransactionStore.Label.ShowError -> {
                 Toast.makeText(
@@ -69,6 +63,37 @@ internal fun NewTransactionScreen(
             }
         }
     }
+
+    PremiumNewTransaction(
+        state = state,
+        accept = accept
+    )
+    /*
+        NewTransactionScreenContent(
+            state = state,
+            accept = accept,
+            onNavigateToManageCategories = onNavigateToManageCategories,
+            onBackPressed = onBackPressed
+        )
+    */
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewTransactionScreenContent(
+    state: NewTransactionStore.State,
+    accept: (NewTransactionStore.Intent) -> Unit,
+    onNavigateToManageCategories: () -> Unit,
+    onBackPressed: () -> Unit,
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    val accountSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Get selected account name
+    val selectedAccountName = remember(state.selectedAccountId, state.accounts) {
+        state.accounts.find { it.id == state.selectedAccountId }?.name
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -77,28 +102,15 @@ internal fun NewTransactionScreen(
         when (state.currentPage) {
             is TransactionStep.AmountInput -> {
                 // Get selected account and category
-                val selectedAccount = state.accounts.find { it.id == state.selectedAccountId }
-                val selectedCategory = state.categoryChooserState.selectedCategory
-                val selectedSubCategory =
-                    state.categoryChooserState.selectedChildId?.let { childId ->
-                        state.categoryChooserState.categories.find { it.id == childId }
-                    }
-
                 AmountInputContent(
                     state = state,
-                    selectedAccount = selectedAccount,
-                    selectedCategory = selectedCategory,
-                    selectedSubCategory = selectedSubCategory,
-                    onTypeClick = { accept(NewTransactionStore.Intent.ShowTypeSelector) },
-                    onCategoryClick = { accept(NewTransactionStore.Intent.OpenCategorySheet) },
-                    onAccountClick = { accept(NewTransactionStore.Intent.OpenAccountSelection) },
                     accept = accept
                 )
             }
 
             is TransactionStep.TypeSelector -> {
                 TransactionTypeContent(
-                    amount = state.keypadState.amountText,
+                    amount = state.amountText,
                     onTypeSelect = { type ->
                         accept(NewTransactionStore.Intent.OnTypeSelect(type))
                     }
@@ -107,7 +119,7 @@ internal fun NewTransactionScreen(
 
             is TransactionStep.CategoryChooser -> {
                 CategoryChooserContentV2(
-                    amount = state.keypadState.amountText,
+                    amount = state.amountText,
                     state = state.categoryChooserState,
                     selectedAccountName = selectedAccountName,
                     accept = accept,
@@ -132,9 +144,9 @@ internal fun NewTransactionScreen(
                 }
 
                 val confirmState = ConfirmTransactionUiState(
-                    amount = state.keypadState.amountText.ifEmpty { "0" },
+                    amount = state.amountText.ifEmpty { "0" },
                     currencyCode = selectedAccount?.currency?.code ?: "UZS",
-                    transactionType = state.transactionType ?: Transaction.Type.EXPENSE,
+                    transactionType = state.transactionType,
                     categoryName = state.categoryChooserState.selectedCategory?.name,
                     subCategoryName = subCategoryName,
                     categoryIcon = state.categoryChooserState.selectedCategory?.iconName,
@@ -197,9 +209,10 @@ internal fun NewTransactionScreen(
     }
 
     // Category Selection Sheet
+/*
     if (state.isCategorySheetVisible) {
         CategorySelectionSheet(
-            isVisible = state.isCategorySheetVisible,
+            isVisible = true,
             categories = state.categoryChooserState.categories,
             selectedParentId = state.categoryChooserState.selectedParentId,
             selectedChildId = state.categoryChooserState.selectedChildId,
@@ -217,7 +230,9 @@ internal fun NewTransactionScreen(
                 accept(NewTransactionStore.Intent.CloseCategorySheet)
             }
         )
+
     }
+*/
 
     // Account Selection Bottom Sheet
     if (state.isAccountSheetVisible) {

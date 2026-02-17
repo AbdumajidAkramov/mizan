@@ -11,7 +11,13 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
                 categoryChooserState = CategoryChooserState(msg.type)
             )
 
-            is NewTransactionStore.Message.UpdateKeypadState -> copy(keypadState = msg.state)
+            is NewTransactionStore.Message.UpdateKeypadState -> copy(
+                operator = msg.state.operator,
+                leftNumber = msg.state.leftNumber,
+                rightNumber = msg.state.rightNumber,
+                currency = msg.state.currency,
+            )
+
             is NewTransactionStore.Message.UpdateVoiceInputStateState -> copy(voiceInputState = msg.state)
             is NewTransactionStore.Message.UpdateMode -> copy(inputMode = msg.mode)
             is NewTransactionStore.Message.UpdateCameraInputState -> copy(cameraInputState = msg.state)
@@ -42,15 +48,15 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
             is NewTransactionStore.Message.UpdateTargetAccount -> copy(targetAccountId = msg.accountId)
             is NewTransactionStore.Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is NewTransactionStore.Message.SetAccountSheetVisible -> copy(isAccountSheetVisible = msg.visible)
-            is NewTransactionStore.Message.SetTypeSelectorVisible -> 
+            is NewTransactionStore.Message.SetTypeSelectorVisible ->
                 copy(isTypeSelectorVisible = msg.visible)
-            
-            is NewTransactionStore.Message.SetCategorySheetVisible -> 
+
+            is NewTransactionStore.Message.SetCategorySheetVisible ->
                 copy(isCategorySheetVisible = msg.visible)
-            
-            is NewTransactionStore.Message.SetSaveAsTemplate -> 
+
+            is NewTransactionStore.Message.SetSaveAsTemplate ->
                 copy(saveAsTemplate = msg.saveAsTemplate)
-            
+
             is NewTransactionStore.Message.SetLoading -> copy(isLoading = msg.isLoading)
             is NewTransactionStore.Message.SetError -> copy(error = msg.error)
 
@@ -95,6 +101,14 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
                     selectedChildId = msg.category.id,
                     selectedParentId = msg.category.parentId
                 )
+            )
+
+            is NewTransactionStore.Message.UpdateTransactionInputState -> copy(
+                part2 = msg.state
+            )
+
+            is NewTransactionStore.Message.UpdateSelectedAccountActive -> copy(
+                selectedAccountActive = msg.isActive
             )
         }
     }

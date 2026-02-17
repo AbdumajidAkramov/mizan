@@ -9,6 +9,7 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
+import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
@@ -16,8 +17,10 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHan
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.voice.TransactionVoiceParser
 import dev.esbi.mizan.feature.newtransaction.amountinput.voice.VoiceRecognitionManager
+import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserMessage.ParentCategorySelected
+import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -62,12 +65,13 @@ internal class NewTransactionExecutor @Inject constructor(
         accountRepository.observeAccounts()
             .onEach { accounts ->
                 dispatch(NewTransactionStore.Message.UpdateAccounts(accounts))
-                
+
                 // Auto-select first account if none selected
                 if (state().selectedAccountId == null && accounts.isNotEmpty()) {
                     // Prefer CASH type, otherwise first account
-                    val defaultAccount = accounts.find { it.type == dev.esbi.mizan.domain.model.Account.Type.CASH }
-                        ?: accounts.first()
+                    val defaultAccount =
+                        accounts.find { it.type == dev.esbi.mizan.domain.model.Account.Type.CASH }
+                            ?: accounts.first()
                     dispatch(NewTransactionStore.Message.UpdateSelectedAccount(defaultAccount.id))
                 }
             }
@@ -117,12 +121,14 @@ internal class NewTransactionExecutor @Inject constructor(
                     val amountStr = amount.toString()
                     // For simplicity, we'll update the leftNumber directly
                     // In a real implementation, you might want to build the full keypad state
-                    val currentKeypadState = state().keypadState
-                    dispatch(
-                        NewTransactionStore.Message.UpdateKeypadState(
-                            currentKeypadState.copy(leftNumber = amountStr)
-                        )
-                    )
+//                    val currentKeypadState = state().keypadState
+                    /*
+                                        dispatch(
+                                            NewTransactionStore.Message.UpdateKeypadState(
+                                                currentKeypadState.copy(leftNumber = amountStr)
+                                            )
+                                        )
+                    */
                 }
 
                 // Turn off listening state
@@ -143,6 +149,7 @@ internal class NewTransactionExecutor @Inject constructor(
                 scope.launch {
                     categoryRepository.getAllCategories()
                         .collect {
+                            println(it)
                             dispatch(NewTransactionStore.CategoryChooserMessage.CategoriesLoaded(it))
                         }
                 }
@@ -201,36 +208,39 @@ internal class NewTransactionExecutor @Inject constructor(
                 scope.launch {
                     dispatch(NewTransactionStore.Message.SetLoading(true))
                     dispatch(NewTransactionStore.Message.SetError(null))
-                    
+
                     try {
                         val currentState = state()
-                        
+
                         // Get exchange rate for the selected currency
-                        val currency = currencyRepository.getCurrencyByCode(currentState.keypadState.currency)
+                        val currency =
+                            currencyRepository.getCurrencyByCode(currentState.currency)
                         val exchangeRate = currency?.rateToBase ?: 1.0
-                        
+
                         // Get category ID (prefer child category if selected)
-                        val categoryId = currentState.categoryChooserState.selectedChildId 
+                        val categoryId = currentState.categoryChooserState.selectedChildId
                             ?: currentState.categoryChooserState.selectedParentId
-                        
+
                         // Create Transaction domain model
                         val transaction = Transaction(
                             id = 0, // New transaction
                             type = when (currentState.transactionType) {
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.EXPENSE -> 
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.EXPENSE ->
                                     Transaction.Type.EXPENSE
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.INCOME -> 
+
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.INCOME ->
                                     Transaction.Type.INCOME
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.TRANSFER -> 
+
+                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.TRANSFER ->
                                     Transaction.Type.TRANSFER
                             },
-                            amount = currentState.keypadState.amount,
+                            amount = currentState.amount,
                             currency = currency ?: dev.esbi.mizan.domain.model.Currency(
-                                code = currentState.keypadState.currency,
-                                name = currentState.keypadState.currency,
-                                symbol = currentState.keypadState.currency,
+                                code = currentState.currency,
+                                name = currentState.currency,
+                                symbol = currentState.currency,
                                 rateToBase = exchangeRate,
-                                isBaseCurrency = currentState.keypadState.currency == "UZS"
+                                isBaseCurrency = currentState.currency == "UZS"
                             ),
                             exchangeRate = exchangeRate,
                             targetAmount = null, // TODO: Calculate for transfers if needed
@@ -252,18 +262,19 @@ internal class NewTransactionExecutor @Inject constructor(
                             merchantName = null,
                             fiscalSign = null
                         )
-                        
+
                         // Save transaction
                         val result = transactionRepository.saveTransaction(transaction)
-                        
+
                         if (result.isSuccess) {
                             // Save as template if enabled
                             if (currentState.saveAsTemplate) {
-                                val categoryName = currentState.categoryChooserState.selectedCategory?.name 
-                                    ?: "Template"
+                                val categoryName =
+                                    currentState.categoryChooserState.selectedCategory?.name
+                                        ?: "Template"
                                 val template = Template(
                                     name = categoryName,
-                                    amount = currentState.keypadState.amount,
+                                    amount = currentState.amount,
                                     iconName = currentState.categoryChooserState.selectedCategory?.iconName,
                                     transactionType = transaction.type,
                                     categoryId = categoryId,
@@ -303,6 +314,12 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.Intent.OpenAccountSelection -> {
                 dispatch(NewTransactionStore.Message.SetAccountSheetVisible(true))
             }
+
+            is NewTransactionStore.Intent.OpenTargetAccountSelection -> {
+                // For now, use same sheet - in future, could differentiate target selection
+                dispatch(NewTransactionStore.Message.SetAccountSheetVisible(true))
+            }
+
             is NewTransactionStore.Intent.OpenAccountManageScreen -> {
                 publish(NewTransactionStore.Label.NavigateToAccountManage)
             }
@@ -320,8 +337,52 @@ internal class NewTransactionExecutor @Inject constructor(
                 dispatch(NewTransactionStore.Message.SetSaveAsTemplate(intent.saveAsTemplate))
             }
 
+            is NewTransactionStore.Intent.ShowAmountInputPad -> {
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        state = TransactionInputState.TransactionAmountInput()
+                    )
+                )
+            }
+
+            is NewTransactionStore.Intent.ShowSelectAccountSelector -> {
+                dispatch(
+                    NewTransactionStore.Message.UpdateSelectedAccountActive(isActive = true)
+                )
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        state = TransactionInputState.TransactionAccountSelector()
+                    )
+                )
+            }
+
+            is NewTransactionStore.Intent.ShowTargetAccountSelector -> {
+                dispatch(
+                    NewTransactionStore.Message.UpdateSelectedAccountActive(isActive = false)
+                )
+
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        state = TransactionInputState.TransactionAccountSelector()
+                    )
+                )
+            }
+
+            is NewTransactionStore.Intent.ShowCategorySelector -> {
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        state = TransactionInputState.TransactionCategorySelector()
+                    )
+                )
+            }
+
             is NewTransactionStore.Intent.ShowTypeSelector -> {
-                dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(true))
+//                dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(true))
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        state = TransactionInputState.TransactionTypeSelector()
+                    )
+                )
             }
 
             is NewTransactionStore.Intent.HideTypeSelector -> {
@@ -331,6 +392,7 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.Intent.SelectTransactionType -> {
                 dispatch(NewTransactionStore.Message.UpdateTransactionType(intent.type))
                 dispatch(NewTransactionStore.Message.SetTypeSelectorVisible(false))
+                next()
             }
 
             is NewTransactionStore.Intent.OpenCategorySheet -> {
@@ -343,11 +405,7 @@ internal class NewTransactionExecutor @Inject constructor(
 
             is NewTransactionStore.Intent.SelectParentCategory -> {
                 // Update category chooser state
-                dispatch(
-                    NewTransactionStore.CategoryChooserMessage.ParentCategorySelected(
-                        category = intent.category
-                    )
-                )
+                dispatch(ParentCategorySelected(category = intent.category))
                 dispatch(NewTransactionStore.Message.SetCategorySheetVisible(false))
             }
 
@@ -364,7 +422,7 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.Intent.SmartNext -> {
                 handleSmartNext()
             }
-            
+
             // Delegate Calculator logic
             is NewTransactionStore.AmountInputIntent -> {
                 handleAmountInputIntent(intent)
@@ -381,23 +439,89 @@ internal class NewTransactionExecutor @Inject constructor(
             is NewTransactionStore.CategoryChooserIntent -> {
                 handleCategoryChooserIntent(intent)
             }
+
+            is NewTransactionStore.Intent.HidePart2 -> {
+                dispatch(
+                    NewTransactionStore.Message.UpdateTransactionInputState(
+                        TransactionInputState.TransactionEmpty
+                    )
+                )
+            }
+
+            is NewTransactionStore.Intent.OpenCategoryManageScreen -> {
+                publish(NewTransactionStore.Label.NavigateToManageCategories)
+            }
+
+            is NewTransactionStore.Intent.OnCategorySelect -> {
+                if (intent.category.parentId == null) {
+                    selectParentCategory(intent.category)
+                } else {
+                    selectSubCategory(intent.category)
+                }
+            }
+        }
+    }
+
+    private fun next() {
+        with(state()) {
+            when {
+                amount == 0.0 -> {
+                    dispatch(
+                        NewTransactionStore.Message.UpdateTransactionInputState(
+                            TransactionInputState.TransactionAmountInput()
+                        )
+                    )
+                }
+
+                categoryChooserState.selectedCategory == null -> {
+                    dispatch(
+                        NewTransactionStore.Message.UpdateTransactionInputState(
+                            TransactionInputState.TransactionCategorySelector()
+                        )
+                    )
+                }
+
+                selectedAccountId == null || targetAccountId == null -> {
+                    dispatch(
+                        NewTransactionStore.Message.UpdateTransactionInputState(
+                            TransactionInputState.TransactionAccountSelector()
+                        )
+                    )
+                }
+
+                else -> {
+                    pages.push(TransactionStep.ConfirmSave())
+                    updateCurrentPage()
+                }
+            }
         }
     }
 
     private fun handleAmountInputIntent(intent: NewTransactionStore.AmountInputIntent) {
         when (intent) {
             is NewTransactionStore.AmountInputIntent.OnNumberClick -> {
-                val newKeypadState = manualInputHandler.handleNumberClick(
-                    intent.key,
-                    state().keypadState
-                )
-                dispatch(NewTransactionStore.Message.UpdateKeypadState(newKeypadState))
+                with(state()) {
+                    val newKeypadState = manualInputHandler.handleNumberClick(
+                        intent.key,
+                        KeypadState(
+                            operator = operator,
+                            leftNumber = leftNumber,
+                            rightNumber = rightNumber,
+                            currency = currency,
+                        )
+                    )
+                    dispatch(NewTransactionStore.Message.UpdateKeypadState(newKeypadState))
+                    if (intent.key == Keypad.EQUALS) {
+                        dispatch(
+                            NewTransactionStore.Message.UpdateTransactionInputState(
+                                TransactionInputState.TransactionEmpty
+                            )
+                        )
+                        next()
+                    }
+
+                }
             }
-
-            is NewTransactionStore.AmountInputIntent.OnNextKeyButtonClick -> {
-
-            }
-
         }
     }
 
@@ -550,7 +674,7 @@ internal class NewTransactionExecutor @Inject constructor(
      * Smart validation chain for the "Next" button.
      * Checks all required fields in order and opens the appropriate selector
      * if something is missing, or navigates to Confirm if all fields are valid.
-     * 
+     *
      * Validation Order:
      * 1. Amount > 0
      * 2. Category selected
@@ -561,7 +685,7 @@ internal class NewTransactionExecutor @Inject constructor(
         val currentState = state()
 
         // Step 1: Check if amount is valid (> 0)
-        if (currentState.keypadState.amount <= 0.0) {
+        if (currentState.amount <= 0.0) {
             // Show error - amount is required
             publish(NewTransactionStore.Label.ShowError("Please enter an amount"))
             return

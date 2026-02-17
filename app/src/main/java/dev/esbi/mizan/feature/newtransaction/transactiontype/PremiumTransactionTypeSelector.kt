@@ -159,7 +159,7 @@ fun PremiumTransactionTypeSelector(
 }
 
 @Composable
-private fun TransactionTypeItem(
+fun TransactionTypeItem(
     typeInfo: TransactionTypeInfo,
     isSelected: Boolean,
     scale: Float,

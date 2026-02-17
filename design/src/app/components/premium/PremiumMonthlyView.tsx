@@ -114,6 +114,9 @@ export function PremiumMonthlyView({
   // State for expanded weeks
   const [expandedWeeks, setExpandedWeeks] = useState<Set<number>>(new Set([1, 2, 3, 4, 5]));
 
+  // State for selected week in chart (for highlighting)
+  const [selectedWeekInChart, setSelectedWeekInChart] = useState<number | null>(null);
+
   // State for swipe gestures
   const [swipeState, setSwipeState] = useState<SwipeState>({
     transactionId: null,
@@ -325,20 +328,159 @@ export function PremiumMonthlyView({
 
       {/* Weekly Sections - Scrollable */}
       <div className="flex-1 overflow-y-auto px-[var(--premium-space-md)] py-[var(--premium-space-md)]">
+        {/* NEW: Weekly Expense Summary Chart */}
+        {weeklyData.length > 0 && (
+          <div
+            className="
+              mb-[var(--premium-space-lg)]
+              p-[var(--premium-space-lg)]
+              rounded-[var(--premium-radius-xl)]
+              bg-white/5
+              backdrop-blur-xl
+              border border-white/10
+              animate-[fadeIn_0.4s_ease-out]
+            "
+          >
+            {/* Chart Header */}
+            <div className="flex items-center justify-between mb-[var(--premium-space-md)]">
+              <div>
+                <h3 className="heading-sm text-white font-semibold mb-[2px]">
+                  Weekly Expense Summary
+                </h3>
+                <p className="body-xs text-white/60">
+                  Tap a bar to highlight the week below
+                </p>
+              </div>
+              <div className="flex items-center gap-[6px]">
+                <div className="w-[8px] h-[8px] rounded-full bg-[#10B981]" />
+                <span className="body-xs text-white/60">Positive</span>
+                <div className="w-[8px] h-[8px] rounded-full bg-[#F43F5E] ml-[8px]" />
+                <span className="body-xs text-white/60">Negative</span>
+              </div>
+            </div>
+
+            {/* Bar Chart */}
+            <div className="flex items-end justify-between gap-[8px] h-[160px] mb-[var(--premium-space-sm)]">
+              {weeklyData.map((week) => {
+                const isPositive = week.balance >= 0;
+                const barColor = isPositive ? '#10B981' : '#F43F5E';
+                const maxExpense = Math.max(...weeklyData.map(w => w.expense));
+                const barHeight = maxExpense > 0 ? (week.expense / maxExpense) * 100 : 0;
+                const isSelected = selectedWeekInChart === week.weekNumber;
+
+                return (
+                  <button
+                    key={week.weekNumber}
+                    onClick={() => {
+                      setSelectedWeekInChart(week.weekNumber);
+                      // Scroll to week in list
+                      const weekElement = document.getElementById(`week-${week.weekNumber}`);
+                      if (weekElement) {
+                        weekElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                      }
+                      // Expand the week
+                      setExpandedWeeks((prev) => new Set(prev).add(week.weekNumber));
+                    }}
+                    className={`
+                      flex-1
+                      flex flex-col items-center
+                      transition-all duration-300
+                      active:scale-95
+                      ${isSelected ? 'opacity-100' : 'opacity-80 hover:opacity-100'}
+                    `}
+                  >
+                    {/* Bar */}
+                    <div className="w-full flex flex-col justify-end h-full mb-[8px]">
+                      <div
+                        className={`
+                          w-full
+                          rounded-t-[6px]
+                          transition-all duration-500
+                          ${isSelected ? 'shadow-[0_0_20px_rgba(16,185,129,0.5)]' : ''}
+                        `}
+                        style={{
+                          height: `${barHeight}%`,
+                          backgroundColor: barColor,
+                          minHeight: week.expense > 0 ? '20px' : '4px',
+                        }}
+                      />
+                    </div>
+
+                    {/* Week Label */}
+                    <div className="text-center">
+                      <p
+                        className={`
+                          body-xs font-medium
+                          ${isSelected ? 'text-white' : 'text-white/60'}
+                        `}
+                      >
+                        W{week.weekNumber}
+                      </p>
+                      <p className="body-xs text-white/40">
+                        ${week.expense.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Chart Footer - Highest Week Info */}
+            {(() => {
+              const highestWeek = weeklyData.reduce((max, week) => 
+                week.expense > max.expense ? week : max
+              , weeklyData[0]);
+              
+              return (
+                <div
+                  className="
+                    flex items-center justify-between
+                    p-[var(--premium-space-sm)]
+                    rounded-[var(--premium-radius-md)]
+                    bg-white/5
+                    border border-white/10
+                  "
+                >
+                  <div className="flex items-center gap-[var(--premium-space-sm)]">
+                    <TrendingUp size={16} className="text-[#F43F5E]" />
+                    <span className="body-sm text-white/80">
+                      Highest spending week
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <p className="body-sm font-bold text-white">
+                      Week {highestWeek.weekNumber}
+                    </p>
+                    <p className="body-xs text-[#F43F5E]">
+                      ${highestWeek.expense.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
         <div className="space-y-[var(--premium-space-md)]">
           {weeklyData.map((week) => {
             const isExpanded = expandedWeeks.has(week.weekNumber);
+            const isHighlighted = selectedWeekInChart === week.weekNumber;
 
             return (
               <div
                 key={week.weekNumber}
-                className="
+                id={`week-${week.weekNumber}`}
+                className={`
                   rounded-[var(--premium-radius-lg)]
                   bg-[var(--premium-surface-2)]
-                  border border-[var(--premium-glass-border)]
+                  border
                   overflow-hidden
                   transition-all duration-300
-                "
+                  ${isHighlighted 
+                    ? 'border-[#10B981] shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
+                    : 'border-[var(--premium-glass-border)]'
+                  }
+                `}
               >
                 {/* Week Header - Tappable */}
                 <button

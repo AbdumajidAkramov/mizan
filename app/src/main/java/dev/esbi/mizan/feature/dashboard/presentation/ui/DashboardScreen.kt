@@ -35,8 +35,6 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.StatsRow
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.TransactionsSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.PremiumFeaturesSection
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.QuickActionsSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CashFlowDataPoint
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.CategorySpending
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.ChartDataPoint
@@ -73,7 +71,11 @@ fun DashboardScreen(
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
-            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 notificationPermissionLauncher.launch(permission)
             }
         }
@@ -133,16 +135,6 @@ private fun DashboardScrollContent(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item { AnimSection(visible, 0) { HeaderSection() } }
-
-        item {
-            AnimSection(visible) {
-                QuickActionsSection(
-                    onAddTransactionClick = onAddTransactionClick,
-                    onViewHistoryClick = onSeeAllTransactions,
-                    onTransferClick = onNavigateToTransfer
-                )
-            }
-        }
 
         item {
             AnimSection(visible) {
@@ -256,14 +248,11 @@ private fun DashboardScrollContent(
             }
         }
         item { AnimSection(visible) { InsightsSection() } }
-        item { AnimSection(visible) { TransactionsSection(data.recentTransactions, onSeeAllClick = onSeeAllTransactions) } }
-
-        // Premium Features Entry Points
         item {
             AnimSection(visible) {
-                PremiumFeaturesSection(
-                    onGoalsClick = onNavigateToGoals,
-                    onSubscriptionsClick = onNavigateToSubscriptions
+                TransactionsSection(
+                    data.recentTransactions,
+                    onSeeAllClick = onSeeAllTransactions
                 )
             }
         }
