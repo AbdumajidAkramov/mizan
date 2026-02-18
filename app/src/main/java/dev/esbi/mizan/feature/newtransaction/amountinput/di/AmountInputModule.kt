@@ -18,7 +18,6 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHand
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputObserver
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputStoreFactory
 import dev.esbi.mizan.feature.newtransaction.store.executors.NewTransactionExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStoreFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Provider

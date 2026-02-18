@@ -63,6 +63,7 @@ import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.utils.annotatedString
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -450,7 +451,7 @@ private fun TemplateCard(
 
             // Amount
             Text(
-                text = "$${String.format("%.2f", template.amount)}",
+                text = "$${String.format(Locale.CANADA, "%.2f", template.amount)}",
                 style = MizanTheme.typography.headingSm,
                 color = MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.SemiBold,

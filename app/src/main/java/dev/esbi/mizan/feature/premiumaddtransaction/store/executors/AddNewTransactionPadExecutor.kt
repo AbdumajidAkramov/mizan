@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import javax.inject.Inject
 
