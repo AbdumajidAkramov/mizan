@@ -3,6 +3,7 @@ package dev.esbi.mizan.feature.newtransaction.amountinput.di
 import dagger.Subcomponent
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
+import dev.esbi.mizan.feature.premiumaddtransaction.di.AddNewTransactionDepsModule
 
 /**
  * Dagger Subcomponent for AmountInput screen.
@@ -10,7 +11,7 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
  * each time the screen is entered, a new instance of scoped dependencies is created.
  */
 @ScreenScope
-@Subcomponent(modules = [AmountInputModule::class])
+@Subcomponent(modules = [AmountInputModule::class, AddNewTransactionDepsModule::class])
 internal interface AmountInputComponent {
 
     val viewModel: AmountInputViewModel

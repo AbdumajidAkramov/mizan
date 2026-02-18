@@ -35,18 +35,13 @@ private sealed class CategoryViewState {
 @Composable
 fun CategorySelectionSheet(
     modifier: Modifier = Modifier,
-    isVisible: Boolean,
     categories: List<Category>,
     selectedParentId: Long?,
     selectedChildId: Long?,
-//    onParentSelected: (Category) -> Unit,
-//    onChildSelected: (Category) -> Unit,
-    onCategorySelect:(Category) -> Unit,
+    onParentSelected: (Category) -> Unit,
+    onChildSelected: (Category?) -> Unit,
     onNavigateToManageCategories: () -> Unit,
-//    onBack: () -> Unit,
-//    onDismiss: () -> Unit
 ) {
-    if (!isVisible) return
 
     // View state management
     var viewState by remember { mutableStateOf<CategoryViewState>(CategoryViewState.ParentList) }
@@ -77,28 +72,20 @@ fun CategorySelectionSheet(
         if (hasChildren(category)) {
             // Has subcategories -> show subcategory view
             viewState = CategoryViewState.SubcategoryList(category)
-//            onParentSelected(category)
+            onParentSelected(category)
         } else {
-            onCategorySelect(category)
-            // No subcategories -> select and close
-//            onParentSelected(category)
-//            onDismiss()
+            onChildSelected(category)
         }
-    }
 
+    }
     // Handle subcategory click (null means "No Subcategory")
     val handleSubcategoryClick: (Category?) -> Unit = { subcategory ->
-        if (subcategory != null) {
-//            onChildSelected(subcategory)
-            onCategorySelect(subcategory)
-        }
-//        onDismiss()
+        onChildSelected(subcategory)
     }
 
     // Handle back navigation
     val handleBack: () -> Unit = {
         viewState = CategoryViewState.ParentList
-//        onBack()
     }
 
     // Main Card
@@ -144,9 +131,8 @@ fun CategorySelectionSheet(
                         categories = parentCategories,
                         selectedCategoryId = selectedParentId,
                         onCategoryClick = handleParentClick,
-                        hasChildren = hasChildren,
-                        onNavigateToManageCategories = onNavigateToManageCategories
-                    )
+
+                        )
                 }
 
                 is CategoryViewState.SubcategoryList -> {

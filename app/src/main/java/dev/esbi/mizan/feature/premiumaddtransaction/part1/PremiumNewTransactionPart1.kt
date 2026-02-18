@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.part1
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -26,34 +27,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.data.local.entity.category.CategoryEntity
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.newtransaction.amountinput.TemplatesCarousel
-import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 
 @Composable
 fun PremiumNewTransactionPart1(
-    state: NewTransactionStore.State,
-    accept: (NewTransactionStore.Intent) -> Unit,
-    showTemplates: Boolean,
+    state: AddNewTransactionStore.State,
+    accept: (AddNewTransactionStore.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val displayText = state.displayText
     val amountText = state.amountText
     val currency = state.currency
-    val selectedAccount = state.accounts.find { it.id == state.selectedAccountId }
-    val selectedCategory = state.categoryChooserState.selectedCategory
-    val selectedSubCategory =
-        state.categoryChooserState.selectedChildId?.let { childId ->
-            state.categoryChooserState.categories.find { it.id == childId }
-        }
+    val selectedAccount = state.selectedAccount
     // Transfer-specific accounts
-    val targetAccount = state.accounts.find { it.id == state.targetAccountId }
-
+    val targetAccount = state.targetAccount
+    val showTemplates: Boolean = state.showTemplates
 
     Column(
         modifier = modifier
@@ -68,8 +64,8 @@ fun PremiumNewTransactionPart1(
             exit = shrinkVertically()
         ) {
             TemplatesCarousel(
-                onTemplateClick = { /* TODO: Apply template */ },
-                onManageClick = { /* TODO: Navigate to manage templates */ }
+                onTemplateClick = { },
+                onManageClick = { }
             )
         }
         // Calculation String (if any)
@@ -102,7 +98,7 @@ fun PremiumNewTransactionPart1(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
-                        accept(NewTransactionStore.Intent.ShowAmountInputPad)
+                        accept(AddNewTransactionStore.Intent.ShowAmountInputPad)
                     }
                 )
         )
@@ -111,19 +107,19 @@ fun PremiumNewTransactionPart1(
 
         TransactionContextContent(
             transactionType = state.transactionType,
-            selectedCategory = selectedCategory,
-            selectedSubCategory = selectedSubCategory,
+            selectedCategory = state.selectedCategory,
+            selectedSubCategory = state.selectedSubCategory,
             selectedAccount = selectedAccount,
             targetAccount = targetAccount,
 
-            onTypeClick = { accept(NewTransactionStore.Intent.ShowTypeSelector) },
-            onCategoryClick = { accept(NewTransactionStore.Intent.ShowCategorySelector) },
-            onSelectedAccountClick = { accept(NewTransactionStore.Intent.ShowSelectAccountSelector) },
-            onTargetAccountClick = { accept(NewTransactionStore.Intent.ShowTargetAccountSelector) }
+            onTypeClick = { accept(AddNewTransactionStore.Intent.ShowTypeSelector) },
+            onCategoryClick = { accept(AddNewTransactionStore.Intent.ShowCategorySelector) },
+            onSelectedAccountClick = { accept(AddNewTransactionStore.Intent.ShowSelectAccountSelector) },
+            onTargetAccountClick = { accept(AddNewTransactionStore.Intent.ShowTargetAccountSelector) }
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = { accept(NewTransactionStore.Intent.SmartNext) },
+            onClick = { accept(AddNewTransactionStore.Intent.Next) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -145,16 +141,61 @@ fun PremiumNewTransactionPart1(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = false, uiMode = UI_MODE_NIGHT_YES)
 fun PremiumNewTransactionPart1Preview() {
-    MizanTheme() {
+    val categories = listOf(
+        CategoryEntity(
+            id = 1L,
+            name = "Oziq-ovqat",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 2L,
+            name = "Transport",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 3L,
+            name = "Finance",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 4L,
+            name = "Oziq-ovqat",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = "",
+            parentId = 1
+        ),
+    )
+    MizanTheme {
         PremiumNewTransactionPart1(
-            state = NewTransactionStore.State(
-                transactionType = TransactionType.INCOME,
-                part2 = TransactionInputState.TransactionTypeSelector(),
+            state = AddNewTransactionStore.State(
+                categories = categories,
+                selectedCategory = CategoryEntity(
+                    id = 1L,
+                    name = "Oziq-ovqat",
+                    type = Transaction.Type.EXPENSE,
+                    iconName = "",
+                    color = ""
+                ),
+                selectedSubCategory = CategoryEntity(
+                    id = 4L,
+                    name = "Fruits",
+                    type = Transaction.Type.EXPENSE,
+                    iconName = "",
+                    color = "",
+                    parentId = 1
+                ),
+                pad = AddNewTransactionStore.State.Pad.CategorySelector
             ),
             accept = {},
-            showTemplates = false,
             modifier = Modifier
         )
     }

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.premiumaddtransaction.part2
+package dev.esbi.mizan.feature.premiumaddtransaction.pad
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -23,14 +23,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.data.local.entity.category.CategoryEntity
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
-import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionContent
+import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeInfo
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeItem
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -38,16 +39,16 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
-internal fun PremiumTransactionInputContent(
-    state: NewTransactionStore.State,
-    accept: (NewTransactionStore.Intent) -> Unit,
-    modifier: Modifier = Modifier
+fun AddNewTransactionPad(
+    modifier: Modifier = Modifier,
+    state: AddNewTransactionStore.State,
+    accept: (AddNewTransactionStore.Intent) -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var desc by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
-        if (state.part2 !is TransactionInputState.TransactionAmountInput) {
+        if (state.pad != AddNewTransactionStore.State.Pad.AmountInput) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,9 +74,10 @@ internal fun PremiumTransactionInputContent(
                     )
                     Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
                 }
-                IconButton(onClick = {
-                    accept(NewTransactionStore.Intent.HidePart2)
-                }) {
+                IconButton(
+                    onClick = {
+                        accept(AddNewTransactionStore.Intent.OnClosePad)
+                    }) {
                     MizanIcon(
                         icon = IconValue(Icons.ic_close),
                         contentDescription = "Back",
@@ -87,8 +89,18 @@ internal fun PremiumTransactionInputContent(
         Box(
             modifier = Modifier.padding(horizontal = MizanTheme.premium.spacing.lg)
         ) {
-            when (state.part2) {
-                is TransactionInputState.TransactionTypeSelector -> {
+            when (state.pad) {
+                AddNewTransactionStore.State.Pad.AmountInput -> {
+                    Box(modifier = Modifier) {
+                        PremiumCalculatorKeypad(
+                            onNumberClick = {
+
+                            }
+                        )
+                    }
+                }
+
+                AddNewTransactionStore.State.Pad.TypeSelector -> {
                     title = "Transaction Type"
                     desc = "Choose the type of transaction"
                     val types = listOf(
@@ -140,7 +152,7 @@ internal fun PremiumTransactionInputContent(
                                     scale = scale,
                                     onClick = {
                                         accept(
-                                            NewTransactionStore.Intent.SelectTransactionType(
+                                            AddNewTransactionStore.Intent.SelectTransactionType(
                                                 typeInfo.type
                                             )
                                         )
@@ -157,168 +169,138 @@ internal fun PremiumTransactionInputContent(
                     }
                 }
 
-                is TransactionInputState.TransactionAmountInput -> {
-                    title = ""
-                    desc = ""
-                    Box(modifier = Modifier) {
-                        PremiumCalculatorKeypad(
-                            onNumberClick = {
-                                accept(NewTransactionStore.AmountInputIntent.OnNumberClick(it))
-                            }
-                        )
-                    }
-                }
-
-                is TransactionInputState.TransactionCategorySelector -> {
+                AddNewTransactionStore.State.Pad.CategorySelector -> {
                     title = "Select Category"
                     desc = "Choose a category for this transaction"
-                    TransactionCategories(
-                        state = state,
-                        accept = accept
+                    CategorySelectionSheet(
+                        modifier = Modifier.padding(top = 24.dp),
+                        categories = state.categories,
+                        selectedParentId = state.selectedCategory?.id,
+                        selectedChildId = state.selectedSubCategory?.id,
+                        onParentSelected = { category ->
+                            accept(
+                                AddNewTransactionStore.Intent.OnCategorySelect(category = category)
+                            )
+                        },
+                        onChildSelected = { category ->
+                            accept(
+                                AddNewTransactionStore.Intent.OnSubCategorySelect(subCategory = category)
+                            )
+                        },
+                        onNavigateToManageCategories = {
+                            accept(AddNewTransactionStore.Intent.OpenCategoryManageScreen)
+                        },
                     )
                 }
 
-                is TransactionInputState.TransactionAccountSelector -> {
-                    title = "Select Category"
-                    desc = "Choose a category for this transaction"
-                    /*AccountSelectionContent(
+                AddNewTransactionStore.State.Pad.AccountSelector -> {
+                    title = "Select Account"
+                    desc = "Choose a account for this transaction"
+                    AccountSelectionContent(
                         accounts = state.accounts,
-                        selectedAccountId = if (state.selectedAccountActive) {
-                            state.selectedAccountId
-                        } else state.targetAccountId,
-
+                        selectedAccount = state.selectedAccount,
                         onAccountClick = { account ->
-                            if (state.selectedAccountActive) {
-                                accept(NewTransactionStore.Intent.UpdateSelectedAccount(account.id))
-                            } else {
-                                accept(NewTransactionStore.Intent.UpdateTargetAccount(account.id))
-                            }
+                            accept(AddNewTransactionStore.Intent.UpdateSelectedAccount(account))
                         },
                         onAddAccountClick = {
-                            accept(NewTransactionStore.Intent.OpenAccountManageScreen)
+                            accept(AddNewTransactionStore.Intent.OpenAccountManageScreen)
                         },
-                        onClose = { accept(NewTransactionStore.Intent.CloseAccountSelection) },
-                        modifier = Modifier
-                    )*/
+                        modifier = Modifier.padding(top = 24.dp)
+                    )
+
                 }
 
-                is TransactionInputState.TransactionEmpty -> {
-                    title = ""
-                    desc = ""
+                AddNewTransactionStore.State.Pad.TargetAccountSelector -> {
+                    title = "Select Target account"
+                    desc = "Choose a account for this transfer"
+                    AccountSelectionContent(
+                        accounts = state.accounts,
+                        selectedAccount = state.targetAccount,
+                        onAccountClick = { account ->
+                            accept(AddNewTransactionStore.Intent.UpdateTargetAccount(account))
+                        },
+                        onAddAccountClick = {
+                            accept(AddNewTransactionStore.Intent.OpenAccountManageScreen)
+                        },
+                        modifier = Modifier.padding(top = 24.dp)
+                    )
+
                 }
+
+                else -> {}
             }
         }
     }
 }
 
 @Composable
-fun TransactionCategories(
-    state: NewTransactionStore.State,
-    accept: (NewTransactionStore.Intent) -> Unit,
+internal fun AddNewTransactionNumberPad(
+
 ) {
-    /* CategorySelectionSheet(
-         isVisible = true,
-         categories = state.categoryChooserState.categories,
-         selectedCategory = state.categoryChooserState.selectedParentId,
-         selectedChildId = state.categoryChooserState.selectedChildId,
-         onCategorySelect = { category->
-             accept(NewTransactionStore.Intent.OnCategorySelect(category))
-         },
-         onNavigateToManageCategories = {
-             accept(NewTransactionStore.Intent.OpenCategoryManageScreen)
-         },
-     )*/
+
 }
 
 @Preview(
     showBackground = true
 )
 @Composable
-internal fun PremiumTransactionInputContentPreview() {
+fun AddNewTransactionPadPreview() {
+    val categories = listOf(
+        CategoryEntity(
+            id = 1L,
+            name = "Oziq-ovqat",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 2L,
+            name = "Transport",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 3L,
+            name = "Finance",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = ""
+        ),
+        CategoryEntity(
+            id = 4L,
+            name = "Oziq-ovqat",
+            type = Transaction.Type.EXPENSE,
+            iconName = "",
+            color = "",
+            parentId = 1
+        ),
+    )
 
 
     MizanTheme {
-        PremiumTransactionInputContent(
-            state = NewTransactionStore.State(
-                part2 = TransactionInputState.TransactionCategorySelector(),
-                accounts = MockAccount.mockAccounts
+        AddNewTransactionPad(
+            modifier = Modifier,
+            state = AddNewTransactionStore.State(
+                categories = categories,
+                selectedCategory = CategoryEntity(
+                    id = 1L,
+                    name = "Oziq-ovqat",
+                    type = Transaction.Type.EXPENSE,
+                    iconName = "",
+                    color = ""
+                ),
+                selectedSubCategory = CategoryEntity(
+                    id = 4L,
+                    name = "Oziq-ovqat",
+                    type = Transaction.Type.EXPENSE,
+                    iconName = "",
+                    color = "",
+                    parentId = 1
+                ),
+                pad = AddNewTransactionStore.State.Pad.CategorySelector
             ),
-            accept = {},
-            modifier = Modifier
+            accept = {}
         )
     }
-}
-
-
-object MockAccount {
-    val uzs = Currency(
-        code = "UZS",
-        name = "O'zbek so'mi",
-        symbol = "so'm",
-        rateToBase = 1.0,
-        isBaseCurrency = true
-    )
-
-    val usd = Currency(
-        code = "USD",
-        name = "US Dollar",
-        symbol = "$",
-        rateToBase = 12_500.0,
-        isBaseCurrency = false
-    )
-
-    val mockAccounts = listOf(
-        Account(
-            id = 1L,
-            groupId = 100L,
-            name = "Cash Wallet",
-            type = Account.Type.CASH,
-            balance = 250_000.0,
-            currency = uzs,
-            iconName = "ic_cash",
-            color = "#4CAF50",
-            isArchived = false,
-            excludeFromTotal = false,
-            description = "Main daily cash"
-        ),
-        Account(
-            id = 4L,
-            groupId = 100L,
-            name = "Cash Wallet",
-            type = Account.Type.CASH,
-            balance = 250_000.0,
-            currency = uzs,
-            iconName = "ic_cash",
-            color = "#4CAF50",
-            isArchived = false,
-            excludeFromTotal = false,
-            description = "Main daily cash"
-        ),
-        Account(
-            id = 2L,
-            groupId = 100L,
-            name = "Humo Card",
-            type = Account.Type.CARD,
-            balance = 1_450_000.0,
-            currency = uzs,
-            iconName = "ic_card",
-            color = "#2196F3",
-            isArchived = false,
-            excludeFromTotal = false,
-            description = null
-        ),
-        Account(
-            id = 3L,
-            groupId = 200L,
-            name = "Visa USD",
-            type = Account.Type.CARD,
-            balance = 320.0,
-            currency = usd,
-            iconName = "ic_visa",
-            color = "#FF9800",
-            isArchived = false,
-            excludeFromTotal = false,
-            description = "Online payments"
-        )
-    )
 }

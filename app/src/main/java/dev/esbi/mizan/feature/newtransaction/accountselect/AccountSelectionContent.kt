@@ -53,10 +53,9 @@ import java.util.Locale
 @Composable
 fun AccountSelectionContent(
     accounts: List<Account>,
-    selectedAccountId: Long?,
+    selectedAccount: Account?,
     onAccountClick: (Account) -> Unit,
     onAddAccountClick: () -> Unit,
-    onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
@@ -91,7 +90,7 @@ fun AccountSelectionContent(
             items(cashAccounts, key = { it.id }) { account ->
                 AccountCard(
                     account = account,
-                    isSelected = account.id == selectedAccountId,
+                    isSelected = account.id == selectedAccount?.id,
                     currencyFormat = currencyFormat,
                     onClick = { onAccountClick(account) }
                 )
@@ -110,7 +109,7 @@ fun AccountSelectionContent(
             items(bankAccounts, key = { it.id }) { account ->
                 AccountCard(
                     account = account,
-                    isSelected = account.id == selectedAccountId,
+                    isSelected = account.id == selectedAccount?.id,
                     currencyFormat = currencyFormat,
                     onClick = { onAccountClick(account) }
                 )
@@ -458,10 +457,9 @@ fun AccountSelectionContentPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme() {
         AccountSelectionContent(
             accounts = mockAccounts,
-            selectedAccountId = 2L,
+            selectedAccount = null,
             onAccountClick = {},
             onAddAccountClick = {},
-            onClose = {}
         )
     }
 }

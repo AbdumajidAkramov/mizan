@@ -21,7 +21,6 @@ import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionConte
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContentV2
-import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.confirm.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanDatePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
@@ -29,6 +28,7 @@ import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.transactiontype.PremiumTransactionTypeSelector
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeContent
 import dev.esbi.mizan.feature.premiumaddtransaction.PremiumNewTransaction
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +43,10 @@ internal fun NewTransactionScreen(
     val labels by viewModel.labels.collectAsState(initial = null)
     val state by viewModel.state.collectAsState(initial = NewTransactionStore.State())
     val accept = viewModel::onIntent
+
+    val addTransactionState by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
+    val addTransactionAccept = viewModel::onNewTransactionStoreIntent
+
     val context = LocalContext.current
     LaunchedEffect(labels) {
         when (labels) {
@@ -66,7 +70,9 @@ internal fun NewTransactionScreen(
 
     PremiumNewTransaction(
         state = state,
-        accept = accept
+        accept = accept,
+        addNewTransactionState = addTransactionState,
+        addNewTransactionAccept = addTransactionAccept
     )
     /*
         NewTransactionScreenContent(
@@ -209,30 +215,30 @@ fun NewTransactionScreenContent(
     }
 
     // Category Selection Sheet
-/*
-    if (state.isCategorySheetVisible) {
-        CategorySelectionSheet(
-            isVisible = true,
-            categories = state.categoryChooserState.categories,
-            selectedParentId = state.categoryChooserState.selectedParentId,
-            selectedChildId = state.categoryChooserState.selectedChildId,
-            onParentSelected = { category ->
-                accept(NewTransactionStore.Intent.SelectParentCategory(category))
-            },
-            onChildSelected = { category ->
-                accept(NewTransactionStore.Intent.SelectChildCategory(category))
-            },
-            onNavigateToManageCategories = onNavigateToManageCategories,
-            onBack = {
-                accept(NewTransactionStore.Intent.CloseCategorySheet)
-            },
-            onDismiss = {
-                accept(NewTransactionStore.Intent.CloseCategorySheet)
-            }
-        )
+    /*
+        if (state.isCategorySheetVisible) {
+            CategorySelectionSheet(
+                isVisible = true,
+                categories = state.categoryChooserState.categories,
+                selectedParentId = state.categoryChooserState.selectedParentId,
+                selectedChildId = state.categoryChooserState.selectedChildId,
+                onParentSelected = { category ->
+                    accept(NewTransactionStore.Intent.SelectParentCategory(category))
+                },
+                onChildSelected = { category ->
+                    accept(NewTransactionStore.Intent.SelectChildCategory(category))
+                },
+                onNavigateToManageCategories = onNavigateToManageCategories,
+                onBack = {
+                    accept(NewTransactionStore.Intent.CloseCategorySheet)
+                },
+                onDismiss = {
+                    accept(NewTransactionStore.Intent.CloseCategorySheet)
+                }
+            )
 
-    }
-*/
+        }
+    */
 
     // Account Selection Bottom Sheet
     if (state.isAccountSheetVisible) {
@@ -244,7 +250,7 @@ fun NewTransactionScreenContent(
         ) {
             AccountSelectionContent(
                 accounts = state.accounts,
-                selectedAccountId = state.selectedAccountId,
+                selectedAccount = null,
                 onAccountClick = { account ->
                     accept(NewTransactionStore.Intent.SelectAccount(account.id))
                 },
@@ -252,9 +258,7 @@ fun NewTransactionScreenContent(
                     // TODO: Navigate to add account
                     accept(NewTransactionStore.Intent.OpenAccountManageScreen)
                 },
-                onClose = { accept(NewTransactionStore.Intent.CloseAccountSelection) }
             )
         }
     }
-
 }

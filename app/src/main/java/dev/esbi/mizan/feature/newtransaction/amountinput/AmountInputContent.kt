@@ -709,7 +709,7 @@ fun AccountChip(
                 } else {
                     Modifier
                         .clip(RoundedCornerShape(MizanTheme.premium.radius.full))
-                        .background(MizanTheme.premium.colors.surface2)
+                        .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
                 }
             )
             .clickable { onClick() }
@@ -721,7 +721,7 @@ fun AccountChip(
             Icon(
                 painter = painterResource(id = R.drawable.ic_wallet),
                 contentDescription = null,
-                tint = MizanTheme.premium.text.secondary,
+                tint = MizanTheme.premium.colors.emerald,
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -729,7 +729,7 @@ fun AccountChip(
             text = displayText,
             style = MizanTheme.typography.bodySm,
             color = if (isPlaceholder) MizanTheme.premium.text.tertiary
-            else MizanTheme.premium.text.primary,
+            else MizanTheme.premium.colors.emerald,
             fontWeight = FontWeight.Medium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

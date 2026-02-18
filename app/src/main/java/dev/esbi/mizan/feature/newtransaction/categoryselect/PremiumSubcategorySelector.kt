@@ -106,6 +106,14 @@ fun PremiumSubcategorySelector(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
+            // "No Subcategory" Option
+            item(key = "no_subcategory") {
+                NoSubcategoryItem(
+                    isSelected = selectedSubcategoryId == null,
+                    onClick = { onSubcategoryClick(null) }
+                )
+            }
+
             // Subcategory Items
             items(
                 items = subcategories,

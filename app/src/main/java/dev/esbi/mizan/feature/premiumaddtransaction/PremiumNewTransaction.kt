@@ -23,9 +23,10 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputHeader
 import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.feature.premiumaddtransaction.pad.AddNewTransactionPad
 import dev.esbi.mizan.feature.premiumaddtransaction.part1.PremiumNewTransactionPart1
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.MockAccount
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.PremiumTransactionInputContent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -33,7 +34,10 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 @Composable
 fun PremiumNewTransaction(
     state: NewTransactionStore.State,
-    accept: (NewTransactionStore.Intent) -> Unit
+    accept: (NewTransactionStore.Intent) -> Unit,
+
+    addNewTransactionState: AddNewTransactionStore.State,
+    addNewTransactionAccept: (AddNewTransactionStore.Intent) -> Unit,
 ) {
     var showTemplates by remember { mutableStateOf(false) }
     Scaffold(
@@ -42,7 +46,9 @@ fun PremiumNewTransaction(
             AmountInputHeader(
                 showTemplates = showTemplates,
                 onTemplatesToggle = { showTemplates = !showTemplates },
-                onClose = {}
+                onClose = {
+                    accept(NewTransactionStore.Intent.Back)
+                }
             )
         }
     ) { paddingValues ->
@@ -61,16 +67,14 @@ fun PremiumNewTransaction(
             ) {
                 // Part1
                 PremiumNewTransactionPart1(
-                    state = state,
-                    accept = accept,
-                    showTemplates = showTemplates,
+                    state = addNewTransactionState,
+                    accept = addNewTransactionAccept,
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .fillMaxSize(),
                 )
 
-                if (state.part2 !is TransactionInputState.TransactionEmpty) {
-                    // Part2
+                addNewTransactionState.pad?.let { pad ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -95,13 +99,48 @@ fun PremiumNewTransaction(
                             )
                             .padding(top = MizanTheme.premium.spacing.md),
                     ) {
-                        PremiumTransactionInputContent(
-                            state = state,
-                            accept = accept,
-                            modifier = Modifier.fillMaxWidth()
+                        AddNewTransactionPad(
+                            modifier = Modifier,
+                            state = addNewTransactionState,
+                            accept = addNewTransactionAccept
                         )
                     }
                 }
+                /*
+                                if (state.part2 !is TransactionInputState.TransactionEmpty) {
+                                    // Part2
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(
+                                                min = parentHeight / 2,
+                                                max = parentHeight * 2 / 3
+                                            )
+                                            .background(
+                                                color = MizanTheme.premium.background.primary,
+                                                shape = RoundedCornerShape(
+                                                    topStart = MizanTheme.premium.radius.xxl,
+                                                    topEnd = MizanTheme.premium.radius.xxl
+                                                )
+                                            )
+                                            .border(
+                                                color = MizanTheme.premium.glass.border,
+                                                width = 1.dp,
+                                                shape = RoundedCornerShape(
+                                                    topStart = MizanTheme.premium.radius.xxl,
+                                                    topEnd = MizanTheme.premium.radius.xxl
+                                                )
+                                            )
+                                            .padding(top = MizanTheme.premium.spacing.md),
+                                    ) {
+                                        PremiumTransactionInputContent(
+                                            state = state,
+                                            accept = accept,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                */
             }
         }
 
@@ -119,7 +158,9 @@ fun PremiumNewTransactionPreview() {
                 part2 = TransactionInputState.TransactionEmpty,
                 accounts = MockAccount.mockAccounts
             ),
-            accept = {}
+            accept = {},
+            addNewTransactionState = AddNewTransactionStore.State(),
+            addNewTransactionAccept = {}
         )
     }
 }
