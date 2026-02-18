@@ -2,6 +2,8 @@ package dev.esbi.mizan.feature.premiumaddtransaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,21 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputHeader
-import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.premiumaddtransaction.pad.AddNewTransactionPad
 import dev.esbi.mizan.feature.premiumaddtransaction.part1.PremiumNewTransactionPart1
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.MockAccount
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -33,21 +29,20 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 @UiComposable
 @Composable
 fun PremiumNewTransaction(
-    state: NewTransactionStore.State,
-    accept: (NewTransactionStore.Intent) -> Unit,
-
-    addNewTransactionState: AddNewTransactionStore.State,
-    addNewTransactionAccept: (AddNewTransactionStore.Intent) -> Unit,
+    state: AddNewTransactionStore.State,
+    accept: (AddNewTransactionStore.Intent) -> Unit,
 ) {
-    var showTemplates by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AmountInputHeader(
-                showTemplates = showTemplates,
-                onTemplatesToggle = { showTemplates = !showTemplates },
+                showTemplates = state.showTemplates,
+                onTemplatesToggle = {
+                    accept(AddNewTransactionStore.Intent.ToggleTemplates)
+                },
                 onClose = {
-                    accept(NewTransactionStore.Intent.Back)
+                    accept(AddNewTransactionStore.Intent.Back)
                 }
             )
         }
@@ -67,14 +62,21 @@ fun PremiumNewTransaction(
             ) {
                 // Part1
                 PremiumNewTransactionPart1(
-                    state = addNewTransactionState,
-                    accept = addNewTransactionAccept,
+                    state = state,
+                    accept = accept,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                accept(AddNewTransactionStore.Intent.OnClosePad)
+                            }
+                        ),
                 )
 
-                addNewTransactionState.pad?.let { pad ->
+                state.pad?.let { pad ->
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -101,8 +103,8 @@ fun PremiumNewTransaction(
                     ) {
                         AddNewTransactionPad(
                             modifier = Modifier,
-                            state = addNewTransactionState,
-                            accept = addNewTransactionAccept
+                            state = state,
+                            accept = accept
                         )
                     }
                 }
@@ -154,13 +156,8 @@ fun PremiumNewTransaction(
 fun PremiumNewTransactionPreview() {
     MizanTheme() {
         PremiumNewTransaction(
-            state = NewTransactionStore.State(
-                part2 = TransactionInputState.TransactionEmpty,
-                accounts = MockAccount.mockAccounts
-            ),
-            accept = {},
-            addNewTransactionState = AddNewTransactionStore.State(),
-            addNewTransactionAccept = {}
+            state = AddNewTransactionStore.State(),
+            accept = {}
         )
     }
 }

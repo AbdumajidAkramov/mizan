@@ -10,6 +10,7 @@ import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionAccountSelectorExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionAmountInputExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCategorySelectorExecutor
+import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionConfirmExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionPadExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionTemplatesExecutor
@@ -75,6 +76,16 @@ internal interface AddNewTransactionDepsModule {
     @IntoSet
     fun bindsAddNewTransactionTemplatesExecutor(
         impl: AddNewTransactionTemplatesExecutor
+    ): Executor<AddNewTransactionStore.Intent,
+            AddNewTransactionStore.Action,
+            AddNewTransactionStore.State,
+            AddNewTransactionStore.Message,
+            AddNewTransactionStore.Label>
+
+    @Binds
+    @IntoSet
+    fun bindsAddNewTransactionConfirmExecutor(
+        impl: AddNewTransactionConfirmExecutor
     ): Executor<AddNewTransactionStore.Intent,
             AddNewTransactionStore.Action,
             AddNewTransactionStore.State,

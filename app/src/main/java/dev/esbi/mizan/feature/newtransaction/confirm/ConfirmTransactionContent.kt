@@ -242,7 +242,7 @@ private fun ReceiptCard(
             )
 
             // To Account (for transfers)
-            if (state.toAccountName != null) {
+            if (state.toAccountName.isNullOrBlank().not()) {
                 Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

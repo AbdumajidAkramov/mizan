@@ -13,6 +13,7 @@ object AddNewTransactionReducer :
                 selectedSubCategory = null
             )
 
+            is AddNewTransactionStore.Message.UpdateTemplateVisible -> copy(showTemplates = msg.isVisible)
             is AddNewTransactionStore.Message.UpdatePad -> copy(pad = msg.pad)
             is AddNewTransactionStore.Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is AddNewTransactionStore.Message.UpdateAllCategories -> copy(allCategories = msg.categories)
@@ -26,5 +27,13 @@ object AddNewTransactionReducer :
                 rightNumber = msg.rightNumber,
                 currency = msg.currency,
             )
+
+            is AddNewTransactionStore.Message.UpdateNote -> copy(note = msg.note)
+            is AddNewTransactionStore.Message.UpdateDescription -> copy(description = msg.description)
+            is AddNewTransactionStore.Message.UpdateTransactionDate -> copy(transactionDate = msg.date)
+            is AddNewTransactionStore.Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
+            is AddNewTransactionStore.Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
+            is AddNewTransactionStore.Message.UpdateError -> copy(error = msg.error)
+            is AddNewTransactionStore.Message.UpdateLoading -> copy(isLoading = msg.loading)
         }
 }

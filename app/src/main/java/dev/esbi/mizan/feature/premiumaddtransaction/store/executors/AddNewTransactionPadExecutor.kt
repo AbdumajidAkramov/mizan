@@ -20,6 +20,11 @@ internal class AddNewTransactionPadExecutor @Inject constructor(
 
     override fun executeIntent(intent: AddNewTransactionStore.Intent) {
         when (intent) {
+            is AddNewTransactionStore.Intent.OnClosePad -> {
+                dispatch(
+                    AddNewTransactionStore.Message.UpdatePad(pad = null)
+                )
+            }
             is AddNewTransactionStore.Intent.ShowTypeSelector -> {
                 dispatch(
                     AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.TypeSelector)

@@ -1,6 +1,5 @@
 package dev.esbi.mizan.feature.newtransaction
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,47 +39,96 @@ internal fun NewTransactionScreen(
     onNavigateToManageCategories: () -> Unit,
     onNavigateToAccountManage: () -> Unit
 ) {
-    val labels by viewModel.labels.collectAsState(initial = null)
-    val state by viewModel.state.collectAsState(initial = NewTransactionStore.State())
-    val accept = viewModel::onIntent
 
-    val addTransactionState by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
-    val addTransactionAccept = viewModel::onNewTransactionStoreIntent
-    val addTransactionLabels by viewModel.addNewTransactionLabels.collectAsState(initial = null)
+    val state by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
+    val accept = viewModel::onNewTransactionStoreIntent
+    val labels by viewModel.addNewTransactionLabels.collectAsState(initial = null)
 
     val context = LocalContext.current
-    LaunchedEffect(addTransactionLabels) {
-        when(addTransactionLabels){
+    LaunchedEffect(labels) {
+        when (labels) {
             AddNewTransactionStore.Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
             AddNewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
+            AddNewTransactionStore.Label.TransactionSaved -> onSubmit()
+            AddNewTransactionStore.Label.BackTo -> onBackPressed()
             null -> {}
         }
     }
-    LaunchedEffect(labels) {
-        when (labels) {
-            NewTransactionStore.Label.MapsToNextStep -> onSubmit()
-            NewTransactionStore.Label.TransactionSaved -> onSubmit()
-            NewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
-            NewTransactionStore.Label.NavigateToManageCategories -> onNavigateToManageCategories()
-            NewTransactionStore.Label.Back -> onBackPressed()
-            is NewTransactionStore.Label.ShowError -> {
-                Toast.makeText(
-                    context,
-                    (labels as NewTransactionStore.Label.ShowError).message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    /*
+        LaunchedEffect(labels) {
+            when (labels) {
+                NewTransactionStore.Label.MapsToNextStep -> onSubmit()
+                NewTransactionStore.Label.TransactionSaved -> onSubmit()
+                NewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
+                NewTransactionStore.Label.NavigateToManageCategories -> onNavigateToManageCategories()
+                NewTransactionStore.Label.Back -> onBackPressed()
+                is NewTransactionStore.Label.ShowError -> {
+                    Toast.makeText(
+                        context,
+                        (labels as NewTransactionStore.Label.ShowError).message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-            null -> { /* Ignore */
+                null -> { */
+    /* Ignore *//*
+
             }
         }
     }
+*/
+    var showDatePicker by remember { mutableStateOf(false) }
 
-    PremiumNewTransaction(
-        state = state,
-        accept = accept,
-        addNewTransactionState = addTransactionState,
-        addNewTransactionAccept = addTransactionAccept
+    if (state.isConfirm) {
+        ConfirmTransactionContent(
+            state = ConfirmTransactionUiState(
+                amount = state.leftNumber,
+                currencyCode = "UZS",
+                transactionType = state.transactionType,
+                categoryName = state.selectedCategory?.name,
+                subCategoryName = state.selectedSubCategory?.name,
+                categoryIcon = "",
+                accountName = state.selectedAccount?.name.orEmpty(),
+                toAccountName = state.targetAccount?.name,
+                date = state.transactionDate,
+                note = state.note,
+                saveAsTemplate = state.saveAsTemplate,
+                isLoading = state.isLoading,
+            ),
+            onNoteChange = { note ->
+                accept(AddNewTransactionStore.Intent.UpdateNote(note))
+            },
+            onDateClick = {
+                showDatePicker = true
+            },
+            onConfirmClick = {
+                accept(AddNewTransactionStore.Intent.ConfirmSave)
+            },
+            onBackClick = {
+                accept(AddNewTransactionStore.Intent.Back)
+            },
+            onSaveAsTemplateChange = { saveAsTemplate ->
+                accept(AddNewTransactionStore.Intent.UpdateSaveAsTemplate(saveAsTemplate))
+            }
+        )
+
+    } else {
+        PremiumNewTransaction(
+            state = state,
+            accept = accept
+        )
+    }
+
+    MizanDatePickerDialog(
+        isVisible = showDatePicker,
+        initialDate = state.transactionDate,
+        onDateSelected = { newDate ->
+            accept(AddNewTransactionStore.Intent.UpdateDate(newDate))
+            showDatePicker = false
+        },
+        onDismiss = {
+            showDatePicker = false
+        }
     )
     /*
         NewTransactionScreenContent(

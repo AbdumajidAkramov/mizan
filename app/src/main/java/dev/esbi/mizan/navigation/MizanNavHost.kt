@@ -45,7 +45,11 @@ internal fun MizanNavHost(
                     navController.navigate(NavRoute.CategoryDetail(categoryId))
                 },
                 onNavigateToNewTransaction = {
-                    navController.navigate(NavRoute.AmountInput)
+                    navController.navigate(NavRoute.AmountInput) {
+                        popUpTo(NavRoute.AmountInput) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onNavigateToTransactionsHub = {
                     navController.navigate(NavRoute.Transactions)

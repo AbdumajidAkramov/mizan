@@ -35,6 +35,9 @@ interface AddNewTransactionStore :
         val note: String = "",
         val description: String = "",
         val transactionDate: Long = System.currentTimeMillis(),
+        val saveAsTemplate: Boolean = false,
+        val isLoading: Boolean = false,
+        val error: String? = null,
 
         val pad: Pad? = null,
     ) {
@@ -77,6 +80,7 @@ interface AddNewTransactionStore :
 
     sealed interface Intent {
         data object OnClosePad : Intent
+        data object ToggleTemplates : Intent
 
         // Update transaction type
         class SelectTransactionType(val type: Transaction.Type) : Intent
@@ -94,6 +98,12 @@ interface AddNewTransactionStore :
         // Number pad actions
         class OnNumberClick(val key: Keypad) : Intent
 
+        //        Confirm & Save
+        class UpdateNote(val note: String) : Intent
+        class UpdateDate(val date: Long) : Intent
+        class UpdateSaveAsTemplate(val value: Boolean) : Intent
+        data object Back : Intent
+        data object ConfirmSave : Intent
 
         // Pad actions
         data object ShowTypeSelector : Intent
@@ -108,10 +118,14 @@ interface AddNewTransactionStore :
     sealed interface Label {
         data object OpenCategoryManageScreen : Label
         data object NavigateToAccountManage : Label
+        data object BackTo : Label
+
+        object TransactionSaved : Label
     }
 
     sealed interface Message {
-        class UpdatePad(val pad: State.Pad) : Message
+        class UpdatePad(val pad: State.Pad?) : Message
+        class UpdateTemplateVisible(val isVisible: Boolean) : Message
         class UpdateTransactionType(val type: Transaction.Type) : Message
         class UpdateAccounts(val accounts: List<Account>) : Message
         class UpdateAllCategories(val categories: List<Category>) : Message
@@ -121,6 +135,9 @@ interface AddNewTransactionStore :
         class UpdateSelectedCategory(val category: Category?) : Message
         class UpdateSelectedSubCategory(val subCategory: Category?) : Message
 
+        class UpdateLoading(val loading: Boolean) : Message
+        class UpdateError(val error: String?) : Message
+
         class UpdateAmount(
             val operator: String = "",
             val leftNumber: String = "",
@@ -128,6 +145,12 @@ interface AddNewTransactionStore :
             val currency: String = "UZS"
         ) : Message
 
+        class UpdateNote(val note: String) : Message
+        class UpdateDescription(val description: String) : Message
+        class UpdateTransactionDate(val date: Long) : Message
+        class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Message
+
+        class UpdateIsConfirm(val isConfirm: Boolean) : Message
     }
 
     sealed interface Action {

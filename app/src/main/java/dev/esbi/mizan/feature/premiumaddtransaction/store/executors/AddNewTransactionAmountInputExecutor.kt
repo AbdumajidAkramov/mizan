@@ -19,25 +19,26 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor(
         when (intent) {
             is AddNewTransactionStore.Intent.OnNumberClick -> {
                 with(state()) {
-                    val newKeypadState = manualInputHandler.handleNumberClick(
-                        intent.key,
-                        KeypadState(
-                            operator = operator,
-                            leftNumber = leftNumber,
-                            rightNumber = rightNumber,
-                            currency = currency,
-                        )
-                    )
-                    dispatch(
-                        AddNewTransactionStore.Message.UpdateAmount(
-                            operator = newKeypadState.operator,
-                            leftNumber = newKeypadState.leftNumber,
-                            rightNumber = newKeypadState.rightNumber,
-                            currency = newKeypadState.currency,
-                        )
-                    )
                     if (intent.key == Keypad.EQUALS) {
                         forward(AddNewTransactionStore.Action.CheckAndConfirm)
+                    } else {
+                        val newKeypadState = manualInputHandler.handleNumberClick(
+                            intent.key,
+                            KeypadState(
+                                operator = operator,
+                                leftNumber = leftNumber,
+                                rightNumber = rightNumber,
+                                currency = currency,
+                            )
+                        )
+                        dispatch(
+                            AddNewTransactionStore.Message.UpdateAmount(
+                                operator = newKeypadState.operator,
+                                leftNumber = newKeypadState.leftNumber,
+                                rightNumber = newKeypadState.rightNumber,
+                                currency = newKeypadState.currency,
+                            )
+                        )
                     }
                 }
             }

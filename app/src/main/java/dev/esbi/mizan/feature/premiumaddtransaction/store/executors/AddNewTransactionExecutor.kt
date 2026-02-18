@@ -35,6 +35,12 @@ internal class AddNewTransactionExecutor @Inject constructor(
                 forward(AddNewTransactionStore.Action.CheckAndConfirm)
             }
 
+            is AddNewTransactionStore.Intent.ToggleTemplates -> {
+                dispatch(
+                    AddNewTransactionStore.Message.UpdateTemplateVisible(!state().showTemplates)
+                )
+            }
+
             else -> Unit
         }
     }
@@ -68,6 +74,7 @@ internal class AddNewTransactionExecutor @Inject constructor(
 
             else -> {
                 Log.d("TTT", "Confirm screen open")
+                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(true))
             }
         }
     }
