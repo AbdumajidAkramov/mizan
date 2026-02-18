@@ -93,8 +93,8 @@ fun AddNewTransactionPad(
                 AddNewTransactionStore.State.Pad.AmountInput -> {
                     Box(modifier = Modifier) {
                         PremiumCalculatorKeypad(
-                            onNumberClick = {
-
+                            onNumberClick = { key ->
+                                accept(AddNewTransactionStore.Intent.OnNumberClick(key))
                             }
                         )
                     }

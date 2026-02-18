@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.utils.annotatedString
 
@@ -90,6 +91,10 @@ interface AddNewTransactionStore :
         class UpdateSelectedAccount(val account: Account?) : Intent
         data object OpenAccountManageScreen : Intent
 
+        // Number pad actions
+        class OnNumberClick(val key: Keypad) : Intent
+
+
         // Pad actions
         data object ShowTypeSelector : Intent
         data object ShowCategorySelector : Intent
@@ -115,6 +120,13 @@ interface AddNewTransactionStore :
 
         class UpdateSelectedCategory(val category: Category?) : Message
         class UpdateSelectedSubCategory(val subCategory: Category?) : Message
+
+        class UpdateAmount(
+            val operator: String = "",
+            val leftNumber: String = "",
+            val rightNumber: String = "",
+            val currency: String = "UZS"
+        ) : Message
 
     }
 

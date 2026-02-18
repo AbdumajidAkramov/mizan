@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 
+import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
@@ -63,6 +64,10 @@ internal class AddNewTransactionExecutor @Inject constructor(
                 dispatch(
                     AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.TargetAccountSelector)
                 )
+            }
+
+            else -> {
+                Log.d("TTT", "Confirm screen open")
             }
         }
     }
