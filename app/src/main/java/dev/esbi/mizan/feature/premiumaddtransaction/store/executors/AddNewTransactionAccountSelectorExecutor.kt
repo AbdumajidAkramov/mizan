@@ -42,6 +42,12 @@ internal class AddNewTransactionAccountSelectorExecutor @Inject constructor(
                 forward(AddNewTransactionStore.Action.CheckAndConfirm)
             }
 
+            is AddNewTransactionStore.Intent.OpenAccountManageScreen -> {
+                publish(
+                    AddNewTransactionStore.Label.NavigateToAccountManage
+                )
+            }
+
             else -> Unit
         }
     }

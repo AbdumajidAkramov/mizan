@@ -45,11 +45,13 @@ internal class AddNewTransactionCategorySelectorExecutor @Inject constructor(
         when (intent) {
             is AddNewTransactionStore.Intent.OnCategorySelect -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectedCategory(intent.category))
-                val nonSubCategory = state().categories.none { it.parentId == intent.category.id }
+                val nonSubCategory = state().categories.none { intent.category.id == it.parentId }
+
                 if (nonSubCategory) {
+                    dispatch(AddNewTransactionStore.Message.UpdateSelectedSubCategory(null))
                     forward(AddNewTransactionStore.Action.CheckAndConfirm)
                 }
-                if(state().selectedSubCategory?.parentId != intent.category.id){
+                if (state().selectedSubCategory?.parentId != intent.category.id) {
                     dispatch(AddNewTransactionStore.Message.UpdateSelectedSubCategory(null))
                 }
             }
@@ -59,6 +61,10 @@ internal class AddNewTransactionCategorySelectorExecutor @Inject constructor(
                 forward(AddNewTransactionStore.Action.CheckAndConfirm)
             }
 
+            is AddNewTransactionStore.Intent.OpenCategoryManageScreen -> {
+                publish(AddNewTransactionStore.Label.OpenCategoryManageScreen)
+            }
+
             else -> Unit
         }
     }
@@ -66,7 +72,7 @@ internal class AddNewTransactionCategorySelectorExecutor @Inject constructor(
     private fun fetchCategories() {
         categoryRepository.getAllCategories()
             .onEach { categories ->
-                dispatch(AddNewTransactionStore.Message.UpdateCategories(categories))
+                dispatch(AddNewTransactionStore.Message.UpdateAllCategories(categories))
             }
             .launchIn(scope)
     }

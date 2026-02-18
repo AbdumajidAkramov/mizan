@@ -46,8 +46,16 @@ internal fun NewTransactionScreen(
 
     val addTransactionState by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
     val addTransactionAccept = viewModel::onNewTransactionStoreIntent
+    val addTransactionLabels by viewModel.addNewTransactionLabels.collectAsState(initial = null)
 
     val context = LocalContext.current
+    LaunchedEffect(addTransactionLabels) {
+        when(addTransactionLabels){
+            AddNewTransactionStore.Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
+            AddNewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
+            null -> {}
+        }
+    }
     LaunchedEffect(labels) {
         when (labels) {
             NewTransactionStore.Label.MapsToNextStep -> onSubmit()

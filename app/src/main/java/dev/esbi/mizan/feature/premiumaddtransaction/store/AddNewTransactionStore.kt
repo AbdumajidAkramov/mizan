@@ -22,7 +22,7 @@ interface AddNewTransactionStore :
         val rightNumber: String = "",
         val currency: String = "UZS",
 
-        val categories: List<Category> = emptyList(),
+        val allCategories: List<Category> = emptyList(),
         val selectedCategory: Category? = null,
         val selectedSubCategory: Category? = null,
 
@@ -37,6 +37,8 @@ interface AddNewTransactionStore :
 
         val pad: Pad? = null,
     ) {
+
+        val categories: List<Category> get() = allCategories.filter { it.type == transactionType }
 
         val isLeftNumberActive: Boolean = operator.isEmpty()
 
@@ -78,16 +80,17 @@ interface AddNewTransactionStore :
         // Update transaction type
         class SelectTransactionType(val type: Transaction.Type) : Intent
 
+        //Category selector
         class OnCategorySelect(val category: Category) : Intent
         class OnSubCategorySelect(val subCategory: Category?) : Intent
-
         data object OpenCategoryManageScreen : Intent
 
+        // Account selector
         class UpdateTargetAccount(val account: Account?) : Intent
         class UpdateSelectedAccount(val account: Account?) : Intent
         data object OpenAccountManageScreen : Intent
 
-
+        // Pad actions
         data object ShowTypeSelector : Intent
         data object ShowCategorySelector : Intent
         data object ShowSelectAccountSelector : Intent
@@ -97,13 +100,16 @@ interface AddNewTransactionStore :
         data object Next : Intent
     }
 
-    sealed interface Label
+    sealed interface Label {
+        data object OpenCategoryManageScreen : Label
+        data object NavigateToAccountManage : Label
+    }
 
     sealed interface Message {
         class UpdatePad(val pad: State.Pad) : Message
         class UpdateTransactionType(val type: Transaction.Type) : Message
         class UpdateAccounts(val accounts: List<Account>) : Message
-        class UpdateCategories(val categories: List<Category>) : Message
+        class UpdateAllCategories(val categories: List<Category>) : Message
         class UpdateSelectedAccount(val account: Account?) : Message
         class UpdateTargetAccount(val account: Account?) : Message
 

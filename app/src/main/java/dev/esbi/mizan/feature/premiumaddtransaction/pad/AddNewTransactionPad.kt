@@ -282,22 +282,15 @@ fun AddNewTransactionPadPreview() {
         AddNewTransactionPad(
             modifier = Modifier,
             state = AddNewTransactionStore.State(
-                categories = categories,
+                allCategories = categories,
                 selectedCategory = CategoryEntity(
-                    id = 1L,
+                    id = 2L,
                     name = "Oziq-ovqat",
                     type = Transaction.Type.EXPENSE,
                     iconName = "",
                     color = ""
                 ),
-                selectedSubCategory = CategoryEntity(
-                    id = 4L,
-                    name = "Oziq-ovqat",
-                    type = Transaction.Type.EXPENSE,
-                    iconName = "",
-                    color = "",
-                    parentId = 1
-                ),
+                selectedSubCategory = null,
                 pad = AddNewTransactionStore.State.Pad.CategorySelector
             ),
             accept = {}

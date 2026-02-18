@@ -26,9 +26,11 @@ internal class AddNewTransactionExecutor @Inject constructor(
     override fun executeIntent(intent: AddNewTransactionStore.Intent) {
         when (intent) {
             is AddNewTransactionStore.Intent.SelectTransactionType -> {
-                dispatch(
-                    AddNewTransactionStore.Message.UpdateTransactionType(type = intent.type)
-                )
+                if (state().transactionType != intent.type) {
+                    dispatch(
+                        AddNewTransactionStore.Message.UpdateTransactionType(type = intent.type)
+                    )
+                }
                 forward(AddNewTransactionStore.Action.CheckAndConfirm)
             }
 

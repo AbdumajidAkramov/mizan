@@ -69,14 +69,11 @@ fun CategorySelectionSheet(
 
     // Handle parent category click
     val handleParentClick: (Category) -> Unit = { category ->
+        onParentSelected(category)
         if (hasChildren(category)) {
             // Has subcategories -> show subcategory view
             viewState = CategoryViewState.SubcategoryList(category)
-            onParentSelected(category)
-        } else {
-            onChildSelected(category)
         }
-
     }
     // Handle subcategory click (null means "No Subcategory")
     val handleSubcategoryClick: (Category?) -> Unit = { subcategory ->
@@ -131,8 +128,8 @@ fun CategorySelectionSheet(
                         categories = parentCategories,
                         selectedCategoryId = selectedParentId,
                         onCategoryClick = handleParentClick,
-
-                        )
+                        onNavigateToManageCategories = onNavigateToManageCategories
+                    )
                 }
 
                 is CategoryViewState.SubcategoryList -> {

@@ -176,7 +176,7 @@ fun PremiumNewTransactionPart1Preview() {
     MizanTheme {
         PremiumNewTransactionPart1(
             state = AddNewTransactionStore.State(
-                categories = categories,
+                allCategories = categories,
                 selectedCategory = CategoryEntity(
                     id = 1L,
                     name = "Oziq-ovqat",
