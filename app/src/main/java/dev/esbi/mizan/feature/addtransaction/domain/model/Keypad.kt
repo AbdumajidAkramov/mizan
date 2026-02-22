@@ -2,7 +2,7 @@ package dev.esbi.mizan.feature.addtransaction.domain.model
 
 internal const val DEL_KEY = "DEL"
 internal const val CLEAR_KEY = "C"
-internal const val EQUAL_KEY = "OK"
+internal const val EQUAL_KEY = "="
 
 enum class Keypad {
     DEL,

@@ -42,8 +42,8 @@ fun PremiumNewTransactionPart1(
     accept: (AddNewTransactionStore.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val displayText = state.displayText
-    val amountText = state.amountText
+    val displayText = ""
+    val amountText = ""
     val currency = state.currency
     val selectedAccount = state.selectedAccount
     // Transfer-specific accounts
@@ -63,8 +63,12 @@ fun PremiumNewTransactionPart1(
             exit = shrinkVertically()
         ) {
             TemplatesCarousel(
-                onTemplateClick = { },
-                onManageClick = { }
+                onTemplateClick = {
+                    accept(AddNewTransactionStore.Intent.OnSelectedTemplate(it))
+                },
+                onManageClick = {
+                    accept(AddNewTransactionStore.Intent.OpenTemplateManage)
+                }
             )
         }
         // Calculation String (if any)

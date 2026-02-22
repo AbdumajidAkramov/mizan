@@ -1,30 +1,39 @@
 package dev.esbi.mizan.feature.premiumaddtransaction
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.UiComposable
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputHeader
-import dev.esbi.mizan.feature.premiumaddtransaction.pad.AddNewTransactionPad
-import dev.esbi.mizan.feature.premiumaddtransaction.part1.PremiumNewTransactionPart1
+import dev.esbi.mizan.feature.premiumaddtransaction.part1.TransactionTypeSelector
+import dev.esbi.mizan.feature.premiumaddtransaction.part2.NewTransactionAmountContent
+import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 @UiComposable
 @Composable
@@ -32,7 +41,7 @@ fun PremiumNewTransaction(
     state: AddNewTransactionStore.State,
     accept: (AddNewTransactionStore.Intent) -> Unit,
 ) {
-
+    val displayText = state.displayText
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -47,104 +56,217 @@ fun PremiumNewTransaction(
             )
         }
     ) { paddingValues ->
-        BoxWithConstraints(
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Column'ning umumiy balandligini olamiz
-            val parentHeight = maxHeight
-            Box(
+            TransactionTypeSelector(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(MizanTheme.premium.background.primary),
-                contentAlignment = Alignment.BottomCenter
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                selectedType = state.transactionType,
+                onTypeSelect = {
+                    accept(AddNewTransactionStore.Intent.SelectTransactionType(it))
+                }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            // Calculation String (if any)
+            if (displayText.isNotEmpty()) {
+                Text(
+                    text = displayText,
+                    style = MizanTheme.typography.bodySm,
+                    color = MizanTheme.premium.text.tertiary,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Part1
-                PremiumNewTransactionPart1(
-                    state = state,
-                    accept = accept,
+                NewTransactionAmountContent(
+                    amount = when (state.operator) {
+                        "" -> state.leftDecimal
+                        "=" -> state.amountDecimal
+                        else -> state.rightDecimal
+                    },
+                    currency = state.currency,
+                    color = state.transactionType.color(),
                     modifier = Modifier
-                        .padding(top = 8.dp)
-                        .fillMaxSize()
+                        .weight(1f)
+                        .padding(vertical = MizanTheme.premium.spacing.sm)
+                        .padding(horizontal = 16.dp),
+                    onCurrencyClick = {}
+                )
+                Box(
+                    modifier = Modifier
+                        .height(128.dp)
+                        .width(48.dp)
+                        .clip(
+                            shape = RoundedCornerShape(
+                                topStart = MizanTheme.premium.radius.xxl,
+                                bottomStart = MizanTheme.premium.radius.xxl
+                            )
+                        )
+                        .background(MizanTheme.premium.glass.bg)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = {
-                                accept(AddNewTransactionStore.Intent.OnClosePad)
+                                accept(AddNewTransactionStore.Intent.ShowTransactionDetails)
                             }
                         ),
-                )
-
-                state.pad?.let { pad ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(
-                                min = parentHeight / 2,
-                                max = parentHeight * 2 / 3
-                            )
-                            .background(
-                                color = MizanTheme.premium.background.primary,
-                                shape = RoundedCornerShape(
-                                    topStart = MizanTheme.premium.radius.xxl,
-                                    topEnd = MizanTheme.premium.radius.xxl
-                                )
-                            )
-                            .border(
-                                color = MizanTheme.premium.glass.border,
-                                width = 1.dp,
-                                shape = RoundedCornerShape(
-                                    topStart = MizanTheme.premium.radius.xxl,
-                                    topEnd = MizanTheme.premium.radius.xxl
-                                )
-                            )
-                            .padding(top = MizanTheme.premium.spacing.md),
-                    ) {
-                        AddNewTransactionPad(
-                            modifier = Modifier,
-                            state = state,
-                            accept = accept
-                        )
-                    }
+                    contentAlignment = Alignment.Center
+                ) {
+                    MizanIcon(
+                        modifier = Modifier,
+                        icon = IconValue(Icons.ic_chevron_left),
+                        tint = MizanTheme.premium.colors.emerald
+                    )
                 }
-                /*
-                                if (state.part2 !is TransactionInputState.TransactionEmpty) {
-                                    // Part2
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .heightIn(
-                                                min = parentHeight / 2,
-                                                max = parentHeight * 2 / 3
-                                            )
-                                            .background(
-                                                color = MizanTheme.premium.background.primary,
-                                                shape = RoundedCornerShape(
-                                                    topStart = MizanTheme.premium.radius.xxl,
-                                                    topEnd = MizanTheme.premium.radius.xxl
-                                                )
-                                            )
-                                            .border(
-                                                color = MizanTheme.premium.glass.border,
-                                                width = 1.dp,
-                                                shape = RoundedCornerShape(
-                                                    topStart = MizanTheme.premium.radius.xxl,
-                                                    topEnd = MizanTheme.premium.radius.xxl
-                                                )
-                                            )
-                                            .padding(top = MizanTheme.premium.spacing.md),
-                                    ) {
-                                        PremiumTransactionInputContent(
-                                            state = state,
-                                            accept = accept,
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                    }
-                                }
-                */
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Account",
+                        style = MizanTheme.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "BANK",
+                        style = MizanTheme.typography.headingMd,
+                        color = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Category",
+                        style = MizanTheme.typography.bodySm,
+                        color = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Text(
+                        text = "BAR",
+                        style = MizanTheme.typography.headingMd,
+                        color = MizanTheme.premium.text.tertiary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = MizanTheme.premium.background.tertiary,
+                    )
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Template"
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(
+                        shape = RoundedCornerShape(
+                            topStart = MizanTheme.premium.radius.xxl,
+                            topEnd = MizanTheme.premium.radius.xxl
+                        )
+                    )
+                    .background(MizanTheme.premium.background.secondary)
+                    .padding(MizanTheme.premium.spacing.lg),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                PremiumCalculatorKeypad(
+                    onNumberClick = {
+                        accept(AddNewTransactionStore.Intent.OnNumberClick(it))
+                    }
+                )
             }
         }
+
+        /*
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    // Column'ning umumiy balandligini olamiz
+                    val parentHeight = maxHeight
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MizanTheme.premium.background.primary),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        // Part1
+                        PremiumNewTransactionPart1(
+                            state = state,
+                            accept = accept,
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxSize()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = {
+                                        accept(AddNewTransactionStore.Intent.OnClosePad)
+                                    }
+                                ),
+                        )
+
+                        state.pad?.let { pad ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(
+                                        min = parentHeight / 2,
+                                        max = parentHeight * 2 / 3
+                                    )
+                                    .background(
+                                        color = MizanTheme.premium.background.primary,
+                                        shape = RoundedCornerShape(
+                                            topStart = MizanTheme.premium.radius.xxl,
+                                            topEnd = MizanTheme.premium.radius.xxl
+                                        )
+                                    )
+                                    .border(
+                                        color = MizanTheme.premium.glass.border,
+                                        width = 1.dp,
+                                        shape = RoundedCornerShape(
+                                            topStart = MizanTheme.premium.radius.xxl,
+                                            topEnd = MizanTheme.premium.radius.xxl
+                                        )
+                                    )
+                                    .padding(top = MizanTheme.premium.spacing.md),
+                            ) {
+                                AddNewTransactionPad(
+                                    modifier = Modifier,
+                                    state = state,
+                                    accept = accept
+                                )
+                            }
+                        }
+                    }
+                }
+        */
 
     }
 }

@@ -30,6 +30,11 @@ internal class AddNewTransactionTemplatesExecutor @Inject constructor(
 
     override fun executeIntent(intent: AddNewTransactionStore.Intent) {
         when (intent) {
+            is AddNewTransactionStore.Intent.OpenTemplateManage -> {
+                publish(AddNewTransactionStore.Label.NavigateToTemplateManage)
+            }
+            is AddNewTransactionStore.Intent.OnSelectedTemplate -> {
+            }
             else -> Unit
         }
     }

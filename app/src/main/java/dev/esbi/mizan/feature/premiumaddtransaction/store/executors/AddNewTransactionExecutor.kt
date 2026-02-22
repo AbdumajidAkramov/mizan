@@ -48,7 +48,7 @@ internal class AddNewTransactionExecutor @Inject constructor(
     private fun checkPadState() {
         val state = state()
         when {
-            state.amount == 0.0 -> {
+            state.amount.value.toDouble() == 0.0 -> {
                 dispatch(
                     AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.AmountInput)
                 )

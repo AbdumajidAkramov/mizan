@@ -505,8 +505,8 @@ internal class NewTransactionExecutor @Inject constructor(
                         intent.key,
                         KeypadState(
                             operator = operator,
-                            leftNumber = leftNumber,
-                            rightNumber = rightNumber,
+                            leftNumber = leftNumber.toBigDecimalOrNull() ?: java.math.BigDecimal.ZERO,
+                            rightNumber = rightNumber.toBigDecimalOrNull() ?: java.math.BigDecimal.ZERO,
                             currency = currency,
                         )
                     )

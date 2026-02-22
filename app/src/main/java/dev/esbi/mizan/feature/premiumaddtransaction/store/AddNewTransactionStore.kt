@@ -1,13 +1,14 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store
 
-import androidx.compose.ui.text.AnnotatedString
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.Amount
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.utils.annotatedString
+import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
+import java.math.BigDecimal
 
 interface AddNewTransactionStore :
     Store<AddNewTransactionStore.Intent, AddNewTransactionStore.State, AddNewTransactionStore.Label> {
@@ -19,9 +20,13 @@ interface AddNewTransactionStore :
         val isConfirm: Boolean = false,
 
         val operator: String = "",
-        val leftNumber: String = "",
-        val rightNumber: String = "",
         val currency: String = "UZS",
+        val displayText: String = "",
+
+        val leftDecimal: BigDecimal = BigDecimal.ZERO,
+        val rightDecimal: BigDecimal = BigDecimal.ZERO,
+        val amountDecimal: BigDecimal = BigDecimal.ZERO,
+
 
         val allCategories: List<Category> = emptyList(),
         val selectedCategory: Category? = null,
@@ -32,8 +37,13 @@ interface AddNewTransactionStore :
         val selectedAccount: Account? = null,
         val targetAccount: Account? = null,
 
+        val isBookmarked: Boolean = false,
+
+        val fee: Double? = null,
+
         val note: String = "",
         val description: String = "",
+        val photoPaths: List<String> = emptyList(),
         val transactionDate: Long = System.currentTimeMillis(),
         val saveAsTemplate: Boolean = false,
         val isLoading: Boolean = false,
@@ -46,31 +56,11 @@ interface AddNewTransactionStore :
 
         val isLeftNumberActive: Boolean = operator.isEmpty()
 
-        val displayText: String
-            get() {
-                return if (operator.isEmpty()) {
-                    leftNumber
-                } else {
-                    "$leftNumber $operator $rightNumber"
-                }
-            }
-
-        val amountText: String
-            get() {
-                return if (operator.isEmpty()) {
-                    leftNumber
-                } else {
-                    rightNumber
-                }
-            }
-
-        val amount: Double
-            get() = leftNumber.toDoubleOrNull() ?: 0.0
-
-        val canSubmit: Boolean get() = amount > 0.0
-
-        val annotatedString: AnnotatedString get() = amountText.annotatedString(currency = currency)
-
+        val amount: Amount
+            get() = Amount(
+                value = leftDecimal,
+                currency = currency
+            )
 
         enum class Pad {
             TypeSelector, CategorySelector, AccountSelector, TargetAccountSelector, AmountInput
@@ -81,6 +71,8 @@ interface AddNewTransactionStore :
     sealed interface Intent {
         data object OnClosePad : Intent
         data object ToggleTemplates : Intent
+        class OnSelectedTemplate(val template: QuickTemplate) : Intent
+        data object OpenTemplateManage : Intent
 
         // Update transaction type
         class SelectTransactionType(val type: Transaction.Type) : Intent
@@ -112,12 +104,15 @@ interface AddNewTransactionStore :
         data object ShowTargetAccountSelector : Intent
         data object ShowAmountInputPad : Intent
 
+        data object ShowTransactionDetails : Intent
+
         data object Next : Intent
     }
 
     sealed interface Label {
         data object OpenCategoryManageScreen : Label
         data object NavigateToAccountManage : Label
+        data object NavigateToTemplateManage : Label
         data object BackTo : Label
 
         object TransactionSaved : Label
@@ -140,9 +135,11 @@ interface AddNewTransactionStore :
 
         class UpdateAmount(
             val operator: String = "",
-            val leftNumber: String = "",
-            val rightNumber: String = "",
-            val currency: String = "UZS"
+            val leftNumber: BigDecimal = BigDecimal.ZERO,
+            val rightNumber: BigDecimal = BigDecimal.ZERO,
+            val currency: String = "UZS",
+            val amountDecimal: BigDecimal = BigDecimal.ZERO,
+            val displayText: String = ""
         ) : Message
 
         class UpdateNote(val note: String) : Message

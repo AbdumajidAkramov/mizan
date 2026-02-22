@@ -27,17 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -208,7 +207,7 @@ fun TransactionTypeItem(
                 modifier = Modifier.size(24.dp)
             )
         }
-        
+
         // Text Column
         Column(
             modifier = Modifier.weight(1f)
@@ -216,20 +215,20 @@ fun TransactionTypeItem(
             Text(
                 text = typeInfo.label,
                 style = MizanTheme.typography.bodyMd,
-                color = if (isSelected) MizanTheme.premium.colors.emerald 
-                       else MizanTheme.premium.text.primary,
+                color = if (isSelected) MizanTheme.premium.colors.emerald
+                else MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.Medium
             )
-            
+
             Spacer(modifier = Modifier.height(2.dp))
-            
+
             Text(
                 text = typeInfo.description,
                 style = MizanTheme.typography.bodySm,
                 color = MizanTheme.premium.text.tertiary
             )
         }
-        
+
         // Check Icon (only when selected)
         if (isSelected) {
             Box(
@@ -249,5 +248,21 @@ fun TransactionTypeItem(
         } else {
             Spacer(modifier = Modifier.width(24.dp))
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFFF0F0F0
+)
+@Composable
+fun PremiumTransactionTypeSelector() {
+    dev.esbi.mizan.ui.theme.MizanTheme() {
+        PremiumTransactionTypeSelector(
+            isVisible = true,
+            selectedType = Transaction.Type.TRANSFER,
+            onTypeSelected = {},
+            onDismiss = {}
+        )
     }
 }

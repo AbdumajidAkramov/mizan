@@ -3,6 +3,7 @@ package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Template
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
@@ -69,8 +70,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                         val currentState = state()
 
                         // Get exchange rate for the selected currency
-                        val currency =
-                            currencyRepository.getCurrencyByCode(currentState.currency)
+                        val currency = currencyRepository.getCurrencyByCode(currentState.currency)
                         val exchangeRate = currency?.rateToBase ?: 1.0
 
                         // Get category ID (prefer child category if selected)
@@ -80,18 +80,9 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                         // Create Transaction domain model
                         val transaction = Transaction(
                             id = 0, // New transaction
-                            type = when (currentState.transactionType) {
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.EXPENSE ->
-                                    Transaction.Type.EXPENSE
-
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.INCOME ->
-                                    Transaction.Type.INCOME
-
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.TRANSFER ->
-                                    Transaction.Type.TRANSFER
-                            },
-                            amount = currentState.amount,
-                            currency = currency ?: dev.esbi.mizan.domain.model.Currency(
+                            type = currentState.transactionType,
+                            amount = currentState.amount.value.toDouble(),
+                            currency = currency ?: Currency(
                                 code = currentState.currency,
                                 name = currentState.currency,
                                 symbol = currentState.currency,
@@ -102,14 +93,14 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                             targetAmount = null, // TODO: Calculate for transfers if needed
                             date = currentState.transactionDate,
                             note = currentState.note.takeIf { it.isNotBlank() },
-                            description = null,
-                            photoPaths = emptyList(),
+                            description = currentState.description.takeIf { it.isNotBlank() },
+                            photoPaths = currentState.photoPaths,
                             accountId = currentState.selectedAccount?.id,
                             categoryId = categoryId,
                             subCategoryId = null,
                             targetAccountId = currentState.targetAccount?.id,
-                            fee = 0.0,
-                            isBookmarked = false,
+                            fee = currentState.fee ?: 0.0,
+                            isBookmarked = currentState.isBookmarked,
                             recurrenceRule = null,
                             isInstallment = false,
                             installmentTotalMonths = null,
@@ -128,7 +119,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                                 val categoryName = currentState.selectedCategory?.name ?: "Template"
                                 val template = Template(
                                     name = categoryName,
-                                    amount = currentState.amount,
+                                    amount = currentState.amount.value.toDouble(),
                                     iconName = currentState.selectedCategory?.iconName,
                                     transactionType = transaction.type,
                                     categoryId = categoryId,
@@ -161,7 +152,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
     private fun checkPadState() {
         val state = state()
         when {
-            state.amount == 0.0 -> {
+            state.amount.value.toDouble() == 0.0 -> {
                 dispatch(
                     AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.AmountInput)
                 )

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -71,15 +72,18 @@ fun TransactionContextContent(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
     ) {
+        val chipSpacing = MizanTheme.premium.spacing.sm
         if (transactionType == TransactionType.TRANSFER) {
             // Transfer mode: Type chip + From/To Account chips
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm),
-                verticalAlignment = Alignment.CenterVertically
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+                verticalArrangement = Arrangement.spacedBy(chipSpacing), // Qatorlar orasidagi masofa
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = Int.MAX_VALUE // Standart holatda
             ) {
                 // Transaction Type Chip
                 TransactionTypeChip(
@@ -115,9 +119,10 @@ fun TransactionContextContent(
             }
         } else {
             // Expense/Income mode: Type, Category, Account chips
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm),
-                verticalAlignment = Alignment.CenterVertically
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+                verticalArrangement = Arrangement.spacedBy(chipSpacing),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 // Transaction Type Chip (outlined with dropdown)
                 TransactionTypeChip(

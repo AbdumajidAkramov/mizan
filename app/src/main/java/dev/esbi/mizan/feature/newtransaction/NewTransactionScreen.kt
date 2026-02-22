@@ -49,40 +49,19 @@ internal fun NewTransactionScreen(
         when (labels) {
             AddNewTransactionStore.Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
             AddNewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
+            AddNewTransactionStore.Label.NavigateToTemplateManage -> onNavigateToAccountManage()
             AddNewTransactionStore.Label.TransactionSaved -> onSubmit()
             AddNewTransactionStore.Label.BackTo -> onBackPressed()
             null -> {}
         }
     }
-    /*
-        LaunchedEffect(labels) {
-            when (labels) {
-                NewTransactionStore.Label.MapsToNextStep -> onSubmit()
-                NewTransactionStore.Label.TransactionSaved -> onSubmit()
-                NewTransactionStore.Label.NavigateToAccountManage -> onNavigateToAccountManage()
-                NewTransactionStore.Label.NavigateToManageCategories -> onNavigateToManageCategories()
-                NewTransactionStore.Label.Back -> onBackPressed()
-                is NewTransactionStore.Label.ShowError -> {
-                    Toast.makeText(
-                        context,
-                        (labels as NewTransactionStore.Label.ShowError).message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
 
-                null -> { */
-    /* Ignore *//*
-
-            }
-        }
-    }
-*/
     var showDatePicker by remember { mutableStateOf(false) }
 
     if (state.isConfirm) {
         ConfirmTransactionContent(
             state = ConfirmTransactionUiState(
-                amount = state.leftNumber,
+                amount = "",
                 currencyCode = "UZS",
                 transactionType = state.transactionType,
                 categoryName = state.selectedCategory?.name,

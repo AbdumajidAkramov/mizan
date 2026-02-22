@@ -23,9 +23,11 @@ object AddNewTransactionReducer :
             is AddNewTransactionStore.Message.UpdateSelectedSubCategory -> copy(selectedSubCategory = msg.subCategory)
             is AddNewTransactionStore.Message.UpdateAmount -> copy(
                 operator = msg.operator,
-                leftNumber = msg.leftNumber,
-                rightNumber = msg.rightNumber,
+                leftDecimal = msg.leftNumber,
+                rightDecimal = msg.rightNumber,
                 currency = msg.currency,
+                amountDecimal = msg.amountDecimal,
+                displayText = msg.displayText
             )
 
             is AddNewTransactionStore.Message.UpdateNote -> copy(note = msg.note)

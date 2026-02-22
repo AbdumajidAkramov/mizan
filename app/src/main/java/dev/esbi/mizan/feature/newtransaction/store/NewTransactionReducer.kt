@@ -13,8 +13,8 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
 
             is NewTransactionStore.Message.UpdateKeypadState -> copy(
                 operator = msg.state.operator,
-                leftNumber = msg.state.leftNumber,
-                rightNumber = msg.state.rightNumber,
+                leftNumber = msg.state.leftNumber.toPlainString(),
+                rightNumber = msg.state.rightNumber.toPlainString(),
                 currency = msg.state.currency,
             )
 
