@@ -23,8 +23,9 @@ interface AddNewTransactionStore :
         val currency: String = "UZS",
         val displayText: String = "",
 
-        val leftDecimal: BigDecimal = BigDecimal.ZERO,
-        val rightDecimal: BigDecimal = BigDecimal.ZERO,
+        val leftNumber: String = "0",
+        val rightNumber: String = "",
+        val isFinalResult: Boolean = false,
         val amountDecimal: BigDecimal = BigDecimal.ZERO,
 
 
@@ -58,7 +59,7 @@ interface AddNewTransactionStore :
 
         val amount: Amount
             get() = Amount(
-                value = leftDecimal,
+                value = amountDecimal,
                 currency = currency
             )
 
@@ -135,8 +136,9 @@ interface AddNewTransactionStore :
 
         class UpdateAmount(
             val operator: String = "",
-            val leftNumber: BigDecimal = BigDecimal.ZERO,
-            val rightNumber: BigDecimal = BigDecimal.ZERO,
+            val leftNumber: String = "0",
+            val rightNumber: String = "",
+            val isFinalResult: Boolean = false,
             val currency: String = "UZS",
             val amountDecimal: BigDecimal = BigDecimal.ZERO,
             val displayText: String = ""

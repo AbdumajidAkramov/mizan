@@ -88,11 +88,7 @@ fun PremiumNewTransaction(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 NewTransactionAmountContent(
-                    amount = when (state.operator) {
-                        "" -> state.leftDecimal
-                        "=" -> state.amountDecimal
-                        else -> state.rightDecimal
-                    },
+                    amount = state.amountDecimal,
                     currency = state.currency,
                     color = state.transactionType.color(),
                     modifier = Modifier
