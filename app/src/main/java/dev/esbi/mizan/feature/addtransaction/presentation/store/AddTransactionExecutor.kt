@@ -366,14 +366,14 @@ internal class AddTransactionExecutor(
                 }
             }
 
-            Keypad.EQUALS -> onEqualClick(state())
+            Keypad.EQUAL -> onEqualClick(state())
 
             Keypad.CLEAR -> {
                 dispatch(AddTransactionStore.Message.ClearText)
                 isEqualed = false
             }
 
-            Keypad.DEL -> with(state()) {
+            Keypad.DELETE -> with(state()) {
                 if (isLeftNumberActive) {
                     if (leftNumber.isNotBlank()) {
                         val newLeftNumber = leftNumber.take(leftNumber.length - 1)

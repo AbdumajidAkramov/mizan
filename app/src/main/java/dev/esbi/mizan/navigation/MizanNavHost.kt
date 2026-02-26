@@ -11,6 +11,7 @@ import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
+import dev.esbi.mizan.feature.calc.MizanCalculatorScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
@@ -117,29 +118,33 @@ internal fun MizanNavHost(
             // TODO: Implement CategoryDetailScreen when needed
         }
         composable<NavRoute.AmountInput> {
-            val component = remember { appComponent.amountInputComponent().create() }
-            val viewModel = component.viewModel
+//            val component = remember { appComponent.mizanCalculatorComponent().create() }
+//            val viewModel = component.viewModel
+//            MizanCalculatorScreen(viewModel)
 
-            NewTransactionScreen(
-                viewModel = viewModel,
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                onNavigateToManageCategories = {
-                    navController.navigate(NavRoute.ManageCategories)
-                },
-                onNavigateToAccountManage = {
-                    navController.navigate(NavRoute.AccountManagement)
-                },
+             val component = remember { appComponent.amountInputComponent().create() }
+             val viewModel = component.viewModel
 
-                onSubmit = {
-                    navController.navigate(NavRoute.Transactions) {
-                        popUpTo(NavRoute.Transactions) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
+             NewTransactionScreen(
+                 viewModel = viewModel,
+                 onBackPressed = {
+                     navController.popBackStack()
+                 },
+                 onNavigateToManageCategories = {
+                     navController.navigate(NavRoute.ManageCategories)
+                 },
+                 onNavigateToAccountManage = {
+                     navController.navigate(NavRoute.AccountManagement)
+                 },
+
+                 onSubmit = {
+                     navController.navigate(NavRoute.Transactions) {
+                         popUpTo(NavRoute.Transactions) {
+                             inclusive = true
+                         }
+                     }
+                 }
+             )
         }
         composable<NavRoute.CategorySelect> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategorySelect>()

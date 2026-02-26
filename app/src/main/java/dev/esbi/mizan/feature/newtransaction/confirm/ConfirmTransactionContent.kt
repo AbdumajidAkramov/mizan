@@ -404,7 +404,7 @@ private fun SaveAsTemplateCard(
 }
 
 @Composable
-private fun SaveButton(
+internal fun SaveButton(
     isLoading: Boolean,
     onClick: () -> Unit
 ) {

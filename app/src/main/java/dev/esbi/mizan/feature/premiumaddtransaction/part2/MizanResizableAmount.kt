@@ -21,15 +21,14 @@ import java.math.BigDecimal
 fun MizanResizableAmount(
     amount: BigDecimal,
     modifier: Modifier = Modifier,
-    color: Color = Color.Unspecified,
     maxFontSize: TextUnit = 56.sp,
-    minFontSize: TextUnit = 12.sp,
+    minFontSize: TextUnit = 24.sp,
+    color: Color = Color.Unspecified
 ) {
-    // Joriy font o'lchamini saqlash uchun state
-    var fontSize by remember { mutableStateOf(maxFontSize) }
-    var readyToDraw by remember { mutableStateOf(false) }
+    // 1. Har safar amount o'zgarganda fontSize'ni maxFontSize'ga qaytaramiz
+    var fontSize by remember(amount) { mutableStateOf(maxFontSize) }
+    var readyToDraw by remember(amount) { mutableStateOf(false) }
 
-    // Avvalgi formatlash funksiyamizdan foydalanamiz
     val annotatedText = formatMizanAmount(amount, fractionFontSize = (fontSize.value * 0.5).sp)
 
     Text(
@@ -37,22 +36,21 @@ fun MizanResizableAmount(
         modifier = modifier
             .fillMaxWidth()
             .drawWithContent {
-                // Faqat font o'lchami aniqlab bo'lingandan keyin chizamiz (likillashni oldini olish uchun)
                 if (readyToDraw) drawContent()
             },
-        softWrap = false, // Yangi qatorga o'tmasligi shart
+        softWrap = false,
         maxLines = 1,
-        color = color,
-        textAlign = TextAlign.End,
         style = MizanTheme.typography.displayLg.copy(
             fontSize = fontSize,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.End,
+            color = color
         ),
         onTextLayout = { textLayoutResult ->
-            // Agar matn kengligi Box'dan oshib ketsa yoki qatorga sig'masa
+            // 2. Agar hali ham sig'mayotgan bo'lsa va font o'lchami min'dan katta bo'lsa - kichraytiramiz
             if (textLayoutResult.hasVisualOverflow && fontSize > minFontSize) {
-                fontSize = (fontSize.value * 0.95f).sp // 10% ga kichraytiramiz
+                fontSize = (fontSize.value * 0.9f).sp
             } else {
+                // Sig'gan bo'lsa, chizishga ruxsat beramiz
                 readyToDraw = true
             }
         }

@@ -32,9 +32,9 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
                 key in Keypad.numbers -> handleNumberKey(key)
                 key == Keypad.DOT -> handleDotKey()
                 key in Keypad.operators -> handleOperatorKey(key)
-                key == Keypad.EQUALS -> handleEqualsKey()
+                key == Keypad.EQUAL -> handleEqualsKey()
                 key == Keypad.CLEAR -> handleClearKey()
-                key == Keypad.DEL -> handleDeleteKey()
+                key == Keypad.DELETE -> handleDeleteKey()
             }
         }
     }

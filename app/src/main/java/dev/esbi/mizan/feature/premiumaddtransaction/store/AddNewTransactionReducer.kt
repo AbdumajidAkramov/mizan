@@ -1,27 +1,35 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 
 object AddNewTransactionReducer :
-    Reducer<AddNewTransactionStore.State, AddNewTransactionStore.Message> {
+    Reducer<State, Message> {
 
-    override fun AddNewTransactionStore.State.reduce(msg: AddNewTransactionStore.Message) =
+    override fun State.reduce(msg: Message) =
         when (msg) {
-            is AddNewTransactionStore.Message.UpdateTransactionType -> copy(
+            is Message.UpdateTransactionType -> copy(
                 transactionType = msg.type,
                 selectedCategory = null,
                 selectedSubCategory = null
             )
 
-            is AddNewTransactionStore.Message.UpdateTemplateVisible -> copy(showTemplates = msg.isVisible)
-            is AddNewTransactionStore.Message.UpdatePad -> copy(pad = msg.pad)
-            is AddNewTransactionStore.Message.UpdateAccounts -> copy(accounts = msg.accounts)
-            is AddNewTransactionStore.Message.UpdateAllCategories -> copy(allCategories = msg.categories)
-            is AddNewTransactionStore.Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
-            is AddNewTransactionStore.Message.UpdateTargetAccount -> copy(targetAccount = msg.account)
-            is AddNewTransactionStore.Message.UpdateSelectedCategory -> copy(selectedCategory = msg.category)
-            is AddNewTransactionStore.Message.UpdateSelectedSubCategory -> copy(selectedSubCategory = msg.subCategory)
-            is AddNewTransactionStore.Message.UpdateAmount -> copy(
+            is Message.UpdateDisplayText -> copy(
+                currentValue = msg.currentValue,
+                expression = msg.expression,
+                isResultShown = msg.isResultShown
+            )
+
+            is Message.UpdateTemplateVisible -> copy(showTemplates = msg.isVisible)
+            is Message.UpdatePad -> copy(pad = msg.pad)
+            is Message.UpdateAccounts -> copy(accounts = msg.accounts)
+            is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
+            is Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
+            is Message.UpdateTargetAccount -> copy(targetAccount = msg.account)
+            is Message.UpdateSelectedCategory -> copy(selectedCategory = msg.category)
+            is Message.UpdateSelectedSubCategory -> copy(selectedSubCategory = msg.subCategory)
+            is Message.UpdateAmount -> copy(
                 operator = msg.operator,
                 leftNumber = msg.leftNumber,
                 rightNumber = msg.rightNumber,
@@ -31,12 +39,12 @@ object AddNewTransactionReducer :
                 displayText = msg.displayText
             )
 
-            is AddNewTransactionStore.Message.UpdateNote -> copy(note = msg.note)
-            is AddNewTransactionStore.Message.UpdateDescription -> copy(description = msg.description)
-            is AddNewTransactionStore.Message.UpdateTransactionDate -> copy(transactionDate = msg.date)
-            is AddNewTransactionStore.Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
-            is AddNewTransactionStore.Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
-            is AddNewTransactionStore.Message.UpdateError -> copy(error = msg.error)
-            is AddNewTransactionStore.Message.UpdateLoading -> copy(isLoading = msg.loading)
+            is Message.UpdateNote -> copy(note = msg.note)
+            is Message.UpdateDescription -> copy(description = msg.description)
+            is Message.UpdateTransactionDate -> copy(transactionDate = msg.date)
+            is Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
+            is Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
+            is Message.UpdateError -> copy(error = msg.error)
+            is Message.UpdateLoading -> copy(isLoading = msg.loading)
         }
 }

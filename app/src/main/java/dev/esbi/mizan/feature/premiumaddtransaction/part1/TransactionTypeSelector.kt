@@ -111,12 +111,12 @@ fun TransactionTypeSelector(
                 )
             }
         }
-        Text(
+       /* Text(
             modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
             text = text.value,
             style = MizanTheme.typography.bodyXs,
             color = MizanTheme.premium.text.muted
-        )
+        )*/
     }
 }
 

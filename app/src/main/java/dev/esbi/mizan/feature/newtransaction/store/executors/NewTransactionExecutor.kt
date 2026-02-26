@@ -511,7 +511,7 @@ internal class NewTransactionExecutor @Inject constructor(
                         )
                     )
                     dispatch(NewTransactionStore.Message.UpdateKeypadState(newKeypadState))
-                    if (intent.key == Keypad.EQUALS) {
+                    if (intent.key == Keypad.EQUAL) {
                         dispatch(
                             NewTransactionStore.Message.UpdateTransactionInputState(
                                 TransactionInputState.TransactionEmpty

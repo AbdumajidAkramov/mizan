@@ -11,6 +11,7 @@ import dev.esbi.mizan.feature.goals.di.GoalsComponent
 import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
 import dev.esbi.mizan.feature.transfer.di.TransferComponent
 import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
+import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
 import dev.esbi.mizan.feature.managecategories.di.ManageCategoriesComponent
 import dev.esbi.mizan.feature.newtransaction.amountinput.di.AmountInputComponent
 import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectComponent
@@ -59,6 +60,8 @@ internal interface AppComponent {
     fun statisticsComponent(): StatisticsComponent.Factory
     fun transactionsComponent(): TransactionsComponent.Factory
     fun transactionsHubComponent(): TransactionsHubComponent.Factory
+
+    fun mizanCalculatorComponent(): MizanCalculatorComponent.Factory
 
     @Component.Factory
     interface Factory {

@@ -25,9 +25,9 @@ internal class ManualInputHandler @Inject constructor() {
             in Keypad.Companion.numbers -> handleNumberInput(key, currentState, isLeftNumberActive)
             in Keypad.Companion.operators -> handleOperatorInput(key, currentState)
             Keypad.DOT -> handleDotInput(currentState, isLeftNumberActive)
-            Keypad.EQUALS -> handleEqualsInput(currentState)
+            Keypad.EQUAL -> handleEqualsInput(currentState)
             Keypad.CLEAR -> handleClearInput()
-            Keypad.DEL -> handleDeleteInput(currentState, isLeftNumberActive)
+            Keypad.DELETE -> handleDeleteInput(currentState, isLeftNumberActive)
             else -> currentState
         }
     }

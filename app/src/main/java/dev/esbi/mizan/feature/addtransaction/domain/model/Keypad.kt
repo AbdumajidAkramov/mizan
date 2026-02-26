@@ -5,9 +5,9 @@ internal const val CLEAR_KEY = "C"
 internal const val EQUAL_KEY = "="
 
 enum class Keypad {
-    DEL,
+    DELETE,
     CLEAR,
-    EQUALS,
+    EQUAL,
 
     DIVIDE,
     MULTIPLY,
@@ -50,10 +50,10 @@ enum class Keypad {
         fun key(value: String): Keypad {
             return when (value) {
                 CLEAR_KEY -> CLEAR
-                DEL_KEY -> DEL
-                EQUAL_KEY -> EQUALS
-                "/" -> DIVIDE
-                "*" -> MULTIPLY
+                DEL_KEY -> DELETE
+                EQUAL_KEY -> EQUAL
+                "÷" -> DIVIDE
+                "×" -> MULTIPLY
                 "-" -> MINUS
                 "+" -> PLUS
                 "." -> DOT
@@ -96,8 +96,8 @@ enum class Keypad {
         fun isOperator(key: Keypad): Boolean = key in operators
         fun operator(key: Keypad): String {
             return when (key) {
-                DIVIDE -> "/"
-                MULTIPLY -> "*"
+                DIVIDE -> "÷"
+                MULTIPLY -> "×"
                 MINUS -> "-"
                 PLUS -> "+"
                 else -> ""

@@ -7,6 +7,7 @@ import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.feature.calc.mvikotlin.CalculatorStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
 import java.math.BigDecimal
 
@@ -18,6 +19,10 @@ interface AddNewTransactionStore :
 
         val transactionType: TransactionType = TransactionType.EXPENSE,
         val isConfirm: Boolean = false,
+
+        val expression: String = "",
+        val currentValue: String = "0",
+        val isResultShown: Boolean = false,
 
         val operator: String = "",
         val currency: String = "UZS",
@@ -70,6 +75,12 @@ interface AddNewTransactionStore :
     }
 
     sealed interface Intent {
+        data class Input(val value: String) : Intent
+        object Clear : Intent
+        object Delete : Intent
+        object Evaluate : Intent
+
+
         data object OnClosePad : Intent
         data object ToggleTemplates : Intent
         class OnSelectedTemplate(val template: QuickTemplate) : Intent
@@ -142,6 +153,12 @@ interface AddNewTransactionStore :
             val currency: String = "UZS",
             val amountDecimal: BigDecimal = BigDecimal.ZERO,
             val displayText: String = ""
+        ) : Message
+
+        data class UpdateDisplayText(
+            val currentValue: String,
+            val expression: String,
+            val isResultShown: Boolean = false
         ) : Message
 
         class UpdateNote(val note: String) : Message
