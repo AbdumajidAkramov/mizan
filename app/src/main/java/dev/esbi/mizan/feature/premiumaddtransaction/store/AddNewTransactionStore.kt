@@ -7,7 +7,6 @@ import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.calc.mvikotlin.CalculatorStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
 import java.math.BigDecimal
 
@@ -24,6 +23,7 @@ interface AddNewTransactionStore :
         val currentValue: String = "0",
         val isResultShown: Boolean = false,
 
+        val currencies: List<String> = listOf("EUR", "UZS", "RUB", "USD"),
         val operator: String = "",
         val currency: String = "UZS",
         val displayText: String = "",
@@ -79,7 +79,7 @@ interface AddNewTransactionStore :
         object Clear : Intent
         object Delete : Intent
         object Evaluate : Intent
-
+        class OnUpdateCurrency(val currency: String) : Intent
 
         data object OnClosePad : Intent
         data object ToggleTemplates : Intent
@@ -144,7 +144,7 @@ interface AddNewTransactionStore :
 
         class UpdateLoading(val loading: Boolean) : Message
         class UpdateError(val error: String?) : Message
-
+        class UpdateCurrency(val currency: String) : Message
         class UpdateAmount(
             val operator: String = "",
             val leftNumber: String = "0",

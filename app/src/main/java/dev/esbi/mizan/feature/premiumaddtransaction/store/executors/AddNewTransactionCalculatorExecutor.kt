@@ -88,7 +88,7 @@ internal class AddNewTransactionCalculatorExecutor @Inject constructor() :
             val fullExp = state.expression + state.currentValue
             val result = evaluateSimpleExpression(fullExp)
             // Natijani tepaga o'tkazamiz va yangi operatorni qo'shamiz
-            dispatch(Message.UpdateDisplayText(currentValue = "0", expression = "$result$op"))
+            dispatch(Message.UpdateDisplayText(currentValue = "0", expression = "$result$input"))
         } else {
             // Birinchi marta operator bosilganda
             dispatch(

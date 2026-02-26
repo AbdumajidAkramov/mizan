@@ -46,5 +46,6 @@ object AddNewTransactionReducer :
             is Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
+            is Message.UpdateCurrency -> copy(currency = msg.currency)
         }
 }

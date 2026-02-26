@@ -24,13 +24,11 @@ import androidx.compose.ui.UiComposable
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputHeader
-import dev.esbi.mizan.feature.premiumaddtransaction.part1.CurrencyWheelPicker
+import dev.esbi.mizan.feature.premiumaddtransaction.currency.MizanCurrencySelector
 import dev.esbi.mizan.feature.premiumaddtransaction.part1.TransactionTypeSelector
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.NewTransactionAmountContent
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
@@ -81,24 +79,26 @@ fun PremiumNewTransaction(
             Spacer(modifier = Modifier.weight(1f))
             // Displey qismi
 
-/*
-            // Calculation String (if any)
-            if (displayText.isNotEmpty()) {
-                Text(
-                    text = displayText,
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.tertiary,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-            }
-*/
+            /*
+                        // Calculation String (if any)
+                        if (displayText.isNotEmpty()) {
+                            Text(
+                                text = displayText,
+                                style = MizanTheme.typography.bodySm,
+                                color = MizanTheme.premium.text.tertiary,
+                                modifier = Modifier.padding(vertical = 16.dp)
+                            )
+                        }
+            */
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,
-                    modifier = Modifier.weight(1f).padding(16.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
                 ) {
                     Text(text = state.expression, color = MizanTheme.premium.text.primary)
 
@@ -109,39 +109,6 @@ fun PremiumNewTransaction(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
-                CurrencyWheelPicker(
-                    currencies = listOf("EUR","UZS", "RUB", "USD"),
-                    initialCurrency = "UZS",
-                    color = state.transactionType.color(),
-                    onCurrencySelected = {},
-                    modifier = Modifier
-                )
-/*
-                Text(
-                    modifier = Modifier
-                        .clickable(
-                            interactionSource = interactionSource,
-                            indication = null,
-                            onClick = {}
-                        )
-                        .padding(8.dp),
-                    color = state.transactionType.color(),
-                    text = state.currency,
-                    style = MizanTheme.typography.headingMd
-                )
-*/
-
-                /*NewTransactionAmountContent(
-                    amount = state.amountDecimal,
-                    currency = state.currency,
-                    color = state.transactionType.color(),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = MizanTheme.premium.spacing.sm)
-                        .padding(horizontal = 16.dp),
-                    onCurrencyClick = {}
-                )*/
                 Box(
                     modifier = Modifier
                         .height(128.dp)
@@ -218,8 +185,12 @@ fun PremiumNewTransaction(
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Template"
+                MizanCurrencySelector(
+                    currencies = state.currencies,
+                    selectedCurrency = state.currency,
+                    onCurrencySelected = {
+                        accept(AddNewTransactionStore.Intent.OnUpdateCurrency(it))
+                    }
                 )
             }
             Box(

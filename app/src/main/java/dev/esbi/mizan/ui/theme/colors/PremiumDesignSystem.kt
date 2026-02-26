@@ -205,7 +205,7 @@ private val SharedTypography = PremiumTypography(
     displayLg = TextStyle(
         fontSize = 48.sp,
         fontWeight = FontWeight.Bold,
-        lineHeight = 55.sp,
+        lineHeight = 56.sp,
         letterSpacing = (-0.02).em
     ),
     displayMd = TextStyle(

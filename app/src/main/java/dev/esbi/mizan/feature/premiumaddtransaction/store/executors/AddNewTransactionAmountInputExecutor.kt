@@ -2,26 +2,30 @@ package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
 
 internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
-    CoroutineExecutor<AddNewTransactionStore.Intent,
-            AddNewTransactionStore.Action,
-            AddNewTransactionStore.State,
-            AddNewTransactionStore.Message,
-            AddNewTransactionStore.Label>() {
+    CoroutineExecutor<Intent, Action, State, Message, Label>() {
 
     companion object {
         private const val MAX_DECIMAL_PLACES = 2
         private val OPERATORS = listOf('+', '-', '*', '/')
     }
 
-    override fun executeIntent(intent: AddNewTransactionStore.Intent) {
+    override fun executeIntent(intent: Intent) {
         when (intent) {
-            is AddNewTransactionStore.Intent.OnNumberClick -> handleKeypadClick(intent.key)
+            is Intent.OnNumberClick -> handleKeypadClick(intent.key)
+            is Intent.OnUpdateCurrency -> {
+                dispatch(Message.UpdateCurrency(intent.currency))
+            }
+
             else -> Unit
         }
     }
@@ -39,7 +43,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         }
     }
 
-    private fun AddNewTransactionStore.State.handleNumberKey(key: Keypad) {
+    private fun State.handleNumberKey(key: Keypad) {
         val digit = Keypad.number(key)
         val isLeftActive = operator.isEmpty()
         val activeOperand = if (isLeftActive) leftNumber else rightNumber
@@ -63,7 +67,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         dispatchUpdate(newLeft, newRight, operator, newIsFinal)
     }
 
-    private fun AddNewTransactionStore.State.handleDotKey() {
+    private fun State.handleDotKey() {
         val isLeftActive = operator.isEmpty()
         val activeOperand = if (isLeftActive) leftNumber else rightNumber
 
@@ -88,7 +92,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         dispatchUpdate(newLeft, newRight, operator, false)
     }
 
-    private fun AddNewTransactionStore.State.handleOperatorKey(key: Keypad) {
+    private fun State.handleOperatorKey(key: Keypad) {
         val newOp = Keypad.operator(key)
 
         // If both operands present, calculate first
@@ -105,19 +109,19 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         }
     }
 
-    private fun AddNewTransactionStore.State.handleEqualsKey() {
+    private fun State.handleEqualsKey() {
         if (operator.isNotEmpty() && rightNumber.isNotEmpty()) {
             val result = calculate(leftNumber, rightNumber, operator)
             dispatchUpdate(result, "", "", true)
         }
-        forward(AddNewTransactionStore.Action.CheckAndConfirm)
+        forward(Action.CheckAndConfirm)
     }
 
-    private fun AddNewTransactionStore.State.handleClearKey() {
+    private fun State.handleClearKey() {
         dispatchUpdate("0", "", "", false)
     }
 
-    private fun AddNewTransactionStore.State.handleDeleteKey() {
+    private fun State.handleDeleteKey() {
         val isLeftActive = operator.isEmpty()
 
         when {
@@ -138,7 +142,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         }
     }
 
-    private fun AddNewTransactionStore.State.dispatchUpdate(
+    private fun State.dispatchUpdate(
         newLeft: String,
         newRight: String,
         newOperator: String,
@@ -151,7 +155,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
         val amountDecimal = parseStringToBigDecimal(newLeft)
 
         dispatch(
-            AddNewTransactionStore.Message.UpdateAmount(
+            Message.UpdateAmount(
                 operator = newOperator,
                 leftNumber = newLeft,
                 rightNumber = newRight,
@@ -194,6 +198,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
                     BigDecimal.ZERO
                 }
             }
+
             else -> left
         }
 
