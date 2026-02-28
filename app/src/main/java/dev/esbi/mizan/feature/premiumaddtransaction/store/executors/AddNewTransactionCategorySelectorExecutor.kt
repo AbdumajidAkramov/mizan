@@ -45,11 +45,12 @@ internal class AddNewTransactionCategorySelectorExecutor @Inject constructor(
         when (intent) {
             is AddNewTransactionStore.Intent.OnCategorySelect -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectedCategory(intent.category))
-                val nonSubCategory = state().categories.none { intent.category.id == it.parentId }
 
+                val nonSubCategory = state().categories.none { intent.category.id == it.parentId }
                 if (nonSubCategory) {
                     dispatch(AddNewTransactionStore.Message.UpdateSelectedSubCategory(null))
                     forward(AddNewTransactionStore.Action.CheckAndConfirm)
+                    dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(false))
                 }
                 if (state().selectedSubCategory?.parentId != intent.category.id) {
                     dispatch(AddNewTransactionStore.Message.UpdateSelectedSubCategory(null))
@@ -58,6 +59,7 @@ internal class AddNewTransactionCategorySelectorExecutor @Inject constructor(
 
             is AddNewTransactionStore.Intent.OnSubCategorySelect -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectedSubCategory(intent.subCategory))
+                dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(false))
                 forward(AddNewTransactionStore.Action.CheckAndConfirm)
             }
 

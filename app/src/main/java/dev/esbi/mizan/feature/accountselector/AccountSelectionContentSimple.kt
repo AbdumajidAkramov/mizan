@@ -45,7 +45,7 @@ internal fun AccountSelectionContentSimple(
     // Account List
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(bottom = 16.dp),
+        contentPadding = PaddingValues(all = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Cash Section

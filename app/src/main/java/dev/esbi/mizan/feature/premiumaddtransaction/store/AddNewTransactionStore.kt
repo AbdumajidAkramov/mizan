@@ -8,7 +8,6 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
-import dev.esbi.mizan.feature.premiumaddtransaction.model.AccountsBottomSheetModel
 import java.math.BigDecimal
 
 interface AddNewTransactionStore :
@@ -58,7 +57,9 @@ interface AddNewTransactionStore :
 
         val pad: Pad? = null,
 
-        val accountsBottomSheet: AccountsBottomSheetModel? = null,
+        val isSelectAccountsBottomSheetVisible: Boolean = false,
+        val isTargetAccountsBottomSheetVisible: Boolean = false,
+        val isCategoriesBottomSheetVisible: Boolean = false,
     ) {
 
         val categories: List<Category> get() = allCategories.filter { it.type == transactionType }
@@ -82,6 +83,7 @@ interface AddNewTransactionStore :
         object Clear : Intent
         object Delete : Intent
         object Evaluate : Intent
+        data object CloseToast: Intent
         class OnUpdateCurrency(val currency: String) : Intent
 
         data object OnClosePad : Intent
@@ -104,6 +106,9 @@ interface AddNewTransactionStore :
 
         data object OpenAccountsBottomSheet : Intent
         data object CloseAccountsBottomSheet : Intent
+
+        data object OpenTargetAccountsBottomSheet : Intent
+        data object CloseTargetAccountsBottomSheet : Intent
 
         data object OpenCategoriesBottomSheet : Intent
         data object CloseCategoriesBottomSheet : Intent
@@ -128,6 +133,12 @@ interface AddNewTransactionStore :
         data object ShowTransactionDetails : Intent
 
         data object Next : Intent
+
+        // Selector navigation intents
+        data object NavigateToAccountSelector : Intent
+        data object NavigateToCategorySelector : Intent
+        data class OnAccountSelected(val account: Account) : Intent
+        data class OnCategorySelected(val category: Category) : Intent
     }
 
     sealed interface Label {
@@ -135,6 +146,9 @@ interface AddNewTransactionStore :
         data object NavigateToAccountManage : Label
         data object NavigateToTemplateManage : Label
         data object BackTo : Label
+        data object NavigateToAccountSelector : Label
+        data object NavigateToCategorySelector : Label
+        class ShowToast(val message: String) : Label
 
         object TransactionSaved : Label
     }
@@ -150,6 +164,12 @@ interface AddNewTransactionStore :
 
         class UpdateSelectedCategory(val category: Category?) : Message
         class UpdateSelectedSubCategory(val subCategory: Category?) : Message
+
+        class UpdateSelectAccountsBottomSheet(val isVisible: Boolean) : Message
+        class UpdateTargetAccountsBottomSheet(val isVisible: Boolean) : Message
+        class UpdateCategoriesBottomSheet(val isVisible: Boolean) : Message
+
+        data object CloseToast : Message
 
         class UpdateLoading(val loading: Boolean) : Message
         class UpdateError(val error: String?) : Message

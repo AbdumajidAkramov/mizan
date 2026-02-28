@@ -6,6 +6,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -628,7 +629,8 @@ fun TransactionTypeChip(
 fun CategoryChip(
     categoryName: String?,
     subCategoryName: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isPlaceholder = categoryName == null
     val displayText = when {
@@ -641,7 +643,7 @@ fun CategoryChip(
     val cornerRadius = 50f // Full rounded
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .then(
                 if (isPlaceholder) {
                     Modifier.drawBehind {
@@ -663,7 +665,10 @@ fun CategoryChip(
                         .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
                 }
             )
-            .clickable { onClick() }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -683,7 +688,8 @@ fun CategoryChip(
 @Composable
 fun AccountChip(
     accountName: String?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isPlaceholder = accountName == null
     val displayText = accountName ?: "+ Account"
@@ -691,7 +697,7 @@ fun AccountChip(
     val cornerRadius = 50f // Full rounded
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .then(
                 if (isPlaceholder) {
                     Modifier.drawBehind {
@@ -713,7 +719,10 @@ fun AccountChip(
                         .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f))
                 }
             )
-            .clickable { onClick() }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically

@@ -132,8 +132,11 @@ internal fun MizanNavHost(
                 onNavigateToAccountManage = {
                     navController.navigate(NavRoute.AccountManagement)
                 },
-                onOpenAccountSelect = {
+                onNavigateToAccountSelector = {
                     navController.navigate(NavRoute.AccountSelector)
+                },
+                onNavigateToCategorySelector = {
+                    navController.navigate(NavRoute.CategorySelect(transactionType = "EXPENSE"))
                 },
                 onSubmit = {
                     navController.navigate(NavRoute.Transactions) {
@@ -149,10 +152,39 @@ internal fun MizanNavHost(
 
             val component = remember { appComponent.categorySelectComponent().create() }
             val viewModel = component.viewModel
+            
+            // Get the previous back stack entry to access the NewTransaction ViewModel
+            val previousEntry = remember(navController.currentBackStackEntry) {
+                navController.previousBackStackEntry
+            }
+            
+            // Get the AmountInput component from previous entry if it exists
+            val amountInputViewModel = previousEntry?.let {
+                remember { appComponent.amountInputComponent().create().viewModel }
+            }
 
             CategorySelectScreen(
                 viewModel = viewModel,
-                onCategorySelected = {
+                onCategorySelected = { category ->
+                    // Convert Category type and pass back to NewTransactionStore
+                    val domainCategory = object : dev.esbi.mizan.domain.model.Category {
+                        override val id = category.id.toLongOrNull() ?: 0L
+                        override val name = category.name
+                        override val type = when (category.type.uppercase()) {
+                            "EXPENSE" -> dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE
+                            "INCOME" -> dev.esbi.mizan.domain.model.Transaction.Type.INCOME
+                            else -> dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE
+                        }
+                        override val parentId = category.parentId?.toLongOrNull()
+                        override val iconName = category.iconName
+                        override val color = category.color
+                        override val budgetLimit: Double? = null
+                        override val isArchived = false
+                        override val orderIndex = 0
+                    }
+                    amountInputViewModel?.onNewTransactionStoreIntent(
+                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnCategorySelected(domainCategory)
+                    )
                     navController.popBackStack()
                 },
                 onNavigateBack = {
@@ -219,6 +251,16 @@ internal fun MizanNavHost(
         composable<NavRoute.AccountSelector> {
             val component = remember { appComponent.accountSelectorComponent().create() }
             val viewModel = component.viewModel
+            
+            // Get the previous back stack entry to access the NewTransaction ViewModel
+            val previousEntry = remember(navController.currentBackStackEntry) {
+                navController.previousBackStackEntry
+            }
+            
+            // Get the AmountInput component from previous entry if it exists
+            val amountInputViewModel = previousEntry?.let {
+                remember { appComponent.amountInputComponent().create().viewModel }
+            }
 
             AccountSelectionScreen(
                 viewModel = viewModel,
@@ -226,8 +268,10 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onAccountSelected = { account ->
-                    // Handle account selection
-                    // You can pass the selected account back to the previous screen
+                    // Pass the selected account back to NewTransactionStore
+                    amountInputViewModel?.onNewTransactionStoreIntent(
+                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnAccountSelected(account)
+                    )
                     navController.popBackStack()
                 },
                 onAddAccountClick = {

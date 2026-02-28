@@ -37,17 +37,17 @@ internal class AddNewTransactionAccountSelectorExecutor @Inject constructor(
             is Intent.UpdateSelectedAccount -> {
                 dispatch(Message.UpdateSelectedAccount(intent.account))
                 forward(Action.CheckAndConfirm)
+                dispatch(Message.UpdateSelectAccountsBottomSheet(false))
             }
 
             is Intent.UpdateTargetAccount -> {
                 dispatch(Message.UpdateTargetAccount(intent.account))
                 forward(Action.CheckAndConfirm)
+                dispatch(Message.UpdateTargetAccountsBottomSheet(false))
             }
 
             is Intent.OpenAccountManageScreen -> {
-                publish(
-                    Label.NavigateToAccountManage
-                )
+                publish(Label.NavigateToAccountManage)
             }
             is Intent.OpenAccountsBottomSheet -> {
                 dispatch(Message.UpdatePad(State.Pad.AccountSelector))

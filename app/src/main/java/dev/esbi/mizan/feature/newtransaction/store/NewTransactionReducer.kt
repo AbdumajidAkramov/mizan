@@ -110,6 +110,20 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
             is NewTransactionStore.Message.UpdateSelectedAccountActive -> copy(
                 selectedAccountActive = msg.isActive
             )
+
+            is NewTransactionStore.Message.AccountUpdated -> copy(
+                selectedAccount = msg.account,
+                selectedAccountId = msg.account.id
+            )
+
+            is NewTransactionStore.Message.CategoryUpdated -> copy(
+                selectedCategory = msg.category,
+                categoryChooserState = categoryChooserState.copy(
+                    selectedCategory = msg.category,
+                    selectedParentId = msg.category.parentId ?: msg.category.id,
+                    selectedChildId = if (msg.category.parentId != null) msg.category.id else null
+                )
+            )
         }
     }
 }

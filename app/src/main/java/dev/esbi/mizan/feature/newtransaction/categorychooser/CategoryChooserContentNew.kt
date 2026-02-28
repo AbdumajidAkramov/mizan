@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -115,7 +113,7 @@ fun CategoryChooserContentV2(
 }
 
 @Composable
-private fun CategoryChooserHeader(
+fun CategoryChooserHeader(
     title: String,
     onBack: () -> Unit,
     onClose: () -> Unit
@@ -216,14 +214,15 @@ private fun AmountHeader(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CategoryList(
+fun CategoryList(
     state: CategoryChooserState,
     tintColor: Color,
     onParentClick: (Category) -> Unit,
-    onSubCategoryClick: (Category) -> Unit
+    onSubCategoryClick: (Category) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentPadding = PaddingValues(
             horizontal = MizanTheme.premium.spacing.lg,
             vertical = MizanTheme.premium.spacing.sm
@@ -456,12 +455,12 @@ private fun AccountSelectorCard(
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .clickable { onClick() },
         color = if (hasAccount) MizanTheme.premium.colors.emerald.copy(alpha = 0.1f)
-                else MizanTheme.premium.colors.surface2,
+        else MizanTheme.premium.colors.surface2,
         shape = RoundedCornerShape(MizanTheme.premium.radius.xl),
         border = androidx.compose.foundation.BorderStroke(
             width = if (hasAccount) 2.dp else 1.dp,
             color = if (hasAccount) MizanTheme.premium.colors.emerald
-                    else MizanTheme.premium.glass.border
+            else MizanTheme.premium.glass.border
         )
     ) {
         Row(
@@ -486,7 +485,7 @@ private fun AccountSelectorCard(
                     painter = painterResource(id = R.drawable.ic_attach_money),
                     contentDescription = null,
                     tint = if (hasAccount) MizanTheme.premium.colors.emerald
-                           else MizanTheme.premium.text.secondary,
+                    else MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -497,12 +496,12 @@ private fun AccountSelectorCard(
                     text = selectedAccountName ?: "Select Account",
                     style = MizanTheme.typography.bodyMd,
                     color = if (hasAccount) MizanTheme.premium.colors.emerald
-                            else MizanTheme.premium.text.primary,
+                    else MizanTheme.premium.text.primary,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
                     text = if (hasAccount) "Tap to change account"
-                           else "Tap to choose from your accounts",
+                    else "Tap to choose from your accounts",
                     style = MizanTheme.typography.bodyXs,
                     color = MizanTheme.premium.text.tertiary
                 )
@@ -513,7 +512,7 @@ private fun AccountSelectorCard(
                 painter = painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
                 tint = if (hasAccount) MizanTheme.premium.colors.emerald
-                       else MizanTheme.premium.text.tertiary,
+                else MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(20.dp)
             )
         }

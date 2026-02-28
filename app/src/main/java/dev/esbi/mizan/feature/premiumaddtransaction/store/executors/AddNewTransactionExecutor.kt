@@ -41,6 +41,44 @@ internal class AddNewTransactionExecutor @Inject constructor(
                 )
             }
 
+            is AddNewTransactionStore.Intent.NavigateToAccountSelector -> {
+                publish(AddNewTransactionStore.Label.NavigateToAccountSelector)
+            }
+
+            is AddNewTransactionStore.Intent.NavigateToCategorySelector -> {
+                publish(AddNewTransactionStore.Label.NavigateToCategorySelector)
+            }
+
+            is AddNewTransactionStore.Intent.OnAccountSelected -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectedAccount(intent.account))
+            }
+
+            is AddNewTransactionStore.Intent.OnCategorySelected -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectedCategory(intent.category))
+            }
+            is AddNewTransactionStore.Intent.OpenAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(false))
+            }
+            is AddNewTransactionStore.Intent.OpenTargetAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseTargetAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(false))
+            }
+            is AddNewTransactionStore.Intent.OpenCategoriesBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseCategoriesBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(false))
+            }
+
+            is AddNewTransactionStore.Intent.CloseToast -> {
+                dispatch(AddNewTransactionStore.Message.CloseToast)
+            }
+
             else -> Unit
         }
     }

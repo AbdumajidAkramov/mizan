@@ -44,6 +44,8 @@ interface NewTransactionStore :
         val selectedAccountActive: Boolean = true,
         val selectedAccountId: Long? = null,
         val targetAccountId: Long? = null,
+        val selectedAccount: Account? = null,
+        val selectedCategory: Category? = null,
 
         val accounts: List<Account> = emptyList(),
         val isAccountSheetVisible: Boolean = false,
@@ -132,6 +134,10 @@ interface NewTransactionStore :
         data object OpenAccountManageScreen : Intent
         data object CloseAccountSelection : Intent
         class SelectAccount(val accountId: Long) : Intent
+        data object NavigateToAccountSelector : Intent
+        data object NavigateToCategorySelector : Intent
+        class OnAccountSelected(val account: Account) : Intent
+        class OnCategorySelected(val category: Category) : Intent
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Intent
         data object ShowTypeSelector : Intent
         data object HideTypeSelector : Intent
@@ -189,6 +195,8 @@ interface NewTransactionStore :
 
         class UpdateTransactionInputState(val state: TransactionInputState) : Message
         class UpdateSelectedAccountActive(val isActive: Boolean) : Message
+        class AccountUpdated(val account: Account) : Message
+        class CategoryUpdated(val category: Category) : Message
     }
 
     sealed interface CategoryChooserMessage : Message {
@@ -215,5 +223,7 @@ interface NewTransactionStore :
         object TransactionSaved : Label
         object NavigateToAccountManage : Label
         object NavigateToManageCategories : Label
+        object NavigateToAccountSelector : Label
+        object NavigateToCategorySelector : Label
     }
 }

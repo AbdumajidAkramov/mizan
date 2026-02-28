@@ -47,5 +47,9 @@ object AddNewTransactionReducer :
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
             is Message.UpdateCurrency -> copy(currency = msg.currency)
+            is Message.UpdateSelectAccountsBottomSheet -> copy(isSelectAccountsBottomSheetVisible = msg.isVisible)
+            is Message.UpdateTargetAccountsBottomSheet -> copy(isTargetAccountsBottomSheetVisible = msg.isVisible)
+            is Message.UpdateCategoriesBottomSheet -> copy(isCategoriesBottomSheetVisible = msg.isVisible)
+            is Message.CloseToast -> copy(error = null)
         }
 }

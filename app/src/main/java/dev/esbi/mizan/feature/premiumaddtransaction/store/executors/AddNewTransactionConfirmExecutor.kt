@@ -13,9 +13,14 @@ import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepositor
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 internal class AddNewTransactionConfirmExecutor @Inject constructor(
@@ -27,15 +32,11 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
     private val templateRepository: TemplateRepository
-) : CoroutineExecutor<AddNewTransactionStore.Intent,
-        AddNewTransactionStore.Action,
-        AddNewTransactionStore.State,
-        AddNewTransactionStore.Message,
-        AddNewTransactionStore.Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
 
-    override fun executeAction(action: AddNewTransactionStore.Action) {
+    override fun executeAction(action: Action) {
         when (action) {
-            is AddNewTransactionStore.Action.CheckAndConfirm -> {
+            is Action.CheckAndConfirm -> {
                 checkPadState()
             }
 
@@ -43,103 +44,123 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
         }
     }
 
-    override fun executeIntent(intent: AddNewTransactionStore.Intent) {
+    override fun executeIntent(intent: Intent) {
         when (intent) {
-            is AddNewTransactionStore.Intent.UpdateNote -> {
-                dispatch(AddNewTransactionStore.Message.UpdateNote(note = intent.note))
+            is Intent.UpdateNote -> {
+                dispatch(Message.UpdateNote(note = intent.note))
             }
 
-            is AddNewTransactionStore.Intent.UpdateDate -> {
-                dispatch(AddNewTransactionStore.Message.UpdateTransactionDate(date = intent.date))
+            is Intent.UpdateDate -> {
+                dispatch(Message.UpdateTransactionDate(date = intent.date))
             }
 
-            is AddNewTransactionStore.Intent.UpdateSaveAsTemplate -> {
-                dispatch(AddNewTransactionStore.Message.UpdateSaveAsTemplate(saveAsTemplate = intent.value))
+            is Intent.UpdateSaveAsTemplate -> {
+                dispatch(Message.UpdateSaveAsTemplate(saveAsTemplate = intent.value))
             }
 
-            is AddNewTransactionStore.Intent.Back -> {
-                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(false))
+            is Intent.Back -> {
+                dispatch(Message.UpdateIsConfirm(false))
             }
 
-            is AddNewTransactionStore.Intent.ConfirmSave -> {
+            is Intent.ConfirmSave -> {
                 scope.launch {
-                    dispatch(AddNewTransactionStore.Message.UpdateLoading(true))
-                    dispatch(AddNewTransactionStore.Message.UpdateError(null))
+                    dispatch(Message.UpdateLoading(true))
+                    dispatch(Message.UpdateError(null))
 
                     try {
-                        val currentState = state()
-
-                        // Get exchange rate for the selected currency
-                        val currency = currencyRepository.getCurrencyByCode(currentState.currency)
-                        val exchangeRate = currency?.rateToBase ?: 1.0
-
-                        // Get category ID (prefer child category if selected)
-                        val categoryId = currentState.selectedSubCategory?.id
-                            ?: currentState.selectedCategory?.id
-
-                        // Create Transaction domain model
-                        val transaction = Transaction(
-                            id = 0, // New transaction
-                            type = currentState.transactionType,
-                            amount = currentState.amount.value.toDouble(),
-                            currency = currency ?: Currency(
-                                code = currentState.currency,
-                                name = currentState.currency,
-                                symbol = currentState.currency,
-                                rateToBase = exchangeRate,
-                                isBaseCurrency = currentState.currency == "UZS"
-                            ),
-                            exchangeRate = exchangeRate,
-                            targetAmount = null, // TODO: Calculate for transfers if needed
-                            date = currentState.transactionDate,
-                            note = currentState.note.takeIf { it.isNotBlank() },
-                            description = currentState.description.takeIf { it.isNotBlank() },
-                            photoPaths = currentState.photoPaths,
-                            accountId = currentState.selectedAccount?.id,
-                            categoryId = categoryId,
-                            subCategoryId = null,
-                            targetAccountId = currentState.targetAccount?.id,
-                            fee = currentState.fee ?: 0.0,
-                            isBookmarked = currentState.isBookmarked,
-                            recurrenceRule = null,
-                            isInstallment = false,
-                            installmentTotalMonths = null,
-                            installmentCurrentMonth = null,
-                            parentTransactionId = null,
-                            merchantName = null,
-                            fiscalSign = null
-                        )
-
-                        // Save transaction
-                        val result = transactionRepository.saveTransaction(transaction)
-
-                        if (result.isSuccess) {
-                            // Save as template if enabled
-                            if (currentState.saveAsTemplate) {
-                                val categoryName = currentState.selectedCategory?.name ?: "Template"
-                                val template = Template(
-                                    name = categoryName,
-                                    amount = currentState.amount.value.toDouble(),
-                                    iconName = currentState.selectedCategory?.iconName,
-                                    transactionType = transaction.type,
-                                    categoryId = categoryId,
-                                    accountId = currentState.selectedAccount?.id,
-                                    note = currentState.note.takeIf { it.isNotBlank() }
-                                )
-                                templateRepository.addTemplate(template)
+                        val state = state()
+                        when {
+                            state.amount.value == BigDecimal.ZERO -> {
+                                dispatch(Message.UpdateError("Amount not be zero"))
                             }
-                            publish(AddNewTransactionStore.Label.TransactionSaved)
-                        } else {
-                            dispatch(AddNewTransactionStore.Message.UpdateError("Failed to save transaction"))
+
+                            state.selectedAccount == null -> {
+                                dispatch(Message.UpdateError("Select account"))
+                            }
+
+                            state.transactionType != Transaction.Type.TRANSFER && state.selectedCategory == null -> {
+                                dispatch(Message.UpdateError("Select category"))
+                            }
+
+                            state.transactionType == Transaction.Type.TRANSFER && state.targetAccount == null -> {
+                                dispatch(Message.UpdateError("Select Target account"))
+                            }
+
+                            else -> {
+                                // Get exchange rate for the selected currency
+                                val currency = currencyRepository.getCurrencyByCode(state.currency)
+                                val exchangeRate = currency?.rateToBase ?: 1.0
+
+                                // Get category ID (prefer child category if selected)
+                                val categoryId = state.selectedSubCategory?.id
+                                    ?: state.selectedCategory?.id
+
+                                // Create Transaction domain model
+                                val transaction = Transaction(
+                                    id = 0, // New transaction
+                                    type = state.transactionType,
+                                    amount = state.amount.value.toDouble(),
+                                    currency = currency ?: Currency(
+                                        code = state.currency,
+                                        name = state.currency,
+                                        symbol = state.currency,
+                                        rateToBase = exchangeRate,
+                                        isBaseCurrency = state.currency == "UZS"
+                                    ),
+                                    exchangeRate = exchangeRate,
+                                    targetAmount = null, // TODO: Calculate for transfers if needed
+                                    date = state.transactionDate,
+                                    note = state.note.takeIf { it.isNotBlank() },
+                                    description = state.description.takeIf { it.isNotBlank() },
+                                    photoPaths = state.photoPaths,
+                                    accountId = state.selectedAccount?.id,
+                                    categoryId = categoryId,
+                                    subCategoryId = null,
+                                    targetAccountId = state.targetAccount?.id,
+                                    fee = state.fee ?: 0.0,
+                                    isBookmarked = state.isBookmarked,
+                                    recurrenceRule = null,
+                                    isInstallment = false,
+                                    installmentTotalMonths = null,
+                                    installmentCurrentMonth = null,
+                                    parentTransactionId = null,
+                                    merchantName = null,
+                                    fiscalSign = null
+                                )
+
+                                // Save transaction
+                                val result = transactionRepository.saveTransaction(transaction)
+
+                                if (result.isSuccess) {
+                                    // Save as template if enabled
+                                    if (state.saveAsTemplate) {
+                                        val categoryName =
+                                            state.selectedCategory?.name ?: "Template"
+                                        val template = Template(
+                                            name = categoryName,
+                                            amount = state.amount.value.toDouble(),
+                                            iconName = state.selectedCategory?.iconName,
+                                            transactionType = transaction.type,
+                                            categoryId = categoryId,
+                                            accountId = state.selectedAccount?.id,
+                                            note = state.note.takeIf { it.isNotBlank() }
+                                        )
+                                        templateRepository.addTemplate(template)
+                                    }
+                                    publish(Label.TransactionSaved)
+                                } else {
+                                    dispatch(Message.UpdateError("Failed to save transaction"))
+                                }
+                            }
                         }
                     } catch (e: Exception) {
                         dispatch(
-                            AddNewTransactionStore.Message.UpdateError(
+                            Message.UpdateError(
                                 e.message ?: "Unknown error"
                             )
                         )
                     } finally {
-                        dispatch(AddNewTransactionStore.Message.UpdateLoading(false))
+                        dispatch(Message.UpdateLoading(false))
                     }
                 }
 //                checkPadState()
@@ -154,31 +175,31 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
         when {
             state.amount.value.toDouble() == 0.0 -> {
                 dispatch(
-                    AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.AmountInput)
+                    Message.UpdatePad(pad = State.Pad.AmountInput)
                 )
             }
 
             state.selectedCategory == null -> {
                 dispatch(
-                    AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.CategorySelector)
+                    Message.UpdatePad(pad = State.Pad.CategorySelector)
                 )
             }
 
             state.selectedAccount == null -> {
                 dispatch(
-                    AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.AccountSelector)
+                    Message.UpdatePad(pad = State.Pad.AccountSelector)
                 )
             }
 
             state.transactionType == Transaction.Type.TRANSFER && state.targetAccount == null -> {
                 dispatch(
-                    AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.TargetAccountSelector)
+                    Message.UpdatePad(pad = State.Pad.TargetAccountSelector)
                 )
             }
 
             else -> {
                 Log.d("TTT", "Confirm screen open")
-                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(true))
+                dispatch(Message.UpdateIsConfirm(true))
             }
         }
     }
