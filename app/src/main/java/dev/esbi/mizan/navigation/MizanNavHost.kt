@@ -10,8 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
+import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
-import dev.esbi.mizan.feature.calc.MizanCalculatorScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
@@ -118,33 +118,31 @@ internal fun MizanNavHost(
             // TODO: Implement CategoryDetailScreen when needed
         }
         composable<NavRoute.AmountInput> {
-//            val component = remember { appComponent.mizanCalculatorComponent().create() }
-//            val viewModel = component.viewModel
-//            MizanCalculatorScreen(viewModel)
+            val component = remember { appComponent.amountInputComponent().create() }
+            val viewModel = component.viewModel
 
-             val component = remember { appComponent.amountInputComponent().create() }
-             val viewModel = component.viewModel
-
-             NewTransactionScreen(
-                 viewModel = viewModel,
-                 onBackPressed = {
-                     navController.popBackStack()
-                 },
-                 onNavigateToManageCategories = {
-                     navController.navigate(NavRoute.ManageCategories)
-                 },
-                 onNavigateToAccountManage = {
-                     navController.navigate(NavRoute.AccountManagement)
-                 },
-
-                 onSubmit = {
-                     navController.navigate(NavRoute.Transactions) {
-                         popUpTo(NavRoute.Transactions) {
-                             inclusive = true
-                         }
-                     }
-                 }
-             )
+            NewTransactionScreen(
+                viewModel = viewModel,
+                onBackPressed = {
+                    navController.popBackStack()
+                },
+                onNavigateToManageCategories = {
+                    navController.navigate(NavRoute.ManageCategories)
+                },
+                onNavigateToAccountManage = {
+                    navController.navigate(NavRoute.AccountManagement)
+                },
+                onOpenAccountSelect = {
+                    navController.navigate(NavRoute.AccountSelector)
+                },
+                onSubmit = {
+                    navController.navigate(NavRoute.Transactions) {
+                        popUpTo(NavRoute.Transactions) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
         composable<NavRoute.CategorySelect> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.CategorySelect>()
@@ -215,6 +213,25 @@ internal fun MizanNavHost(
                 },
                 onNavigateToEditAccount = { accountId ->
                     // TODO: Navigate to edit account screen if needed
+                }
+            )
+        }
+        composable<NavRoute.AccountSelector> {
+            val component = remember { appComponent.accountSelectorComponent().create() }
+            val viewModel = component.viewModel
+
+            AccountSelectionScreen(
+                viewModel = viewModel,
+                onClose = {
+                    navController.popBackStack()
+                },
+                onAccountSelected = { account ->
+                    // Handle account selection
+                    // You can pass the selected account back to the previous screen
+                    navController.popBackStack()
+                },
+                onAddAccountClick = {
+                    navController.navigate(NavRoute.AccountManagement)
                 }
             )
         }

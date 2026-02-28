@@ -8,6 +8,7 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
+import dev.esbi.mizan.feature.premiumaddtransaction.model.AccountsBottomSheetModel
 import java.math.BigDecimal
 
 interface AddNewTransactionStore :
@@ -56,6 +57,8 @@ interface AddNewTransactionStore :
         val error: String? = null,
 
         val pad: Pad? = null,
+
+        val accountsBottomSheet: AccountsBottomSheetModel? = null,
     ) {
 
         val categories: List<Category> get() = allCategories.filter { it.type == transactionType }
@@ -98,6 +101,12 @@ interface AddNewTransactionStore :
         class UpdateTargetAccount(val account: Account?) : Intent
         class UpdateSelectedAccount(val account: Account?) : Intent
         data object OpenAccountManageScreen : Intent
+
+        data object OpenAccountsBottomSheet : Intent
+        data object CloseAccountsBottomSheet : Intent
+
+        data object OpenCategoriesBottomSheet : Intent
+        data object CloseCategoriesBottomSheet : Intent
 
         // Number pad actions
         class OnNumberClick(val key: Keypad) : Intent

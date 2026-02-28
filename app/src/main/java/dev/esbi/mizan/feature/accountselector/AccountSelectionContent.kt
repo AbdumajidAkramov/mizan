@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.accountselect
+package dev.esbi.mizan.feature.accountselector
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -23,15 +23,19 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
@@ -41,28 +45,88 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.feature.addtransaction.presentation.widgets.dashedBorder
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
 import java.text.NumberFormat
 import java.util.Locale
+import kotlin.math.abs
 
 /**
  * Account Selection Bottom Sheet Content
  * Premium design matching the app's design system
  */
+
 @Composable
 fun AccountSelectionContent(
-    accounts: List<Account>,
-    selectedAccount: Account?,
-    onAccountClick: (Account) -> Unit,
+    state: AccountSelectorStore.State,
+    onIntent: (AccountSelectorStore.Intent) -> Unit,
     onAddAccountClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Load accounts when content is first displayed
+    LaunchedEffect(Unit) {
+        onIntent(AccountSelectorStore.Intent.LoadAccounts)
+    }
+    val premiumSystem = LocalPremiumSystem.current
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
+    // Handle loading state
+    if (state.isLoading) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = premiumSystem.colors.primary
+            )
+        }
+        return
+    }
+
+    // Handle error state
+    state.error?.let { error ->
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = premiumSystem.colors.error
+                )
+
+                // Retry button
+                Surface(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(premiumSystem.radius.md))
+                        .clickable { onIntent(AccountSelectorStore.Intent.RetryLoad) },
+                    color = premiumSystem.colors.primary,
+                    shape = RoundedCornerShape(premiumSystem.radius.md)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                        text = "Retry",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+        return
+    }
+
     // Group accounts by type
-    val groupedAccounts = remember(accounts) {
-        accounts.groupBy { account ->
+    val groupedAccounts = remember(state.accounts) {
+        state.accounts.groupBy { account ->
             when (account.type) {
                 Account.Type.CASH -> AccountGroupType.CASH
                 Account.Type.CARD -> AccountGroupType.BANK
@@ -76,7 +140,7 @@ fun AccountSelectionContent(
     // Account List
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(bottom = 16.dp),
+        contentPadding = PaddingValues(all = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Cash Section
@@ -90,9 +154,9 @@ fun AccountSelectionContent(
             items(cashAccounts, key = { it.id }) { account ->
                 AccountCard(
                     account = account,
-                    isSelected = account.id == selectedAccount?.id,
+                    isSelected = account.id == state.selectedAccountId,
                     currencyFormat = currencyFormat,
-                    onClick = { onAccountClick(account) }
+                    onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
                 )
             }
         }
@@ -109,9 +173,9 @@ fun AccountSelectionContent(
             items(bankAccounts, key = { it.id }) { account ->
                 AccountCard(
                     account = account,
-                    isSelected = account.id == selectedAccount?.id,
+                    isSelected = account.id == state.selectedAccountId,
                     currencyFormat = currencyFormat,
-                    onClick = { onAccountClick(account) }
+                    onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
                 )
             }
         }
@@ -125,21 +189,22 @@ fun AccountSelectionContent(
 }
 
 @Composable
-private fun AccountSelectionHeader(onClose: () -> Unit) {
+internal fun AccountSelectionHeader(onClose: () -> Unit) {
+    val premiumSystem = LocalPremiumSystem.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = MizanTheme.premium.spacing.lg,
-                vertical = MizanTheme.premium.spacing.md
+                horizontal = premiumSystem.spacing.md,
+                vertical = premiumSystem.spacing.sm
             ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Select Account",
-            style = MizanTheme.typography.headingMd,
-            color = MizanTheme.premium.text.primary,
+            style = MaterialTheme.typography.titleMedium,
+            color = premiumSystem.text.primary,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -147,14 +212,14 @@ private fun AccountSelectionHeader(onClose: () -> Unit) {
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface2)
+                .background(premiumSystem.colors.surface2)
                 .clickable { onClose() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = "Close",
-                tint = MizanTheme.premium.text.secondary,
+                tint = premiumSystem.text.secondary,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -162,10 +227,11 @@ private fun AccountSelectionHeader(onClose: () -> Unit) {
 }
 
 @Composable
-private fun AccountSectionHeader(
+internal fun AccountSectionHeader(
     title: String,
     iconRes: Int
 ) {
+    val premiumSystem = LocalPremiumSystem.current
     Row(
         modifier = Modifier.padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -174,53 +240,60 @@ private fun AccountSectionHeader(
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = null,
-            tint = MizanTheme.premium.text.tertiary,
+            tint = premiumSystem.text.tertiary,
             modifier = Modifier.size(16.dp)
         )
         Text(
             text = title,
-            style = MizanTheme.typography.labelSm,
-            color = MizanTheme.premium.text.tertiary,
+            style = MaterialTheme.typography.labelSmall,
+            color = premiumSystem.text.tertiary,
             fontWeight = FontWeight.Medium
         )
     }
 }
 
 @Composable
-private fun AccountCard(
+internal fun AccountCard(
     account: Account,
     isSelected: Boolean,
     currencyFormat: NumberFormat,
     onClick: () -> Unit
 ) {
+    val premiumSystem = LocalPremiumSystem.current
     val accountColor = getAccountColor(account)
+
+    // Glassmorphism effect
     val backgroundColor = if (isSelected) {
-        MizanTheme.premium.colors.emerald.copy(alpha = 0.1f)
+        premiumSystem.glass.bg.copy(alpha = 0.9f)
     } else {
-        MizanTheme.premium.colors.surface2
+        premiumSystem.glass.bg
     }
     val borderColor = if (isSelected) {
-        MizanTheme.premium.colors.emerald
+        premiumSystem.colors.emerald
     } else {
-        Color.Transparent
+        premiumSystem.glass.border
     }
 
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
-            .then(
-                if (isSelected) {
-                    Modifier.border(
-                        width = 2.dp,
-                        color = borderColor,
-                        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+            .clip(RoundedCornerShape(premiumSystem.radius.xl))
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = listOf(
+                        premiumSystem.colors.primary.copy(alpha = 0.1f),
+                        premiumSystem.colors.primary.copy(alpha = 0.05f)
                     )
-                } else Modifier
+                )
+            )
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(premiumSystem.radius.xl)
             )
             .clickable { onClick() },
-        color = backgroundColor,
-        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
+        color = Color.Transparent,
+        shape = RoundedCornerShape(premiumSystem.radius.xl)
     ) {
         Row(
             modifier = Modifier
@@ -249,16 +322,16 @@ private fun AccountCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = account.name,
-                    style = MizanTheme.typography.bodyMd,
-                    color = if (isSelected) MizanTheme.premium.colors.emerald
-                    else MizanTheme.premium.text.primary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (isSelected) premiumSystem.colors.emerald
+                    else premiumSystem.text.primary,
                     fontWeight = FontWeight.Medium
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = formatBalance(account.balance, account.currency.symbol),
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.tertiary
+                    style = MaterialTheme.typography.bodySmall,
+                    color = premiumSystem.text.tertiary
                 )
             }
 
@@ -268,7 +341,7 @@ private fun AccountCard(
                     modifier = Modifier
                         .size(28.dp)
                         .clip(CircleShape)
-                        .background(MizanTheme.premium.colors.emerald),
+                        .background(premiumSystem.colors.emerald),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -284,31 +357,33 @@ private fun AccountCard(
 }
 
 @Composable
-private fun AddAccountButton(onClick: () -> Unit) {
+internal fun AddAccountButton(onClick: () -> Unit) {
+    val premiumSystem = LocalPremiumSystem.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.98f else 1f,
-        label = "scale_animation"
+        label = "button_scale"
     )
+
     Surface(
-        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .dashedBorder(
-                color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
-                strokeWidth = 2.dp,
-                dashLength = 8.dp,  // Chiziq uzunligi
-                gapLength = 6.dp,   // Chiziqlar orasidagi masofa
-                cornerRadius = MizanTheme.premium.radius.xl
+            .padding(
+                vertical = premiumSystem.spacing.sm
             )
-            .graphicsLayer(scaleX = scale, scaleY = scale),
-        // PremiumDesignSystem dagi radiuslardan foydalanamiz
-        shape = RoundedCornerShape(MizanTheme.premium.radius.xl),
-        // Emerald rangining 40% transparent holati (bg-emerald/40)
-        color = MizanTheme.premium.colors.emerald.copy(alpha = 0.05f),
-        interactionSource = interactionSource
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clip(RoundedCornerShape(premiumSystem.radius.xl))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { onClick() },
+        shape = RoundedCornerShape(premiumSystem.radius.xl),
+        color = premiumSystem.colors.emerald.copy(alpha = 0.05f)
     ) {
         Row(
             modifier = Modifier
@@ -321,21 +396,21 @@ private fun AddAccountButton(onClick: () -> Unit) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.15f)),
+                    .background(premiumSystem.colors.emerald.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_add),
                     contentDescription = null,
-                    tint = MizanTheme.premium.colors.emerald,
+                    tint = premiumSystem.colors.emerald,
                     modifier = Modifier.size(20.dp)
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
             Text(
                 text = "Add New Account",
-                style = MizanTheme.typography.bodyMd,
-                color = MizanTheme.premium.colors.emerald,
+                style = MaterialTheme.typography.bodyMedium,
+                color = premiumSystem.colors.emerald,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -343,7 +418,7 @@ private fun AddAccountButton(onClick: () -> Unit) {
 }
 
 // Helper functions
-private enum class AccountGroupType {
+internal enum class AccountGroupType {
     CASH,
     BANK
 }
@@ -382,7 +457,7 @@ private fun formatBalance(balance: Double, currencySymbol: String): String {
     val formatted = NumberFormat.getNumberInstance(Locale.US).apply {
         minimumFractionDigits = 2
         maximumFractionDigits = 2
-    }.format(kotlin.math.abs(balance))
+    }.format(abs(balance))
 
     return if (balance < 0) {
         "-$formatted $currencySymbol"
@@ -456,9 +531,13 @@ fun AccountSelectionContentPreview() {
 
     dev.esbi.mizan.ui.theme.MizanTheme() {
         AccountSelectionContent(
-            accounts = mockAccounts,
-            selectedAccount = null,
-            onAccountClick = {},
+            state = dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore.State(
+                isLoading = false,
+                accounts = mockAccounts,
+                selectedAccountId = null,
+                error = null
+            ),
+            onIntent = {},
             onAddAccountClick = {},
         )
     }

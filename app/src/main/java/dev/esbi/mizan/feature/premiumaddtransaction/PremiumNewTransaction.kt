@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,18 +29,18 @@ import dev.esbi.mizan.feature.premiumaddtransaction.part1.TransactionTypeSelecto
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import java.math.BigDecimal
 
 @UiComposable
 @Composable
 fun PremiumNewTransaction(
-    state: AddNewTransactionStore.State,
-    accept: (AddNewTransactionStore.Intent) -> Unit,
+    state: State,
+    accept: (Intent) -> Unit,
 ) {
     val displayText = state.displayText
     val interactionSource = remember { MutableInteractionSource() }
@@ -52,10 +50,10 @@ fun PremiumNewTransaction(
             AmountInputHeader(
                 showTemplates = state.showTemplates,
                 onTemplatesToggle = {
-                    accept(AddNewTransactionStore.Intent.ToggleTemplates)
+                    accept(Intent.ToggleTemplates)
                 },
                 onClose = {
-                    accept(AddNewTransactionStore.Intent.Back)
+                    accept(Intent.Back)
                 }
             )
         }
@@ -76,103 +74,65 @@ fun PremiumNewTransaction(
                     accept(AddNewTransactionStore.Intent.SelectTransactionType(it))
                 }
             )
-            Spacer(modifier = Modifier.weight(1f))
-            // Displey qismi
-
-            /*
-                        // Calculation String (if any)
-                        if (displayText.isNotEmpty()) {
-                            Text(
-                                text = displayText,
-                                style = MizanTheme.typography.bodySm,
-                                color = MizanTheme.premium.text.tertiary,
-                                modifier = Modifier.padding(vertical = 16.dp)
-                            )
-                        }
-            */
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp)
-                ) {
-                    Text(text = state.expression, color = MizanTheme.premium.text.primary)
-
-                    MizanResizableAmount(
-                        modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.sm),
-                        amount = state.currentValue.toBigDecimalOrNull() ?: BigDecimal.ZERO,
-                        color = state.transactionType.color(),
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .height(128.dp)
-                        .width(48.dp)
-                        .clip(
-                            shape = RoundedCornerShape(
-                                topStart = MizanTheme.premium.radius.xxl,
-                                bottomStart = MizanTheme.premium.radius.xxl
-                            )
-                        )
-                        .background(MizanTheme.premium.glass.bg)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {
-                                accept(AddNewTransactionStore.Intent.ShowTransactionDetails)
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    MizanIcon(
-                        modifier = Modifier,
-                        icon = IconValue(Icons.ic_chevron_left),
-                        tint = MizanTheme.premium.colors.emerald
-                    )
-                }
-            }
-
+            AmountContent(
+                modifier = Modifier,
+                state = state,
+                accept = accept
+            )
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                accept(Intent.OpenAccountsBottomSheet)
+                            }
+                        ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Account",
                         style = MizanTheme.typography.bodySm,
                         color = MizanTheme.premium.text.tertiary,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier
                     )
                     Text(
                         text = "BANK",
                         style = MizanTheme.typography.headingMd,
                         color = MizanTheme.premium.text.tertiary,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier
                     )
                 }
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                accept(Intent.OpenAccountsBottomSheet)
+                            }
+                        ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Category",
                         style = MizanTheme.typography.bodySm,
                         color = MizanTheme.premium.text.tertiary,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier
                     )
                     Text(
                         text = "BAR",
                         style = MizanTheme.typography.headingMd,
                         color = MizanTheme.premium.text.tertiary,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier
                     )
                 }
             }
@@ -214,18 +174,34 @@ fun PremiumNewTransaction(
             }
 
             // Save Button
-            Button(
+            Box(
                 modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onClick = {
-                    accept(AddNewTransactionStore.Intent.Next)
-                }
+                    .height(56.dp)
+                    // Glow Shadow
+                    .premiumShadow(
+                        shadowInfo = MizanTheme.premium.shadows.glowPrimary,
+                        borderRadius = MizanTheme.premium.radius.md
+                    )
+                    // Gradient Background
+                    .background(
+                        brush = MizanTheme.premium.gradients.primary,
+                        shape = RoundedCornerShape(MizanTheme.premium.radius.sm)
+                    )
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            accept(AddNewTransactionStore.Intent.Next)
+                        }
+                    ),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Next to Confirm",
                     style = MizanTheme.premium.typography.headingSm,
-                    color = MizanTheme.premium.text.primary
+                    color = MizanTheme.premium.colors.white
                 )
             }
         }
@@ -296,6 +272,37 @@ fun PremiumNewTransaction(
                 }
         */
 
+        state.accountsBottomSheet?.let {
+
+        }
+    }
+}
+
+@Composable
+fun AmountContent(
+    modifier: Modifier = Modifier,
+    state: State,
+    accept: (Intent) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+        ) {
+            Text(text = state.expression, color = MizanTheme.premium.text.primary)
+            MizanResizableAmount(
+                modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.sm),
+                amount = state.currentValue.toBigDecimalOrNull() ?: BigDecimal.ZERO,
+                color = state.transactionType.color(),
+            )
+        }
     }
 }
 

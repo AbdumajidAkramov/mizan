@@ -15,8 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import dev.esbi.mizan.feature.accountselector.AccountSelectionContentSimple
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputContent
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserContentV2
@@ -26,7 +26,6 @@ import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiS
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.transactiontype.PremiumTransactionTypeSelector
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeContent
-import dev.esbi.mizan.feature.premiumaddtransaction.PremiumNewTransaction
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -37,7 +36,8 @@ internal fun NewTransactionScreen(
     onBackPressed: () -> Unit,
     onSubmit: () -> Unit,
     onNavigateToManageCategories: () -> Unit,
-    onNavigateToAccountManage: () -> Unit
+    onNavigateToAccountManage: () -> Unit,
+    onOpenAccountSelect: () -> Unit
 ) {
 
     val state by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
@@ -58,45 +58,57 @@ internal fun NewTransactionScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
 
-    if (state.isConfirm) {
-        ConfirmTransactionContent(
-            state = ConfirmTransactionUiState(
-                amount = "",
-                currencyCode = "UZS",
-                transactionType = state.transactionType,
-                categoryName = state.selectedCategory?.name,
-                subCategoryName = state.selectedSubCategory?.name,
-                categoryIcon = "",
-                accountName = state.selectedAccount?.name.orEmpty(),
-                toAccountName = state.targetAccount?.name,
-                date = state.transactionDate,
-                note = state.note,
-                saveAsTemplate = state.saveAsTemplate,
-                isLoading = state.isLoading,
-            ),
-            onNoteChange = { note ->
-                accept(AddNewTransactionStore.Intent.UpdateNote(note))
-            },
-            onDateClick = {
-                showDatePicker = true
-            },
-            onConfirmClick = {
-                accept(AddNewTransactionStore.Intent.ConfirmSave)
-            },
-            onBackClick = {
-                accept(AddNewTransactionStore.Intent.Back)
-            },
-            onSaveAsTemplateChange = { saveAsTemplate ->
-                accept(AddNewTransactionStore.Intent.UpdateSaveAsTemplate(saveAsTemplate))
-            }
-        )
+    /* if (state.isConfirm) {
+          ConfirmTransactionContent(
+              state = ConfirmTransactionUiState(
+                  amount = "",
+                  currencyCode = "UZS",
+                  transactionType = state.transactionType,
+                  categoryName = state.selectedCategory?.name,
+                  subCategoryName = state.selectedSubCategory?.name,
+                  categoryIcon = "",
+                  accountName = state.selectedAccount?.name.orEmpty(),
+                  toAccountName = state.targetAccount?.name,
+                  date = state.transactionDate,
+                  note = state.note,
+                  saveAsTemplate = state.saveAsTemplate,
+                  isLoading = state.isLoading,
+              ),
+              onNoteChange = { note ->
+                  accept(AddNewTransactionStore.Intent.UpdateNote(note))
+              },
+              onDateClick = {
+                  showDatePicker = true
+              },
+              onConfirmClick = {
+                  accept(AddNewTransactionStore.Intent.ConfirmSave)
+              },
+              onBackClick = {
+                  accept(AddNewTransactionStore.Intent.Back)
+              },
+              onSaveAsTemplateChange = { saveAsTemplate ->
+                  accept(AddNewTransactionStore.Intent.UpdateSaveAsTemplate(saveAsTemplate))
+              }
+          )
 
-    } else {
-        PremiumNewTransaction(
-            state = state,
-            accept = accept
-        )
-    }
+      } else {
+          PremiumNewTransaction(
+              state = state,
+              accept = accept
+          )
+      }
+  */
+
+
+    NewTransactionScreenContent(
+        state = viewModel.state.collectAsState(
+            initial = NewTransactionStore.State()
+        ).value,
+        accept = viewModel::onIntent,
+        onNavigateToManageCategories = onNavigateToManageCategories,
+        onBackPressed = onBackPressed
+    )
+
 
     MizanDatePickerDialog(
         isVisible = showDatePicker,
@@ -109,14 +121,7 @@ internal fun NewTransactionScreen(
             showDatePicker = false
         }
     )
-    /*
-        NewTransactionScreenContent(
-            state = state,
-            accept = accept,
-            onNavigateToManageCategories = onNavigateToManageCategories,
-            onBackPressed = onBackPressed
-        )
-    */
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -283,7 +288,7 @@ fun NewTransactionScreenContent(
             containerColor = MizanTheme.premium.background.primary,
             dragHandle = null
         ) {
-            AccountSelectionContent(
+            AccountSelectionContentSimple(
                 accounts = state.accounts,
                 selectedAccount = null,
                 onAccountClick = { account ->
