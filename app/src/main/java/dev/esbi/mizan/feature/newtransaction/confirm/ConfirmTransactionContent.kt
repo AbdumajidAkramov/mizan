@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
+import dev.esbi.mizan.feature.premiumaddtransaction.part2.formatMizanAmount
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -194,7 +195,7 @@ private fun ReceiptCard(
 
             // Amount
             Text(
-                text = "$${state.amount}",
+                text = formatMizanAmount(state.amount.value, currency = state.amount.currency),
                 style = MizanTheme.premium.typography.displayMd.copy(
                     fontSize = 48.sp,
                     fontWeight = FontWeight.Bold

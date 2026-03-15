@@ -13,11 +13,11 @@ import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepositor
 import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -62,6 +62,10 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                 dispatch(Message.UpdateIsConfirm(false))
             }
 
+            is Intent.OnCloseConfirmSave -> {
+                dispatch(Message.UpdateIsConfirm(false))
+            }
+
             is Intent.ConfirmSave -> {
                 scope.launch {
                     dispatch(Message.UpdateLoading(true))
@@ -88,7 +92,9 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
 
                             else -> {
                                 // Get exchange rate for the selected currency
-                                val currency = currencyRepository.getCurrencyByCode(state.currency)
+                                val currency = state.selectedCurrency?.code?.let { code ->
+                                    currencyRepository.getCurrencyByCode(code)
+                                }
                                 val exchangeRate = currency?.rateToBase ?: 1.0
 
                                 // Get category ID (prefer child category if selected)
@@ -100,20 +106,14 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                                     id = 0, // New transaction
                                     type = state.transactionType,
                                     amount = state.amount.value.toDouble(),
-                                    currency = currency ?: Currency(
-                                        code = state.currency,
-                                        name = state.currency,
-                                        symbol = state.currency,
-                                        rateToBase = exchangeRate,
-                                        isBaseCurrency = state.currency == "UZS"
-                                    ),
+                                    currency = currency ?: Currency.UZS,
                                     exchangeRate = exchangeRate,
                                     targetAmount = null, // TODO: Calculate for transfers if needed
                                     date = state.transactionDate,
                                     note = state.note.takeIf { it.isNotBlank() },
                                     description = state.description.takeIf { it.isNotBlank() },
                                     photoPaths = state.photoPaths,
-                                    accountId = state.selectedAccount?.id,
+                                    accountId = state.selectedAccount.id,
                                     categoryId = categoryId,
                                     subCategoryId = null,
                                     targetAccountId = state.targetAccount?.id,
@@ -142,7 +142,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                                             iconName = state.selectedCategory?.iconName,
                                             transactionType = transaction.type,
                                             categoryId = categoryId,
-                                            accountId = state.selectedAccount?.id,
+                                            accountId = state.selectedAccount.id,
                                             note = state.note.takeIf { it.isNotBlank() }
                                         )
                                         templateRepository.addTemplate(template)

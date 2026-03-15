@@ -8,4 +8,14 @@ data class Currency(
     // Agar Code == BaseCurrency (UZS) bo'lsa, rate = 1.0 bo'ladi.
     val rateToBase: Double,
     val isBaseCurrency: Boolean // Qaysi biri asosiy ekanligini bilish uchun
-)
+) {
+    companion object {
+        val UZS = Currency(
+            code = "UZS",
+            name = "O'zbek so'mi",
+            symbol = "so'm",
+            rateToBase = 1.0,
+            isBaseCurrency = true
+        )
+    }
+}

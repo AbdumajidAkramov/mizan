@@ -16,7 +16,7 @@ import java.math.BigDecimal
 fun String.annotatedString(
     separator: Char = '.',
     decimalScale: Float = 0.6f,
-    currency: String = "UZS"
+    currency: String? = null
 ): AnnotatedString {
     val trimmed = this.trim()
     if (trimmed.isBlank()) {
@@ -51,7 +51,9 @@ fun String.annotatedString(
     if (separatorIndex == -1) return buildAnnotatedString {
         append(fullText)
         withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
-            append(" $currency")
+            currency?.let {
+                append(" $currency")
+            }
         }
     }
     // 3. AnnotatedString yig'amiz
@@ -62,7 +64,9 @@ fun String.annotatedString(
         // Style qo'llaymiz
         withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
             append(fullText.substring(separatorIndex))
-            append(" $currency")
+            currency?.let {
+                append(" $currency")
+            }
         }
     }
 }

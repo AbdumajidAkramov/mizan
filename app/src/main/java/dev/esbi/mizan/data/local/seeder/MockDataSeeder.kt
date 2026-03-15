@@ -38,7 +38,7 @@ class MockDataSeeder @Inject constructor(
         seedAccountGroups()
         seedCategories()
         seedAccounts()
-        seedHighDensityTransactions()
+//        seedHighDensityTransactions()
         Log.d(TAG, "Database seeding complete!")
     }
 

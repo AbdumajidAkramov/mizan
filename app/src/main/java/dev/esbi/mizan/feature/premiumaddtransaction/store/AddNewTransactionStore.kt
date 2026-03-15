@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Amount
 import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
@@ -23,9 +24,9 @@ interface AddNewTransactionStore :
         val currentValue: String = "0",
         val isResultShown: Boolean = false,
 
-        val currencies: List<String> = listOf("EUR", "UZS", "RUB", "USD"),
+        val currencies: List<Currency> = emptyList(),
+        val selectedCurrency: Currency? = null,
         val operator: String = "",
-        val currency: String = "UZS",
         val displayText: String = "",
 
         val leftNumber: String = "0",
@@ -69,7 +70,7 @@ interface AddNewTransactionStore :
         val amount: Amount
             get() = Amount(
                 value = amountDecimal,
-                currency = currency
+                currency = selectedCurrency?.symbol
             )
 
         enum class Pad {
@@ -83,8 +84,8 @@ interface AddNewTransactionStore :
         object Clear : Intent
         object Delete : Intent
         object Evaluate : Intent
-        data object CloseToast: Intent
-        class OnUpdateCurrency(val currency: String) : Intent
+        data object CloseToast : Intent
+        class OnUpdateCurrency(val currency: Currency?) : Intent
 
         data object OnClosePad : Intent
         data object ToggleTemplates : Intent
@@ -121,6 +122,7 @@ interface AddNewTransactionStore :
         class UpdateDate(val date: Long) : Intent
         class UpdateSaveAsTemplate(val value: Boolean) : Intent
         data object Back : Intent
+        data object OnCloseConfirmSave : Intent
         data object ConfirmSave : Intent
 
         // Pad actions
@@ -159,6 +161,7 @@ interface AddNewTransactionStore :
         class UpdateTransactionType(val type: Transaction.Type) : Message
         class UpdateAccounts(val accounts: List<Account>) : Message
         class UpdateAllCategories(val categories: List<Category>) : Message
+        class UpdateCurrencies(val currencies: List<Currency>) : Message
         class UpdateSelectedAccount(val account: Account?) : Message
         class UpdateTargetAccount(val account: Account?) : Message
 
@@ -173,13 +176,13 @@ interface AddNewTransactionStore :
 
         class UpdateLoading(val loading: Boolean) : Message
         class UpdateError(val error: String?) : Message
-        class UpdateCurrency(val currency: String) : Message
+        class UpdateCurrency(val currency: Currency? = null) : Message
         class UpdateAmount(
             val operator: String = "",
             val leftNumber: String = "0",
             val rightNumber: String = "",
             val isFinalResult: Boolean = false,
-            val currency: String = "UZS",
+            val currency: Currency? = null,
             val amountDecimal: BigDecimal = BigDecimal.ZERO,
             val displayText: String = ""
         ) : Message
@@ -201,6 +204,7 @@ interface AddNewTransactionStore :
     sealed interface Action {
         data object InitAccounts : Action
         data object InitCategories : Action
+        data object InitCurrencies : Action
         data object InitPad : Action
         data object CheckAndConfirm : Action
     }

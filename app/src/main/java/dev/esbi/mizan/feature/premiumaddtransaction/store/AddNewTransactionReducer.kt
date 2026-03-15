@@ -25,6 +25,10 @@ object AddNewTransactionReducer :
             is Message.UpdatePad -> copy(pad = msg.pad)
             is Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
+            is Message.UpdateCurrencies -> copy(
+                currencies = msg.currencies,
+                selectedCurrency = msg.currencies.firstOrNull { it.isBaseCurrency }?:msg.currencies.firstOrNull())
+
             is Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
             is Message.UpdateTargetAccount -> copy(targetAccount = msg.account)
             is Message.UpdateSelectedCategory -> copy(selectedCategory = msg.category)
@@ -34,7 +38,7 @@ object AddNewTransactionReducer :
                 leftNumber = msg.leftNumber,
                 rightNumber = msg.rightNumber,
                 isFinalResult = msg.isFinalResult,
-                currency = msg.currency,
+                selectedCurrency = msg.currency,
                 amountDecimal = msg.amountDecimal,
                 displayText = msg.displayText
             )
@@ -46,7 +50,7 @@ object AddNewTransactionReducer :
             is Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
-            is Message.UpdateCurrency -> copy(currency = msg.currency)
+            is Message.UpdateCurrency -> copy(selectedCurrency = msg.currency)
             is Message.UpdateSelectAccountsBottomSheet -> copy(isSelectAccountsBottomSheetVisible = msg.isVisible)
             is Message.UpdateTargetAccountsBottomSheet -> copy(isTargetAccountsBottomSheetVisible = msg.isVisible)
             is Message.UpdateCategoriesBottomSheet -> copy(isCategoriesBottomSheetVisible = msg.isVisible)

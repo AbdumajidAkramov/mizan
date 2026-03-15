@@ -44,7 +44,7 @@ fun PremiumNewTransactionPart1(
 ) {
     val displayText = ""
     val amountText = ""
-    val currency = state.currency
+    val currency = state.selectedCurrency
     val selectedAccount = state.selectedAccount
     // Transfer-specific accounts
     val targetAccount = state.targetAccount
@@ -83,7 +83,7 @@ fun PremiumNewTransactionPart1(
 
         // Large Amount Display
         val formattedAmount = amountText.annotatedString(
-            currency = currency
+            currency = currency?.symbol
         )
         AutoResizingText(
             text = formattedAmount,

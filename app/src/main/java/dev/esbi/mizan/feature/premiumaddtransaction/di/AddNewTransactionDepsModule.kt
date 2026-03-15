@@ -17,6 +17,7 @@ import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransa
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCalculatorExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCategorySelectorExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionConfirmExecutor
+import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCurrencyExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionPadExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionTemplatesExecutor
@@ -74,6 +75,12 @@ internal interface AddNewTransactionDepsModule {
     @IntoSet
     fun bindsAddNewTransactionCalculatorExecutor(
         impl: AddNewTransactionCalculatorExecutor
+    ): Executor<Intent, Action, State, Message, Label>
+
+    @Binds
+    @IntoSet
+    fun bindsAddNewTransactionCurrencyExecutor(
+        impl: AddNewTransactionCurrencyExecutor
     ): Executor<Intent, Action, State, Message, Label>
 
 }

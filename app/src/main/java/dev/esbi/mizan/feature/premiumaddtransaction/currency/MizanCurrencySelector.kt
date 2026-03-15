@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun MizanCurrencySelector(
-    currencies: List<String>,
-    selectedCurrency: String,
-    onCurrencySelected: (String) -> Unit,
+    currencies: List<Currency>,
+    selectedCurrency: Currency?,
+    onCurrencySelected: (Currency) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -37,7 +38,7 @@ fun MizanCurrencySelector(
     ) {
         items(currencies) { currency ->
             CurrencyChip(
-                label = currency,
+                label = currency.code,
                 isSelected = currency == selectedCurrency,
                 onClick = { onCurrencySelected(currency) }
             )

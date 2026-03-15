@@ -1,10 +1,10 @@
 package dev.esbi.mizan.feature.newtransaction.confirm.state
 
+import dev.esbi.mizan.domain.model.Amount
 import dev.esbi.mizan.domain.model.Transaction
 
 data class ConfirmTransactionUiState(
-    val amount: String,
-    val currencyCode: String,
+    val amount: Amount,
     val transactionType: Transaction.Type,
     val categoryName: String?,
     val subCategoryName: String? = null,

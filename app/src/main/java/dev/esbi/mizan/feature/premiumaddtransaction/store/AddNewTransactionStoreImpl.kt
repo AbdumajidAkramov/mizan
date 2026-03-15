@@ -24,6 +24,7 @@ class AddNewTransactionStoreImpl @Inject constructor(
             AddNewTransactionStore.Action.InitPad,
             AddNewTransactionStore.Action.InitAccounts,
             AddNewTransactionStore.Action.InitCategories,
+            AddNewTransactionStore.Action.InitCurrencies,
             AddNewTransactionStore.Action.CheckAndConfirm
         ),
         executorFactory = { CompositeExecutor(executors) },

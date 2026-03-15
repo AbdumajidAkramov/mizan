@@ -16,7 +16,7 @@ import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
-import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
+import dev.esbi.mizan.feature.premiumaddtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen

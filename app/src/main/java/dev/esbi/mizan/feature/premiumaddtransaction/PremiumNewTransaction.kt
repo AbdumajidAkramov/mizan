@@ -123,7 +123,11 @@ fun PremiumNewTransaction(
                             .padding(end = MizanTheme.premium.spacing.sm)
                             .weight(1f)
                     ) {
-                        Text(text = "Account", style = MizanTheme.typography.bodySm)
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = "Account",
+                            style = MizanTheme.typography.bodySm
+                        )
                         AccountChip(
                             modifier = Modifier
                                 .padding(top = MizanTheme.premium.spacing.sm)
@@ -141,7 +145,11 @@ fun PremiumNewTransaction(
                             .padding(end = MizanTheme.premium.spacing.sm)
                             .weight(1f)
                     ) {
-                        Text(text = "Category", style = MizanTheme.typography.bodySm)
+                        Text(
+                            modifier = Modifier.padding(start = 8.dp),
+                            text = "Category",
+                            style = MizanTheme.typography.bodySm
+                        )
                         CategoryChip(
                             categoryName = state.selectedCategory?.name,
                             subCategoryName = state.selectedSubCategory?.name,
@@ -157,24 +165,8 @@ fun PremiumNewTransaction(
                 }
 
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MizanTheme.premium.background.tertiary,
-                    )
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                MizanCurrencySelector(
-                    currencies = state.currencies,
-                    selectedCurrency = state.currency,
-                    onCurrencySelected = {
-                        accept(Intent.OnUpdateCurrency(it))
-                    }
-                )
-            }
-            Box(
+
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(
@@ -184,9 +176,19 @@ fun PremiumNewTransaction(
                         )
                     )
                     .background(MizanTheme.premium.background.secondary)
-                    .padding(MizanTheme.premium.spacing.lg),
-                contentAlignment = Alignment.BottomCenter
+                    .padding(horizontal = MizanTheme.premium.spacing.lg)
+                    .padding(bottom = MizanTheme.premium.spacing.lg)
+                    .padding(top = MizanTheme.premium.spacing.md),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                MizanCurrencySelector(
+                    currencies = state.currencies,
+                    selectedCurrency = state.selectedCurrency,
+                    onCurrencySelected = {
+                        accept(Intent.OnUpdateCurrency(it))
+                    }
+                )
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
                 PremiumCalculatorKeypad(
                     onNumberClick = {
                         accept(Intent.OnNumberClick(it))
@@ -229,136 +231,75 @@ fun PremiumNewTransaction(
         }
     }
 
-    /*
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
+    when {
+        state.isSelectAccountsBottomSheetVisible -> {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    accept(Intent.CloseAccountsBottomSheet)
+                },
+                sheetState = selectAccountSheetState,
+                containerColor = MizanTheme.premium.background.primary,
+                dragHandle = null
             ) {
-                // Column'ning umumiy balandligini olamiz
-                val parentHeight = maxHeight
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MizanTheme.premium.background.primary),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    // Part1
-                    PremiumNewTransactionPart1(
-                        state = state,
-                        accept = accept,
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = {
-                                    accept(AddNewTransactionStore.Intent.OnClosePad)
-                                }
-                            ),
-                    )
-
-                    state.pad?.let { pad ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(
-                                    min = parentHeight / 2,
-                                    max = parentHeight * 2 / 3
-                                )
-                                .background(
-                                    color = MizanTheme.premium.background.primary,
-                                    shape = RoundedCornerShape(
-                                        topStart = MizanTheme.premium.radius.xxl,
-                                        topEnd = MizanTheme.premium.radius.xxl
-                                    )
-                                )
-                                .border(
-                                    color = MizanTheme.premium.glass.border,
-                                    width = 1.dp,
-                                    shape = RoundedCornerShape(
-                                        topStart = MizanTheme.premium.radius.xxl,
-                                        topEnd = MizanTheme.premium.radius.xxl
-                                    )
-                                )
-                                .padding(top = MizanTheme.premium.spacing.md),
-                        ) {
-                            AddNewTransactionPad(
-                                modifier = Modifier,
-                                state = state,
-                                accept = accept
-                            )
-                        }
-                    }
-                }
+                AccountSelectionContentSimple(
+                    accounts = state.accounts,
+                    selectedAccount = state.selectedAccount,
+                    onAccountClick = { account ->
+                        accept(Intent.UpdateSelectedAccount(account))
+                    },
+                    onAddAccountClick = {
+                        accept(Intent.OpenAccountManageScreen)
+                    },
+                )
             }
-    */
+        }
 
-    if (state.isSelectAccountsBottomSheetVisible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                accept(Intent.CloseAccountsBottomSheet)
-            },
-            sheetState = selectAccountSheetState,
-            containerColor = MizanTheme.premium.background.primary,
-            dragHandle = null
-        ) {
-            AccountSelectionContentSimple(
-                accounts = state.accounts,
-                selectedAccount = state.selectedAccount,
-                onAccountClick = { account ->
-                    accept(Intent.UpdateSelectedAccount(account))
+        state.isTargetAccountsBottomSheetVisible -> {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    accept(Intent.CloseTargetAccountsBottomSheet)
                 },
-                onAddAccountClick = {
-                    accept(Intent.OpenAccountManageScreen)
-                },
-            )
+                sheetState = targetAccountSheetState,
+                containerColor = MizanTheme.premium.background.primary,
+                dragHandle = null
+            ) {
+                AccountSelectionContentSimple(
+                    accounts = state.accounts,
+                    selectedAccount = state.targetAccount,
+                    onAccountClick = { account ->
+                        accept(Intent.UpdateTargetAccount(account))
+                    },
+                    onAddAccountClick = {
+                        accept(Intent.OpenAccountManageScreen)
+                    },
+                )
+            }
         }
-    }
-    if (state.isTargetAccountsBottomSheetVisible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                accept(Intent.CloseTargetAccountsBottomSheet)
-            },
-            sheetState = targetAccountSheetState,
-            containerColor = MizanTheme.premium.background.primary,
-            dragHandle = null
-        ) {
-            AccountSelectionContentSimple(
-                accounts = state.accounts,
-                selectedAccount = state.targetAccount,
-                onAccountClick = { account ->
-                    accept(Intent.UpdateTargetAccount(account))
+
+        state.isCategoriesBottomSheetVisible -> {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    accept(Intent.CloseCategoriesBottomSheet)
                 },
-                onAddAccountClick = {
-                    accept(Intent.OpenAccountManageScreen)
-                },
-            )
+                sheetState = categorySelectSheetState,
+                containerColor = MizanTheme.premium.background.primary,
+                dragHandle = null
+            ) {
+                CategorySelectorBottomSheet(
+                    state = CategoryChooserState(
+                        transactionType = state.transactionType,
+                        categories = state.categories,
+                        selectedParentId = state.selectedCategory?.id,
+                        selectedChildId = state.selectedSubCategory?.id,
+                        isLoading = state.isLoading,
+                        error = null,
+                        selectedCategory = state.selectedSubCategory
+                    ),
+                    accept = accept
+                )
+            }
         }
-    }
-    if (state.isCategoriesBottomSheetVisible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                accept(Intent.CloseCategoriesBottomSheet)
-            },
-            sheetState = categorySelectSheetState,
-            containerColor = MizanTheme.premium.background.primary,
-            dragHandle = null
-        ) {
-            CategorySelectorBottomSheet(
-                state = CategoryChooserState(
-                    transactionType = state.transactionType,
-                    categories = state.categories,
-                    selectedParentId = state.selectedCategory?.id,
-                    selectedChildId = state.selectedSubCategory?.id,
-                    isLoading = state.isLoading,
-                    error = null,
-                    selectedCategory = state.selectedSubCategory
-                ),
-                accept = accept
-            )
-        }
+
     }
 }
 
