@@ -16,7 +16,6 @@ import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
 import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
 import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
 import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
-import dev.esbi.mizan.feature.transfer.di.TransferComponent
 
 /**
  * Module that declares all screen-level subcomponents.
@@ -24,10 +23,8 @@ import dev.esbi.mizan.feature.transfer.di.TransferComponent
  */
 @Module(
     subcomponents = [
-        // New Transaction Flow
         AmountInputComponent::class,
         CategorySelectComponent::class,
-        // Main Screens
         AccountManagementComponent::class,
         AccountSelectorComponent::class,
         BudgetComponent::class,
@@ -35,7 +32,6 @@ import dev.esbi.mizan.feature.transfer.di.TransferComponent
         FinancialMirrorComponent::class,
         GoalsComponent::class,
         SubscriptionsComponent::class,
-        TransferComponent::class,
         ManageCategoriesComponent::class,
         ProfileComponent::class,
         StatisticsComponent::class,

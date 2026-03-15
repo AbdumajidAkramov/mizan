@@ -4,20 +4,19 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import dev.esbi.mizan.MainActivity
+import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
+import dev.esbi.mizan.feature.accountselector.di.AccountSelectorComponent
 import dev.esbi.mizan.feature.budget.di.BudgetComponent
+import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
 import dev.esbi.mizan.feature.dashboard.di.DashboardComponent
 import dev.esbi.mizan.feature.financialmirror.di.FinancialMirrorComponent
 import dev.esbi.mizan.feature.goals.di.GoalsComponent
-import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
-import dev.esbi.mizan.feature.transfer.di.TransferComponent
-import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
-import dev.esbi.mizan.feature.accountselector.di.AccountSelectorComponent
-import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
 import dev.esbi.mizan.feature.managecategories.di.ManageCategoriesComponent
 import dev.esbi.mizan.feature.newtransaction.amountinput.di.AmountInputComponent
 import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectComponent
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
 import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
+import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
 import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
 import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
 import javax.inject.Singleton
@@ -32,7 +31,6 @@ import javax.inject.Singleton
         BudgetModule::class,
         GoalsModule::class,
         SubscriptionsModule::class,
-        TransferModule::class,
         TransactionsModule::class,
         StatisticsModule::class,
         ProfileModule::class,
@@ -56,7 +54,6 @@ internal interface AppComponent {
     fun financialMirrorComponent(): FinancialMirrorComponent.Factory
     fun goalsComponent(): GoalsComponent.Factory
     fun subscriptionsComponent(): SubscriptionsComponent.Factory
-    fun transferComponent(): TransferComponent.Factory
     fun manageCategoriesComponent(): ManageCategoriesComponent.Factory
     fun profileComponent(): ProfileComponent.Factory
     fun statisticsComponent(): StatisticsComponent.Factory

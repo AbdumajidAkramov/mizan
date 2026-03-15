@@ -16,13 +16,12 @@ import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
-import dev.esbi.mizan.feature.premiumaddtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectScreen
+import dev.esbi.mizan.feature.premiumaddtransaction.NewTransactionScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
-import dev.esbi.mizan.feature.transfer.presentation.ui.TransferScreen
 
 @Composable
 internal fun MizanNavHost(
@@ -56,7 +55,6 @@ internal fun MizanNavHost(
                     navController.navigate(NavRoute.Transactions)
                 },
                 onNavigateToProfile = {
-                    // TODO: Navigate to Profile screen when implemented
                 },
                 onNavigateToGoals = {
                     navController.navigate(NavRoute.FinancialGoals)
@@ -65,7 +63,6 @@ internal fun MizanNavHost(
                     navController.navigate(NavRoute.Subscriptions)
                 },
                 onNavigateToTransfer = {
-                    navController.navigate(NavRoute.Transfer)
                 }
             )
         }
@@ -152,12 +149,12 @@ internal fun MizanNavHost(
 
             val component = remember { appComponent.categorySelectComponent().create() }
             val viewModel = component.viewModel
-            
+
             // Get the previous back stack entry to access the NewTransaction ViewModel
             val previousEntry = remember(navController.currentBackStackEntry) {
                 navController.previousBackStackEntry
             }
-            
+
             // Get the AmountInput component from previous entry if it exists
             val amountInputViewModel = previousEntry?.let {
                 remember { appComponent.amountInputComponent().create().viewModel }
@@ -183,7 +180,9 @@ internal fun MizanNavHost(
                         override val orderIndex = 0
                     }
                     amountInputViewModel?.onNewTransactionStoreIntent(
-                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnCategorySelected(domainCategory)
+                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnCategorySelected(
+                            domainCategory
+                        )
                     )
                     navController.popBackStack()
                 },
@@ -225,15 +224,6 @@ internal fun MizanNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable<NavRoute.Transfer> {
-            val component = remember { appComponent.transferComponent().create() }
-            val viewModel = component.viewModel
-            TransferScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onTransferSuccess = { navController.popBackStack() }
-            )
-        }
         composable<NavRoute.AccountManagement> {
             val component = remember { appComponent.accountManagementComponent().create() }
             val viewModel = component.viewModel
@@ -251,12 +241,12 @@ internal fun MizanNavHost(
         composable<NavRoute.AccountSelector> {
             val component = remember { appComponent.accountSelectorComponent().create() }
             val viewModel = component.viewModel
-            
+
             // Get the previous back stack entry to access the NewTransaction ViewModel
             val previousEntry = remember(navController.currentBackStackEntry) {
                 navController.previousBackStackEntry
             }
-            
+
             // Get the AmountInput component from previous entry if it exists
             val amountInputViewModel = previousEntry?.let {
                 remember { appComponent.amountInputComponent().create().viewModel }
@@ -270,7 +260,9 @@ internal fun MizanNavHost(
                 onAccountSelected = { account ->
                     // Pass the selected account back to NewTransactionStore
                     amountInputViewModel?.onNewTransactionStoreIntent(
-                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnAccountSelected(account)
+                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnAccountSelected(
+                            account
+                        )
                     )
                     navController.popBackStack()
                 },
