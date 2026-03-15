@@ -62,6 +62,7 @@ fun PremiumNewTransaction(
         topBar = {
             AmountInputHeader(
                 showTemplates = state.showTemplates,
+                isEditMode = state.isEditMode,
                 onTemplatesToggle = {
                     accept(Intent.ToggleTemplates)
                 },

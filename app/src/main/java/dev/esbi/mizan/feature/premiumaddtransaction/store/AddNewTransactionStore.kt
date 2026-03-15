@@ -19,6 +19,8 @@ interface AddNewTransactionStore :
 
         val transactionType: TransactionType = TransactionType.EXPENSE,
         val step: Step = Step.INPUT,
+        val isEditMode: Boolean = false,
+        val editingTransactionId: Long? = null,
 
         val expression: String = "",
         val currentValue: String = "0",
@@ -205,6 +207,13 @@ interface AddNewTransactionStore :
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Message
 
         class UpdateStep(val step: State.Step) : Message
+        
+        data class TransactionLoaded(
+            val transaction: Transaction,
+            val account: Account?,
+            val category: Category?,
+            val targetAccount: Account?
+        ) : Message
     }
 
     sealed interface Action {
@@ -213,6 +222,7 @@ interface AddNewTransactionStore :
         data object InitCurrencies : Action
         data object InitPad : Action
         data object CheckAndConfirm : Action
+        data object LoadTransaction : Action
     }
 
     sealed interface SideEffect

@@ -107,7 +107,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
 
                                 // Create Transaction domain model
                                 val transaction = Transaction(
-                                    id = 0, // New transaction
+                                    id = if (state.isEditMode) state.editingTransactionId!! else 0,
                                     type = state.transactionType,
                                     amount = state.amount.value.toDouble(),
                                     currency = currency ?: Currency.UZS,
@@ -132,8 +132,12 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                                     fiscalSign = null
                                 )
 
-                                // Save transaction
-                                val result = transactionRepository.saveTransaction(transaction)
+                                // Save or update transaction based on edit mode
+                                val result = if (state.isEditMode) {
+                                    transactionRepository.updateTransaction(transaction)
+                                } else {
+                                    transactionRepository.saveTransaction(transaction)
+                                }
 
                                 if (result.isSuccess) {
                                     // Save as template if enabled

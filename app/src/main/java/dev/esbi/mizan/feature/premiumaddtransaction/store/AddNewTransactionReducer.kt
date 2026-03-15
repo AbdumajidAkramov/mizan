@@ -59,6 +59,21 @@ object AddNewTransactionReducer :
             }
             is Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
             is Message.UpdateStep -> copy(step = msg.step)
+            is Message.TransactionLoaded -> copy(
+                transactionType = msg.transaction.type,
+                amountDecimal = msg.transaction.amount.toBigDecimal(),
+                leftNumber = msg.transaction.amount.toBigDecimal().toPlainString(),
+                displayText = msg.transaction.amount.toBigDecimal().toPlainString(),
+                selectedAccount = msg.account,
+                targetAccount = msg.targetAccount,
+                selectedCategory = msg.category,
+                transactionDate = msg.transaction.date,
+                note = msg.transaction.note ?: "",
+                description = msg.transaction.description ?: "",
+                selectedCurrency = msg.transaction.currency,
+                isEditMode = true,
+                editingTransactionId = msg.transaction.id
+            )
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
             is Message.UpdateCurrency -> copy(selectedCurrency = msg.currency)

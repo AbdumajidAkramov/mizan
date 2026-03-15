@@ -15,11 +15,12 @@ class AddNewTransactionStoreFactory @Inject constructor(
             AddNewTransactionStore.Label>,
     private val observer: AddNewTransactionStoreObserver,
 ) {
-    fun create(): AddNewTransactionStore {
+    fun create(transactionId: Long? = null): AddNewTransactionStore {
         return AddNewTransactionStoreImpl(
             executors = executors,
             observer = observer,
-            storeFactory = storeFactory.get()
+            storeFactory = storeFactory.get(),
+            transactionId = transactionId
         )
     }
 }

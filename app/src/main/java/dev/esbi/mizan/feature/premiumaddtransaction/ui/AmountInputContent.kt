@@ -50,13 +50,14 @@ import java.util.Locale
 @Composable
 fun AmountInputHeader(
     showTemplates: Boolean,
+    isEditMode: Boolean,
     onTemplatesToggle: () -> Unit,
     onClose: () -> Unit
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "New Transaction",
+                text = if (isEditMode) "Edit Transaction" else "New Transaction",
                 style = MizanTheme.premium.typography.headingSm,
                 color = MizanTheme.premium.text.primary
             )
