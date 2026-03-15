@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,6 +55,7 @@ fun ConfirmTransactionContent(
     state: ConfirmTransactionUiState,
     onNoteChange: (String) -> Unit,
     onDateClick: () -> Unit,
+    onTimeClick: () -> Unit,
     onConfirmClick: () -> Unit,
     onBackClick: () -> Unit,
     onSaveAsTemplateChange: (Boolean) -> Unit = {}
@@ -96,6 +96,15 @@ fun ConfirmTransactionContent(
                 icon = R.drawable.ic_calendar_month,
                 text = formatDate(state.date),
                 onClick = onDateClick
+            )
+
+            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
+            // Time Selector Card
+            ActionCard(
+                icon = R.drawable.ic_calendar_month,
+                text = formatTime(state.date),
+                onClick = onTimeClick
             )
 
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
@@ -463,23 +472,6 @@ private fun ConfirmSaveHeader(
                 )
             }
         },
-        actions = {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MizanTheme.premium.colors.surface2)
-                    .clickable { onClose() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Close",
-                    tint = MizanTheme.premium.text.secondary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MizanTheme.premium.background.primary
         )
@@ -489,5 +481,11 @@ private fun ConfirmSaveHeader(
 private fun formatDate(timestamp: Long): String {
     val date = Date(timestamp)
     val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    return formatter.format(date)
+}
+
+private fun formatTime(timestamp: Long): String {
+    val date = Date(timestamp)
+    val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     return formatter.format(date)
 }

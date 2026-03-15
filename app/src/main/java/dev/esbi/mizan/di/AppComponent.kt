@@ -17,7 +17,6 @@ import dev.esbi.mizan.feature.newtransaction.categoryselect.di.CategorySelectCom
 import dev.esbi.mizan.feature.profile.di.ProfileComponent
 import dev.esbi.mizan.feature.statistics.di.StatisticsComponent
 import dev.esbi.mizan.feature.subscriptions.di.SubscriptionsComponent
-import dev.esbi.mizan.feature.transactions.di.TransactionsComponent
 import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
 import javax.inject.Singleton
 
@@ -57,7 +56,6 @@ internal interface AppComponent {
     fun manageCategoriesComponent(): ManageCategoriesComponent.Factory
     fun profileComponent(): ProfileComponent.Factory
     fun statisticsComponent(): StatisticsComponent.Factory
-    fun transactionsComponent(): TransactionsComponent.Factory
     fun transactionsHubComponent(): TransactionsHubComponent.Factory
 
     fun mizanCalculatorComponent(): MizanCalculatorComponent.Factory

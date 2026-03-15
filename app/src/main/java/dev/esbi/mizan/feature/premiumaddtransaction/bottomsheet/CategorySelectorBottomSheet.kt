@@ -10,14 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserHeader
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryList
 import dev.esbi.mizan.feature.newtransaction.categorychooser.ErrorView
 import dev.esbi.mizan.feature.newtransaction.categorychooser.LoadingView
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectParentCategory
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectSubCategory
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -35,11 +32,11 @@ fun CategorySelectorBottomSheet(
     Scaffold(
         modifier = Modifier,
         topBar = {
-           /* CategoryChooserHeader(
-                title = "Choose Category",
-                onBack = {},
-                onClose = {}
-            )*/
+            /* CategoryChooserHeader(
+                 title = "Choose Category",
+                 onBack = {},
+                 onClose = {}
+             )*/
         }
     ) { paddingValues ->
         Box(

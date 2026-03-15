@@ -85,8 +85,8 @@ internal class AddNewTransactionExecutor @Inject constructor(
 
             is AddNewTransactionStore.Intent.Back -> {
                 // If in confirmation, go back to input
-                if (state().isConfirm) {
-                    dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(false))
+                if (state().step == AddNewTransactionStore.State.Step.CONFIRMATION) {
+                    dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.INPUT))
                 } else {
                     publish(AddNewTransactionStore.Label.BackTo)
                 }
@@ -118,8 +118,8 @@ internal class AddNewTransactionExecutor @Inject constructor(
             }
             
             else -> {
-                // All validations passed, proceed to confirmation
-                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(true))
+                // All validations passed, proceed to confirmation (DO NOT SAVE YET)
+                dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.CONFIRMATION))
             }
         }
     }
@@ -153,7 +153,7 @@ internal class AddNewTransactionExecutor @Inject constructor(
 
             else -> {
                 Log.d("TTT", "Confirm screen open")
-                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(true))
+                dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.CONFIRMATION))
             }
         }
     }

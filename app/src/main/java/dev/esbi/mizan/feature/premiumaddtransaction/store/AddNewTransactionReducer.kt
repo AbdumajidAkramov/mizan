@@ -46,8 +46,19 @@ object AddNewTransactionReducer :
             is Message.UpdateNote -> copy(note = msg.note)
             is Message.UpdateDescription -> copy(description = msg.description)
             is Message.UpdateTransactionDate -> copy(transactionDate = msg.date)
+            is Message.UpdateTransactionTime -> {
+                // Merge time with existing date
+                val calendar = java.util.Calendar.getInstance().apply {
+                    timeInMillis = transactionDate
+                    set(java.util.Calendar.HOUR_OF_DAY, msg.hour)
+                    set(java.util.Calendar.MINUTE, msg.minute)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                copy(transactionDate = calendar.timeInMillis)
+            }
             is Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
-            is Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
+            is Message.UpdateStep -> copy(step = msg.step)
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
             is Message.UpdateCurrency -> copy(selectedCurrency = msg.currency)

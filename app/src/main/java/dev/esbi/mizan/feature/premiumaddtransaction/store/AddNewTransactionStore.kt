@@ -8,7 +8,7 @@ import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.newtransaction.amountinput.QuickTemplate
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.QuickTemplate
 import java.math.BigDecimal
 
 interface AddNewTransactionStore :
@@ -18,7 +18,7 @@ interface AddNewTransactionStore :
         val showTemplates: Boolean = false,
 
         val transactionType: TransactionType = TransactionType.EXPENSE,
-        val isConfirm: Boolean = false,
+        val step: Step = Step.INPUT,
 
         val expression: String = "",
         val currentValue: String = "0",
@@ -77,6 +77,10 @@ interface AddNewTransactionStore :
             TypeSelector, CategorySelector, AccountSelector, TargetAccountSelector, AmountInput
         }
 
+        enum class Step {
+            INPUT, CONFIRMATION
+        }
+
     }
 
     sealed interface Intent {
@@ -120,10 +124,11 @@ interface AddNewTransactionStore :
         //        Confirm & Save
         class UpdateNote(val note: String) : Intent
         class UpdateDate(val date: Long) : Intent
+        class UpdateTime(val hour: Int, val minute: Int) : Intent
         class UpdateSaveAsTemplate(val value: Boolean) : Intent
         data object Back : Intent
         data object OnCloseConfirmSave : Intent
-        data object ConfirmSave : Intent
+        data object SaveTransaction : Intent
 
         // Pad actions
         data object ShowTypeSelector : Intent
@@ -196,9 +201,10 @@ interface AddNewTransactionStore :
         class UpdateNote(val note: String) : Message
         class UpdateDescription(val description: String) : Message
         class UpdateTransactionDate(val date: Long) : Message
+        class UpdateTransactionTime(val hour: Int, val minute: Int) : Message
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Message
 
-        class UpdateIsConfirm(val isConfirm: Boolean) : Message
+        class UpdateStep(val step: State.Step) : Message
     }
 
     sealed interface Action {

@@ -54,19 +54,23 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                 dispatch(Message.UpdateTransactionDate(date = intent.date))
             }
 
+            is Intent.UpdateTime -> {
+                dispatch(Message.UpdateTransactionTime(hour = intent.hour, minute = intent.minute))
+            }
+
             is Intent.UpdateSaveAsTemplate -> {
                 dispatch(Message.UpdateSaveAsTemplate(saveAsTemplate = intent.value))
             }
 
             is Intent.Back -> {
-                dispatch(Message.UpdateIsConfirm(false))
+                dispatch(Message.UpdateStep(State.Step.INPUT))
             }
 
             is Intent.OnCloseConfirmSave -> {
-                dispatch(Message.UpdateIsConfirm(false))
+                dispatch(Message.UpdateStep(State.Step.INPUT))
             }
 
-            is Intent.ConfirmSave -> {
+            is Intent.SaveTransaction -> {
                 scope.launch {
                     dispatch(Message.UpdateLoading(true))
                     dispatch(Message.UpdateError(null))
@@ -199,7 +203,7 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
 
             else -> {
                 Log.d("TTT", "Confirm screen open")
-                dispatch(Message.UpdateIsConfirm(true))
+                dispatch(Message.UpdateStep(State.Step.CONFIRMATION))
             }
         }
     }

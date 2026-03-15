@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.accountselector.AccountSelectionContentSimple
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
-import dev.esbi.mizan.feature.newtransaction.amountinput.AccountChip
-import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputHeader
-import dev.esbi.mizan.feature.newtransaction.amountinput.CategoryChip
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.AmountInputHeader
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
 import dev.esbi.mizan.feature.premiumaddtransaction.bottomsheet.CategorySelectorBottomSheet
 import dev.esbi.mizan.feature.premiumaddtransaction.currency.MizanCurrencySelector
@@ -217,7 +217,7 @@ fun PremiumNewTransaction(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = {
-                            accept(Intent.ConfirmSave)
+                            accept(Intent.Next)
                         }
                     ),
                 contentAlignment = Alignment.Center

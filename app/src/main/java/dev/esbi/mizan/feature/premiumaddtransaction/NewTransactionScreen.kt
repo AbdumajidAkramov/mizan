@@ -11,10 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.confirm.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanDatePickerDialog
+import dev.esbi.mizan.feature.newtransaction.confirm.MizanTimePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
@@ -38,7 +38,6 @@ internal fun NewTransactionScreen(
     val state by viewModel.addNewTransactionState.collectAsState(initial = State())
     val accept = viewModel::onNewTransactionStoreIntent
     val labels by viewModel.addNewTransactionLabels.collectAsState(initial = null)
-    val context = LocalContext.current
 
     // Track toast message separately to trigger recomposition
     var toastMessage by remember { mutableStateOf<String?>(null) }
@@ -61,10 +60,11 @@ internal fun NewTransactionScreen(
     }
 
     var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize()) {
 
-        when {
-            state.isConfirm -> {
+        when (state.step) {
+            State.Step.CONFIRMATION -> {
                 ConfirmTransactionContent(
                     state = ConfirmTransactionUiState(
                         amount = state.amount,
@@ -85,8 +85,11 @@ internal fun NewTransactionScreen(
                     onDateClick = {
                         showDatePicker = true
                     },
+                    onTimeClick = {
+                        showTimePicker = true
+                    },
                     onConfirmClick = {
-                        accept(Intent.ConfirmSave)
+                        accept(Intent.SaveTransaction)
                     },
                     onBackClick = {
                         accept(Intent.OnCloseConfirmSave)
@@ -97,14 +100,15 @@ internal fun NewTransactionScreen(
                 )
             }
 
-            else -> {
+            State.Step.INPUT -> {
                 PremiumNewTransaction(
                     state = state,
                     accept = accept
                 )
             }
         }
-// Toast qatlami (Har doim eng tepada turadi)
+        
+        // Toast qatlami (Har doim eng tepada turadi)
         state.error?.let { error ->
             MizanToast(
                 message = error,
@@ -136,4 +140,17 @@ internal fun NewTransactionScreen(
             showDatePicker = false
         }
     )
+
+    MizanTimePickerDialog(
+        isVisible = showTimePicker,
+        initialTime = state.transactionDate,
+        onTimeSelected = { hour, minute ->
+            accept(Intent.UpdateTime(hour, minute))
+            showTimePicker = false
+        },
+        onDismiss = {
+            showTimePicker = false
+        }
+    )
+
 }
