@@ -5,7 +5,6 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.domain.usecase.ObserveDashboardSummaryUseCase
 import dev.esbi.mizan.feature.dashboard.domain.usecase.RefreshDashboardUseCase
@@ -13,19 +12,18 @@ import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore.Intent
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore.Label
 import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore.State
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import dev.esbi.mizan.data.local.seeder.MockDataSeeder
 
 class DashboardStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val observeDashboardSummaryUseCase: ObserveDashboardSummaryUseCase,
     private val refreshDashboardUseCase: RefreshDashboardUseCase,
-    private val mockDataSeeder: MockDataSeeder,
-    @MainDispatcher private val mainDispatcher: CoroutineDispatcher
+    private val mainDispatcher: CoroutineDispatcher
 ) {
 
     fun create(): DashboardStore =
@@ -37,7 +35,6 @@ class DashboardStoreFactory @Inject constructor(
                 ExecutorImpl(
                     observeDashboardSummaryUseCase,
                     refreshDashboardUseCase,
-                    mockDataSeeder,
                     mainDispatcher
                 )
             },
@@ -53,17 +50,13 @@ class DashboardStoreFactory @Inject constructor(
     private class ExecutorImpl(
         private val observeDashboardSummaryUseCase: ObserveDashboardSummaryUseCase,
         private val refreshDashboardUseCase: RefreshDashboardUseCase,
-        private val mockDataSeeder: MockDataSeeder,
-        @MainDispatcher private val mainDispatcher: CoroutineDispatcher
+        mainDispatcher: CoroutineDispatcher
     ) : CoroutineExecutor<Intent, DashboardStore.Action, State, Msg, Label>(
         mainContext = mainDispatcher
     ) {
         override fun executeAction(action: DashboardStore.Action) {
             when (action) {
                 DashboardStore.Action.Init -> {
-                    scope.launch {
-                        mockDataSeeder.seedData()
-                    }
                     observeDashboard()
                     refresh()
                 }
