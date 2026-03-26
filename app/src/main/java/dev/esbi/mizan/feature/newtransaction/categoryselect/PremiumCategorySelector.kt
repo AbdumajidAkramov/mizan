@@ -26,7 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,10 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.feature.accountmanagement.ui.components.AddAccountButton
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.dashedBorder
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -53,28 +52,9 @@ fun PremiumCategorySelector(
     selectedCategoryId: Long?,
     onCategoryClick: (Category) -> Unit,
     onNavigateToManageCategories: () -> Unit,
-    hasChildren: (Category) -> Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        // Header
-        Text(
-            text = "Select Category",
-            style = MizanTheme.typography.headingLg,
-            color = MizanTheme.premium.text.primary,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = "Choose a category for this transaction",
-            style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.tertiary
-        )
-
-        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
-
         // Category List
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -92,8 +72,8 @@ fun PremiumCategorySelector(
                 )
             }
             item {
-                PremiumAddCategoryItem(
-                    onNavigateToManageCategories = onNavigateToManageCategories,
+                AddCategoryButton(
+                    onClick = onNavigateToManageCategories,
                 )
             }
         }
@@ -208,82 +188,68 @@ fun CategoryItemCard(
 }
 
 @Composable
-fun PremiumAddCategoryItem(
-    onNavigateToManageCategories: (() -> Unit)?,
+fun AddCategoryButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    onNavigateToManageCategories?.let { navigate ->
-        val interactionSource = remember { MutableInteractionSource() }
-        val isPressed by interactionSource.collectIsPressedAsState()
-
-        // Active:scale-[0.98] effekti
-        val scale by animateFloatAsState(
-            targetValue = if (isPressed) 0.98f else 1f,
-            label = "scale_animation"
-        )
-
-        Surface(
-            onClick = navigate,
-            modifier = Modifier
-                .fillMaxWidth()
-                .dashedBorder(
-                    color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
-                    strokeWidth = 2.dp,
-                    dashLength = 8.dp,  // Chiziq uzunligi
-                    gapLength = 6.dp,   // Chiziqlar orasidagi masofa
-                    cornerRadius = MizanTheme.premium.radius.xl
-                )
-                .graphicsLayer(scaleX = scale, scaleY = scale),
-            // PremiumDesignSystem dagi radiuslardan foydalanamiz
-            shape = RoundedCornerShape(MizanTheme.premium.radius.xl),
-            // Emerald rangining 40% transparent holati (bg-emerald/40)
-            color = MizanTheme.premium.colors.emerald.copy(alpha = 0.05f),
-            interactionSource = interactionSource
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .dashedBorder(
+                color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
+                strokeWidth = 2.dp,
+                dashLength = 8.dp,
+                gapLength = 6.dp,
+                cornerRadius = MizanTheme.premium.radius.xl
+            )
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.05f))
+            .clickable { onClick() }
+            .padding(MizanTheme.premium.spacing.md)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
         ) {
-            Row(
+            // Plus Icon Container
+            Box(
                 modifier = Modifier
-                    .padding(MizanTheme.premium.spacing.md), // DesignSystem dagi spacing
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.1f))
+                    .border(
+                        width = 1.dp,
+                        color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                // Plus Icon Container (Circle)
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(MizanTheme.premium.colors.emerald.copy(alpha = 0.1f))
-                        .border(
-                            width = 1.dp,
-                            color = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint = MizanTheme.premium.colors.emerald
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MizanTheme.premium.colors.emerald
+                )
+            }
 
-                // Text Content Part
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = "Add New Category",
-                        style = MizanTheme.typography.bodyLg.copy(
-                            fontWeight = FontWeight.Medium,
-                            color = MizanTheme.premium.colors.emerald
-                        )
+            // Text Content
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Add New Category",
+                    style = MizanTheme.typography.bodyLg.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = MizanTheme.premium.colors.emerald
                     )
-                    Text(
-                        text = "Manage & customize your categories",
-                        style = MizanTheme.typography.bodySm.copy(
-                            color = MizanTheme.premium.text.tertiary // DesignSystem dagi rang
-                        )
+                )
+                Text(
+                    text = "Transport, Food or Financial",
+                    style = MizanTheme.typography.bodySm.copy(
+                        color = MizanTheme.premium.text.tertiary
                     )
-                }
+                )
             }
         }
     }

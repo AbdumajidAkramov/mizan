@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.addtransaction.domain.model.Category
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
@@ -198,4 +199,45 @@ private fun PremiumSubcategoryItem(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SubcategoryPickerPreview() {
+
+    val mockSubcategories = listOf(
+        Category(
+            id = "1",
+            name = "Taxi",
+            iconName = "ic_taxi",
+            type = "EXPENSE",
+            color = "#FF9800",
+            parentId = "transport"
+        ),
+        Category(
+            id = "2",
+            name = "Bus",
+            iconName = "ic_bus",
+            type = "EXPENSE",
+            color = "#4CAF50",
+            parentId = "transport"
+        ),
+        Category(
+            id = "3",
+            name = "Metro",
+            iconName = "ic_metro",
+            type = "EXPENSE",
+            color = "#2196F3",
+            parentId = "transport"
+        )
+    )
+
+    SubcategoryPicker(
+        subcategories = mockSubcategories,
+        parentCategoryName = "Transport",
+        selectedSubcategory = "2",
+        onSelectSubcategory = {},
+        onBackToCategories = {},
+        modifier = Modifier
+    )
 }

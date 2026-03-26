@@ -1,6 +1,7 @@
 package dev.esbi.mizan
 
 import android.app.Application
+import android.util.Log
 import dev.esbi.mizan.di.AppComponent
 
 class MizanApplication : Application() {

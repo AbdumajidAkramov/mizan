@@ -28,6 +28,11 @@ import {
   Target,
   Calendar,
   TrendingUp,
+  Edit2,
+  X,
+  ArrowUpCircle,
+  History,
+  Trash2,
 } from 'lucide-react';
 
 /**
@@ -327,6 +332,57 @@ export function PremiumFinancialGoalsScreen({
 }: PremiumFinancialGoalsScreenProps) {
   const [goals] = useState<FinancialGoal[]>(MOCK_GOALS);
   const goalsState = calculateGoalsState(goals);
+  
+  // State for Goal Detail Bottom Sheet
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+
+  // Get selected goal
+  const selectedGoal = goals.find(g => g.id === selectedGoalId);
+
+  // Handle goal card click
+  const handleGoalClick = (goalId: string) => {
+    setSelectedGoalId(goalId);
+    setShowBottomSheet(true);
+  };
+
+  // Handle close bottom sheet
+  const handleCloseBottomSheet = () => {
+    setShowBottomSheet(false);
+    setTimeout(() => {
+      setSelectedGoalId(null);
+      setDepositAmount('');
+    }, 300); // Wait for animation
+  };
+
+  // Handle quick add
+  const handleQuickAdd = (amount: number) => {
+    setDepositAmount(formatUZS(amount));
+  };
+
+  // Handle confirm deposit
+  const handleConfirmDeposit = () => {
+    if (!selectedGoal || !depositAmount) return;
+    
+    console.log('Deposit confirmed:', {
+      goalId: selectedGoal.id,
+      amount: depositAmount,
+    });
+    
+    // TODO: Implement actual deposit logic
+    handleCloseBottomSheet();
+  };
+
+  // Handle delete goal
+  const handleDeleteGoal = () => {
+    if (!selectedGoal) return;
+    
+    console.log('Delete goal:', selectedGoal.id);
+    
+    // TODO: Implement actual delete logic
+    handleCloseBottomSheet();
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-[#1A1A2E] flex flex-col">
@@ -474,7 +530,7 @@ export function PremiumFinancialGoalsScreen({
                 <GoalCard
                   key={goal.id}
                   goal={goal}
-                  onClick={() => onGoalDetail?.(goal.id)}
+                  onClick={() => handleGoalClick(goal.id)}
                 />
               ))}
             </div>
@@ -619,6 +675,329 @@ export function PremiumFinancialGoalsScreen({
           </div>
         </div>
       </div>
+
+      {/* Goal Detail Bottom Sheet */}
+      {showBottomSheet && selectedGoal && (
+        <>
+          {/* Backdrop with Blur */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
+            onClick={handleCloseBottomSheet}
+          />
+
+          {/* Bottom Sheet Container */}
+          <div
+            className="
+              fixed bottom-0 left-0 right-0 z-[70]
+              h-[70vh]
+              bg-[#1A1A2E]
+              rounded-t-[var(--premium-radius-2xl)]
+              shadow-[0_-4px_24px_rgba(0,0,0,0.5)]
+              overflow-y-auto
+              animate-[slideUpBottomSheet_0.3s_ease-out]
+            "
+            style={{
+              maxWidth: '600px',
+              margin: '0 auto',
+            }}
+          >
+            {/* Handle Bar */}
+            <div className="flex justify-center py-[var(--premium-space-sm)]">
+              <div className="w-[48px] h-[4px] bg-white/20 rounded-full" />
+            </div>
+
+            <div className="px-[var(--premium-space-xl)] pb-[var(--premium-space-2xl)]">
+              {/* Header Section */}
+              <div className="flex items-start justify-between mb-[var(--premium-space-lg)]">
+                {/* Goal Icon Large */}
+                <div
+                  className="
+                    w-[64px] h-[64px]
+                    rounded-[var(--premium-radius-xl)]
+                    flex items-center justify-center
+                    flex-shrink-0
+                  "
+                  style={{
+                    backgroundColor: `${selectedGoal.iconColor}20`,
+                    border: `2px solid ${selectedGoal.iconColor}40`,
+                  }}
+                >
+                  {<selectedGoal.icon size={32} style={{ color: selectedGoal.iconColor }} />}
+                </div>
+
+                {/* Edit Button */}
+                <button
+                  onClick={() => {
+                    console.log('Edit goal:', selectedGoal.id);
+                    // TODO: Implement edit functionality
+                  }}
+                  className="
+                    px-[var(--premium-space-md)]
+                    py-[var(--premium-space-sm)]
+                    rounded-[var(--premium-radius-lg)]
+                    bg-white/5
+                    backdrop-blur-xl
+                    border border-white/10
+                    hover:bg-white/10
+                    flex items-center gap-[6px]
+                    transition-all duration-200
+                    active:scale-95
+                  "
+                >
+                  <Edit2 size={16} className="text-[#0EA5E9]" />
+                  <span className="body-sm font-medium text-[#0EA5E9]">Edit</span>
+                </button>
+              </div>
+
+              {/* Goal Title & Description */}
+              <div className="mb-[var(--premium-space-lg)]">
+                <h2 className="heading-lg text-white font-semibold mb-[4px]">
+                  {selectedGoal.title}
+                </h2>
+                {selectedGoal.description && (
+                  <p className="body-sm text-white/60">
+                    {selectedGoal.description}
+                  </p>
+                )}
+              </div>
+
+              {/* Progress Section */}
+              <div
+                className="
+                  p-[var(--premium-space-lg)]
+                  rounded-[var(--premium-radius-xl)]
+                  bg-white/5
+                  backdrop-blur-xl
+                  border border-white/10
+                  mb-[var(--premium-space-xl)]
+                "
+              >
+                {/* Progress Circle */}
+                <div className="flex items-center justify-center mb-[var(--premium-space-md)]">
+                  <div className="relative w-[120px] h-[120px]">
+                    {/* Background Circle */}
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeWidth="12"
+                        fill="none"
+                      />
+                      {/* Progress Circle */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="54"
+                        stroke={getProgressColor(getGoalProgress(selectedGoal), isGoalCompleted(selectedGoal))}
+                        strokeWidth="12"
+                        fill="none"
+                        strokeDasharray={`${2 * Math.PI * 54}`}
+                        strokeDashoffset={`${2 * Math.PI * 54 * (1 - getGoalProgress(selectedGoal) / 100)}`}
+                        strokeLinecap="round"
+                        className="transition-all duration-500"
+                      />
+                    </svg>
+                    {/* Percentage Text */}
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span
+                        className="text-[32px] font-bold"
+                        style={{ color: getProgressColor(getGoalProgress(selectedGoal), isGoalCompleted(selectedGoal)) }}
+                      >
+                        {Math.round(getGoalProgress(selectedGoal))}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Amounts */}
+                <div className="text-center">
+                  <p className="body-sm text-white/60 mb-[4px]">Saved</p>
+                  <div className="flex items-baseline justify-center gap-[4px] mb-[var(--premium-space-sm)]">
+                    <span className="text-[24px] font-bold text-white">
+                      {formatUZS(selectedGoal.savedAmount)}
+                    </span>
+                    <span className="body-sm text-white/40">
+                      / {formatUZS(selectedGoal.targetAmount)}
+                    </span>
+                  </div>
+                  <p className="body-xs text-white/40">UZS</p>
+                </div>
+              </div>
+
+              {/* Quick Add Section */}
+              <div className="mb-[var(--premium-space-xl)]">
+                <h3 className="heading-sm text-white font-semibold mb-[var(--premium-space-md)]">
+                  Add Funds
+                </h3>
+
+                {/* Quick Add Chips */}
+                <div className="flex items-center gap-[var(--premium-space-sm)] mb-[var(--premium-space-md)]">
+                  <button
+                    onClick={() => handleQuickAdd(100000)}
+                    className="
+                      flex-1
+                      px-[var(--premium-space-md)]
+                      py-[var(--premium-space-sm)]
+                      rounded-[var(--premium-radius-lg)]
+                      bg-white/5
+                      backdrop-blur-xl
+                      border border-white/10
+                      hover:bg-[#0EA5E9]/20
+                      hover:border-[#0EA5E9]/30
+                      transition-all duration-200
+                      active:scale-95
+                    "
+                  >
+                    <span className="body-md font-medium text-white">+100k</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAdd(500000)}
+                    className="
+                      flex-1
+                      px-[var(--premium-space-md)]
+                      py-[var(--premium-space-sm)]
+                      rounded-[var(--premium-radius-lg)]
+                      bg-white/5
+                      backdrop-blur-xl
+                      border border-white/10
+                      hover:bg-[#0EA5E9]/20
+                      hover:border-[#0EA5E9]/30
+                      transition-all duration-200
+                      active:scale-95
+                    "
+                  >
+                    <span className="body-md font-medium text-white">+500k</span>
+                  </button>
+                  <button
+                    onClick={() => handleQuickAdd(1000000)}
+                    className="
+                      flex-1
+                      px-[var(--premium-space-md)]
+                      py-[var(--premium-space-sm)]
+                      rounded-[var(--premium-radius-lg)]
+                      bg-white/5
+                      backdrop-blur-xl
+                      border border-white/10
+                      hover:bg-[#0EA5E9]/20
+                      hover:border-[#0EA5E9]/30
+                      transition-all duration-200
+                      active:scale-95
+                    "
+                  >
+                    <span className="body-md font-medium text-white">+1M</span>
+                  </button>
+                </div>
+
+                {/* Custom Amount Input */}
+                <input
+                  type="text"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(e.target.value)}
+                  placeholder="Custom amount"
+                  className="
+                    w-full
+                    px-[var(--premium-space-md)]
+                    py-[12px]
+                    rounded-[var(--premium-radius-lg)]
+                    bg-white/5
+                    backdrop-blur-xl
+                    border border-white/10
+                    text-white
+                    placeholder:text-white/40
+                    focus:bg-white/10
+                    focus:border-[#0EA5E9]/30
+                    focus:outline-none
+                    transition-all duration-200
+                  "
+                />
+              </div>
+
+              {/* Goal History Section */}
+              <div className="mb-[var(--premium-space-xl)]">
+                <div className="flex items-center gap-[var(--premium-space-sm)] mb-[var(--premium-space-md)]">
+                  <History size={20} className="text-white/60" />
+                  <h3 className="heading-sm text-white font-semibold">
+                    Recent Deposits
+                  </h3>
+                </div>
+
+                <div className="space-y-[8px]">
+                  {/* Mock History Items */}
+                  {[
+                    { date: 'Today', amount: 500000 },
+                    { date: '3 days ago', amount: 1000000 },
+                    { date: '1 week ago', amount: 750000 },
+                  ].map((item, index) => (
+                    <div
+                      key={index}
+                      className="
+                        flex items-center justify-between
+                        p-[var(--premium-space-sm)]
+                        rounded-[var(--premium-radius-md)]
+                        bg-white/5
+                        border border-white/10
+                      "
+                    >
+                      <div className="flex items-center gap-[var(--premium-space-sm)]">
+                        <ArrowUpCircle size={16} className="text-[#10B981]" />
+                        <span className="body-sm text-white/80">{item.date}</span>
+                      </div>
+                      <span className="body-md font-bold text-[#10B981]">
+                        +{formatUZS(item.amount)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-[var(--premium-space-md)]">
+                {/* Confirm Deposit Button */}
+                <button
+                  onClick={handleConfirmDeposit}
+                  disabled={!depositAmount}
+                  className="
+                    w-full
+                    px-[var(--premium-space-lg)]
+                    py-[14px]
+                    rounded-[var(--premium-radius-xl)]
+                    bg-[#10B981]
+                    hover:bg-[#059669]
+                    disabled:bg-white/10
+                    disabled:cursor-not-allowed
+                    transition-all duration-200
+                    active:scale-98
+                    shadow-[0_4px_16px_rgba(16,185,129,0.3)]
+                  "
+                >
+                  <span className="heading-sm font-semibold text-white">
+                    Confirm Deposit
+                  </span>
+                </button>
+
+                {/* Delete Goal Link */}
+                <button
+                  onClick={handleDeleteGoal}
+                  className="
+                    w-full
+                    py-[var(--premium-space-sm)]
+                    flex items-center justify-center gap-[6px]
+                    hover:opacity-80
+                    transition-opacity duration-200
+                  "
+                >
+                  <Trash2 size={16} className="text-[#EF4444]" />
+                  <span className="body-sm font-medium text-[#EF4444]">
+                    Delete Goal
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

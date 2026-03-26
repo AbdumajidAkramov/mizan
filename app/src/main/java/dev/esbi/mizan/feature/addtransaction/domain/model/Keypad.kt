@@ -1,12 +1,21 @@
 package dev.esbi.mizan.feature.addtransaction.domain.model
 
-enum class Keypad {
-    DEL,
-    CLEAR,
-    EQUALS,
+internal const val DEL_KEY = "DEL"
+internal const val CLEAR_KEY = "C"
+internal const val EQUAL_KEY = "="
+internal const val DIVIDE = "÷"
+internal const val MULTIPLY = "×"
+internal const val MINUS = "-"
+internal const val PLUS = "+"
+internal const val DOT = "."
 
-    DIVIDE,
-    MULTIPLY,
+enum class Keypad {
+    DELETE,
+    CLEAR,
+    EQUAL,
+
+    DIV,
+    MULTI,
     MINUS,
     PLUS,
 
@@ -27,7 +36,7 @@ enum class Keypad {
     UNKNOWN;
 
     companion object {
-        val operators: List<Keypad> = listOf(DIVIDE, MULTIPLY, MINUS, PLUS)
+        val operators: List<Keypad> = listOf(DIV, MULTI, MINUS, PLUS)
         val numbers: List<Keypad> = listOf(
             ZERO,
             ONE,
@@ -45,11 +54,11 @@ enum class Keypad {
 
         fun key(value: String): Keypad {
             return when (value) {
-                "C" -> CLEAR
-                "DEL" -> DEL
-                "=" -> EQUALS
-                "/" -> DIVIDE
-                "*" -> MULTIPLY
+                CLEAR_KEY -> CLEAR
+                DEL_KEY -> DELETE
+                EQUAL_KEY -> EQUAL
+                "÷" -> DIV
+                "×" -> MULTI
                 "-" -> MINUS
                 "+" -> PLUS
                 "." -> DOT
@@ -92,8 +101,8 @@ enum class Keypad {
         fun isOperator(key: Keypad): Boolean = key in operators
         fun operator(key: Keypad): String {
             return when (key) {
-                DIVIDE -> "/"
-                MULTIPLY -> "*"
+                DIV -> DIVIDE
+                MULTI -> MULTIPLY
                 MINUS -> "-"
                 PLUS -> "+"
                 else -> ""

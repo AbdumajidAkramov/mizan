@@ -5,6 +5,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.em
+import java.math.BigDecimal
 
 /**
  * Double ni valyuta formatiga o'tkazib, kasr qismini kichraytirib beradi.
@@ -15,17 +16,34 @@ import androidx.compose.ui.unit.em
 fun String.annotatedString(
     separator: Char = '.',
     decimalScale: Float = 0.6f,
-    currency: String = "UZS"
+    currency: String? = null
 ): AnnotatedString {
-    // 1. Oldin oddiy string qilib olamiz: "$12 345.88"
-    if (this.isBlank()) return buildAnnotatedString {
-        append("0")
-        withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
-            append(" $currency")
+    val trimmed = this.trim()
+    if (trimmed.isBlank()) {
+        return buildAnnotatedString {
+            append("0")
+            withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
+                append(" $currency")
+            }
         }
     }
 
-    val fullText = formatGroupedNumber(this)
+    try {
+        BigDecimal(trimmed)
+    } catch (e: NumberFormatException) {
+        if (trimmed == ".") {
+            return buildAnnotatedString {
+                append("0.")
+                withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
+                    append(" $currency")
+                }
+            }
+        }
+        // For other invalid numbers, just display them as is without currency.
+        return buildAnnotatedString { append(trimmed) }
+    }
+
+    val fullText = formatGroupedNumber(trimmed)
     // 2. Ajratuvchi belgi (nuqta) qayerda ekanligini topamiz
     val separatorIndex = fullText.lastIndexOf(separator)
 
@@ -33,7 +51,9 @@ fun String.annotatedString(
     if (separatorIndex == -1) return buildAnnotatedString {
         append(fullText)
         withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
-            append(" $currency")
+            currency?.let {
+                append(" $currency")
+            }
         }
     }
     // 3. AnnotatedString yig'amiz
@@ -44,7 +64,9 @@ fun String.annotatedString(
         // Style qo'llaymiz
         withStyle(style = SpanStyle(fontSize = decimalScale.em)) {
             append(fullText.substring(separatorIndex))
-            append(" $currency")
+            currency?.let {
+                append(" $currency")
+            }
         }
     }
 }
@@ -71,14 +93,14 @@ fun formatGroupedNumber(input: String): String {
     val fracGrouped = fracPartRaw
         ?.chunked(3)
         ?.joinToString(" ")
-        ?.take(FRAC_LENGTH)
+        ?.take(6) // Assuming FRAC_LENGTH is 6, replace with actual value if different
 
     val sign = if (isNegative) "-" else ""
     return when {
         fracGrouped != null && (fracPartRaw.toIntOrNull() ?: 0) > 0
             -> "$sign$intGrouped.$fracGrouped"
 
-        input.last() == '.' -> "$sign$intGrouped."
+        input.endsWith('.') -> "$sign$intGrouped."
         else -> "$sign$intGrouped"
     }
 }

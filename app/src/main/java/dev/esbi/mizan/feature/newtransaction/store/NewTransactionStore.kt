@@ -1,6 +1,8 @@
 package dev.esbi.mizan.feature.newtransaction.store
 
+import androidx.compose.ui.text.AnnotatedString
 import com.arkivanov.mvikotlin.core.store.Store
+import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
@@ -8,11 +10,12 @@ import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
-import dev.esbi.mizan.feature.newtransaction.inputcontent.ActivePads
+import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
+import dev.esbi.mizan.feature.newtransaction.inputpart.ActivePads
 import dev.esbi.mizan.feature.newtransaction.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction.store.state.VoiceInputState
-import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.utils.annotatedString
 
 
 interface NewTransactionStore :
@@ -22,24 +25,66 @@ interface NewTransactionStore :
         val inputMode: InputMode = InputMode.Manual,
         val transactionType: TransactionType = TransactionType.EXPENSE,
         val currentPage: TransactionStep = TransactionStep.AmountInput(),
-        val keypadState: KeypadState = KeypadState(),
+
+        val operator: String = "",
+        val leftNumber: String = "",
+        val rightNumber: String = "",
+        val currency: String = "UZS",
+
+//        val keypadState: KeypadState = KeypadState(),
         val voiceInputState: VoiceInputState = VoiceInputState(),
         val cameraInputState: CameraInputState = CameraInputState(),
         val categoryChooserState: CategoryChooserState = CategoryChooserState(Transaction.Type.EXPENSE),
         val activePad: ActivePads = ActivePads.AmountPad(),
+
         val note: String = "",
         val description: String = "",
         val transactionDate: Long = System.currentTimeMillis(),
+
+        val selectedAccountActive: Boolean = true,
         val selectedAccountId: Long? = null,
         val targetAccountId: Long? = null,
+        val selectedAccount: Account? = null,
+        val selectedCategory: Category? = null,
+
         val accounts: List<Account> = emptyList(),
         val isAccountSheetVisible: Boolean = false,
         val isTypeSelectorVisible: Boolean = false,
         val isCategorySheetVisible: Boolean = false,
         val saveAsTemplate: Boolean = false,
         val isLoading: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+
+        val part2: TransactionInputState = TransactionInputState.TransactionAmountInput()
     ) {
+
+        val isLeftNumberActive: Boolean = operator.isEmpty()
+
+        val displayText: String
+            get() {
+                return if (operator.isEmpty()) {
+                    leftNumber
+                } else {
+                    "$leftNumber $operator $rightNumber"
+                }
+            }
+
+        val amountText: String
+            get() {
+                return if (operator.isEmpty()) {
+                    leftNumber
+                } else {
+                    rightNumber
+                }
+            }
+
+        val amount: Double
+            get() = leftNumber.toDoubleOrNull() ?: 0.0
+
+        val canSubmit: Boolean get() = amount > 0.0
+
+        val annotatedString: AnnotatedString get() = amountText.annotatedString(currency = currency)
+
         companion object
     }
 
@@ -85,18 +130,33 @@ interface NewTransactionStore :
         class UpdateSelectedAccount(val accountId: Long?) : Intent
         class UpdateTargetAccount(val accountId: Long?) : Intent
         data object OpenAccountSelection : Intent
+        data object OpenTargetAccountSelection : Intent
         data object OpenAccountManageScreen : Intent
         data object CloseAccountSelection : Intent
         class SelectAccount(val accountId: Long) : Intent
+        data object NavigateToAccountSelector : Intent
+        data object NavigateToCategorySelector : Intent
+        class OnAccountSelected(val account: Account) : Intent
+        class OnCategorySelected(val category: Category) : Intent
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Intent
         data object ShowTypeSelector : Intent
         data object HideTypeSelector : Intent
         class SelectTransactionType(val type: TransactionType) : Intent
         data object OpenCategorySheet : Intent
         data object CloseCategorySheet : Intent
+
         class SelectParentCategory(val category: Category) : Intent
         class SelectChildCategory(val category: Category) : Intent
-        
+
+        class OnCategorySelect(val category: Category) : Intent
+
+        data object ShowCategorySelector : Intent
+        data object ShowSelectAccountSelector : Intent
+        data object ShowTargetAccountSelector : Intent
+        data object ShowAmountInputPad : Intent
+        data object HidePart2 : Intent
+        data object OpenCategoryManageScreen : Intent
+
         /**
          * Smart validation: checks all required fields and opens the appropriate selector
          * if something is missing, or navigates to Confirm if all fields are valid.
@@ -106,7 +166,6 @@ interface NewTransactionStore :
 
     sealed interface AmountInputIntent : Intent {
         class OnNumberClick(val key: Keypad) : AmountInputIntent
-        data object OnNextKeyButtonClick : AmountInputIntent
     }
 
 
@@ -133,6 +192,11 @@ interface NewTransactionStore :
         class SetSaveAsTemplate(val saveAsTemplate: Boolean) : Message
         class SetLoading(val isLoading: Boolean) : Message
         class SetError(val error: String?) : Message
+
+        class UpdateTransactionInputState(val state: TransactionInputState) : Message
+        class UpdateSelectedAccountActive(val isActive: Boolean) : Message
+        class AccountUpdated(val account: Account) : Message
+        class CategoryUpdated(val category: Category) : Message
     }
 
     sealed interface CategoryChooserMessage : Message {
@@ -158,5 +222,8 @@ interface NewTransactionStore :
         class ShowError(val message: String) : Label
         object TransactionSaved : Label
         object NavigateToAccountManage : Label
+        object NavigateToManageCategories : Label
+        object NavigateToAccountSelector : Label
+        object NavigateToCategorySelector : Label
     }
 }

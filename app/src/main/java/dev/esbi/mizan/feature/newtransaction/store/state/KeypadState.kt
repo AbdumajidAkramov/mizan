@@ -2,11 +2,12 @@ package dev.esbi.mizan.feature.newtransaction.store.state
 
 import androidx.compose.ui.text.AnnotatedString
 import dev.esbi.mizan.utils.annotatedString
+import java.math.BigDecimal
 
 data class KeypadState(
     val operator: String = "",
-    val leftNumber: String = "",
-    val rightNumber: String = "",
+    val leftNumber: BigDecimal = BigDecimal.ZERO,
+    val rightNumber: BigDecimal = BigDecimal.ZERO,
     val currency: String = "UZS"
 ) {
 
@@ -15,25 +16,25 @@ data class KeypadState(
     val displayText: String
         get() {
             return if (operator.isEmpty()) {
-                leftNumber
+                leftNumber.toPlainString()
             } else {
-                "$leftNumber $operator $rightNumber"
+                "${leftNumber.toPlainString()} $operator ${rightNumber.toPlainString()}"
             }
         }
 
     val amountText: String
         get() {
             return if (operator.isEmpty()) {
-                leftNumber
+                leftNumber.toPlainString()
             } else {
-                rightNumber
+                rightNumber.toPlainString()
             }
         }
 
     val amount: Double
-        get() = leftNumber.toDoubleOrNull() ?: 0.0
+        get() = leftNumber.toDouble()
 
-    val canSubmit: Boolean get() = amount > 0.0
+    val canSubmit: Boolean get() = leftNumber > BigDecimal.ZERO
 
     val annotatedString: AnnotatedString get() = amountText.annotatedString(currency = currency)
 

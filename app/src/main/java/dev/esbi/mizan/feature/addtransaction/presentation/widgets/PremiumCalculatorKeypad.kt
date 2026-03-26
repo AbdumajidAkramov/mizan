@@ -16,16 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.feature.addtransaction.domain.model.CLEAR_KEY
+import dev.esbi.mizan.feature.addtransaction.domain.model.DEL_KEY
+import dev.esbi.mizan.feature.addtransaction.domain.model.DIVIDE
+import dev.esbi.mizan.feature.addtransaction.domain.model.DOT
+import dev.esbi.mizan.feature.addtransaction.domain.model.EQUAL_KEY
 import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.feature.addtransaction.domain.model.MINUS
+import dev.esbi.mizan.feature.addtransaction.domain.model.MULTIPLY
+import dev.esbi.mizan.feature.addtransaction.domain.model.PLUS
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
-
-internal const val DEL_KEY = "DEL"
-internal const val CLEAR_KEY = "C"
-internal const val EQUALS_KEY = "="
-
 
 @Composable
 fun PremiumCalculatorKeypad(
@@ -33,16 +36,16 @@ fun PremiumCalculatorKeypad(
     onNumberClick: (Keypad) -> Unit,
 ) {
     val keys = listOf(
-        "C", "DEL", ".", "/",
-        "7", "8", "9", "-",
-        "4", "5", "6", "+",
-        "1", "2", "3", "*",
-        "00", "0", "000", "="
+        CLEAR_KEY, MULTIPLY, DIVIDE, DEL_KEY,
+        "7", "8", "9", MINUS,
+        "4", "5", "6", PLUS,
+        "1", "2", "3", DOT,
+        "00", "0", "000", EQUAL_KEY
     )
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
     ) {
         // Grid layout manually using Rows for simplicity or LazyVerticalGrid
         // Simple manual grid for strict 4-column layout like React code
@@ -50,14 +53,14 @@ fun PremiumCalculatorKeypad(
 
         rows.forEach { rowKeys ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 rowKeys.forEach { key ->
                     // Determine styling
-                    val isOperator = listOf("+", "-", "*", "/", "=").contains(key)
+                    val isOperator = listOf(PLUS, MINUS, MULTIPLY, DIVIDE, EQUAL_KEY).contains(key)
                     val isDelete = key == DEL_KEY || key == CLEAR_KEY
-                    val isEquals = key == "="
+                    val isEquals = key == EQUAL_KEY
                     val isZero = key == "0"
 
                     val bgColor = when {
@@ -77,8 +80,8 @@ fun PremiumCalculatorKeypad(
                     Box(
                         modifier = Modifier
                             .weight(if (isZero && rowKeys.size < 4) 2f else 1f) // Span logic mockup
-                            .height(56.dp)
-                            .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.xs))
                             .background(bgColor)
                             .clickable {
                                 onNumberClick(Keypad.key(key))
