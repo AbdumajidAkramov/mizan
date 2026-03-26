@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import dev.esbi.mizan.feature.premiumaddtransaction.part1.TransactionTypeSelecto
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -38,24 +38,25 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import java.math.BigDecimal
 
+
 @UiComposable
 @Composable
 fun PremiumNewTransaction(
     state: AddNewTransactionStore.State,
-    accept: (AddNewTransactionStore.Intent) -> Unit,
+    accept: (Intent) -> Unit,
 ) {
-    val displayText = state.displayText
-    val interactionSource = remember { MutableInteractionSource() }
+    state.displayText
+    remember { MutableInteractionSource() }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AmountInputHeader(
                 showTemplates = state.showTemplates,
                 onTemplatesToggle = {
-                    accept(AddNewTransactionStore.Intent.ToggleTemplates)
+                    accept(Intent.ToggleTemplates)
                 },
                 onClose = {
-                    accept(AddNewTransactionStore.Intent.Back)
+                    accept(Intent.Back)
                 }
             )
         }
@@ -73,23 +74,10 @@ fun PremiumNewTransaction(
                     .fillMaxWidth(),
                 selectedType = state.transactionType,
                 onTypeSelect = {
-                    accept(AddNewTransactionStore.Intent.SelectTransactionType(it))
+                    accept(Intent.SelectTransactionType(it))
                 }
             )
             Spacer(modifier = Modifier.weight(1f))
-            // Displey qismi
-
-            /*
-                        // Calculation String (if any)
-                        if (displayText.isNotEmpty()) {
-                            Text(
-                                text = displayText,
-                                style = MizanTheme.typography.bodySm,
-                                color = MizanTheme.premium.text.tertiary,
-                                modifier = Modifier.padding(vertical = 16.dp)
-                            )
-                        }
-            */
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -124,7 +112,7 @@ fun PremiumNewTransaction(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = {
-                                accept(AddNewTransactionStore.Intent.ShowTransactionDetails)
+                                accept(Intent.ShowTransactionDetails)
                             }
                         ),
                     contentAlignment = Alignment.Center
@@ -189,44 +177,40 @@ fun PremiumNewTransaction(
                     currencies = state.currencies,
                     selectedCurrency = state.currency,
                     onCurrencySelected = {
-                        accept(AddNewTransactionStore.Intent.OnUpdateCurrency(it))
+                        accept(Intent.OnUpdateCurrency(it))
                     }
                 )
             }
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(
-                        shape = RoundedCornerShape(
-                            topStart = MizanTheme.premium.radius.xxl,
-                            topEnd = MizanTheme.premium.radius.xxl
-                        )
-                    )
                     .background(MizanTheme.premium.background.secondary)
                     .padding(MizanTheme.premium.spacing.lg),
-                contentAlignment = Alignment.BottomCenter
             ) {
                 PremiumCalculatorKeypad(
                     onNumberClick = {
-                        accept(AddNewTransactionStore.Intent.OnNumberClick(it))
+                        accept(Intent.OnNumberClick(it))
                     }
                 )
-            }
 
-            // Save Button
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                onClick = {
-                    accept(AddNewTransactionStore.Intent.Next)
+                Box(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
+                        .background(MizanTheme.premium.colors.emerald)
+                        .clickable {
+                            accept(Intent.Next)
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Next to Confirm",
+                        style = MizanTheme.premium.typography.headingSm,
+                        color = MizanTheme.premium.colors.white
+                    )
                 }
-            ) {
-                Text(
-                    text = "Next to Confirm",
-                    style = MizanTheme.premium.typography.headingSm,
-                    color = MizanTheme.premium.text.primary
-                )
             }
         }
 
@@ -304,7 +288,7 @@ fun PremiumNewTransaction(
 )
 @Composable
 fun PremiumNewTransactionPreview() {
-    MizanTheme() {
+    MizanTheme {
         PremiumNewTransaction(
             state = AddNewTransactionStore.State(),
             accept = {}

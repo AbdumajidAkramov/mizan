@@ -81,7 +81,7 @@ fun PremiumCalculatorKeypad(
                         modifier = Modifier
                             .weight(if (isZero && rowKeys.size < 4) 2f else 1f) // Span logic mockup
                             .height(48.dp)
-                            .clip(RoundedCornerShape(MizanTheme.premium.radius.xs))
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
                             .background(bgColor)
                             .clickable {
                                 onNumberClick(Keypad.key(key))
