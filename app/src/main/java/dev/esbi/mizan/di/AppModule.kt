@@ -16,17 +16,8 @@ import dev.esbi.mizan.data.settings.AppSettingsSerializer
 import dev.esbi.mizan.feature.profile.domain.model.AppSettings
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.reflect.KClass
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class IoDispatcher
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class MainDispatcher
 
 @MapKey
 @Target(
