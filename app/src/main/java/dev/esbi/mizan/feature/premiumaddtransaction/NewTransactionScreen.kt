@@ -50,6 +50,10 @@ internal fun NewTransactionScreen(
             Label.NavigateToAccountSelector -> onNavigateToAccountSelector()
             Label.NavigateToCategorySelector -> onNavigateToCategorySelector()
             Label.TransactionSaved -> onSubmit()
+            Label.TransactionDeleted -> {
+                toastMessage = "Transaction deleted"
+                onSubmit()
+            }
             Label.BackTo -> onBackPressed()
             is Label.ShowToast -> {
                 toastMessage = currentLabel.message
@@ -61,6 +65,8 @@ internal fun NewTransactionScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    
     Box(modifier = Modifier.fillMaxSize()) {
 
         when (state.step) {
@@ -96,6 +102,10 @@ internal fun NewTransactionScreen(
                     },
                     onSaveAsTemplateChange = { saveAsTemplate ->
                         accept(Intent.UpdateSaveAsTemplate(saveAsTemplate))
+                    },
+                    isEditMode = state.isEditMode,
+                    onDeleteClick = {
+                        showDeleteConfirmation = true
                     }
                 )
             }
@@ -152,5 +162,18 @@ internal fun NewTransactionScreen(
             showTimePicker = false
         }
     )
+
+    // Delete Confirmation Dialog
+    if (showDeleteConfirmation) {
+        DeleteConfirmationDialog(
+            onConfirm = {
+                accept(Intent.DeleteTransaction)
+                showDeleteConfirmation = false
+            },
+            onDismiss = {
+                showDeleteConfirmation = false
+            }
+        )
+    }
 
 }

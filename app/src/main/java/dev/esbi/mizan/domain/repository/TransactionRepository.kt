@@ -9,4 +9,5 @@ interface TransactionRepository {
     suspend fun saveTransaction(transaction: Transaction): Result<Unit>
     suspend fun getTransactionById(id: Long): Transaction?
     suspend fun updateTransaction(transaction: Transaction): Result<Unit>
+    suspend fun deleteTransaction(transactionId: Long): Result<Unit>
 }

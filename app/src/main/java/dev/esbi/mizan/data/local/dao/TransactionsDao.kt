@@ -41,6 +41,9 @@ interface TransactionsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateTransaction(transaction: TransactionEntity)
 
+    @Query("DELETE FROM transactions WHERE id = :transactionId")
+    suspend fun deleteTransactionById(transactionId: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransactions(transactions: List<TransactionEntity>)
 

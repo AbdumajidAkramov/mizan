@@ -131,6 +131,7 @@ interface AddNewTransactionStore :
         data object Back : Intent
         data object OnCloseConfirmSave : Intent
         data object SaveTransaction : Intent
+        data object DeleteTransaction : Intent
 
         // Pad actions
         data object ShowTypeSelector : Intent
@@ -160,6 +161,7 @@ interface AddNewTransactionStore :
         class ShowToast(val message: String) : Label
 
         object TransactionSaved : Label
+        object TransactionDeleted : Label
     }
 
     sealed interface Message {

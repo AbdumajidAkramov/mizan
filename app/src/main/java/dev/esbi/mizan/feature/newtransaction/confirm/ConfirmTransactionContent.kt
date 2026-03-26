@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.newtransaction.confirm
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,7 +60,9 @@ fun ConfirmTransactionContent(
     onTimeClick: () -> Unit,
     onConfirmClick: () -> Unit,
     onBackClick: () -> Unit,
-    onSaveAsTemplateChange: (Boolean) -> Unit = {}
+    onSaveAsTemplateChange: (Boolean) -> Unit = {},
+    isEditMode: Boolean = false,
+    onDeleteClick: () -> Unit = {}
 ) {
     val typeColor = when (state.transactionType) {
         Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
@@ -125,6 +129,14 @@ fun ConfirmTransactionContent(
 
             Spacer(modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
+
+            // Delete Button (only in edit mode)
+            if (isEditMode) {
+                DeleteButton(
+                    onClick = onDeleteClick
+                )
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+            }
 
             // Save Button
             SaveButton(
@@ -408,6 +420,42 @@ private fun SaveAsTemplateCard(
                     uncheckedThumbColor = MizanTheme.premium.text.tertiary,
                     uncheckedTrackColor = MizanTheme.premium.colors.surface3
                 )
+            )
+        }
+    }
+}
+
+@Composable
+internal fun DeleteButton(
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable { onClick() },
+        color = Color(0xFFF5576C).copy(alpha = 0.15f),
+        shape = RoundedCornerShape(28.dp),
+        border = BorderStroke(1.dp, Color(0xFFF5576C).copy(alpha = 0.3f))
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_delete),
+                contentDescription = "Delete",
+                tint = Color(0xFFF5576C),
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Delete Transaction",
+                style = MizanTheme.typography.bodyLg,
+                color = Color(0xFFF5576C),
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
