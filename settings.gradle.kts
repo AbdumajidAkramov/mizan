@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Mizan"
 include(":app")
 include(":domain")
+include(":data")
