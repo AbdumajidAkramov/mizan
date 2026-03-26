@@ -25,6 +25,10 @@ object AddNewTransactionReducer :
             is Message.UpdatePad -> copy(pad = msg.pad)
             is Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
+            is Message.UpdateCurrencies -> copy(
+                currencies = msg.currencies,
+                selectedCurrency = msg.currencies.firstOrNull { it.isBaseCurrency }?:msg.currencies.firstOrNull())
+
             is Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
             is Message.UpdateTargetAccount -> copy(targetAccount = msg.account)
             is Message.UpdateSelectedCategory -> copy(selectedCategory = msg.category)
@@ -34,7 +38,7 @@ object AddNewTransactionReducer :
                 leftNumber = msg.leftNumber,
                 rightNumber = msg.rightNumber,
                 isFinalResult = msg.isFinalResult,
-                currency = msg.currency,
+                selectedCurrency = msg.currency,
                 amountDecimal = msg.amountDecimal,
                 displayText = msg.displayText
             )
@@ -42,10 +46,40 @@ object AddNewTransactionReducer :
             is Message.UpdateNote -> copy(note = msg.note)
             is Message.UpdateDescription -> copy(description = msg.description)
             is Message.UpdateTransactionDate -> copy(transactionDate = msg.date)
+            is Message.UpdateTransactionTime -> {
+                // Merge time with existing date
+                val calendar = java.util.Calendar.getInstance().apply {
+                    timeInMillis = transactionDate
+                    set(java.util.Calendar.HOUR_OF_DAY, msg.hour)
+                    set(java.util.Calendar.MINUTE, msg.minute)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                copy(transactionDate = calendar.timeInMillis)
+            }
             is Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
-            is Message.UpdateIsConfirm -> copy(isConfirm = msg.isConfirm)
+            is Message.UpdateStep -> copy(step = msg.step)
+            is Message.TransactionLoaded -> copy(
+                transactionType = msg.transaction.type,
+                amountDecimal = msg.transaction.amount.toBigDecimal(),
+                leftNumber = msg.transaction.amount.toBigDecimal().toPlainString(),
+                displayText = msg.transaction.amount.toBigDecimal().toPlainString(),
+                selectedAccount = msg.account,
+                targetAccount = msg.targetAccount,
+                selectedCategory = msg.category,
+                transactionDate = msg.transaction.date,
+                note = msg.transaction.note ?: "",
+                description = msg.transaction.description ?: "",
+                selectedCurrency = msg.transaction.currency,
+                isEditMode = true,
+                editingTransactionId = msg.transaction.id
+            )
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
-            is Message.UpdateCurrency -> copy(currency = msg.currency)
+            is Message.UpdateCurrency -> copy(selectedCurrency = msg.currency)
+            is Message.UpdateSelectAccountsBottomSheet -> copy(isSelectAccountsBottomSheetVisible = msg.isVisible)
+            is Message.UpdateTargetAccountsBottomSheet -> copy(isTargetAccountsBottomSheetVisible = msg.isVisible)
+            is Message.UpdateCategoriesBottomSheet -> copy(isCategoriesBottomSheetVisible = msg.isVisible)
+            is Message.CloseToast -> copy(error = null)
         }
 }

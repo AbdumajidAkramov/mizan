@@ -9,43 +9,48 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 
 internal class AddNewTransactionAccountSelectorExecutor @Inject constructor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val accountRepository: AccountRepository,
-) : CoroutineExecutor<AddNewTransactionStore.Intent,
-        AddNewTransactionStore.Action,
-        AddNewTransactionStore.State,
-        AddNewTransactionStore.Message,
-        AddNewTransactionStore.Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
 
-    override fun executeAction(action: AddNewTransactionStore.Action) {
+    override fun executeAction(action: Action) {
         when (action) {
-            is AddNewTransactionStore.Action.InitAccounts -> {
+            is Action.InitAccounts -> {
                 fetchAccounts()
             }
+
 
             else -> Unit
         }
     }
 
-    override fun executeIntent(intent: AddNewTransactionStore.Intent) {
+    override fun executeIntent(intent: Intent) {
         when (intent) {
 
-            is AddNewTransactionStore.Intent.UpdateSelectedAccount -> {
-                dispatch(AddNewTransactionStore.Message.UpdateSelectedAccount(intent.account))
-                forward(AddNewTransactionStore.Action.CheckAndConfirm)
+            is Intent.UpdateSelectedAccount -> {
+                dispatch(Message.UpdateSelectedAccount(intent.account))
+                forward(Action.CheckAndConfirm)
+                dispatch(Message.UpdateSelectAccountsBottomSheet(false))
             }
 
-            is AddNewTransactionStore.Intent.UpdateTargetAccount -> {
-                dispatch(AddNewTransactionStore.Message.UpdateTargetAccount(intent.account))
-                forward(AddNewTransactionStore.Action.CheckAndConfirm)
+            is Intent.UpdateTargetAccount -> {
+                dispatch(Message.UpdateTargetAccount(intent.account))
+                forward(Action.CheckAndConfirm)
+                dispatch(Message.UpdateTargetAccountsBottomSheet(false))
             }
 
-            is AddNewTransactionStore.Intent.OpenAccountManageScreen -> {
-                publish(
-                    AddNewTransactionStore.Label.NavigateToAccountManage
-                )
+            is Intent.OpenAccountManageScreen -> {
+                publish(Label.NavigateToAccountManage)
+            }
+            is Intent.OpenAccountsBottomSheet -> {
+                dispatch(Message.UpdatePad(State.Pad.AccountSelector))
             }
 
             else -> Unit
@@ -55,13 +60,13 @@ internal class AddNewTransactionAccountSelectorExecutor @Inject constructor(
     private fun fetchAccounts() {
         accountRepository.observeAccounts()
             .onEach { accounts ->
-                dispatch(AddNewTransactionStore.Message.UpdateAccounts(accounts))
+                dispatch(Message.UpdateAccounts(accounts))
                 // Auto-select first account if none selected
                 if (state().selectedAccount == null && accounts.isNotEmpty()) {
                     // Prefer CASH type, otherwise first account
                     val defaultAccount =
                         accounts.find { it.type == CASH } ?: accounts.firstOrNull()
-                    dispatch(AddNewTransactionStore.Message.UpdateSelectedAccount(defaultAccount))
+                    dispatch(Message.UpdateSelectedAccount(defaultAccount))
                 }
             }
             .launchIn(scope)

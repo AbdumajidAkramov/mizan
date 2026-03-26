@@ -459,6 +459,22 @@ internal class NewTransactionExecutor @Inject constructor(
                     selectSubCategory(intent.category)
                 }
             }
+
+            is NewTransactionStore.Intent.NavigateToAccountSelector -> {
+                publish(NewTransactionStore.Label.NavigateToAccountSelector)
+            }
+
+            is NewTransactionStore.Intent.NavigateToCategorySelector -> {
+                publish(NewTransactionStore.Label.NavigateToCategorySelector)
+            }
+
+            is NewTransactionStore.Intent.OnAccountSelected -> {
+                dispatch(NewTransactionStore.Message.AccountUpdated(intent.account))
+            }
+
+            is NewTransactionStore.Intent.OnCategorySelected -> {
+                dispatch(NewTransactionStore.Message.CategoryUpdated(intent.category))
+            }
         }
     }
 

@@ -10,20 +10,19 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
-
 fun formatMizanAmount(
     amount: BigDecimal,
-    fractionFontSize: TextUnit = 24.sp // Tiyinlar o'lchami
+    currency: String? = null, // Yangi parametr
+    fractionFontSize: TextUnit = 24.sp
 ): AnnotatedString {
-    // 1. Formatni sozlash (12 312.12 ko'rinishi uchun)
+    // 1. Formatni sozlash
     val symbols = DecimalFormatSymbols(Locale.US).apply {
-        groupingSeparator = ' ' // Mingliklarni bo'shliq bilan ajratish
-        decimalSeparator = '.'  // Nuqta bilan tiyinlarni ajratish
+        groupingSeparator = ' '
+        decimalSeparator = '.'
     }
-    
-    // ".00" qismi doim chiqishi uchun "#,##0.00" ishlatamiz
+
     val formatter = DecimalFormat("#,##0.00", symbols)
-    val formattedString = formatter.format(amount) // Masalan: "12 312.12"
+    val formattedString = formatter.format(amount)
 
     // 2. AnnotatedString qurish
     return buildAnnotatedString {
@@ -34,9 +33,14 @@ fun formatMizanAmount(
         // Butun qismini oddiy (katta) yozamiz
         append(integerPart)
 
-        // Nuqta va tiyin qismini kichikroq style bilan yozamiz
+        // Nuqta, tiyin va valyutani kichikroq style bilan yozamiz
         withStyle(style = SpanStyle(fontSize = fractionFontSize)) {
             append(".$fractionalPart")
+
+            // Agar valyuta berilgan bo'lsa, uni ham shu yerga qo'shamiz
+            if (currency != null) {
+                append(" $currency")
+            }
         }
     }
 }

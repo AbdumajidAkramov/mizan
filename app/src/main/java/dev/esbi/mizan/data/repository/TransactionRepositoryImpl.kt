@@ -33,4 +33,30 @@ class TransactionRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun getTransactionById(id: Long): Transaction? {
+        return try {
+            transactionsDao.getTransactionByIdWithCurrency(id)?.toDomain()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun updateTransaction(transaction: Transaction): Result<Unit> {
+        return try {
+            transactionsDao.updateTransaction(transaction.toEntity())
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteTransaction(transactionId: Long): Result<Unit> {
+        return try {
+            transactionsDao.deleteTransactionById(transactionId)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

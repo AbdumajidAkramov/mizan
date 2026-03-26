@@ -160,7 +160,7 @@ internal class AddNewTransactionAmountInputExecutor @Inject constructor() :
                 leftNumber = newLeft,
                 rightNumber = newRight,
                 isFinalResult = newIsFinalResult,
-                currency = currency,
+                currency = selectedCurrency,
                 amountDecimal = amountDecimal,
                 displayText = displayText
             )

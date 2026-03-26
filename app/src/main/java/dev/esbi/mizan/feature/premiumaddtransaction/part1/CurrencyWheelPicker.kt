@@ -30,12 +30,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import kotlin.math.abs
 
 @Composable
 fun CurrencyWheelPicker(
-    currencies: List<String>,
+    currencies: List<Currency>,
     initialCurrency: String,
     onCurrencySelected: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -44,7 +45,7 @@ fun CurrencyWheelPicker(
     val itemHeight = 40.dp
     val visibleItemsCount = 3 // 1 ta markazda, 2 ta yonlarda
     val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = currencies.indexOf(initialCurrency).coerceAtLeast(0)
+        initialFirstVisibleItemIndex = currencies.indexOfFirst { it.code == initialCurrency }.coerceAtLeast(0)
     )
 
     // Markaziy elementni aniqlash va callback yuborish
@@ -52,7 +53,7 @@ fun CurrencyWheelPicker(
         if (!listState.isScrollInProgress) {
             val centerIndex = listState.firstVisibleItemIndex + (visibleItemsCount / 2)
             if (centerIndex < currencies.size) {
-                onCurrencySelected(currencies[centerIndex])
+                onCurrencySelected(currencies[centerIndex].code)
                 // Markazga "magnit" kabi yopishish (Snap)
                 listState.animateScrollToItem(listState.firstVisibleItemIndex)
             }
@@ -117,7 +118,7 @@ fun CurrencyWheelPicker(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = currency,
+                        text = currency.code,
                         style = MizanTheme.typography.displayMd.copy(
                             fontWeight = if (opacity > 0.9f) FontWeight.Bold else FontWeight.Normal,
                             color = if (opacity > 0.9f) MizanTheme.premium.colors.emerald else color
@@ -136,7 +137,12 @@ fun CurrencyWheelPicker(
 fun CurrencyWheelPickerPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme() {
         CurrencyWheelPicker(
-            currencies = listOf("EUR","UZS", "RUB", "USD"),
+            currencies = listOf(
+                Currency("EUR", "Euro", "€", 1.0, false),
+                Currency("UZS", "Uzbek Som", "so'm", 1.0, true),
+                Currency("RUB", "Russian Ruble", "₽", 1.0, false),
+                Currency("USD", "US Dollar", "$", 1.0, false)
+            ),
             initialCurrency = "UZS",
             onCurrencySelected = {},
             modifier = Modifier

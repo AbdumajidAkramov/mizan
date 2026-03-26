@@ -17,14 +17,21 @@ class AddNewTransactionStoreImpl @Inject constructor(
             AddNewTransactionStore.Label>,
     private val observer: AddNewTransactionStoreObserver,
     private val storeFactory: StoreFactory,
+    private val transactionId: Long? = null,
 ) : AddNewTransactionStore,
     Store<AddNewTransactionStore.Intent, AddNewTransactionStore.State, AddNewTransactionStore.Label> by storeFactory.create(
-        initialState = AddNewTransactionStore.State(),
+        initialState = AddNewTransactionStore.State(
+            editingTransactionId = transactionId,
+            isEditMode = transactionId != null
+        ),
         bootstrapper = SimpleBootstrapper(
             AddNewTransactionStore.Action.InitPad,
             AddNewTransactionStore.Action.InitAccounts,
             AddNewTransactionStore.Action.InitCategories,
+            AddNewTransactionStore.Action.InitCurrencies,
+            AddNewTransactionStore.Action.LoadTransaction,
             AddNewTransactionStore.Action.CheckAndConfirm
+
         ),
         executorFactory = { CompositeExecutor(executors) },
         reducer = AddNewTransactionReducer,

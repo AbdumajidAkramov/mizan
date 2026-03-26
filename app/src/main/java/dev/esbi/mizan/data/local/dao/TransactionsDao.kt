@@ -31,8 +31,18 @@ interface TransactionsDao {
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun getTransactionById(id: String): TransactionEntity?
 
+    @Transaction
+    @Query("SELECT * FROM transactions WHERE id = :id")
+    suspend fun getTransactionByIdWithCurrency(id: Long): TransactionWithCurrencyEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: TransactionEntity)
+    
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTransaction(transaction: TransactionEntity)
+
+    @Query("DELETE FROM transactions WHERE id = :transactionId")
+    suspend fun deleteTransactionById(transactionId: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransactions(transactions: List<TransactionEntity>)

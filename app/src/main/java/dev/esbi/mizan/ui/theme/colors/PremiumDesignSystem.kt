@@ -276,7 +276,7 @@ private val LightColors = PremiumColors(
     surface4 = Color.Black.copy(alpha = 0.12f),
     emerald = Color(16, 185, 129),
     white = Color.White,
-    black = Color.Black,
+    black = Color.Black
 )
 
 val LightPremiumDesignSystem = PremiumDesignSystem(

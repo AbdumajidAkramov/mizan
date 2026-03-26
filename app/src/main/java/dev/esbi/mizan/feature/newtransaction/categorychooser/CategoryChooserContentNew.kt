@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,183 +45,17 @@ import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryC
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 
-@Composable
-fun CategoryChooserContentV2(
-    amount: String,
-    state: CategoryChooserState,
-    selectedAccountName: String? = null,
-    accept: (NewTransactionStore.Intent) -> Unit,
-    onBack: () -> Unit = {},
-    onClose: () -> Unit = {},
-    onAccountClick: () -> Unit = {}
-) {
-    val tintColor = when (state.transactionType) {
-        Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
-        Transaction.Type.EXPENSE -> Color(0xFFF5576C)
-        Transaction.Type.TRANSFER -> MizanTheme.premium.colors.primary
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MizanTheme.premium.background.primary)
-    ) {
-        // Header
-        CategoryChooserHeader(
-            title = "Choose Category",
-            onBack = onBack,
-            onClose = onClose
-        )
-
-        // Amount Display
-        AmountHeader(
-            amount = amount,
-            transactionType = state.transactionType,
-            tintColor = tintColor
-        )
-
-        // Content
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) {
-            when {
-                state.isLoading -> LoadingView()
-                state.error != null -> ErrorView(
-                    error = state.error,
-                    onRetry = { accept(NewTransactionStore.CategoryChooserIntent.RetryLoad) }
-                )
-                else -> CategoryList(
-                    state = state,
-                    tintColor = tintColor,
-                    onParentClick = { accept(SelectParentCategory(it)) },
-                    onSubCategoryClick = { accept(SelectSubCategory(it)) }
-                )
-            }
-        }
-
-        // Bottom Section with Account Selector and Continue Button
-        BottomSection(
-            enabled = state.selectedCategory != null,
-            tintColor = tintColor,
-            selectedAccountName = selectedAccountName,
-            onAccountClick = onAccountClick,
-            onContinue = { accept(NewTransactionStore.CategoryChooserIntent.Continue) }
-        )
-    }
-}
-
-@Composable
-private fun CategoryChooserHeader(
-    title: String,
-    onBack: () -> Unit,
-    onClose: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = MizanTheme.premium.spacing.lg,
-                vertical = MizanTheme.premium.spacing.md
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Back Button
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface2)
-                .clickable { onBack() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_left),
-                contentDescription = "Back",
-                tint = MizanTheme.premium.text.secondary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-
-        // Title
-        Text(
-            text = title,
-            style = MizanTheme.typography.headingSm,
-            color = MizanTheme.premium.text.primary,
-            fontWeight = FontWeight.Medium
-        )
-
-        // Close Button
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(MizanTheme.premium.colors.surface2)
-                .clickable { onClose() },
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = "Close",
-                tint = MizanTheme.premium.text.secondary,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun AmountHeader(
-    amount: String,
-    transactionType: Transaction.Type,
-    tintColor: Color
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = MizanTheme.premium.spacing.lg)
-            .padding(bottom = MizanTheme.premium.spacing.lg),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Transaction Type Label
-        Text(
-            text = transactionType.name.lowercase().replaceFirstChar { it.uppercase() },
-            style = MizanTheme.typography.labelMd,
-            color = tintColor
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // Amount
-        Text(
-            text = amount.annotatedString(),
-            style = MizanTheme.typography.displayMd,
-            color = tintColor
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        // Subtitle
-        Text(
-            text = "Choose a category",
-            style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.tertiary
-        )
-    }
-}
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CategoryList(
+fun CategoryList(
     state: CategoryChooserState,
     tintColor: Color,
     onParentClick: (Category) -> Unit,
-    onSubCategoryClick: (Category) -> Unit
+    onSubCategoryClick: (Category) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentPadding = PaddingValues(
             horizontal = MizanTheme.premium.spacing.lg,
             vertical = MizanTheme.premium.spacing.sm
@@ -456,12 +288,12 @@ private fun AccountSelectorCard(
             .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .clickable { onClick() },
         color = if (hasAccount) MizanTheme.premium.colors.emerald.copy(alpha = 0.1f)
-                else MizanTheme.premium.colors.surface2,
+        else MizanTheme.premium.colors.surface2,
         shape = RoundedCornerShape(MizanTheme.premium.radius.xl),
         border = androidx.compose.foundation.BorderStroke(
             width = if (hasAccount) 2.dp else 1.dp,
             color = if (hasAccount) MizanTheme.premium.colors.emerald
-                    else MizanTheme.premium.glass.border
+            else MizanTheme.premium.glass.border
         )
     ) {
         Row(
@@ -486,7 +318,7 @@ private fun AccountSelectorCard(
                     painter = painterResource(id = R.drawable.ic_attach_money),
                     contentDescription = null,
                     tint = if (hasAccount) MizanTheme.premium.colors.emerald
-                           else MizanTheme.premium.text.secondary,
+                    else MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -497,12 +329,12 @@ private fun AccountSelectorCard(
                     text = selectedAccountName ?: "Select Account",
                     style = MizanTheme.typography.bodyMd,
                     color = if (hasAccount) MizanTheme.premium.colors.emerald
-                            else MizanTheme.premium.text.primary,
+                    else MizanTheme.premium.text.primary,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
                     text = if (hasAccount) "Tap to change account"
-                           else "Tap to choose from your accounts",
+                    else "Tap to choose from your accounts",
                     style = MizanTheme.typography.bodyXs,
                     color = MizanTheme.premium.text.tertiary
                 )
@@ -513,7 +345,7 @@ private fun AccountSelectorCard(
                 painter = painterResource(id = R.drawable.ic_chevron_right),
                 contentDescription = null,
                 tint = if (hasAccount) MizanTheme.premium.colors.emerald
-                       else MizanTheme.premium.text.tertiary,
+                else MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(20.dp)
             )
         }

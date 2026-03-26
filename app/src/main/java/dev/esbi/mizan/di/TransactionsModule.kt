@@ -16,27 +16,20 @@ import dev.esbi.mizan.data.repository.TransactionRepositoryImpl as CoreTransacti
 import dev.esbi.mizan.domain.repository.AccountRepository as CoreAccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository as CoreCurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository as CoreTransactionRepository
-import dev.esbi.mizan.feature.transactions.data.repository.TransactionsRepositoryImpl
-import dev.esbi.mizan.feature.transactions.domain.repository.TransactionsRepository
 
 @Module
 abstract class TransactionsModule {
 
     @Binds
-    abstract fun bindTransactionsRepository(
-        impl: TransactionsRepositoryImpl
-    ): TransactionsRepository
-
-    @Binds
     abstract fun bindTransactionRepository(
         impl: TransactionRepositoryImpl
     ): TransactionRepository
-    
+
     @Binds
     abstract fun bindCategoryRepository(
         impl: CategoryRepositoryImpl
     ): CategoryRepository
-    
+
     @Binds
     abstract fun bindAccountRepository(
         impl: AccountRepositoryImpl

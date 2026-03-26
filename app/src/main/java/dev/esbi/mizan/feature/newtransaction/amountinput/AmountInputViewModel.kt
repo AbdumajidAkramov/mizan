@@ -15,11 +15,12 @@ import javax.inject.Inject
 
 internal class AmountInputViewModel @Inject constructor(
     storeFactory: AmountInputStoreFactory,
-    private val addNewTransactionStoreFactory: AddNewTransactionStoreFactory
+    private val addNewTransactionStoreFactory: AddNewTransactionStoreFactory,
+    private val transactionId: Long? = null
 ) : ViewModel() {
 
     private val addNewTransactionStore: AddNewTransactionStore by lazy {
-        addNewTransactionStoreFactory.create()
+        addNewTransactionStoreFactory.create(transactionId)
     }
     private val store: NewTransactionStore = storeFactory.create()
 

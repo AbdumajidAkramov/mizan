@@ -28,6 +28,7 @@ import java.math.BigDecimal
 @Composable
 fun MizanResizableAmount(
     amount: BigDecimal,
+    currency: String? = null,
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     maxFontSize: TextUnit = 56.sp,
@@ -64,7 +65,11 @@ fun MizanResizableAmount(
         }
 
         Text(
-            text = formatMizanAmount(amount, fractionFontSize = (animatedFontSize * 0.5f).sp),
+            text = formatMizanAmount(
+                amount = amount,
+                currency = currency,
+                fractionFontSize = (animatedFontSize * 0.5f).sp
+            ),
             modifier = Modifier.fillMaxWidth(),
             softWrap = false,
             maxLines = 1,

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
-import dev.esbi.mizan.feature.newtransaction.amountinput.TemplatesCarousel
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.TemplatesCarousel
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -44,7 +44,7 @@ fun PremiumNewTransactionPart1(
 ) {
     val displayText = ""
     val amountText = ""
-    val currency = state.currency
+    val currency = state.selectedCurrency
     val selectedAccount = state.selectedAccount
     // Transfer-specific accounts
     val targetAccount = state.targetAccount
@@ -83,7 +83,7 @@ fun PremiumNewTransactionPart1(
 
         // Large Amount Display
         val formattedAmount = amountText.annotatedString(
-            currency = currency
+            currency = currency?.symbol
         )
         AutoResizingText(
             text = formattedAmount,

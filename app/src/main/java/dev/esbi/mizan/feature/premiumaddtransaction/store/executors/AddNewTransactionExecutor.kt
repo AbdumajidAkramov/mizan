@@ -41,7 +41,86 @@ internal class AddNewTransactionExecutor @Inject constructor(
                 )
             }
 
+            is AddNewTransactionStore.Intent.NavigateToAccountSelector -> {
+                publish(AddNewTransactionStore.Label.NavigateToAccountSelector)
+            }
+
+            is AddNewTransactionStore.Intent.NavigateToCategorySelector -> {
+                publish(AddNewTransactionStore.Label.NavigateToCategorySelector)
+            }
+
+            is AddNewTransactionStore.Intent.OnAccountSelected -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectedAccount(intent.account))
+            }
+
+            is AddNewTransactionStore.Intent.OnCategorySelected -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectedCategory(intent.category))
+            }
+            is AddNewTransactionStore.Intent.OpenAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(false))
+            }
+            is AddNewTransactionStore.Intent.OpenTargetAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseTargetAccountsBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(false))
+            }
+            is AddNewTransactionStore.Intent.OpenCategoriesBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(true))
+            }
+            is AddNewTransactionStore.Intent.CloseCategoriesBottomSheet -> {
+                dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(false))
+            }
+
+            is AddNewTransactionStore.Intent.CloseToast -> {
+                dispatch(AddNewTransactionStore.Message.CloseToast)
+            }
+
+            is AddNewTransactionStore.Intent.Next -> {
+                validateAndProceedToConfirmation()
+            }
+
+            is AddNewTransactionStore.Intent.Back -> {
+                // If in confirmation, go back to input
+                if (state().step == AddNewTransactionStore.State.Step.CONFIRMATION) {
+                    dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.INPUT))
+                } else {
+                    publish(AddNewTransactionStore.Label.BackTo)
+                }
+            }
+
             else -> Unit
+        }
+    }
+
+    private fun validateAndProceedToConfirmation() {
+        val state = state()
+        
+        // Validate required fields
+        when {
+            state.amountDecimal.toDouble() <= 0.0 -> {
+                publish(AddNewTransactionStore.Label.ShowToast("Please enter an amount"))
+            }
+            
+            state.selectedAccount == null -> {
+                publish(AddNewTransactionStore.Label.ShowToast("Please select an account"))
+            }
+            
+            state.selectedCategory == null -> {
+                publish(AddNewTransactionStore.Label.ShowToast("Please select a category"))
+            }
+            
+            state.transactionType == Transaction.Type.TRANSFER && state.targetAccount == null -> {
+                publish(AddNewTransactionStore.Label.ShowToast("Please select a target account for transfer"))
+            }
+            
+            else -> {
+                // All validations passed, proceed to confirmation (DO NOT SAVE YET)
+                dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.CONFIRMATION))
+            }
         }
     }
 
@@ -74,7 +153,7 @@ internal class AddNewTransactionExecutor @Inject constructor(
 
             else -> {
                 Log.d("TTT", "Confirm screen open")
-                dispatch(AddNewTransactionStore.Message.UpdateIsConfirm(true))
+                dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.CONFIRMATION))
             }
         }
     }

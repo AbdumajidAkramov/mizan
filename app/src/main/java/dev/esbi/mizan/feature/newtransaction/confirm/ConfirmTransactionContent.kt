@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.newtransaction.confirm
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,9 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
+import dev.esbi.mizan.feature.premiumaddtransaction.part2.formatMizanAmount
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -55,9 +57,12 @@ fun ConfirmTransactionContent(
     state: ConfirmTransactionUiState,
     onNoteChange: (String) -> Unit,
     onDateClick: () -> Unit,
+    onTimeClick: () -> Unit,
     onConfirmClick: () -> Unit,
     onBackClick: () -> Unit,
-    onSaveAsTemplateChange: (Boolean) -> Unit = {}
+    onSaveAsTemplateChange: (Boolean) -> Unit = {},
+    isEditMode: Boolean = false,
+    onDeleteClick: () -> Unit = {}
 ) {
     val typeColor = when (state.transactionType) {
         Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
@@ -99,6 +104,15 @@ fun ConfirmTransactionContent(
 
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
 
+            // Time Selector Card
+            ActionCard(
+                icon = R.drawable.ic_calendar_month,
+                text = formatTime(state.date),
+                onClick = onTimeClick
+            )
+
+            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
             // Note Input Card
             NoteInputCard(
                 note = state.note,
@@ -115,6 +129,14 @@ fun ConfirmTransactionContent(
 
             Spacer(modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
+
+            // Delete Button (only in edit mode)
+            if (isEditMode) {
+                DeleteButton(
+                    onClick = onDeleteClick
+                )
+                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+            }
 
             // Save Button
             SaveButton(
@@ -194,7 +216,7 @@ private fun ReceiptCard(
 
             // Amount
             Text(
-                text = "$${state.amount}",
+                text = formatMizanAmount(state.amount.value, currency = state.amount.currency),
                 style = MizanTheme.premium.typography.displayMd.copy(
                     fontSize = 48.sp,
                     fontWeight = FontWeight.Bold
@@ -404,6 +426,42 @@ private fun SaveAsTemplateCard(
 }
 
 @Composable
+internal fun DeleteButton(
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable { onClick() },
+        color = Color(0xFFF5576C).copy(alpha = 0.15f),
+        shape = RoundedCornerShape(28.dp),
+        border = BorderStroke(1.dp, Color(0xFFF5576C).copy(alpha = 0.3f))
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_delete),
+                contentDescription = "Delete",
+                tint = Color(0xFFF5576C),
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Delete Transaction",
+                style = MizanTheme.typography.bodyLg,
+                color = Color(0xFFF5576C),
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+@Composable
 internal fun SaveButton(
     isLoading: Boolean,
     onClick: () -> Unit
@@ -462,23 +520,6 @@ private fun ConfirmSaveHeader(
                 )
             }
         },
-        actions = {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(MizanTheme.premium.colors.surface2)
-                    .clickable { onClose() },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Close",
-                    tint = MizanTheme.premium.text.secondary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MizanTheme.premium.background.primary
         )
@@ -488,5 +529,11 @@ private fun ConfirmSaveHeader(
 private fun formatDate(timestamp: Long): String {
     val date = Date(timestamp)
     val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    return formatter.format(date)
+}
+
+private fun formatTime(timestamp: Long): String {
+    val date = Date(timestamp)
+    val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     return formatter.format(date)
 }

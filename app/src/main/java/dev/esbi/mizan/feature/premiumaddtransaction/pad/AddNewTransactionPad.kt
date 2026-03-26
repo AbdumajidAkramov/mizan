@@ -27,7 +27,7 @@ import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
-import dev.esbi.mizan.feature.newtransaction.accountselect.AccountSelectionContent
+import dev.esbi.mizan.feature.accountselector.AccountSelectionContentSimple
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeInfo
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeItem
@@ -196,7 +196,7 @@ fun AddNewTransactionPad(
                 AddNewTransactionStore.State.Pad.AccountSelector -> {
                     title = "Select Account"
                     desc = "Choose a account for this transaction"
-                    AccountSelectionContent(
+                    AccountSelectionContentSimple(
                         accounts = state.accounts,
                         selectedAccount = state.selectedAccount,
                         onAccountClick = { account ->
@@ -213,7 +213,7 @@ fun AddNewTransactionPad(
                 AddNewTransactionStore.State.Pad.TargetAccountSelector -> {
                     title = "Select Target account"
                     desc = "Choose a account for this transfer"
-                    AccountSelectionContent(
+                    AccountSelectionContentSimple(
                         accounts = state.accounts,
                         selectedAccount = state.targetAccount,
                         onAccountClick = { account ->
