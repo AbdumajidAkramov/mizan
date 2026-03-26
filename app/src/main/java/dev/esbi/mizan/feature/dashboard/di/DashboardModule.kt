@@ -17,14 +17,12 @@ object DashboardModule {
         storeFactory: com.arkivanov.mvikotlin.core.store.StoreFactory,
         observeDashboardSummaryUseCase: dev.esbi.mizan.feature.dashboard.domain.usecase.ObserveDashboardSummaryUseCase,
         refreshDashboardUseCase: dev.esbi.mizan.feature.dashboard.domain.usecase.RefreshDashboardUseCase,
-        mockDataSeeder: dev.esbi.mizan.data.local.seeder.MockDataSeeder,
         @MainDispatcher mainDispatcher: CoroutineDispatcher
     ): DashboardStoreFactory {
         return DashboardStoreFactory(
             storeFactory,
             observeDashboardSummaryUseCase,
             refreshDashboardUseCase,
-            mockDataSeeder,
             mainDispatcher
         )
     }

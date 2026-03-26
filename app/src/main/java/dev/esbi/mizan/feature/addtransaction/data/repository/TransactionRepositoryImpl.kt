@@ -97,7 +97,7 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalGetImage::class)
-    override suspend fun scanReceipt(imageProxy: ImageProxy): Result<ReceiptScanResult> {
+    suspend fun scanReceipt(imageProxy: ImageProxy): Result<ReceiptScanResult> {
         return try {
             Log.d(tag, "Scanning receipt image")
 
