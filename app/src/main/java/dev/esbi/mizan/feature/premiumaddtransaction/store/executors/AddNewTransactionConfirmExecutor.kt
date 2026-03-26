@@ -70,6 +70,10 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
                 dispatch(Message.UpdateStep(State.Step.INPUT))
             }
 
+            is Intent.DeleteTransaction -> {
+                deleteTransaction()
+            }
+
             is Intent.SaveTransaction -> {
                 scope.launch {
                     dispatch(Message.UpdateLoading(true))
@@ -175,6 +179,39 @@ internal class AddNewTransactionConfirmExecutor @Inject constructor(
             }
 
             else -> Unit
+        }
+    }
+
+    private fun deleteTransaction() {
+        scope.launch {
+            dispatch(Message.UpdateLoading(true))
+            dispatch(Message.UpdateError(null))
+
+            try {
+                val state = state()
+                val transactionId = state.editingTransactionId
+
+                if (transactionId == null) {
+                    dispatch(Message.UpdateError("Transaction ID not found"))
+                    return@launch
+                }
+
+                val result = transactionRepository.deleteTransaction(transactionId)
+
+                if (result.isSuccess) {
+                    publish(Label.TransactionDeleted)
+                } else {
+                    dispatch(Message.UpdateError("Failed to delete transaction"))
+                }
+            } catch (e: Exception) {
+                dispatch(
+                    Message.UpdateError(
+                        e.message ?: "Unknown error occurred while deleting"
+                    )
+                )
+            } finally {
+                dispatch(Message.UpdateLoading(false))
+            }
         }
     }
 

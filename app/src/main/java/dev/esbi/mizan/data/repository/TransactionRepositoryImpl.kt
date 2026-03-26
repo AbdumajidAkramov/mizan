@@ -50,4 +50,13 @@ class TransactionRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun deleteTransaction(transactionId: Long): Result<Unit> {
+        return try {
+            transactionsDao.deleteTransactionById(transactionId)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
