@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
+import dev.esbi.mizan.feature.accounts.AccountsScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
@@ -222,6 +223,16 @@ internal fun MizanNavHost(
             SubscriptionTrackerScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
+            )
+        }
+        composable<NavRoute.Accounts> {
+            val component = remember { appComponent.accountsComponent().create() }
+            val viewModel = component.viewModel
+            AccountsScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigateToAddAccount = { navController.navigate(NavRoute.AccountManagement) },
+                onNavigateToAccountDetail = { navController.navigate(NavRoute.AccountManagement) }
             )
         }
         composable<NavRoute.AccountManagement> {

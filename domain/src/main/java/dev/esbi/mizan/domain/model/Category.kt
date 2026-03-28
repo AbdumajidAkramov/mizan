@@ -1,7 +1,6 @@
 package dev.esbi.mizan.domain.model
 
-interface
-Category {
+interface Category {
     val id: Long
 
     val name: String           // "Oziq-ovqat", "Transport"

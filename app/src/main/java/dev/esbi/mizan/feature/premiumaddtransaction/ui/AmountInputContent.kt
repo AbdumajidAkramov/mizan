@@ -107,6 +107,7 @@ fun AmountInputHeader(
 
 @Composable
 fun TemplatesCarousel(
+    templateList: List<QuickTemplate>,
     onTemplateClick: (QuickTemplate) -> Unit,
     onManageClick: () -> Unit
 ) {
@@ -148,12 +149,14 @@ fun TemplatesCarousel(
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(mockTemplates) { template ->
+
+            items(templateList) { template ->
                 TemplateCard(
                     template = template,
                     onClick = { onTemplateClick(template) }
                 )
             }
+
         }
         Spacer(
             modifier = Modifier
@@ -419,28 +422,4 @@ data class QuickTemplate(
     val accountName: String,
     val typeColor: Color,
     val iconRes: Int
-)
-
-// Mock templates for preview
-val mockTemplates = listOf(
-    QuickTemplate(
-        id = "1",
-        name = "Daily Lunch",
-        amount = 12.50,
-        category = "Food Dining",
-        subcategory = "Restaurant",
-        accountName = "Cash Wallet",
-        typeColor = Color(0xFFF5576C),
-        iconRes = R.drawable.ic_arrow_down
-    ),
-    QuickTemplate(
-        id = "2",
-        name = "Rent Payment",
-        amount = 1500.00,
-        category = "Bills Utilities",
-        subcategory = "Rent",
-        accountName = "Checking",
-        typeColor = Color(0xFFF5576C),
-        iconRes = R.drawable.ic_arrow_down
-    )
 )
