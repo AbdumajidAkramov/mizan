@@ -29,11 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
-import dev.esbi.mizan.feature.profile.domain.model.SettingAction
-import dev.esbi.mizan.feature.profile.domain.model.SettingIcon
-import dev.esbi.mizan.feature.profile.domain.model.SettingItem
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
+import dev.esbi.mizan.domain.model.profile.AppSettings
+import dev.esbi.mizan.domain.model.profile.SettingAction
+import dev.esbi.mizan.domain.model.profile.SettingIcon
+import dev.esbi.mizan.domain.model.profile.SettingItem
+import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
 import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.ProfileHeaderCard
@@ -107,9 +107,10 @@ internal fun ProfileContent(
             }
 
             state.error != null && state.profile == null -> {
+                val errorMessage = state.error ?: "Unknown error"
                 FadeInUpAnimation {
                     ErrorState(
-                        message = state.error,
+                        message = errorMessage,
                         onRetry = { },
                         modifier = modifier
                             .fillMaxSize()
@@ -119,7 +120,7 @@ internal fun ProfileContent(
             }
 
             state.profile != null -> {
-                val profile = state.profile
+                val profile = state.profile!!
                 Column(
                     modifier = modifier
                         .fillMaxSize()

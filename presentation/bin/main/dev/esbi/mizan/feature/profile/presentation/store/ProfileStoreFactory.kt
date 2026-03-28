@@ -6,12 +6,9 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
-import dev.esbi.mizan.feature.profile.domain.usecase.LogoutUseCase
-import dev.esbi.mizan.feature.profile.domain.usecase.ObserveProfileUseCase
-import dev.esbi.mizan.feature.profile.domain.usecase.ObserveSettingsUseCase
-import dev.esbi.mizan.feature.profile.domain.usecase.ToggleDarkModeUseCase
+import dev.esbi.mizan.domain.model.profile.AppSettings
+import dev.esbi.mizan.domain.model.profile.UserProfile
+import dev.esbi.mizan.domain.repository.ProfileRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
@@ -25,10 +22,7 @@ import javax.inject.Inject
  */
 class ProfileStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val observeProfileUseCase: ObserveProfileUseCase,
-    private val observeSettingsUseCase: ObserveSettingsUseCase,
-    private val toggleDarkModeUseCase: ToggleDarkModeUseCase,
-    private val logoutUseCase: LogoutUseCase,
+    private val profileRepository: ProfileRepository,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) {
 
@@ -39,10 +33,7 @@ class ProfileStoreFactory @Inject constructor(
             bootstrapper = SimpleBootstrapper(ProfileStore.Action.Init),
             executorFactory = {
                 ExecutorImpl(
-                    observeProfileUseCase,
-                    observeSettingsUseCase,
-                    toggleDarkModeUseCase,
-                    logoutUseCase,
+                    profileRepository,
                     mainDispatcher
                 )
             },
@@ -57,10 +48,7 @@ class ProfileStoreFactory @Inject constructor(
     }
 
     private class ExecutorImpl(
-        private val observeProfileUseCase: ObserveProfileUseCase,
-        private val observeSettingsUseCase: ObserveSettingsUseCase,
-        private val toggleDarkModeUseCase: ToggleDarkModeUseCase,
-        private val logoutUseCase: LogoutUseCase,
+        private val profileRepository: ProfileRepository,
         @MainDispatcher private val mainDispatcher: CoroutineDispatcher
     ) : CoroutineExecutor<ProfileStore.Intent, ProfileStore.Action, ProfileStore.State, Msg, ProfileStore.Label>(
         mainContext = mainDispatcher
@@ -86,7 +74,7 @@ class ProfileStoreFactory @Inject constructor(
         }
 
         private fun observeProfile() {
-            observeProfileUseCase()
+            profileRepository.observeProfile()
                 .onEach { profile ->
                     dispatch(Msg.ProfileLoaded(profile))
                 }
@@ -97,7 +85,7 @@ class ProfileStoreFactory @Inject constructor(
         }
 
         private fun observeSettings() {
-            observeSettingsUseCase()
+            profileRepository.observeSettings()
                 .onEach { settings ->
                     dispatch(Msg.SettingsLoaded(settings))
                 }
@@ -110,7 +98,7 @@ class ProfileStoreFactory @Inject constructor(
         private fun toggleDarkMode() {
             scope.launch {
                 try {
-                    toggleDarkModeUseCase()
+                    profileRepository.toggleDarkMode()
                 } catch (e: Exception) {
                     dispatch(Msg.Error(e.message ?: "Failed to toggle dark mode"))
                     publish(ProfileStore.Label.ShowError(e.message ?: "Failed to toggle dark mode"))
@@ -121,7 +109,7 @@ class ProfileStoreFactory @Inject constructor(
         private fun logout() {
             scope.launch {
                 try {
-                    logoutUseCase()
+                    profileRepository.logout()
                     publish(ProfileStore.Label.NavigateToLogin)
                 } catch (e: Exception) {
                     dispatch(Msg.Error(e.message ?: "Failed to logout"))

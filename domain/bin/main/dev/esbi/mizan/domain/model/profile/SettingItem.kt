@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.profile.domain.model
+package dev.esbi.mizan.domain.model.profile
 
 /**
  * Setting item for display in profile screen

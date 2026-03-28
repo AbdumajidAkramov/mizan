@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
+import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.kit.glass.PressCard

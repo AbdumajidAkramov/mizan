@@ -1,7 +1,7 @@
 package dev.esbi.mizan.data.settings
 
 import androidx.datastore.core.DataStore
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
+import dev.esbi.mizan.domain.model.profile.AppSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import java.io.IOException

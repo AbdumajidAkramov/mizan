@@ -1,11 +1,10 @@
-package dev.esbi.mizan.feature.profile.domain.model
+package dev.esbi.mizan.domain.model.profile
 
 import kotlinx.serialization.Serializable
 
 /**
  * Application settings
  */
-
 @Serializable
 data class AppSettings(
     val isDarkMode: Boolean = false,

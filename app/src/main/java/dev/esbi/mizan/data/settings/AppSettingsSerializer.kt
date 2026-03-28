@@ -1,7 +1,7 @@
 package dev.esbi.mizan.data.settings
 
 import androidx.datastore.core.Serializer
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
+import dev.esbi.mizan.domain.model.profile.AppSettings
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
