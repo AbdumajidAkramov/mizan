@@ -6,7 +6,7 @@ import dev.esbi.mizan.domain.model.Transaction
 /**
  * Simple implementation of the Category interface for use in presentation layer.
  */
-internal data class CategoryData(
+data class CategoryData(
     override val id: Long,
     override val name: String,
     override val iconName: String,
