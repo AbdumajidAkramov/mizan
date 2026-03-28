@@ -30,8 +30,8 @@ class MockDataSeeder @Inject constructor(
 ) {
 
     suspend fun seedData() = withContext(Dispatchers.IO) {
-        // Only seed if accounts table is empty
-        if (accountDao.getAccountCount() > 0) return@withContext
+        // Essential core data check (currencies and groups)
+        if (accountGroupDao.getGroupCount() > 0) return@withContext
 
         Log.d(TAG, "Starting database seeding...")
         seedCurrencies()

@@ -31,6 +31,7 @@ interface ProfileStore : Store<ProfileStore.Intent, ProfileStore.State, ProfileS
     sealed interface Label {
         data class ShowError(val message: String) : Label
         data object NavigateToLogin : Label
+        data object NavigateToAccounts : Label
         data class NavigateToSetting(val action: SettingAction) : Label
     }
 }

@@ -141,6 +141,7 @@ internal class AccountManagementExecutor(
                 dispatch(AccountManagementStore.Message.EditSheetHidden)
                 dispatch(AccountManagementStore.Message.LoadingChanged(false))
             } catch (e: Exception) {
+                e.printStackTrace()
                 dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to save account: ${e.message}"))
                 dispatch(AccountManagementStore.Message.LoadingChanged(false))
             }

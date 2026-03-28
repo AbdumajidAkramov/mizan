@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.domain.model.profile.AppSettings
+import dev.esbi.mizan.domain.model.profile.SettingAction
 import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.domain.repository.ProfileRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -68,7 +69,14 @@ class ProfileStoreFactory @Inject constructor(
                 is ProfileStore.Intent.ToggleDarkMode -> toggleDarkMode()
                 is ProfileStore.Intent.Logout -> logout()
                 is ProfileStore.Intent.OnSettingClick -> {
-                    publish(ProfileStore.Label.NavigateToSetting(intent.action))
+                    when (intent.action) {
+                        SettingAction.ACCOUNT_MANAGEMENT -> {
+                            publish(ProfileStore.Label.NavigateToAccounts)
+                        }
+                        else -> {
+                            publish(ProfileStore.Label.NavigateToSetting(intent.action))
+                        }
+                    }
                 }
             }
         }

@@ -33,6 +33,7 @@ enum class SettingIcon {
     TRENDING,
     PRIVACY_POLICY,
     TERMS_AND_SERVICE,
+    WALLET,
 }
 
 enum class SettingAction {
@@ -52,5 +53,6 @@ enum class SettingAction {
     RATE_APP,
     BUDGET_MANAGEMENT,
     FINANCIAL_GOALS,
-    TERMS_AND_SERVICE
+    TERMS_AND_SERVICE,
+    ACCOUNT_MANAGEMENT
 }

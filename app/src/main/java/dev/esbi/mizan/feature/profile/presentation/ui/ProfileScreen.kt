@@ -55,7 +55,8 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     modifier: Modifier = Modifier,
     onNavigateToBudgetManagementScreen: () -> Unit = {},
-    onNavigateToFinancialGoalsScreen: () -> Unit = {}
+    onNavigateToFinancialGoalsScreen: () -> Unit = {},
+    onNavigateToAccountsScreen: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState(initial = ProfileStore.State())
 
@@ -68,6 +69,10 @@ fun ProfileScreen(
 
                 is ProfileStore.Label.NavigateToLogin -> {
                     // Handle navigation to login
+                }
+
+                is ProfileStore.Label.NavigateToAccounts -> {
+                    onNavigateToAccountsScreen()
                 }
 
                 is ProfileStore.Label.NavigateToSetting -> {
@@ -259,6 +264,7 @@ internal fun getIconResource(icon: SettingIcon): Int {
         SettingIcon.TRENDING -> R.drawable.ic_trend_up
         SettingIcon.PRIVACY_POLICY -> R.drawable.ic_file
         SettingIcon.TERMS_AND_SERVICE -> R.drawable.ic_file
+        SettingIcon.WALLET -> R.drawable.ic_wallet
     }
 }
 
@@ -268,6 +274,13 @@ internal fun getSettingsSections(
 ): List<Pair<String, List<SettingItem>>> {
     return listOf(
         "Finance" to listOf(
+            SettingItem(
+                id = "account_management",
+                icon = SettingIcon.WALLET,
+                label = "Account Management",
+                description = "Manage your accounts & wallets",
+                action = SettingAction.ACCOUNT_MANAGEMENT
+            ),
             SettingItem(
                 id = "budget_management",
                 icon = SettingIcon.BUDGET_MANAGEMENT,

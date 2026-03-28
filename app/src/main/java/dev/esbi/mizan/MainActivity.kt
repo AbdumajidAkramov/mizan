@@ -22,6 +22,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsManager: AppSettingsManager
 
+    @Inject
+    lateinit var mockDataSeeder: dev.esbi.mizan.data.local.seeder.MockDataSeeder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -30,6 +33,7 @@ class MainActivity : ComponentActivity() {
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
 
         lifecycleScope.launch {
+            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
             settingsManager.settings.collect {
                 settingState.value = it
             }

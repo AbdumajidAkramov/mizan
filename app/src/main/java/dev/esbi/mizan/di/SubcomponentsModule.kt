@@ -3,7 +3,6 @@ package dev.esbi.mizan.di
 import dagger.Module
 import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
 import dev.esbi.mizan.feature.accountselector.di.AccountSelectorComponent
-import dev.esbi.mizan.feature.accounts.di.AccountsComponent
 import dev.esbi.mizan.feature.budget.di.BudgetComponent
 import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
 import dev.esbi.mizan.feature.dashboard.di.DashboardComponent
@@ -27,7 +26,6 @@ import dev.esbi.mizan.feature.transactionshub.di.TransactionsHubComponent
         CategorySelectComponent::class,
         AccountManagementComponent::class,
         AccountSelectorComponent::class,
-        AccountsComponent::class,
         BudgetComponent::class,
         DashboardComponent::class,
         FinancialMirrorComponent::class,
