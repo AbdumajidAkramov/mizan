@@ -160,5 +160,6 @@ private fun getAccountTypeLabel(type: Account.Type): String {
         Account.Type.SAVINGS -> "Savings"
         Account.Type.DEBT -> "Debt"
         Account.Type.INVESTMENT -> "Investment"
-    }
+        Account.Type.BANK -> "Bank"
+        Account.Type.CREDIT -> "Credit"    }
 }

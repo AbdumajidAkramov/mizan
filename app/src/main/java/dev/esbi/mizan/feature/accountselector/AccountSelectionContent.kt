@@ -130,8 +130,10 @@ fun AccountSelectionContent(
             when (account.type) {
                 Account.Type.CASH -> AccountGroupType.CASH
                 Account.Type.CARD -> AccountGroupType.BANK
+                Account.Type.BANK -> AccountGroupType.BANK
                 Account.Type.SAVINGS -> AccountGroupType.BANK
                 Account.Type.DEBT -> AccountGroupType.BANK
+                Account.Type.CREDIT -> AccountGroupType.BANK
                 Account.Type.INVESTMENT -> AccountGroupType.BANK
             }
         }
@@ -437,8 +439,10 @@ private fun getAccountColor(account: Account): Color {
     return when (account.type) {
         Account.Type.CASH -> Color(0xFF10B981)      // Emerald
         Account.Type.CARD -> Color(0xFF667EEA)      // Primary Blue
+        Account.Type.BANK -> Color(0xFF667EEA)      // Primary Blue
         Account.Type.SAVINGS -> Color(0xFF4FACFE)   // Light Blue
         Account.Type.DEBT -> Color(0xFFF5576C)      // Red/Pink
+        Account.Type.CREDIT -> Color(0xFFF5576C)    // Red/Pink
         Account.Type.INVESTMENT -> Color(0xFFC471F5) // Purple
     }
 }
@@ -447,8 +451,10 @@ private fun getAccountIcon(type: Account.Type): Int {
     return when (type) {
         Account.Type.CASH -> R.drawable.ic_attach_money
         Account.Type.CARD -> R.drawable.ic_attach_money
+        Account.Type.BANK -> R.drawable.ic_attach_money
         Account.Type.SAVINGS -> R.drawable.ic_attach_money
         Account.Type.DEBT -> R.drawable.ic_attach_money
+        Account.Type.CREDIT -> R.drawable.ic_attach_money
         Account.Type.INVESTMENT -> R.drawable.ic_attach_money
     }
 }

@@ -26,8 +26,10 @@ fun AccountIcon(
         else -> when (accountType) {
             Account.Type.CASH -> R.drawable.ic_attach_money
             Account.Type.CARD -> R.drawable.ic_wallet
+            Account.Type.BANK -> R.drawable.ic_home
             Account.Type.SAVINGS -> R.drawable.ic_heart
             Account.Type.DEBT -> R.drawable.ic_wallet
+            Account.Type.CREDIT -> R.drawable.ic_wallet
             Account.Type.INVESTMENT -> R.drawable.ic_trend_up
         }
     }
