@@ -6,6 +6,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
+import dev.esbi.mizan.data.util.MockCurrencyConverter
+import dev.esbi.mizan.domain.util.CurrencyConverter
 import dev.esbi.mizan.data.local.MizanDatabase
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.AccountGroupDao
@@ -172,6 +174,12 @@ class DatabaseModule {
     @Singleton
     fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {
         return DatabaseSeedingManager(database)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCurrencyConverter(): CurrencyConverter {
+        return MockCurrencyConverter()
     }
 
     @Provides

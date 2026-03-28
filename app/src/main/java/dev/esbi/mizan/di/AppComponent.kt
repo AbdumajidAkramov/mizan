@@ -6,6 +6,7 @@ import dagger.Component
 import dev.esbi.mizan.MainActivity
 import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
 import dev.esbi.mizan.feature.accountselector.di.AccountSelectorComponent
+import dev.esbi.mizan.feature.accounts.di.AccountsComponent
 import dev.esbi.mizan.feature.budget.di.BudgetComponent
 import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
 import dev.esbi.mizan.feature.dashboard.di.DashboardComponent
@@ -48,6 +49,7 @@ internal interface AppComponent {
     // Subcomponent factories for Main Screens
     fun accountManagementComponent(): AccountManagementComponent.Factory
     fun accountSelectorComponent(): AccountSelectorComponent.Factory
+    fun accountsComponent(): AccountsComponent.Factory
     fun budgetComponent(): BudgetComponent.Factory
     fun dashboardComponent(): DashboardComponent.Factory
     fun financialMirrorComponent(): FinancialMirrorComponent.Factory
