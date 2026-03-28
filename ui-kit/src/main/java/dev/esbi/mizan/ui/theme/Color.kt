@@ -292,4 +292,3 @@ val Red = Color(0xFFFF6B6B)
 val TextWhite = Color.White
 val TextGray = Color(0xFFB8B8D1)
 val TextMuted = Color(0xFF718096)
-

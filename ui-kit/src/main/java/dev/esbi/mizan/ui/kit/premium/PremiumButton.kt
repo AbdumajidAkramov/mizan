@@ -66,31 +66,26 @@ fun PremiumButton(
     size: ButtonSize = ButtonSize.Default,
     enabled: Boolean = true,
     icon: ImageVector? = null,
-    shape: Shape? = null, // Agar null bo'lsa, default radius olinadi
+    shape: Shape? = null,
     content: @Composable RowScope.() -> Unit
 ) {
-    // 1. Theme va State'larni aniqlash
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    // Radius (Reactdagi rounded-md ga moslashamiz -> radius.sm yoki radius.md)
     val buttonShape = shape ?: RoundedCornerShape(MizanTheme.premium.radius.sm)
 
-    // 2. Ranglarni aniqlash (Variantga qarab)
     val colors = getButtonColors(variant)
     val backgroundColor = colors.containerColor
     val contentColor = colors.contentColor
     val border = colors.border
 
-    // 3. O'lchamlarni aniqlash (Size ga qarab)
     val sizeMod = getButtonSizeModifier(size)
     val contentPadding = getButtonPadding(size)
 
-    // 4. Styles (Alpha va Clickable)
     val alpha = if (enabled) {
-        if (isPressed) 0.9f else 1f // Reactdagi active:opacity ga o'xshash effekt
+        if (isPressed) 0.9f else 1f
     } else {
-        0.5f // disabled:opacity-50
+        0.5f
     }
 
     Surface(
@@ -100,7 +95,7 @@ fun PremiumButton(
             .clip(buttonShape)
             .clickable(
                 interactionSource = interactionSource,
-                indication = null, // Ripple o'rniga alpha o'zgarishi (Premium feel) yoki Ripple qo'shish mumkin
+                indication = null,
                 enabled = enabled,
                 onClick = onClick,
                 role = Role.Button
@@ -115,18 +110,16 @@ fun PremiumButton(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon bo'lsa ko'rsatamiz
             if (icon != null) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(16.dp) // [&_svg]:size-4 (16dp)
-                        .padding(end = if (size == ButtonSize.Icon) 0.dp else 8.dp) // gap-2
+                        .size(16.dp)
+                        .padding(end = if (size == ButtonSize.Icon) 0.dp else 8.dp)
                 )
             }
 
-            // Link varianti uchun underline
             val textStyle = MizanTheme.typography.labelMd.copy(
                 textDecoration = if (variant == ButtonVariant.Link && isPressed) TextDecoration.Underline else null
             )
@@ -153,7 +146,7 @@ private fun getButtonColors(variant: ButtonVariant): ButtonColors {
     return when (variant) {
         ButtonVariant.Default -> ButtonColors(
             containerColor = MizanTheme.premium.colors.primary,
-            contentColor = Color.White // primary-foreground
+            contentColor = Color.White
         )
 
         ButtonVariant.Destructive -> ButtonColors(
@@ -164,12 +157,12 @@ private fun getButtonColors(variant: ButtonVariant): ButtonColors {
         ButtonVariant.Outline -> ButtonColors(
             containerColor = Color.Transparent,
             contentColor = MizanTheme.premium.text.primary,
-            border = BorderStroke(1.dp, MizanTheme.premium.colors.surface4) // border-input
+            border = BorderStroke(1.dp, MizanTheme.premium.colors.surface4)
         )
 
         ButtonVariant.Secondary -> ButtonColors(
             containerColor = MizanTheme.premium.colors.secondary,
-            contentColor = Color.White // secondary-foreground
+            contentColor = Color.White
         )
 
         ButtonVariant.Ghost -> ButtonColors(
@@ -187,19 +180,19 @@ private fun getButtonColors(variant: ButtonVariant): ButtonColors {
 @Composable
 private fun getButtonSizeModifier(size: ButtonSize): Modifier {
     return when (size) {
-        ButtonSize.Default -> Modifier.defaultMinSize(minHeight = 36.dp) // h-9 (36px)
-        ButtonSize.Sm -> Modifier.defaultMinSize(minHeight = 32.dp)      // h-8 (32px)
-        ButtonSize.Lg -> Modifier.defaultMinSize(minHeight = 40.dp)      // h-10 (40px)
-        ButtonSize.Icon -> Modifier.size(36.dp)                          // size-9 (36px)
+        ButtonSize.Default -> Modifier.defaultMinSize(minHeight = 36.dp)
+        ButtonSize.Sm -> Modifier.defaultMinSize(minHeight = 32.dp)
+        ButtonSize.Lg -> Modifier.defaultMinSize(minHeight = 40.dp)
+        ButtonSize.Icon -> Modifier.size(36.dp)
     }
 }
 
 @Composable
 private fun getButtonPadding(size: ButtonSize): PaddingValues {
     return when (size) {
-        ButtonSize.Default -> PaddingValues(horizontal = 16.dp, vertical = 8.dp) // px-4 py-2
-        ButtonSize.Sm -> PaddingValues(horizontal = 12.dp, vertical = 0.dp)      // px-3
-        ButtonSize.Lg -> PaddingValues(horizontal = 24.dp, vertical = 0.dp)      // px-8
+        ButtonSize.Default -> PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        ButtonSize.Sm -> PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+        ButtonSize.Lg -> PaddingValues(horizontal = 24.dp, vertical = 0.dp)
         ButtonSize.Icon -> PaddingValues(0.dp)
     }
 }
@@ -214,7 +207,6 @@ private fun getButtonPadding(size: ButtonSize): PaddingValues {
 )
 @Composable
 fun PremiumButtonPreview() {
-    // MizanTheme contextida
     Column(
         modifier = Modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),

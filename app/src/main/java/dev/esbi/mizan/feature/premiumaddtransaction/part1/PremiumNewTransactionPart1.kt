@@ -63,6 +63,7 @@ fun PremiumNewTransactionPart1(
             exit = shrinkVertically()
         ) {
             TemplatesCarousel(
+                templateList = state.templateList,
                 onTemplateClick = {
                     accept(AddNewTransactionStore.Intent.OnSelectedTemplate(it))
                 },

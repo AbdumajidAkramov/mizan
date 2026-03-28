@@ -17,6 +17,7 @@ interface AddNewTransactionStore :
 
     data class State(
         val showTemplates: Boolean = false,
+        val templateList: List<QuickTemplate> = emptyList(),
 
         val transactionType: TransactionType = TransactionType.EXPENSE,
         val step: Step = Step.INPUT,
@@ -210,7 +211,7 @@ interface AddNewTransactionStore :
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Message
 
         class UpdateStep(val step: State.Step) : Message
-        
+
         data class TransactionLoaded(
             val transaction: Transaction,
             val account: Account?,

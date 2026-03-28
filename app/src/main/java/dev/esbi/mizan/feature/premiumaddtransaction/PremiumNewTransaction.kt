@@ -28,9 +28,6 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.accountselector.AccountSelectionContentSimple
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.AmountInputHeader
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
 import dev.esbi.mizan.feature.premiumaddtransaction.bottomsheet.CategorySelectorBottomSheet
 import dev.esbi.mizan.feature.premiumaddtransaction.currency.MizanCurrencySelector
@@ -39,6 +36,9 @@ import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.AmountInputHeader
+import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow

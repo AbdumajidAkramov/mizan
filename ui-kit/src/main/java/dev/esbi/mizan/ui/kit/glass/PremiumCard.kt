@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 
@@ -65,7 +64,7 @@ fun PremiumCard(
 //            .border(1.dp, MizanTheme.premium.glass.border, shape)
 
         CardVariant.Solid -> Modifier
-            .background(MizanTheme.premium.colors.surface3) // Yoki background.secondary
+            .background(MizanTheme.premium.colors.surface3)
 //            .border(1.dp, MizanTheme.premium.colors.surface4, shape)
 
         CardVariant.Gradient -> Modifier
@@ -88,7 +87,7 @@ fun PremiumCard(
     }
 
     val shadowModifier = Modifier.shadow(
-        elevation = shadowInfo.blurRadius, // Blur radiusni elevation sifatida ishlatamiz
+        elevation = shadowInfo.blurRadius,
         shape = shape,
         spotColor = shadowInfo.color,
         ambientColor = shadowInfo.color
@@ -111,7 +110,7 @@ fun PremiumCard(
                             onClick = onClick
                         )
                     } else Modifier
-                ), // padding: 24dp
+                ),
             content = content
         )
     }
@@ -123,26 +122,21 @@ fun PremiumCard(
 )
 @Composable
 private fun PremiumCardPreview() {
-    MizanTheme {
+    dev.esbi.mizan.ui.theme.MizanTheme {
         PremiumCard(
             variant = CardVariant.Glass,
-            onClick = {
-                // Click logikasi
-                println("Karta bosildi!")
-            },
+            onClick = {},
             glow = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
         ) {
-            // Children (Text, Image va h.k.)
             Text(
                 text = "Mizan Premium",
                 color = Color.White,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
-
     }
 }
 

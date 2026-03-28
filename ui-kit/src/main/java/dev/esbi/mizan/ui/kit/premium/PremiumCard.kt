@@ -32,7 +32,7 @@ fun PremiumCard(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = RoundedCornerShape(20.dp)
-    
+
     Box(
         modifier = modifier
             .clip(shape)
