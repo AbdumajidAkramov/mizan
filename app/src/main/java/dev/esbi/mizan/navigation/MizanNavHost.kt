@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
-import dev.esbi.mizan.feature.accounts.AccountsScreen
+import dev.esbi.mizan.feature.accounts.presentation.ui.AccountsScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
@@ -230,9 +230,11 @@ internal fun MizanNavHost(
             val viewModel = component.viewModel
             AccountsScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
+                onNavigateBack = { navController.popBackStack() },
                 onNavigateToAddAccount = { navController.navigate(NavRoute.AccountManagement) },
-                onNavigateToAccountDetail = { navController.navigate(NavRoute.AccountManagement) }
+                onNavigateToEditAccount = { accountId ->
+                    navController.navigate(NavRoute.AccountManagement) // Modify as needed when route is ready
+                }
             )
         }
         composable<NavRoute.AccountManagement> {

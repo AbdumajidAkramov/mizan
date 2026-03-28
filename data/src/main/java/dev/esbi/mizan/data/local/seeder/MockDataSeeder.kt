@@ -267,7 +267,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CARD,
                 groupId = 1,
                 name = "Visa Gold",
-                type = dev.esbi.mizan.domain.model.Account.Type.CARD,
+                type = dev.esbi.mizan.domain.model.Account.Type.BANK,
                 balance = 8_500_000.0,
                 currencyCode = "UZS",
                 iconName = "ic_card",

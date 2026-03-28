@@ -35,8 +35,10 @@ internal fun AccountSelectionContentSimple(
             when (account.type) {
                 Account.Type.CASH -> AccountGroupType.CASH
                 Account.Type.CARD -> AccountGroupType.BANK
+                Account.Type.BANK -> AccountGroupType.BANK
                 Account.Type.SAVINGS -> AccountGroupType.BANK
                 Account.Type.DEBT -> AccountGroupType.BANK
+                Account.Type.CREDIT -> AccountGroupType.BANK
                 Account.Type.INVESTMENT -> AccountGroupType.BANK
             }
         }
