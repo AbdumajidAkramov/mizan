@@ -46,4 +46,7 @@ sealed class NavRoute() {
     @Serializable
     data object Subscriptions : NavRoute()
 
+    @Serializable
+    data object AccountGroupManagement : NavRoute()
+
 }

@@ -23,7 +23,7 @@ fun MizanBadge(
     Text(
         text = text,
         modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
+            .clip(RoundedCornerShape(4.dp))
             .background(backgroundColor)
             .padding(horizontal = 8.dp, vertical = 3.dp),
         color = textColor,

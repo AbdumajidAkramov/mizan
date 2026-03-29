@@ -60,6 +60,10 @@ internal interface AppComponent {
 
     fun mizanCalculatorComponent(): MizanCalculatorComponent.Factory
 
+    // Provide globally
+    val accountRepository: dev.esbi.mizan.domain.repository.AccountRepository
+    val storeFactory: com.arkivanov.mvikotlin.core.store.StoreFactory
+
     @Component.Factory
     interface Factory {
         fun create(

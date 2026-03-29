@@ -110,6 +110,9 @@ internal fun MizanNavHost(
                 },
                 onNavigateToAccountsScreen = {
                     navController.navigate(NavRoute.AccountManagement)
+                },
+                onNavigateToAccountGroupsScreen = {
+                    navController.navigate(NavRoute.AccountGroupManagement)
                 }
             )
         }
@@ -276,5 +279,19 @@ internal fun MizanNavHost(
             )
         }
 
+        composable<NavRoute.AccountGroupManagement> {
+            val store = remember {
+                dev.esbi.mizan.feature.accountgroups.presentation.store.AccountGroupStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    accountRepository = appComponent.accountRepository
+                ).create()
+            }
+            dev.esbi.mizan.feature.accountgroups.ui.AccountGroupManagementScreen(
+                store = store,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }

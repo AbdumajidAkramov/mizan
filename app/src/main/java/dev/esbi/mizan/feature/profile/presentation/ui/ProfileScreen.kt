@@ -56,7 +56,8 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToBudgetManagementScreen: () -> Unit = {},
     onNavigateToFinancialGoalsScreen: () -> Unit = {},
-    onNavigateToAccountsScreen: () -> Unit = {}
+    onNavigateToAccountsScreen: () -> Unit = {},
+    onNavigateToAccountGroupsScreen: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState(initial = ProfileStore.State())
 
@@ -83,6 +84,9 @@ fun ProfileScreen(
                         }
                         SettingAction.FINANCIAL_GOALS -> {
                             onNavigateToFinancialGoalsScreen()
+                        }
+                        SettingAction.ACCOUNT_GROUP_MANAGEMENT -> {
+                            onNavigateToAccountGroupsScreen()
                         }
                         else -> Unit
                     }
@@ -280,6 +284,13 @@ internal fun getSettingsSections(
                 label = "Account Management",
                 description = "Manage your accounts & wallets",
                 action = SettingAction.ACCOUNT_MANAGEMENT
+            ),
+            SettingItem(
+                id = "account_group_management",
+                icon = SettingIcon.WALLET,
+                label = "Account Groups",
+                description = "Manage credit/debit groupings",
+                action = SettingAction.ACCOUNT_GROUP_MANAGEMENT
             ),
             SettingItem(
                 id = "budget_management",

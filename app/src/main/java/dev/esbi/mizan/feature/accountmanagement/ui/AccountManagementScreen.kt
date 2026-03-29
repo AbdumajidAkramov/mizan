@@ -1,6 +1,7 @@
 package dev.esbi.mizan.feature.accountmanagement.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,8 +47,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.feature.accountmanagement.AccountManagementViewModel
 import dev.esbi.mizan.feature.accountmanagement.store.AccountManagementStore
-import dev.esbi.mizan.feature.accountmanagement.ui.components.AccountCard
 import dev.esbi.mizan.feature.accountmanagement.ui.components.AddAccountButton
+import dev.esbi.mizan.ui.components.account.AccountRow
+import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -128,9 +130,11 @@ fun AccountManagementScreen(
 
                         // Total Balance Card
                         item {
-                            TotalBalanceCard(
-                                totalBalance = state.totalBalance,
-                                accountCount = state.accounts.size
+                            PremiumTotalBalanceCard(
+                                balance = state.totalBalance,
+                                monthlyChange = 2450000.0, // Mock analytics
+                                monthlyChangePercent = 12.5, // Mock analytics
+                                currency = "UZS" // Hardcoded UZS similar to before
                             )
                         }
 
@@ -159,13 +163,34 @@ fun AccountManagementScreen(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                AccountCard(
-                                    account = account,
-                                    onTap = {
+                                val defaultColor = MizanTheme.premium.colors.emerald
+                                val parsedColor = try {
+                                    if (!account.color.isNullOrBlank()) {
+                                        Color(android.graphics.Color.parseColor(account.color))
+                                    } else {
+                                        defaultColor
+                                    }
+                                } catch (e: Exception) {
+                                    defaultColor
+                                }
+
+                                AccountRow(
+                                    id = account.id,
+                                    name = account.name,
+                                    balance = account.balance,
+                                    currencyCode = account.currencyCode,
+                                    colorHex = account.color,
+                                    iconName = account.iconName,
+                                    onClick = {
                                         viewModel.onOpenEditAccountSheet(account)
                                     },
-                                    onArchive = {
-                                        viewModel.onArchiveAccount(account.id)
+                                    iconContent = {
+                                        dev.esbi.mizan.ui.kit.icon.AccountIcon(
+                                            iconName = account.iconName,
+                                            accountType = account.type,
+                                            tint = parsedColor,
+                                            modifier = Modifier.size(24.dp)
+                                        )
                                     }
                                 )
                             }
@@ -298,84 +323,7 @@ private fun SearchBar(
     )
 }
 
-@Composable
-private fun TotalBalanceCard(
-    totalBalance: Double,
-    accountCount: Int
-) {
-    val currencyFormat = NumberFormat.getNumberInstance(Locale("uz", "UZ")).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
-    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MizanTheme.premium.colors.surface2,
-                        MizanTheme.premium.colors.surface3
-                    )
-                )
-            )
-            .padding(MizanTheme.premium.spacing.xl)
-    ) {
-        // Emerald Glow Effect
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(200.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(
-                            MizanTheme.premium.colors.emerald.copy(alpha = 0.1f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
-        Column {
-            Text(
-                text = "Total Balance",
-                style = MizanTheme.typography.bodySm,
-                color = MizanTheme.premium.text.tertiary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Text(
-                    text = currencyFormat.format(totalBalance),
-                    style = MizanTheme.premium.typography.headingLg.copy(
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MizanTheme.premium.text.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "UZS",
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.tertiary,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
-
-            Text(
-                text = "$accountCount accounts",
-                style = MizanTheme.typography.bodySm,
-                color = MizanTheme.premium.text.tertiary
-            )
-        }
-    }
-}
 
 @Composable
 private fun AccountGroupHeader(
@@ -391,13 +339,15 @@ private fun AccountGroupHeader(
     ) {
         Text(
             text = label,
-            style = MizanTheme.premium.typography.headingSm,
-            color = MizanTheme.premium.text.secondary
+            style = MizanTheme.premium.typography.headingSm.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = MizanTheme.premium.text.primary.copy(alpha = 0.9f)
         )
         Text(
             text = "$accountCount ${if (accountCount == 1) "account" else "accounts"}",
-            style = MizanTheme.typography.bodySm,
-            color = MizanTheme.premium.text.tertiary
+            style = MizanTheme.typography.bodyXs,
+            color = MizanTheme.premium.text.primary.copy(alpha = 0.4f)
         )
     }
 }

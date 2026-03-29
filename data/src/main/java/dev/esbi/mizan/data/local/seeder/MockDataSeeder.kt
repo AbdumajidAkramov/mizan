@@ -89,9 +89,24 @@ class MockDataSeeder @Inject constructor(
         val accountGroups = listOf(
             dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
                 id = 1,
-                name = "Accounts",
+                name = "General Accounts",
                 iconName = "ic_accounts",
-                orderIndex = 0
+                orderIndex = 0,
+                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT
+            ),
+            dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
+                id = 2,
+                name = "Credit Cards",
+                iconName = "ic_credit_card",
+                orderIndex = 1,
+                type = dev.esbi.mizan.domain.model.AccountGroupType.CREDIT_CARD
+            ),
+            dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
+                id = 3,
+                name = "Debit Cards",
+                iconName = "ic_card",
+                orderIndex = 2,
+                type = dev.esbi.mizan.domain.model.AccountGroupType.DEBIT_CARD
             )
         )
         accountGroups.forEach { accountGroupDao.insertGroup(it) }
