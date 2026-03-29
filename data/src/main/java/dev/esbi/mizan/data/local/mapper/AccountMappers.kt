@@ -15,6 +15,7 @@ fun AccountWithCurrencyEntity.toDomain(): Account {
         color = account.color,
         isArchived = account.isArchived,
         excludeFromTotal = account.excludeFromTotal,
-        description = account.description
+        description = account.description,
+        isDeleted = account.isDeleted
     )
 }

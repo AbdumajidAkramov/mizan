@@ -36,5 +36,6 @@ data class AccountEntity(
     @ColumnInfo("color") val color: String? = null,          // HEX rang kodi (Masalan: "#4FACFE")
     @ColumnInfo("isArchived") val isArchived: Boolean = false, // O'chirib yubormasdan, arxivlash uchun
     @ColumnInfo("excludeFromTotal") val excludeFromTotal: Boolean = false, // Umumiy balansda ko'rsatmaslik uchun
-    @ColumnInfo("description") val description: String? = null
+    @ColumnInfo("description") val description: String? = null,
+    @ColumnInfo("is_deleted") val isDeleted: Boolean = false
 )

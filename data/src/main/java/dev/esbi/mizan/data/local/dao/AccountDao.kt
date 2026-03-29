@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AccountDao {
     
-    @Query("SELECT * FROM accounts ORDER BY name ASC")
+    @Query("SELECT * FROM accounts WHERE is_deleted = 0 ORDER BY name ASC")
     fun getAllAccounts(): Flow<List<AccountEntity>>
 
     @Transaction
-    @Query("SELECT * FROM accounts ORDER BY name ASC")
+    @Query("SELECT * FROM accounts WHERE is_deleted = 0 ORDER BY name ASC")
     fun getAllAccountsWithCurrency(): Flow<List<AccountWithCurrencyEntity>>
     
     @Query("SELECT * FROM accounts WHERE id = :id")
@@ -52,6 +52,9 @@ interface AccountDao {
 
     @Query("DELETE FROM accounts WHERE id = :id")
     suspend fun deleteAccount(id: Long)
+
+    @Query("UPDATE accounts SET is_deleted = 1 WHERE id = :id")
+    suspend fun markAsDeleted(id: Long)
 
     @Query("UPDATE accounts SET balance = balance + :amount WHERE id = :id")
     suspend fun updateBalance(id: Long, amount: Double)

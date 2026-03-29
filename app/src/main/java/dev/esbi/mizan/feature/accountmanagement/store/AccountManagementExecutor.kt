@@ -44,6 +44,23 @@ internal class AccountManagementExecutor(
                 ))
             }
 
+            is AccountManagementStore.Intent.ConfirmDeleteAccount -> {
+                scope.launch {
+                    try {
+                        dispatch(AccountManagementStore.Message.LoadingChanged(true))
+                        accountRepository.markAccountAsDeleted(intent.id)
+                        dispatch(AccountManagementStore.Message.AccountDeleted(intent.id))
+                        dispatch(AccountManagementStore.Message.LoadingChanged(false))
+                        dispatch(AccountManagementStore.Message.EditSheetHidden) // hide if open
+                        // Refresh accounts list
+                        loadAccounts()
+                    } catch(e: Exception) {
+                        dispatch(AccountManagementStore.Message.LoadingChanged(false))
+                        dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to delete account: ${e.message}"))
+                    }
+                }
+            }
+
             is AccountManagementStore.Intent.ArchiveAccount -> {
                 archiveAccount(intent.id)
             }
@@ -179,14 +196,5 @@ internal class AccountManagementExecutor(
         }
     }
 
-    fun confirmDeleteAccount(id: Long) {
-        scope.launch {
-            try {
-                accountRepository.deleteAccount(id)
-                dispatch(AccountManagementStore.Message.AccountDeleted(id))
-            } catch (e: Exception) {
-                dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to delete account: ${e.message}"))
-            }
-        }
-    }
+    // the confirmDeleteAccount method was removed because the Intent handles it now
 }

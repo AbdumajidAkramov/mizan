@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,6 +81,7 @@ private val ACCOUNT_ICONS = listOf(
 fun AddEditAccountSheet(
     account: AccountManagementStore.AccountItem?,
     onSave: (AccountManagementStore.AccountItem) -> Unit,
+    onDelete: (Long) -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -115,13 +118,36 @@ fun AddEditAccountSheet(
                 .verticalScroll(rememberScrollState())
         ) {
             // Header
-            Text(
-                text = if (isEditing) "Edit Account" else "Add New Account",
-                style = MizanTheme.premium.typography.headingMd,
-                color = MizanTheme.premium.text.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Empty spacer for balance
+                Spacer(modifier = Modifier.weight(if (isEditing) 1f else 0.1f))
+
+                Text(
+                    text = if (isEditing) "Edit Account" else "Add New Account",
+                    style = MizanTheme.premium.typography.headingMd,
+                    color = MizanTheme.premium.text.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(3f)
+                )
+
+                if (isEditing) {
+                    androidx.compose.material3.IconButton(
+                        onClick = { account?.id?.let { onDelete(it) } },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        androidx.compose.material3.Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Default.Delete,
+                            contentDescription = "Delete Account",
+                            tint = MizanTheme.premium.colors.error
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.weight(0.1f))
+                }
+            }
 
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
 

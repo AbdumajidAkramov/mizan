@@ -57,7 +57,8 @@ interface AccountManagementStore : Store<
     sealed interface Intent {
         data object LoadAccounts : Intent
         data class SaveAccount(val account: AccountItem) : Intent
-        data class DeleteAccount(val id: Long) : Intent
+        data class DeleteAccount(val id: Long) : Intent // Triggers dialog
+        data class ConfirmDeleteAccount(val id: Long) : Intent // Actually deletes
         data class ArchiveAccount(val id: Long) : Intent
         data object OpenAddAccountSheet : Intent
         data class OpenEditAccountSheet(val account: AccountItem) : Intent

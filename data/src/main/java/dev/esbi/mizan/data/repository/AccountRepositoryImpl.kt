@@ -39,7 +39,8 @@ class AccountRepositoryImpl @Inject constructor(
             color = account.color,
             isArchived = account.isArchived,
             excludeFromTotal = account.excludeFromTotal,
-            description = account.description
+            description = account.description,
+            isDeleted = account.isDeleted
         )
         accountDao.insertAccount(entity)
         return entity.id
@@ -60,6 +61,10 @@ class AccountRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(id: Long) {
         accountDao.deleteAccount(id)
+    }
+
+    override suspend fun markAccountAsDeleted(id: Long) {
+        accountDao.markAsDeleted(id)
     }
 
     override suspend fun updateBalance(id: Long, amount: Double) {

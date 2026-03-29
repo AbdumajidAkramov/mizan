@@ -43,6 +43,10 @@ class AccountManagementViewModel @Inject constructor(
         store.accept(AccountManagementStore.Intent.DeleteAccount(id))
     }
 
+    fun onConfirmDeleteAccount(id: Long) {
+        store.accept(AccountManagementStore.Intent.ConfirmDeleteAccount(id))
+    }
+
     fun onArchiveAccount(id: Long) {
         store.accept(AccountManagementStore.Intent.ArchiveAccount(id))
     }

@@ -55,7 +55,7 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
         GoalEntity::class,
         SubscriptionEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

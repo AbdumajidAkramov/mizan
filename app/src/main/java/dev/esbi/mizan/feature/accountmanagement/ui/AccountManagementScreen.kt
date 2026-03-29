@@ -35,6 +35,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,8 +56,10 @@ import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 /**
  * Account Management Screen
@@ -69,18 +74,36 @@ fun AccountManagementScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    var accountToDelete by remember { mutableStateOf<AccountManagementStore.AccountItem?>(null) }
+
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
             when (label) {
                 is AccountManagementStore.Label.NavigateBack -> onBack()
                 is AccountManagementStore.Label.ShowDeleteConfirmation -> {
-                    // Handle delete confirmation dialog
+                    accountToDelete = label.account
                 }
                 is AccountManagementStore.Label.ShowError -> {
                     // Handle error display
                 }
             }
         }
+    }
+
+    if (accountToDelete != null) {
+        PremiumConfirmDialog(
+            title = "Delete Account?",
+            message = "Are you sure you want to delete this account? This action cannot be undone, but your past transaction history will be preserved.",
+            confirmText = "Delete",
+            dismissText = "Cancel",
+            onConfirm = {
+                viewModel.onConfirmDeleteAccount(accountToDelete!!.id)
+                accountToDelete = null
+            },
+            onDismiss = {
+                accountToDelete = null
+            }
+        )
     }
 
     Scaffold(
@@ -166,7 +189,7 @@ fun AccountManagementScreen(
                                 val defaultColor = MizanTheme.premium.colors.emerald
                                 val parsedColor = try {
                                     if (!account.color.isNullOrBlank()) {
-                                        Color(android.graphics.Color.parseColor(account.color))
+                                        Color(account.color.toColorInt())
                                     } else {
                                         defaultColor
                                     }
@@ -228,6 +251,7 @@ fun AccountManagementScreen(
         AddEditAccountSheet(
             account = state.editingAccount,
             onSave = { viewModel.onSaveAccount(it) },
+            onDelete = { accountId -> viewModel.onDeleteAccount(accountId) },
             onDismiss = { viewModel.onCloseAddEditSheet() }
         )
     }

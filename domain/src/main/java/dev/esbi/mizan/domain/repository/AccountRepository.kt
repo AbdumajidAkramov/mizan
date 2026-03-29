@@ -11,6 +11,7 @@ interface AccountRepository {
     suspend fun createAccount(account: Account): Long
     suspend fun updateAccount(account: Account)
     suspend fun deleteAccount(id: Long)
+    suspend fun markAccountAsDeleted(id: Long)
     suspend fun updateBalance(id: Long, amount: Double)
 
     // Account Groups

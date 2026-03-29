@@ -11,6 +11,8 @@ import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
+import dev.esbi.mizan.feature.addaccount.presentation.store.AddAccountStoreFactory
+import dev.esbi.mizan.feature.addaccount.ui.AddNewAccountScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
@@ -300,12 +302,12 @@ internal fun MizanNavHost(
 
         composable<NavRoute.AddNewAccount> {
             val store = remember {
-                dev.esbi.mizan.feature.addaccount.presentation.store.AddAccountStoreFactory(
+                AddAccountStoreFactory(
                     storeFactory = appComponent.storeFactory,
                     accountRepository = appComponent.accountRepository
                 ).create()
             }
-            dev.esbi.mizan.feature.addaccount.ui.AddNewAccountScreen(
+            AddNewAccountScreen(
                 store = store,
                 onBackClick = {
                     navController.popBackStack()
