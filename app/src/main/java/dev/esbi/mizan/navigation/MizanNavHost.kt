@@ -241,7 +241,11 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onNavigateToEditAccount = { accountId ->
-                    // TODO: Navigate to edit account screen if needed
+                    if (accountId == null) {
+                        navController.navigate(NavRoute.AddNewAccount)
+                    } else {
+                        // TODO: Navigate to edit account screen
+                    }
                 }
             )
         }
@@ -287,6 +291,21 @@ internal fun MizanNavHost(
                 ).create()
             }
             dev.esbi.mizan.feature.accountgroups.ui.AccountGroupManagementScreen(
+                store = store,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<NavRoute.AddNewAccount> {
+            val store = remember {
+                dev.esbi.mizan.feature.addaccount.presentation.store.AddAccountStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    accountRepository = appComponent.accountRepository
+                ).create()
+            }
+            dev.esbi.mizan.feature.addaccount.ui.AddNewAccountScreen(
                 store = store,
                 onBackClick = {
                     navController.popBackStack()

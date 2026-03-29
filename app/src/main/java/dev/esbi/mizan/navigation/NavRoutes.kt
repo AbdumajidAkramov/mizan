@@ -49,4 +49,7 @@ sealed class NavRoute() {
     @Serializable
     data object AccountGroupManagement : NavRoute()
 
+    @Serializable
+    data object AddNewAccount : NavRoute()
+
 }
