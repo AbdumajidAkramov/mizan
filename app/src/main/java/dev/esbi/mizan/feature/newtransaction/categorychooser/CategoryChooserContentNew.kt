@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -36,14 +34,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectParentCategory
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserIntent.SelectSubCategory
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.utils.annotatedString
+import dev.esbi.mizan.ui.utils.Icons
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -160,7 +153,7 @@ private fun CategoryCard(
                 if (subCategories.isNotEmpty()) {
                     Icon(
                         painter = painterResource(
-                            id = if (isExpanded) R.drawable.ic_chevron_left else R.drawable.ic_chevron_right
+                            id = if (isExpanded) Icons.ic_chevron_left else Icons.ic_chevron_right
                         ),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary,
@@ -315,7 +308,7 @@ private fun AccountSelectorCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_attach_money),
+                    painter = painterResource(id = Icons.ic_attach_money),
                     contentDescription = null,
                     tint = if (hasAccount) MizanTheme.premium.colors.emerald
                     else MizanTheme.premium.text.secondary,
@@ -342,7 +335,7 @@ private fun AccountSelectorCard(
 
             // Chevron
             Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_right),
+                painter = painterResource(id = Icons.ic_chevron_right),
                 contentDescription = null,
                 tint = if (hasAccount) MizanTheme.premium.colors.emerald
                 else MizanTheme.premium.text.tertiary,
@@ -382,13 +375,13 @@ private fun ContinueButton(
 private fun getCategoryIcon(categoryName: String): Int {
     val name = categoryName.lowercase()
     return when {
-        name.contains("food") || name.contains("dining") -> R.drawable.ic_home
-        name.contains("shopping") -> R.drawable.ic_home
-        name.contains("bill") || name.contains("utilit") -> R.drawable.ic_home
-        name.contains("entertainment") -> R.drawable.ic_home
-        name.contains("health") || name.contains("fitness") -> R.drawable.ic_home
-        name.contains("travel") -> R.drawable.ic_home
-        name.contains("tech") -> R.drawable.ic_home
-        else -> R.drawable.ic_home
+        name.contains("food") || name.contains("dining") -> Icons.ic_home
+        name.contains("shopping") -> Icons.ic_home
+        name.contains("bill") || name.contains("utilit") -> Icons.ic_home
+        name.contains("entertainment") -> Icons.ic_home
+        name.contains("health") || name.contains("fitness") -> Icons.ic_home
+        name.contains("travel") -> Icons.ic_home
+        name.contains("tech") -> Icons.ic_home
+        else -> Icons.ic_home
     }
 }

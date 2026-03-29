@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -33,8 +33,8 @@ fun TransactionsSection(
                 color = MizanTheme.premium.text.primary
             )
             Text(
-                text = "See all", 
-                style = MaterialTheme.typography.bodySmall, 
+                text = "See all",
+                style = MaterialTheme.typography.bodySmall,
                 color = Purple,
                 modifier = Modifier.clickable { onSeeAllClick() }
             )

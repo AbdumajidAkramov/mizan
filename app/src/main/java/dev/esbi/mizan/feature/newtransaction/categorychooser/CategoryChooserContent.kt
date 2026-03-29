@@ -44,6 +44,7 @@ import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryC
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.utils.annotatedString
 
 // Neon category colors
@@ -387,23 +388,23 @@ private fun getCategoryColor(categoryName: String): Color {
 // Helper function to map icon names to actual icon resources
 private fun getIcon(iconName: String): IconValue {
     return when (iconName) {
-        "restaurant" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "directions_car" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "shopping_bag" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "movie" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "favorite" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "lunch_dining" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "coffee" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "local_taxi" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "directions_bus" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "work" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "computer" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "trending_up" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "receipt" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "flight" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "smartphone" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        "fitness_center" -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
-        else -> IconValue(dev.esbi.mizan.ui.utils.Icons.ic_home)
+        "restaurant" -> IconValue(Icons.ic_home)
+        "directions_car" -> IconValue(Icons.ic_home)
+        "shopping_bag" -> IconValue(Icons.ic_home)
+        "movie" -> IconValue(Icons.ic_home)
+        "favorite" -> IconValue(Icons.ic_home)
+        "lunch_dining" -> IconValue(Icons.ic_home)
+        "coffee" -> IconValue(Icons.ic_home)
+        "local_taxi" -> IconValue(Icons.ic_home)
+        "directions_bus" -> IconValue(Icons.ic_home)
+        "work" -> IconValue(Icons.ic_home)
+        "computer" -> IconValue(Icons.ic_home)
+        "trending_up" -> IconValue(Icons.ic_home)
+        "receipt" -> IconValue(Icons.ic_home)
+        "flight" -> IconValue(Icons.ic_home)
+        "smartphone" -> IconValue(Icons.ic_home)
+        "fitness_center" -> IconValue(Icons.ic_home)
+        else -> IconValue(Icons.ic_home)
     }
 }
 

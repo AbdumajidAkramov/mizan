@@ -2,16 +2,12 @@ package dev.esbi.mizan.feature.newtransaction.store.executors
 
 import android.content.Context
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Template
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
-import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
-import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
-import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHandler
@@ -21,6 +17,11 @@ import dev.esbi.mizan.feature.newtransaction.input.TransactionInputState
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.CategoryChooserMessage.ParentCategorySelected
 import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.TemplateRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -225,13 +226,13 @@ internal class NewTransactionExecutor @Inject constructor(
                         val transaction = Transaction(
                             id = 0, // New transaction
                             type = when (currentState.transactionType) {
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.EXPENSE ->
+                                TransactionType.EXPENSE ->
                                     Transaction.Type.EXPENSE
 
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.INCOME ->
+                                TransactionType.INCOME ->
                                     Transaction.Type.INCOME
 
-                                dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType.TRANSFER ->
+                                TransactionType.TRANSFER ->
                                     Transaction.Type.TRANSFER
                             },
                             amount = currentState.amount,
@@ -521,8 +522,10 @@ internal class NewTransactionExecutor @Inject constructor(
                         intent.key,
                         KeypadState(
                             operator = operator,
-                            leftNumber = leftNumber.toBigDecimalOrNull() ?: java.math.BigDecimal.ZERO,
-                            rightNumber = rightNumber.toBigDecimalOrNull() ?: java.math.BigDecimal.ZERO,
+                            leftNumber = leftNumber.toBigDecimalOrNull()
+                                ?: java.math.BigDecimal.ZERO,
+                            rightNumber = rightNumber.toBigDecimalOrNull()
+                                ?: java.math.BigDecimal.ZERO,
                             currency = currency,
                         )
                     )

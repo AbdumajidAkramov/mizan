@@ -25,15 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.addtransaction.domain.model.Account
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
+import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumAccountSelector
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCategoryPicker
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.SubcategoryPicker
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 

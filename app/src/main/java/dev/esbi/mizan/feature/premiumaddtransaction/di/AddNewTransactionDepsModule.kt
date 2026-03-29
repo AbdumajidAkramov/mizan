@@ -5,23 +5,23 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
 import dev.esbi.mizan.di.ScreenScope
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStoreImpl
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionAccountSelectorExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionAmountInputExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCalculatorExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCategorySelectorExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionConfirmExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionCurrencyExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionLoadExecutor
 import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionPadExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.executors.AddNewTransactionTemplatesExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStoreImpl
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionAccountSelectorExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionAmountInputExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionCalculatorExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionCategorySelectorExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionConfirmExecutor
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors.AddNewTransactionTemplatesExecutor
 
 @Module
 internal interface AddNewTransactionDepsModule {

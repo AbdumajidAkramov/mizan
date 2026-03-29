@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.dashboard.domain.model.WeeklySpendingPoint
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.WeeklySpendingPoint
 import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Purple

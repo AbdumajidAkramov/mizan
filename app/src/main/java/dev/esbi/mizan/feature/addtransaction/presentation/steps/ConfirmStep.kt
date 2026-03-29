@@ -39,11 +39,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.addtransaction.presentation.dialog.PremiumDatePickerDialog
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import dev.esbi.mizan.utils.annotatedString
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -103,19 +104,19 @@ internal fun ConfirmStep(
         TransactionType.EXPENSE -> Triple(
             Color(0xFFF5576C).copy(alpha = 0.1f), // Red tint
             Color(0xFFF5576C), // Red
-            IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_up)
+            IconValue(Icons.ic_arrow_up)
         )
 
         TransactionType.INCOME -> Triple(
             Color(0xFF4FACFE).copy(alpha = 0.1f), // Blue tint
             Color(0xFF4FACFE), // Blue
-            IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_down)
+            IconValue(Icons.ic_arrow_down)
         )
 
         TransactionType.TRANSFER -> Triple(
             Color(0xFF10B981).copy(alpha = 0.1f), // Emerald tint
             Color(0xFF10B981), // Emerald
-            IconValue(dev.esbi.mizan.ui.utils.Icons.ic_swap_horizontal)
+            IconValue(Icons.ic_swap_horizontal)
         )
     }
 
@@ -230,7 +231,7 @@ internal fun ConfirmStep(
                         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
                     ) {
                         MizanIcon(
-                            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_calendar_month),
+                            icon = IconValue(Icons.ic_calendar_month),
                             tint = MizanTheme.premium.text.tertiary,
                             modifier = Modifier.size(20.dp)
                         )
@@ -269,7 +270,7 @@ internal fun ConfirmStep(
                         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
                     ) {
                         MizanIcon(
-                            icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_file),
+                            icon = IconValue(Icons.ic_file),
                             tint = MizanTheme.premium.text.tertiary,
                             modifier = Modifier.size(20.dp)
                         )

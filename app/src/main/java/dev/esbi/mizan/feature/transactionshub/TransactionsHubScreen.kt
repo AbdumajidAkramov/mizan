@@ -5,8 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.feature.transactionshub.ui.TransactionsHubContent
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 
 /**
  * TransactionsHub screen composable

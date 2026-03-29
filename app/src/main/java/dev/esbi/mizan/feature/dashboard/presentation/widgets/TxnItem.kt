@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
-import dev.esbi.mizan.feature.dashboard.domain.model.TransactionType
+import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange
@@ -47,10 +47,8 @@ fun TxnItem(txn: Transaction) {
         "entertainment" to Pink,
         "bills" to Cyan
     )
-    val col = catColors[txn.category.lowercase()] ?: Purple
-    val emoji = when (txn.category.lowercase()) {
-        "food" -> "🍽️"; "transport" -> "🚗"; "shopping" -> "🛍️"; "income" -> "💰"; "entertainment" -> "🎬"; "bills" -> "📄"; else -> "💳"
-    }
+    val col = Purple
+
     PremiumCard {
         Row(
             Modifier
@@ -64,12 +62,12 @@ fun TxnItem(txn: Transaction) {
                     .clip(RoundedCornerShape(12.dp))
                     .background(col.copy(0.2f)),
                 Alignment.Center
-            ) { Text(emoji, fontSize = 20.sp) }
+            ) { Text("😀", fontSize = 20.sp) }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        txn.description,
+                        text = txn.description.orEmpty(),
                         fontWeight = FontWeight.Medium,
                         color = MizanTheme.premium.text.primary,
                         maxLines = 1,
@@ -93,7 +91,7 @@ fun TxnItem(txn: Transaction) {
                     color = if (isInc) MizanTheme.premium.colors.success else MizanTheme.premium.colors.error
                 )
                 Text(
-                    txn.categoryLabel,
+                    txn.categoryId.toString(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MizanTheme.premium.text.muted
                 )

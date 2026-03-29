@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -71,7 +70,7 @@ fun PremiumSubcategorySelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_left),
+                    painter = painterResource(id = dev.esbi.mizan.ui.utils.Icons.ic_chevron_left),
                     contentDescription = "Back",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(20.dp)

@@ -40,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.formatMizanAmount
@@ -97,7 +96,7 @@ fun ConfirmTransactionContent(
 
             // Date Selector Card
             ActionCard(
-                icon = R.drawable.ic_calendar_month,
+                icon = Icons.ic_calendar_month,
                 text = formatDate(state.date),
                 onClick = onDateClick
             )
@@ -106,7 +105,7 @@ fun ConfirmTransactionContent(
 
             // Time Selector Card
             ActionCard(
-                icon = R.drawable.outline_access_time_24,
+                icon = Icons.outline_access_time_24,
                 text = formatTime(state.date),
                 onClick = onTimeClick
             )
@@ -202,9 +201,9 @@ private fun ReceiptCard(
                     Icon(
                         painter = painterResource(
                             id = when (state.transactionType) {
-                                Transaction.Type.INCOME -> R.drawable.ic_trend_up
-                                Transaction.Type.EXPENSE -> R.drawable.ic_down_trend
-                                Transaction.Type.TRANSFER -> R.drawable.ic_swap_horizontal
+                                Transaction.Type.INCOME -> Icons.ic_trend_up
+                                Transaction.Type.EXPENSE -> Icons.ic_down_trend
+                                Transaction.Type.TRANSFER -> Icons.ic_swap_horizontal
                             }
                         ),
                         contentDescription = null,
@@ -271,7 +270,7 @@ private fun ReceiptCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_right),
+                        painter = painterResource(id = Icons.ic_arrow_right),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary,
                         modifier = Modifier.size(16.dp)
@@ -445,7 +444,7 @@ internal fun DeleteButton(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_delete),
+                painter = painterResource(id = Icons.ic_delete),
                 contentDescription = "Delete",
                 tint = Color(0xFFF5576C),
                 modifier = Modifier.size(20.dp)

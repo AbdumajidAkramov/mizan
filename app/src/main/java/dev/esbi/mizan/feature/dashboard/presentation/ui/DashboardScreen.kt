@@ -25,9 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
-import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
@@ -44,6 +42,8 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumNetW
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumSpendingChart
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumTopCategories
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.SpendingPoint
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.DashboardSummary
+import dev.esbi.mizan.presentation.feature.dashboard.presentation.store.DashboardStore
 import dev.esbi.mizan.ui.animation.AnimSection
 import dev.esbi.mizan.ui.components.ErrorState
 

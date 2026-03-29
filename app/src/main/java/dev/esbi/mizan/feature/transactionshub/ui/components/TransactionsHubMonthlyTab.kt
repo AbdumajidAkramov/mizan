@@ -34,12 +34,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 /**
  * Monthly Tab for TransactionsHub
@@ -143,7 +143,7 @@ private fun WeekSection(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (week.isExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+                        id = if (week.isExpanded) Icons.ic_chevron_down else Icons.ic_chevron_right
                     ),
                     contentDescription = if (week.isExpanded) "Collapse" else "Expand",
                     tint = MizanTheme.premium.text.tertiary,
@@ -239,8 +239,11 @@ private fun WeekTransactionItem(
 
     val categoryColor = remember(category) {
         category?.color?.let {
-            try { Color(android.graphics.Color.parseColor(it)) }
-            catch (e: Exception) { Color(0xFFFF6B9D) }
+            try {
+                Color(android.graphics.Color.parseColor(it))
+            } catch (e: Exception) {
+                Color(0xFFFF6B9D)
+            }
         } ?: Color(0xFFFF6B9D)
     }
 
@@ -309,21 +312,37 @@ private fun WeekTransactionItem(
 
 private fun formatCompactAmountMonthly(amount: Double): String {
     return when {
-        amount >= 1000000 -> "${(amount / 1000000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}M"
-        amount >= 1000 -> "${(amount / 1000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}k"
+        amount >= 1000000 -> "${
+            (amount / 1000000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }M"
+
+        amount >= 1000 -> "${
+            (amount / 1000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }k"
+
         else -> amount.toLong().toString()
     }
 }
 
 private fun getCategoryIconMonthly(iconName: String?): Int {
     return when (iconName?.lowercase()) {
-        "food", "food-dining", "restaurant", "utensils" -> R.drawable.ic_utensils
-        "transport", "transportation", "car" -> R.drawable.ic_car
-        "shopping", "shop", "bag" -> R.drawable.ic_shopping_bag
-        "bills", "bills-utilities", "home" -> R.drawable.ic_home
-        "entertainment", "coffee" -> R.drawable.ic_coffee
-        "health", "healthcare" -> R.drawable.ic_heart
-        "income", "salary", "trending-up" -> R.drawable.ic_trending_up
-        else -> R.drawable.ic_wallet
+        "food", "food-dining", "restaurant", "utensils" -> Icons.ic_utensils
+        "transport", "transportation", "car" -> Icons.ic_car
+        "shopping", "shop", "bag" -> Icons.ic_shopping_bag
+        "bills", "bills-utilities", "home" -> Icons.ic_home
+        "entertainment", "coffee" -> Icons.ic_coffee
+        "health", "healthcare" -> Icons.ic_heart
+        "income", "salary", "trending-up" -> Icons.ic_trending_up
+        else -> Icons.ic_wallet
     }
 }

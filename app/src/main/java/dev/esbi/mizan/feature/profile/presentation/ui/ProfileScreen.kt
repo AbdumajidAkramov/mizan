@@ -35,10 +35,10 @@ import dev.esbi.mizan.domain.model.profile.SettingIcon
 import dev.esbi.mizan.domain.model.profile.SettingItem
 import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
-import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.ProfileHeaderCard
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.SettingsSection
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.StatsGrid
+import dev.esbi.mizan.presentation.feature.profile.presentation.store.ProfileStore
 import dev.esbi.mizan.ui.animation.FadeInUpAnimation
 import dev.esbi.mizan.ui.animation.StaggeredFadeInUp
 import dev.esbi.mizan.ui.components.ErrorState
@@ -49,6 +49,7 @@ import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.theme.PremiumColors
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.ui.utils.Strings
 
 @Composable
 fun ProfileScreen(
@@ -82,12 +83,15 @@ fun ProfileScreen(
                         SettingAction.BUDGET_MANAGEMENT -> {
                             onNavigateToBudgetManagementScreen()
                         }
+
                         SettingAction.FINANCIAL_GOALS -> {
                             onNavigateToFinancialGoalsScreen()
                         }
+
                         SettingAction.ACCOUNT_GROUP_MANAGEMENT -> {
                             onNavigateToAccountGroupsScreen()
                         }
+
                         else -> Unit
                     }
                 }
@@ -141,7 +145,7 @@ internal fun ProfileContent(
                 ) {
                     // Header
                     Text(
-                        text = stringResource(R.string.profile_title),
+                        text = stringResource(Strings.profile_title),
                         style = MizanTheme.typography.headingXl,
                         color = MizanTheme.premium.text.primary,
                     )
@@ -192,7 +196,7 @@ internal fun ProfileContent(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = stringResource(R.string.profile_logout),
+                                    text = stringResource(Strings.profile_logout),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = MizanTheme.premium.colors.primary
@@ -209,13 +213,13 @@ internal fun ProfileContent(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = stringResource(R.string.profile_app_version),
+                                text = stringResource(Strings.profile_app_version),
                                 fontSize = 12.sp,
                                 color = PremiumColors.TextMuted
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = stringResource(R.string.profile_copyright),
+                                text = stringResource(Strings.profile_copyright),
                                 fontSize = 11.sp,
                                 color = PremiumColors.TextMuted
                             )
@@ -249,26 +253,26 @@ internal fun LoadingContent(modifier: Modifier = Modifier) {
 
 internal fun getIconResource(icon: SettingIcon): Int {
     return when (icon) {
-        SettingIcon.BUDGET_MANAGEMENT -> R.drawable.ic_dollar
-        SettingIcon.FINANCIAL_GOALS -> R.drawable.ic_trend_up
-        SettingIcon.USER -> R.drawable.ic_profile
-        SettingIcon.MAIL -> R.drawable.ic_mail
-        SettingIcon.PHONE -> R.drawable.ic_phone
-        SettingIcon.BELL -> R.drawable.ic_bell
-        SettingIcon.PALETTE -> R.drawable.ic_palette
-        SettingIcon.GLOBE -> R.drawable.ic_globe
-        SettingIcon.LOCK -> R.drawable.ic_lock
-        SettingIcon.SHIELD -> R.drawable.ic_shield
-        SettingIcon.DOWNLOAD -> R.drawable.ic_download
-        SettingIcon.FILE -> R.drawable.ic_file
-        SettingIcon.HELP -> R.drawable.ic_help
-        SettingIcon.SHARE -> R.drawable.ic_share
-        SettingIcon.STAR -> R.drawable.ic_star
-        SettingIcon.DOLLAR -> R.drawable.ic_dollar
-        SettingIcon.TRENDING -> R.drawable.ic_trend_up
-        SettingIcon.PRIVACY_POLICY -> R.drawable.ic_file
-        SettingIcon.TERMS_AND_SERVICE -> R.drawable.ic_file
-        SettingIcon.WALLET -> R.drawable.ic_wallet
+        SettingIcon.BUDGET_MANAGEMENT -> Icons.ic_dollar
+        SettingIcon.FINANCIAL_GOALS -> Icons.ic_trend_up
+        SettingIcon.USER -> Icons.ic_profile
+        SettingIcon.MAIL -> Icons.ic_mail
+        SettingIcon.PHONE -> Icons.ic_phone
+        SettingIcon.BELL -> Icons.ic_bell
+        SettingIcon.PALETTE -> Icons.ic_palette
+        SettingIcon.GLOBE -> Icons.ic_globe
+        SettingIcon.LOCK -> Icons.ic_lock
+        SettingIcon.SHIELD -> Icons.ic_shield
+        SettingIcon.DOWNLOAD -> Icons.ic_download
+        SettingIcon.FILE -> Icons.ic_file
+        SettingIcon.HELP -> Icons.ic_help
+        SettingIcon.SHARE -> Icons.ic_share
+        SettingIcon.STAR -> Icons.ic_star
+        SettingIcon.DOLLAR -> Icons.ic_dollar
+        SettingIcon.TRENDING -> Icons.ic_trend_up
+        SettingIcon.PRIVACY_POLICY -> Icons.ic_file
+        SettingIcon.TERMS_AND_SERVICE -> Icons.ic_file
+        SettingIcon.WALLET -> Icons.ic_wallet
     }
 }
 

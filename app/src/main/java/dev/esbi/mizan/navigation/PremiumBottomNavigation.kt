@@ -52,6 +52,7 @@ import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
+import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun PremiumBottomNavigation(
@@ -270,7 +271,7 @@ private fun PremiumFab(
                 )
         ) {
             dev.esbi.mizan.ui.kit.icon.MizanIcon(
-                icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_add),
+                icon = IconValue(Icons.ic_add),
                 contentDescription = "Add Expense",
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)

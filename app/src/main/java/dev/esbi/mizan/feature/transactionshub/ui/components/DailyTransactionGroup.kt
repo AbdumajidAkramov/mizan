@@ -25,12 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -69,7 +69,9 @@ fun DailyTransactionGroup(
             Text(
                 text = formatAmount(group.dayTotal, numberFormat),
                 style = MizanTheme.typography.bodySm,
-                color = if (group.dayTotal >= 0) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
+                color = if (group.dayTotal >= 0) MizanTheme.premium.colors.emerald else Color(
+                    0xFFF5576C
+                ),
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -106,9 +108,12 @@ private fun TransactionItem(
 
     // Category color - use a default pink if not found
     val categoryColor = remember(category) {
-        category?.color?.let { 
-            try { Color(android.graphics.Color.parseColor(it)) } 
-            catch (e: Exception) { Color(0xFFFF6B9D) }
+        category?.color?.let {
+            try {
+                Color(android.graphics.Color.parseColor(it))
+            } catch (e: Exception) {
+                Color(0xFFFF6B9D)
+            }
         } ?: Color(0xFFFF6B9D)
     }
 
@@ -197,13 +202,13 @@ private fun formatAmount(amount: Double, numberFormat: NumberFormat): String {
 
 private fun getCategoryIcon(iconName: String?): Int {
     return when (iconName?.lowercase()) {
-        "food", "food-dining", "restaurant", "utensils" -> R.drawable.ic_utensils
-        "transport", "transportation", "car" -> R.drawable.ic_car
-        "shopping", "shop", "bag" -> R.drawable.ic_shopping_bag
-        "bills", "bills-utilities", "home" -> R.drawable.ic_home
-        "entertainment", "coffee" -> R.drawable.ic_coffee
-        "health", "healthcare" -> R.drawable.ic_heart
-        "income", "salary", "trending-up" -> R.drawable.ic_trending_up
-        else -> R.drawable.ic_wallet
+        "food", "food-dining", "restaurant", "utensils" -> Icons.ic_utensils
+        "transport", "transportation", "car" -> Icons.ic_car
+        "shopping", "shop", "bag" -> Icons.ic_shopping_bag
+        "bills", "bills-utilities", "home" -> Icons.ic_home
+        "entertainment", "coffee" -> Icons.ic_coffee
+        "health", "healthcare" -> Icons.ic_heart
+        "income", "salary", "trending-up" -> Icons.ic_trending_up
+        else -> Icons.ic_wallet
     }
 }

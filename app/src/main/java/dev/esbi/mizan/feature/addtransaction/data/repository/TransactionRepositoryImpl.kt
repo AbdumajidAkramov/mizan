@@ -1,3 +1,4 @@
+/*
 package dev.esbi.mizan.feature.addtransaction.data.repository
 
 import android.util.Log
@@ -6,18 +7,20 @@ import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
 import dev.esbi.mizan.data.local.dao.TransactionsDao
-import dev.esbi.mizan.feature.addtransaction.domain.model.ReceiptScanResult
-import dev.esbi.mizan.feature.addtransaction.domain.model.TransactionData
-import dev.esbi.mizan.feature.addtransaction.domain.model.VoiceRecognitionResult
-import dev.esbi.mizan.feature.addtransaction.domain.repository.TransactionRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.ReceiptScanResult
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.TransactionData
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.VoiceRecognitionResult
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.TransactionRepository
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
 
+*/
 /**
  * Implementation of TransactionRepository
  * Following Clean Architecture principles
- */
+ *//*
+
 @Singleton
 class TransactionRepositoryImpl @Inject constructor(
     private val transactionsDao: TransactionsDao
@@ -56,7 +59,8 @@ class TransactionRepositoryImpl @Inject constructor(
 
     override suspend fun saveTransaction(transactionData: TransactionData): Result<Unit> {
         return Result.failure(Exception("Not implemented"))
-        /*
+        */
+/*
                 return try {
                     Log.d(tag, "Saving transaction: $transactionData")
 
@@ -81,7 +85,8 @@ class TransactionRepositoryImpl @Inject constructor(
                     Log.e(tag, "Failed to save transaction", e)
                     Result.failure(e)
                 }
-        */
+        *//*
+
     }
 
     override suspend fun startVoiceRecognition(): Result<VoiceRecognitionResult> {
@@ -214,3 +219,4 @@ class TransactionRepositoryImpl @Inject constructor(
         return 0.0
     }
 }
+*/

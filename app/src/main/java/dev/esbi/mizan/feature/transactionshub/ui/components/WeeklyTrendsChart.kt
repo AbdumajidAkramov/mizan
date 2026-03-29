@@ -10,26 +10,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 /**
@@ -102,7 +98,8 @@ fun WeeklyTrendsChart(
                 }
 
                 // Calculate bar positions
-                val totalBarsWidth = weeklySummaries.size * (barWidth.toPx() * 2 + barSpacing.toPx())
+                val totalBarsWidth =
+                    weeklySummaries.size * (barWidth.toPx() * 2 + barSpacing.toPx())
                 val startX = (canvasWidth - totalBarsWidth) / 2
                 val barWidthPx = barWidth.toPx()
                 val barSpacingPx = barSpacing.toPx()
@@ -133,7 +130,10 @@ fun WeeklyTrendsChart(
                     if (expenseHeight > 0) {
                         drawRoundRect(
                             color = expenseColor,
-                            topLeft = Offset(groupX + barWidthPx + barSpacingPx, chartBottom - expenseHeight),
+                            topLeft = Offset(
+                                groupX + barWidthPx + barSpacingPx,
+                                chartBottom - expenseHeight
+                            ),
                             size = Size(barWidthPx, expenseHeight),
                             cornerRadius = cornerRadius
                         )

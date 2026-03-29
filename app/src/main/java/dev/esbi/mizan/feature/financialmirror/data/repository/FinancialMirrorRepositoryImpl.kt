@@ -3,18 +3,18 @@ package dev.esbi.mizan.feature.financialmirror.data.repository
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.feature.financialmirror.data.mapper.toDomain
 import dev.esbi.mizan.feature.financialmirror.data.mapper.toEntity
-import dev.esbi.mizan.feature.financialmirror.domain.model.AIRecommendation
-import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialMirrorSummary
-import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialProjection
-import dev.esbi.mizan.feature.financialmirror.domain.model.InvestmentOpportunity
-import dev.esbi.mizan.feature.financialmirror.domain.model.InvestmentType
-import dev.esbi.mizan.feature.financialmirror.domain.model.ProjectionData
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskAnalysis
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskFactor
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskStatus
-import dev.esbi.mizan.feature.financialmirror.domain.model.ScenarioIconType
-import dev.esbi.mizan.feature.financialmirror.domain.model.TimeMachineScenario
-import dev.esbi.mizan.feature.financialmirror.domain.repository.FinancialMirrorRepository
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.AIRecommendation
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.FinancialMirrorSummary
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.FinancialProjection
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentOpportunity
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentType
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ProjectionData
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskAnalysis
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskFactor
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskStatus
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ScenarioIconType
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMachineScenario
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.repository.FinancialMirrorRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class FinancialMirrorRepositoryImpl @Inject constructor(
             dao.observeScenarios(),
             dao.observeOpportunities()
         ) { projections, riskFactors, scenarios, opportunities ->
-            
+
             val projectionData = if (projections.isEmpty()) {
                 generateMockProjectionData()
             } else {
@@ -45,7 +45,7 @@ class FinancialMirrorRepositoryImpl @Inject constructor(
                     projectionYears = 5
                 )
             }
-            
+
             val riskAnalysis = if (riskFactors.isEmpty()) {
                 generateMockRiskAnalysis()
             } else {
@@ -61,19 +61,19 @@ class FinancialMirrorRepositoryImpl @Inject constructor(
                     }
                 )
             }
-            
+
             val timeMachineScenarios = if (scenarios.isEmpty()) {
                 generateMockScenarios()
             } else {
                 scenarios.map { it.toDomain() }
             }
-            
+
             val investmentOpportunities = if (opportunities.isEmpty()) {
                 generateMockOpportunities()
             } else {
                 opportunities.map { it.toDomain() }
             }
-            
+
             FinancialMirrorSummary(
                 projectionData = projectionData,
                 riskAnalysis = riskAnalysis,
@@ -89,12 +89,12 @@ class FinancialMirrorRepositoryImpl @Inject constructor(
         dao.clearRiskFactors()
         dao.clearScenarios()
         dao.clearOpportunities()
-        
+
         val projections = generateMockProjectionData().projections.map { it.toEntity() }
         val riskFactors = generateMockRiskAnalysis().riskFactors.map { it.toEntity() }
         val scenarios = generateMockScenarios().map { it.toEntity() }
         val opportunities = generateMockOpportunities().map { it.toEntity() }
-        
+
         dao.insertProjections(projections)
         dao.insertRiskFactors(riskFactors)
         dao.insertScenarios(scenarios)
@@ -143,9 +143,9 @@ class FinancialMirrorRepositoryImpl @Inject constructor(
                 description = "Well protected"
             )
         )
-        
+
         val avgScore = riskFactors.map { it.score }.average().toInt()
-        
+
         return RiskAnalysis(
             riskFactors = riskFactors,
             overallScore = avgScore,

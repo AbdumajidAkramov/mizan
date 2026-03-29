@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStoreFactory
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStoreFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

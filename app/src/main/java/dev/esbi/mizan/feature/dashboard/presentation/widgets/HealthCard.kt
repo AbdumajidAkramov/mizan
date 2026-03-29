@@ -26,16 +26,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.ui.utils.Strings
 
 @Composable
 fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
@@ -60,7 +60,7 @@ fun HealthCard(score: Int, trend: Int, modifier: Modifier = Modifier) {
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = stringResource(R.string.dashboard_financial_health),
+                        text = stringResource(Strings.dashboard_financial_health),
                         style = MizanTheme.typography.headingMd,
                         color = MizanTheme.premium.text.primary
                     )

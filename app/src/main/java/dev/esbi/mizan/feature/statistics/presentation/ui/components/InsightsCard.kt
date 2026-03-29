@@ -20,12 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.statistics.domain.model.Insight
 import dev.esbi.mizan.feature.statistics.domain.model.InsightType
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.ui.utils.Strings
 
 @Composable
 fun InsightsCard(
@@ -49,7 +49,7 @@ fun InsightsCard(
                     fontSize = 20.sp
                 )
                 Text(
-                    text = stringResource(R.string.statistics_insights),
+                    text = stringResource(Strings.statistics_insights),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = PremiumColors.TextPrimary
@@ -109,9 +109,11 @@ private fun getInsightGradient(type: InsightType): Brush {
         InsightType.POSITIVE -> Brush.verticalGradient(
             colors = listOf(Color(0xFF667EEA), Color(0xFF764BA2))
         )
+
         InsightType.WARNING -> Brush.verticalGradient(
             colors = listOf(Color(0xFFF5576C), Color(0xFFFFA34D))
         )
+
         InsightType.INFO -> Brush.verticalGradient(
             colors = listOf(Color(0xFF00F2FE), Color(0xFF4FACFE))
         )

@@ -44,10 +44,10 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.newtransaction.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionDeniedScreen
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.PermissionHandler
+import dev.esbi.mizan.feature.newtransaction.store.state.CameraInputState
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.store.AddTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.util.concurrent.Executors
@@ -163,10 +163,10 @@ internal fun CameraInputStep(
                     onQRCodeDetected = { qrCodeData ->
                         // Immediately notify the store about QR code detection
                         onQRCodeScanned(qrCodeData)
-                        
+
                         // Also provide scan result for backward compatibility
                         onScanResult(qrCodeData, 1.0f)
-                        
+
                         // Extract amount from QR code data
                         extractAmountFromText(qrCodeData)?.let { amount ->
                             onAmountExtracted(amount)
@@ -198,9 +198,9 @@ internal fun CameraInputStep(
                                 style = MizanTheme.typography.labelLg,
                                 color = MizanTheme.premium.colors.success
                             )
-                            
+
                             Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
-                            
+
                             Text(
                                 text = scannedText,
                                 style = MizanTheme.typography.bodySm,

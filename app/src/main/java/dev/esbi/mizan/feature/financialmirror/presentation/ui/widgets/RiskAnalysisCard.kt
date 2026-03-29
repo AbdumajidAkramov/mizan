@@ -19,11 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskAnalysis
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskStatus
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskAnalysis
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskStatus
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 

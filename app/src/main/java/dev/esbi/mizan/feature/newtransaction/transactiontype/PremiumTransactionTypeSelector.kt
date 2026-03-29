@@ -37,8 +37,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 data class TransactionTypeInfo(
     val type: TransactionType,
@@ -63,7 +64,7 @@ fun PremiumTransactionTypeSelector(
             type = TransactionType.EXPENSE,
             label = "Expense",
             description = "Money spent",
-            iconRes = R.drawable.ic_trend_up,
+            iconRes = Icons.ic_trend_up,
             color = Color(0xFFF5576C),
             bgColor = Color(0x1AF5576C) // 10% opacity
         ),
@@ -71,7 +72,7 @@ fun PremiumTransactionTypeSelector(
             type = TransactionType.INCOME,
             label = "Income",
             description = "Money received",
-            iconRes = R.drawable.ic_down_trend,
+            iconRes = Icons.ic_down_trend,
             color = Color(0xFF4FACFE),
             bgColor = Color(0x1A4FACFE) // 10% opacity
         ),
@@ -79,7 +80,7 @@ fun PremiumTransactionTypeSelector(
             type = TransactionType.TRANSFER,
             label = "Transfer",
             description = "Move between accounts",
-            iconRes = R.drawable.ic_swap_horizontal,
+            iconRes = Icons.ic_swap_horizontal,
             color = Color(0xFF10B981),
             bgColor = Color(0x1A10B981) // 10% opacity
         )
@@ -239,7 +240,7 @@ fun TransactionTypeItem(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_chevron_right),
+                    painter = painterResource(id = Icons.ic_chevron_right),
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(14.dp)

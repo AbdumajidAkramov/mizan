@@ -22,16 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.accountselector.AccountSelectionContentSimple
+import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectionSheet
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeInfo
 import dev.esbi.mizan.feature.newtransaction.transactiontype.TransactionTypeItem
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -108,7 +107,7 @@ fun AddNewTransactionPad(
                             type = TransactionType.EXPENSE,
                             label = "Expense",
                             description = "Money spent",
-                            iconRes = R.drawable.ic_trend_up,
+                            iconRes = Icons.ic_trend_up,
                             color = Color(0xFFF5576C),
                             bgColor = Color(0x1AF5576C) // 10% opacity
                         ),
@@ -116,7 +115,7 @@ fun AddNewTransactionPad(
                             type = TransactionType.INCOME,
                             label = "Income",
                             description = "Money received",
-                            iconRes = R.drawable.ic_down_trend,
+                            iconRes = Icons.ic_down_trend,
                             color = Color(0xFF4FACFE),
                             bgColor = Color(0x1A4FACFE) // 10% opacity
                         ),
@@ -124,7 +123,7 @@ fun AddNewTransactionPad(
                             type = TransactionType.TRANSFER,
                             label = "Transfer",
                             description = "Move between accounts",
-                            iconRes = R.drawable.ic_swap_horizontal,
+                            iconRes = Icons.ic_swap_horizontal,
                             color = Color(0xFF10B981),
                             bgColor = Color(0x1A10B981) // 10% opacity
                         )

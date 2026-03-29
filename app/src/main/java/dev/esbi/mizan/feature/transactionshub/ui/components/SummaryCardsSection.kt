@@ -23,8 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -47,7 +48,7 @@ fun SummaryCardsSection(
             label = "INCOME",
             amount = summary.totalIncome,
             color = MizanTheme.premium.colors.emerald,
-            iconResId = R.drawable.ic_trending_up,
+            iconResId = Icons.ic_trending_up,
             modifier = Modifier.weight(1f)
         )
 
@@ -56,7 +57,7 @@ fun SummaryCardsSection(
             label = "EXPENSE",
             amount = summary.totalExpense,
             color = Color(0xFFF5576C), // Red/Pink
-            iconResId = R.drawable.ic_trending_down,
+            iconResId = Icons.ic_trending_down,
             modifier = Modifier.weight(1f)
         )
 
@@ -64,8 +65,10 @@ fun SummaryCardsSection(
         SummaryCard(
             label = "TOTAL",
             amount = summary.balance,
-            color = if (summary.balance >= 0) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
-            iconResId = R.drawable.ic_wallet,
+            color = if (summary.balance >= 0) MizanTheme.premium.colors.emerald else Color(
+                0xFFF5576C
+            ),
+            iconResId = Icons.ic_wallet,
             modifier = Modifier.weight(1f)
         )
     }

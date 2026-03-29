@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.feature.subscriptions.presentation.SubscriptionsViewModel
-import dev.esbi.mizan.feature.subscriptions.presentation.store.SubscriptionsStoreFactory
+import dev.esbi.mizan.presentation.feature.subscriptions.presentation.store.SubscriptionsStoreFactory
 
 @Module
 object SubscriptionsModule {

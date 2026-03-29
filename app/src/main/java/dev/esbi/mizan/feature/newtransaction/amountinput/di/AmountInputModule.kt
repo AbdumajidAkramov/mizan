@@ -4,13 +4,10 @@ import android.content.Context
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dagger.Module
 import dagger.Provides
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
-import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
-import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.feature.newtransaction.amountinput.AmountInputViewModel
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.CameraScannerHandler
 import dev.esbi.mizan.feature.newtransaction.amountinput.executor.ManualInputHandler
@@ -18,7 +15,10 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.executor.NavigationHand
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputObserver
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputStoreFactory
 import dev.esbi.mizan.feature.newtransaction.store.executors.NewTransactionExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStoreFactory
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.TemplateRepository
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStoreFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Provider
 

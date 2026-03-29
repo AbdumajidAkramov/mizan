@@ -14,8 +14,7 @@ import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserStat
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryList
 import dev.esbi.mizan.feature.newtransaction.categorychooser.ErrorView
 import dev.esbi.mizan.feature.newtransaction.categorychooser.LoadingView
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

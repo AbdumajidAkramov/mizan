@@ -3,7 +3,7 @@ package dev.esbi.mizan.feature.newtransaction.categoryselect.di
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dagger.Module
 import dagger.Provides
-import dev.esbi.mizan.di.MainDispatcher
+import dev.esbi.mizan.presentation.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.feature.newtransaction.categoryselect.CategorySelectViewModel
 import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectExecutor

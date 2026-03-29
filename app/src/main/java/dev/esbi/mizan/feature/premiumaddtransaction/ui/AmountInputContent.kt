@@ -39,7 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.ui.QuickTemplate
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -90,7 +90,7 @@ fun AmountInputHeader(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_wand_sparkles),
+                        painter = painterResource(id = Icons.ic_wand_sparkles),
                         contentDescription = "Templates",
                         tint = if (showTemplates) Color.White
                         else MizanTheme.premium.text.secondary,
@@ -191,22 +191,6 @@ private fun TemplateCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.padding(bottom = MizanTheme.premium.spacing.sm)
             ) {
-                // Type Icon
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(template.typeColor.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = template.iconRes),
-                        contentDescription = null,
-                        tint = template.typeColor,
-                        modifier = Modifier.size(14.dp)
-                    )
-                }
-
                 Text(
                     text = template.name,
                     style = MizanTheme.typography.bodySm,
@@ -282,7 +266,7 @@ fun TransactionTypeChip(
         )
         // Dropdown chevron indicator
         Icon(
-            painter = painterResource(id = R.drawable.ic_chevron_down),
+            painter = painterResource(id = Icons.ic_chevron_down),
             contentDescription = null,
             tint = color,
             modifier = Modifier.size(14.dp)
@@ -394,7 +378,7 @@ fun AccountChip(
     ) {
         if (!isPlaceholder) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_wallet),
+                painter = painterResource(id = Icons.ic_wallet),
                 contentDescription = null,
                 tint = MizanTheme.premium.colors.emerald,
                 modifier = Modifier.size(14.dp)
@@ -411,6 +395,7 @@ fun AccountChip(
         )
     }
 }
+/*
 
 // Data class for quick templates
 data class QuickTemplate(
@@ -423,3 +408,4 @@ data class QuickTemplate(
     val typeColor: Color,
     val iconRes: Int
 )
+*/

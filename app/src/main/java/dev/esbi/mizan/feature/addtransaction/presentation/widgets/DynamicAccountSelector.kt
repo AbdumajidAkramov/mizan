@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,9 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.addtransaction.domain.model.Account
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -43,13 +40,13 @@ fun DynamicAccountSelector(
             color = MizanTheme.premium.text.tertiary,
             modifier = Modifier.padding(bottom = MizanTheme.premium.spacing.md)
         )
-        
+
         val availableAccounts = if (excludeAccount != null) {
             accounts.filter { it.id != excludeAccount.id }
         } else {
             accounts
         }
-        
+
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -90,15 +87,6 @@ private fun AccountItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Account Icon
-            MizanIcon(
-                icon = IconValue(getAccountIconResource(account.iconName)),
-                modifier = Modifier.size(24.dp),
-                tint = if (isSelected) Color.White else MizanTheme.premium.colors.primary
-            )
-            
-            Spacer(Modifier.width(12.dp))
-            
             // Account Details
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -107,27 +95,17 @@ private fun AccountItem(
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                     fontSize = 14.sp
                 )
-                
+
                 Spacer(Modifier.size(2.dp))
-                
+
                 Text(
-                    text = formatCurrency(account.currentBalance, account.currency),
+                    text = formatCurrency(account.balance, account.currency.name),
                     style = MizanTheme.typography.bodyXs,
                     color = if (isSelected) Color.White.copy(alpha = 0.8f) else MizanTheme.premium.text.tertiary,
                     fontSize = 12.sp
                 )
             }
         }
-    }
-}
-
-private fun getAccountIconResource(iconName: String): String {
-    return when (iconName.lowercase()) {
-        "wallet" -> "account_balance_wallet"
-        "credit_card" -> "credit_card"
-        "account_balance" -> "account_balance"
-        "savings" -> "savings"
-        else -> "account_balance"
     }
 }
 

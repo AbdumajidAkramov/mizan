@@ -7,9 +7,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import dev.esbi.mizan.feature.financialmirror.presentation.FinancialMirrorViewModel
-import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStore
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.widgets.FinancialMirrorScrollContent
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.widgets.LoadingContent
+import dev.esbi.mizan.presentation.feature.financialmirror.presentation.store.FinancialMirrorStore
 import dev.esbi.mizan.ui.components.ErrorState
 
 internal const val ANIM_DELAY_MS = 50

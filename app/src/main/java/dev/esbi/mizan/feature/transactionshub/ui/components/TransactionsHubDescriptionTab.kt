@@ -35,12 +35,12 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -143,7 +143,7 @@ fun TransactionsHubDescriptionTab(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_list),
+                            painter = painterResource(id = Icons.ic_list),
                             contentDescription = null,
                             tint = MizanTheme.premium.text.secondary,
                             modifier = Modifier.size(14.dp)
@@ -169,7 +169,7 @@ fun TransactionsHubDescriptionTab(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
+                        painter = painterResource(id = Icons.ic_search),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary.copy(alpha = 0.4f),
                         modifier = Modifier.size(48.dp)
@@ -238,7 +238,7 @@ private fun DescriptionSearchBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_search),
+            painter = painterResource(id = Icons.ic_search),
             contentDescription = null,
             tint = MizanTheme.premium.text.tertiary,
             modifier = Modifier.size(20.dp)
@@ -279,7 +279,7 @@ private fun DescriptionSearchBar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_close),
+                    painter = painterResource(id = Icons.ic_close),
                     contentDescription = "Clear",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(16.dp)
@@ -327,7 +327,7 @@ private fun DescriptionGroupCard(
                 // Chevron
                 Icon(
                     painter = painterResource(
-                        id = if (group.isExpanded) R.drawable.ic_chevron_down else R.drawable.ic_chevron_right
+                        id = if (group.isExpanded) Icons.ic_chevron_down else Icons.ic_chevron_right
                     ),
                     contentDescription = null,
                     tint = MizanTheme.premium.text.secondary,
@@ -381,7 +381,7 @@ private fun DescriptionGroupCard(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_calendar),
+                                painter = painterResource(id = Icons.ic_calendar),
                                 contentDescription = null,
                                 tint = MizanTheme.premium.text.tertiary,
                                 modifier = Modifier.size(12.dp)
@@ -406,7 +406,7 @@ private fun DescriptionGroupCard(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_trending_up),
+                                    painter = painterResource(id = Icons.ic_trending_up),
                                     contentDescription = null,
                                     tint = MizanTheme.premium.colors.emerald,
                                     modifier = Modifier.size(12.dp)
@@ -423,7 +423,7 @@ private fun DescriptionGroupCard(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_trending_down),
+                                    painter = painterResource(id = Icons.ic_trending_down),
                                     contentDescription = null,
                                     tint = Color(0xFFF5576C),
                                     modifier = Modifier.size(12.dp)
@@ -442,7 +442,13 @@ private fun DescriptionGroupCard(
             // Right: Total Amount
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "${if (isPositive) "+" else "-"}$${formatDescriptionAmount(kotlin.math.abs(group.netAmount))}",
+                    text = "${if (isPositive) "+" else "-"}$${
+                        formatDescriptionAmount(
+                            kotlin.math.abs(
+                                group.netAmount
+                            )
+                        )
+                    }",
                     style = MizanTheme.typography.headingLg,
                     color = if (isPositive) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
                     fontWeight = FontWeight.Bold
@@ -577,8 +583,24 @@ private fun DescriptionTransactionRow(
 
 private fun formatDescriptionAmount(amount: Double): String {
     return when {
-        amount >= 1000000 -> "${(amount / 1000000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}M"
-        amount >= 10000 -> "${(amount / 1000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}k"
+        amount >= 1000000 -> "${
+            (amount / 1000000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }M"
+
+        amount >= 10000 -> "${
+            (amount / 1000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }k"
+
         amount >= 1000 -> String.format("%,.0f", amount)
         else -> String.format("%.2f", amount)
     }
@@ -586,11 +608,11 @@ private fun formatDescriptionAmount(amount: Double): String {
 
 private fun getCategoryIconDescription(iconName: String?): Int {
     return when (iconName?.lowercase()) {
-        "utensils", "food" -> R.drawable.ic_utensils
-        "car", "transport" -> R.drawable.ic_car
-        "shopping", "bag" -> R.drawable.ic_shopping_bag
-        "coffee" -> R.drawable.ic_coffee
-        "heart", "health" -> R.drawable.ic_heart
-        else -> R.drawable.ic_list
+        "utensils", "food" -> Icons.ic_utensils
+        "car", "transport" -> Icons.ic_car
+        "shopping", "bag" -> Icons.ic_shopping_bag
+        "coffee" -> Icons.ic_coffee
+        "heart", "health" -> Icons.ic_heart
+        else -> Icons.ic_list
     }
 }

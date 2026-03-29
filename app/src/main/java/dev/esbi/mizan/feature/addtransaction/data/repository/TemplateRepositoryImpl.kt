@@ -3,7 +3,7 @@ package dev.esbi.mizan.feature.addtransaction.data.repository
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.domain.model.Template
-import dev.esbi.mizan.feature.addtransaction.domain.repository.TemplateRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.TemplateRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

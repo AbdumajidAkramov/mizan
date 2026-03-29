@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -87,7 +87,7 @@ fun GlobalTimeSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_left),
+                    painter = androidx.compose.ui.res.painterResource(id = Icons.ic_chevron_left),
                     contentDescription = "Previous month",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(18.dp)
@@ -125,7 +125,7 @@ fun GlobalTimeSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_right),
+                    painter = androidx.compose.ui.res.painterResource(id = Icons.ic_chevron_right),
                     contentDescription = "Next month",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(18.dp)

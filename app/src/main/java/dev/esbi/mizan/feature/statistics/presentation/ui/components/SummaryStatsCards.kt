@@ -23,11 +23,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.statistics.domain.model.PeriodComparison
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -79,7 +79,7 @@ fun SummaryStatsCards(
                     }
                     Column {
                         Text(
-                            text = stringResource(R.string.statistics_income),
+                            text = stringResource(Strings.statistics_income),
                             fontSize = 11.sp,
                             color = PremiumColors.TextMuted
                         )
@@ -109,7 +109,7 @@ fun SummaryStatsCards(
                         )
                     )
                     Text(
-                        text = stringResource(R.string.statistics_vs_last_period),
+                        text = stringResource(Strings.statistics_vs_last_period),
                         fontSize = 11.sp,
                         color = PremiumColors.TextMuted
                     )
@@ -152,7 +152,7 @@ fun SummaryStatsCards(
                     }
                     Column {
                         Text(
-                            text = stringResource(R.string.statistics_expenses),
+                            text = stringResource(Strings.statistics_expenses),
                             fontSize = 11.sp,
                             color = PremiumColors.TextMuted
                         )
@@ -182,7 +182,7 @@ fun SummaryStatsCards(
                         )
                     )
                     Text(
-                        text = stringResource(R.string.statistics_vs_last_period),
+                        text = stringResource(Strings.statistics_vs_last_period),
                         fontSize = 11.sp,
                         color = PremiumColors.TextMuted
                     )

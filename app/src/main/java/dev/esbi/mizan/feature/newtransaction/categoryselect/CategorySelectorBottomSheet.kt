@@ -19,6 +19,7 @@ import dev.esbi.mizan.feature.newtransaction.store.state.CategorySelectBottomShe
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +49,7 @@ fun CategorySelectorBottomSheet(
                     actions = {
                         IconButton(onClick = onDismiss) {
                             MizanIcon(
-                                icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_close),
+                                icon = IconValue(Icons.ic_close),
                                 contentDescription = "Manage Categories",
                                 tint = MizanTheme.premium.text.secondary
                             )

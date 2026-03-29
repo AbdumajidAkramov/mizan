@@ -4,7 +4,7 @@ import android.util.Log
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

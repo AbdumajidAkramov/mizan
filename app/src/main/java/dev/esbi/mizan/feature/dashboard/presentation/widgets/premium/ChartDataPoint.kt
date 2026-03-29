@@ -26,12 +26,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R.drawable.ic_down_trend
-import dev.esbi.mizan.R.drawable.ic_trend_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
@@ -111,7 +109,7 @@ fun PremiumNetWorthCard(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         MizanIcon(
-                            icon = IconValue(if (isPositive) ic_trend_up else ic_down_trend),
+                            icon = IconValue(if (isPositive) Icons.ic_trend_up else Icons.ic_down_trend),
                             contentDescription = null,
                             tint = pillColor,
                             modifier = Modifier.size(14.dp)

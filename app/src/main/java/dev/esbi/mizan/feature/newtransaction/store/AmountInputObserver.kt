@@ -1,6 +1,6 @@
 package dev.esbi.mizan.feature.newtransaction.store
 
-import dev.esbi.mizan.mvikotlin.observer.StoreObserver
+import dev.esbi.mizan.presentation.mvikotlin.observer.StoreObserver
 import javax.inject.Inject
 
 class AmountInputObserver @Inject constructor() : StoreObserver<

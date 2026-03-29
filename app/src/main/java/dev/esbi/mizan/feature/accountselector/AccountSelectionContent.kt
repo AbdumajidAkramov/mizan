@@ -21,8 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,11 +40,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
+import androidx.core.graphics.toColorInt
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
@@ -150,7 +151,7 @@ fun AccountSelectionContent(
             item {
                 AccountSectionHeader(
                     title = "CASH",
-                    iconRes = R.drawable.ic_attach_money
+                    iconRes = Icons.ic_attach_money
                 )
             }
             items(cashAccounts, key = { it.id }) { account ->
@@ -169,7 +170,7 @@ fun AccountSelectionContent(
                 Spacer(modifier = Modifier.height(8.dp))
                 AccountSectionHeader(
                     title = "BANK ACCOUNTS",
-                    iconRes = R.drawable.ic_home
+                    iconRes = Icons.ic_home
                 )
             }
             items(bankAccounts, key = { it.id }) { account ->
@@ -219,7 +220,7 @@ internal fun AccountSelectionHeader(onClose: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_close),
+                painter = painterResource(id = Icons.ic_close),
                 contentDescription = "Close",
                 tint = premiumSystem.text.secondary,
                 modifier = Modifier.size(18.dp)
@@ -346,8 +347,8 @@ internal fun AccountCard(
                         .background(premiumSystem.colors.emerald),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Check,
+                    MizanIcon(
+                        icon = IconValue(Icons.ic_check),
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)
@@ -402,7 +403,7 @@ internal fun AddAccountButton(onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_add),
+                    painter = painterResource(id = Icons.ic_add),
                     contentDescription = null,
                     tint = premiumSystem.colors.emerald,
                     modifier = Modifier.size(20.dp)
@@ -429,7 +430,7 @@ private fun getAccountColor(account: Account): Color {
     // Try to parse the account's custom color first
     account.color?.let { colorHex ->
         try {
-            return Color(android.graphics.Color.parseColor(colorHex))
+            return Color(colorHex.toColorInt())
         } catch (e: Exception) {
             // Fall through to default
         }
@@ -449,13 +450,13 @@ private fun getAccountColor(account: Account): Color {
 
 private fun getAccountIcon(type: Account.Type): Int {
     return when (type) {
-        Account.Type.CASH -> R.drawable.ic_attach_money
-        Account.Type.CARD -> R.drawable.ic_attach_money
-        Account.Type.BANK -> R.drawable.ic_attach_money
-        Account.Type.SAVINGS -> R.drawable.ic_attach_money
-        Account.Type.DEBT -> R.drawable.ic_attach_money
-        Account.Type.CREDIT -> R.drawable.ic_attach_money
-        Account.Type.INVESTMENT -> R.drawable.ic_attach_money
+        Account.Type.CASH -> Icons.ic_attach_money
+        Account.Type.CARD -> Icons.ic_attach_money
+        Account.Type.BANK -> Icons.ic_attach_money
+        Account.Type.SAVINGS -> Icons.ic_attach_money
+        Account.Type.DEBT -> Icons.ic_attach_money
+        Account.Type.CREDIT -> Icons.ic_attach_money
+        Account.Type.INVESTMENT -> Icons.ic_attach_money
     }
 }
 
@@ -537,7 +538,7 @@ fun AccountSelectionContentPreview() {
 
     dev.esbi.mizan.ui.theme.MizanTheme() {
         AccountSelectionContent(
-            state = dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore.State(
+            state = AccountSelectorStore.State(
                 isLoading = false,
                 accounts = mockAccounts,
                 selectedAccountId = null,

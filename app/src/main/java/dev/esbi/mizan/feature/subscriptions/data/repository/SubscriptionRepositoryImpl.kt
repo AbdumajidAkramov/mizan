@@ -4,8 +4,8 @@ import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.entity.SubscriptionEntity
 import dev.esbi.mizan.feature.subscriptions.data.mapper.toDomain
 import dev.esbi.mizan.feature.subscriptions.data.mapper.toEntity
-import dev.esbi.mizan.feature.subscriptions.domain.model.Subscription
-import dev.esbi.mizan.feature.subscriptions.domain.repository.SubscriptionRepository
+import dev.esbi.mizan.presentation.feature.subscriptions.domain.model.Subscription
+import dev.esbi.mizan.presentation.feature.subscriptions.domain.repository.SubscriptionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

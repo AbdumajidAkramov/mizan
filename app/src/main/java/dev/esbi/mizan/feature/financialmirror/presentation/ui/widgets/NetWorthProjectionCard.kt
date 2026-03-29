@@ -35,9 +35,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialProjection
-import dev.esbi.mizan.feature.financialmirror.domain.model.ProjectionData
-import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStore
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.FinancialProjection
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ProjectionData
+import dev.esbi.mizan.presentation.feature.financialmirror.presentation.store.FinancialMirrorStore
 import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat

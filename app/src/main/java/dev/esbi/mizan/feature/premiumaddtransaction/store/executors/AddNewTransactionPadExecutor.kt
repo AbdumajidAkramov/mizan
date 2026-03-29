@@ -1,7 +1,7 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 import javax.inject.Inject
 
 internal class AddNewTransactionPadExecutor @Inject constructor(
@@ -25,6 +25,7 @@ internal class AddNewTransactionPadExecutor @Inject constructor(
                     AddNewTransactionStore.Message.UpdatePad(pad = null)
                 )
             }
+
             is AddNewTransactionStore.Intent.ShowTypeSelector -> {
                 dispatch(
                     AddNewTransactionStore.Message.UpdatePad(pad = AddNewTransactionStore.State.Pad.TypeSelector)

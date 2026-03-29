@@ -3,12 +3,12 @@ package dev.esbi.mizan.feature.accountselector.di
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dagger.Module
 import dagger.Provides
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.feature.accountselector.AccountSelectorViewModel
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorExecutor
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStoreFactory
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorExecutor
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStoreFactory
 import kotlinx.coroutines.CoroutineDispatcher
 
 @Module

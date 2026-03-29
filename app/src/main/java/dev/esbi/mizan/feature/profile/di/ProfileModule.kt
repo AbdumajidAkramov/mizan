@@ -3,11 +3,11 @@ package dev.esbi.mizan.feature.profile.di
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import dagger.Module
 import dagger.Provides
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.domain.repository.ProfileRepository
 import dev.esbi.mizan.feature.profile.presentation.ProfileViewModel
-import dev.esbi.mizan.feature.profile.presentation.store.ProfileStoreFactory
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.profile.presentation.store.ProfileStoreFactory
 import kotlinx.coroutines.CoroutineDispatcher
 
 @Module

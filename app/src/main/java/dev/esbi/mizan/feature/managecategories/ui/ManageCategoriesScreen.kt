@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.managecategories.ManageCategoriesViewModel
 import dev.esbi.mizan.feature.managecategories.ui.components.DraggableCategoryRow
 import dev.esbi.mizan.ui.kit.icon.IconValue
@@ -233,7 +232,7 @@ private fun EmptyState(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(R.drawable.ic_add),
+                painter = androidx.compose.ui.res.painterResource(Icons.ic_add),
                 contentDescription = null,
                 tint = MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(32.dp)

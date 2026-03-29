@@ -4,8 +4,8 @@ import dev.esbi.mizan.data.local.dao.GoalDao
 import dev.esbi.mizan.data.local.entity.GoalEntity
 import dev.esbi.mizan.feature.goals.data.mapper.toDomain
 import dev.esbi.mizan.feature.goals.data.mapper.toEntity
-import dev.esbi.mizan.feature.goals.domain.model.Goal
-import dev.esbi.mizan.feature.goals.domain.repository.GoalRepository
+import dev.esbi.mizan.presentation.feature.goals.domain.model.Goal
+import dev.esbi.mizan.presentation.feature.goals.domain.repository.GoalRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

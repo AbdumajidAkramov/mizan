@@ -1,9 +1,9 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput.executor
 
-import dev.esbi.mizan.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
-import dev.esbi.mizan.utils.AMOUNT_MAX
-import dev.esbi.mizan.utils.DOT
+import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.presentation.utils.AMOUNT_MAX
+import dev.esbi.mizan.presentation.utils.DOT
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -12,15 +12,15 @@ import javax.inject.Inject
  * Pure math and string manipulation logic without side effects.
  */
 internal class ManualInputHandler @Inject constructor() {
-    
+
     private var isEqualed = false
-    
+
     /**
      * Handles keypad input and returns updated KeypadState
      */
     fun handleNumberClick(key: Keypad, currentState: KeypadState): KeypadState {
         val isLeftNumberActive = currentState.operator.isBlank()
-        
+
         return when (key) {
             in Keypad.Companion.numbers -> handleNumberInput(key, currentState, isLeftNumberActive)
             in Keypad.Companion.operators -> handleOperatorInput(key, currentState)
@@ -31,11 +31,15 @@ internal class ManualInputHandler @Inject constructor() {
             else -> currentState
         }
     }
-    
-    private fun handleNumberInput(key: Keypad, state: KeypadState, isLeftNumberActive: Boolean): KeypadState {
+
+    private fun handleNumberInput(
+        key: Keypad,
+        state: KeypadState,
+        isLeftNumberActive: Boolean
+    ): KeypadState {
         with(state) {
             val digitToAdd = Keypad.Companion.number(key)
-            
+
             return when {
                 isEqualed -> {
                     isEqualed = false
@@ -45,14 +49,14 @@ internal class ManualInputHandler @Inject constructor() {
                         state.copy(rightNumber = BigDecimal(digitToAdd))
                     }
                 }
-                
+
                 isLeftNumberActive -> {
                     val newLeftNumber = appendDigit(leftNumber.toPlainString(), digitToAdd)
                     val newLeftDecimal = BigDecimal(newLeftNumber)
                     if (newLeftDecimal.toDouble() > AMOUNT_MAX) return state
                     state.copy(leftNumber = newLeftDecimal)
                 }
-                
+
                 else -> {
                     val newRightNumber = appendDigit(rightNumber.toPlainString(), digitToAdd)
                     val newRightDecimal = BigDecimal(newRightNumber)
@@ -62,7 +66,7 @@ internal class ManualInputHandler @Inject constructor() {
             }
         }
     }
-    
+
     /**
      * Appends a digit to the current amount string with validation:
      * - Replaces "0" with the new digit (avoid "05")
@@ -73,7 +77,7 @@ internal class ManualInputHandler @Inject constructor() {
         if (current == "0") {
             return digit
         }
-        
+
         // Check if decimal point exists and enforce 2-digit limit after decimal
         val decimalIndex = current.indexOf(DOT)
         if (decimalIndex != -1) {
@@ -82,14 +86,14 @@ internal class ManualInputHandler @Inject constructor() {
                 return current // Already have 2 digits after decimal
             }
         }
-        
+
         return current + digit
     }
-    
+
     private fun handleOperatorInput(key: Keypad, state: KeypadState): KeypadState {
         return with(state) {
             val newOp = Keypad.Companion.operator(key)
-            
+
             // If operator is empty, just set the new operator
             if (operator.isEmpty()) {
                 state.copy(operator = newOp)
@@ -104,7 +108,7 @@ internal class ManualInputHandler @Inject constructor() {
             }
         }
     }
-    
+
     private fun handleDotInput(state: KeypadState, isLeftNumberActive: Boolean): KeypadState {
         return with(state) {
             if (isLeftNumberActive) {
@@ -128,7 +132,7 @@ internal class ManualInputHandler @Inject constructor() {
             }
         }
     }
-    
+
     private fun handleEqualsInput(state: KeypadState): KeypadState {
         val result = if (state.operator.isNotBlank()) {
             calculateBigDecimal(
@@ -137,7 +141,7 @@ internal class ManualInputHandler @Inject constructor() {
                 operator = state.operator
             )
         } else BigDecimal.ZERO
-        
+
         isEqualed = true
         return state.copy(
             leftNumber = result,
@@ -145,12 +149,12 @@ internal class ManualInputHandler @Inject constructor() {
             operator = "",
         )
     }
-    
+
     private fun handleClearInput(): KeypadState {
         isEqualed = false
         return KeypadState()
     }
-    
+
     private fun handleDeleteInput(state: KeypadState, isLeftNumberActive: Boolean): KeypadState {
         return with(state) {
             if (isLeftNumberActive) {
@@ -158,7 +162,8 @@ internal class ManualInputHandler @Inject constructor() {
                 if (leftStr.isNotBlank() && leftStr != "0") {
                     val newLeftNumber = leftStr.dropLast(1)
                     // If empty or just "-", reset to "0"
-                    val finalLeftNumber = if (newLeftNumber.isEmpty() || newLeftNumber == "-") "0" else newLeftNumber
+                    val finalLeftNumber =
+                        if (newLeftNumber.isEmpty() || newLeftNumber == "-") "0" else newLeftNumber
                     state.copy(leftNumber = BigDecimal(finalLeftNumber))
                 } else {
                     state
@@ -169,7 +174,8 @@ internal class ManualInputHandler @Inject constructor() {
                 if (rightStr.isNotBlank() && rightStr != "0") {
                     val newRightNumber = rightStr.dropLast(1)
                     // If empty or just "-", reset to "0"
-                    val finalRightNumber = if (newRightNumber.isEmpty() || newRightNumber == "-") "0" else newRightNumber
+                    val finalRightNumber =
+                        if (newRightNumber.isEmpty() || newRightNumber == "-") "0" else newRightNumber
                     state.copy(rightNumber = BigDecimal(finalRightNumber))
                 } else {
                     // rightNumber is already 0, clear operator and switch to leftNumber
@@ -181,7 +187,7 @@ internal class ManualInputHandler @Inject constructor() {
             }
         }
     }
-    
+
     private fun calculate(left: Double, right: Double, operator: String): Double {
         return when (operator) {
             "+" -> left + right
@@ -194,11 +200,16 @@ internal class ManualInputHandler @Inject constructor() {
                     0.0
                 }
             }
+
             else -> 0.0
         }
     }
-    
-    private fun calculateBigDecimal(left: BigDecimal, right: BigDecimal, operator: String): BigDecimal {
+
+    private fun calculateBigDecimal(
+        left: BigDecimal,
+        right: BigDecimal,
+        operator: String
+    ): BigDecimal {
         return when (operator) {
             "+" -> left.add(right)
             "-" -> left.subtract(right)
@@ -210,6 +221,7 @@ internal class ManualInputHandler @Inject constructor() {
                     BigDecimal.ZERO
                 }
             }
+
             else -> BigDecimal.ZERO
         }
     }
