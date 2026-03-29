@@ -32,11 +32,10 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
@@ -66,9 +65,9 @@ fun SubcategoryPicker(
                     tint = MizanTheme.premium.text.secondary
                 )
             }
-            
+
             Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
-            
+
             Text(
                 text = parentCategoryName,
                 style = MizanTheme.typography.bodyLg,
@@ -76,7 +75,7 @@ fun SubcategoryPicker(
                 color = MizanTheme.premium.text.primary
             )
         }
-        
+
         // Subcategories grid
         Column(
             verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
@@ -95,7 +94,7 @@ fun SubcategoryPicker(
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
-                    
+
                     // Fill empty slots if row has less than 3 items
                     repeat(3 - rowCats.size) {
                         Spacer(Modifier.width(100.dp))
@@ -115,7 +114,7 @@ private fun PremiumSubcategoryItem(
 ) {
     val categoryColor = getCategoryColor(subcategory.color)
     val scale by animateFloatAsState(if (isSelected) 0.95f else 1f)
-    
+
     Card(
         modifier = modifier
             .width(100.dp)
@@ -157,7 +156,7 @@ private fun PremiumSubcategoryItem(
                     )
                 }
             }
-            
+
             Column(
                 modifier = Modifier
                     .padding(MizanTheme.premium.spacing.md)
@@ -185,9 +184,9 @@ private fun PremiumSubcategoryItem(
                         tint = categoryColor
                     )
                 }
-                
+
                 Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
-                
+
                 // Label
                 Text(
                     text = subcategory.name,
@@ -199,45 +198,4 @@ private fun PremiumSubcategoryItem(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SubcategoryPickerPreview() {
-
-    val mockSubcategories = listOf(
-        Category(
-            id = "1",
-            name = "Taxi",
-            iconName = "ic_taxi",
-            type = "EXPENSE",
-            color = "#FF9800",
-            parentId = "transport"
-        ),
-        Category(
-            id = "2",
-            name = "Bus",
-            iconName = "ic_bus",
-            type = "EXPENSE",
-            color = "#4CAF50",
-            parentId = "transport"
-        ),
-        Category(
-            id = "3",
-            name = "Metro",
-            iconName = "ic_metro",
-            type = "EXPENSE",
-            color = "#2196F3",
-            parentId = "transport"
-        )
-    )
-
-    SubcategoryPicker(
-        subcategories = mockSubcategories,
-        parentCategoryName = "Transport",
-        selectedSubcategory = "2",
-        onSelectSubcategory = {},
-        onBackToCategories = {},
-        modifier = Modifier
-    )
 }

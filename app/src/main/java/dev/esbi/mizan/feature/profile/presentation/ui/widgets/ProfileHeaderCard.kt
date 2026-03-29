@@ -24,11 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
+import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
+import dev.esbi.mizan.ui.utils.Strings
 
 @Composable
 internal fun ProfileHeaderCard(
@@ -99,7 +99,7 @@ internal fun ProfileHeaderCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = stringResource(R.string.profile_premium_member),
+                    text = stringResource(Strings.profile_premium_member),
                     style = MizanTheme.typography.bodyMd,
                     color = Color.White.copy(alpha = 0.8f)
                 )
@@ -108,11 +108,11 @@ internal fun ProfileHeaderCard(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     InfoBadge(
-                        label = stringResource(R.string.profile_member_since),
+                        label = stringResource(Strings.profile_member_since),
                         value = profile.memberSince
                     )
                     InfoBadge(
-                        label = stringResource(R.string.profile_transactions),
+                        label = stringResource(Strings.profile_transactions),
                         value = profile.totalTransactions.toString()
                     )
                 }

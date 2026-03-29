@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectStore
 import dev.esbi.mizan.feature.newtransaction.categoryselect.store.CategorySelectStoreFactory
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -55,7 +55,7 @@ internal fun AccountSelectionContentSimple(
             item {
                 AccountSectionHeader(
                     title = "CASH",
-                    iconRes = R.drawable.ic_attach_money
+                    iconRes = Icons.ic_attach_money
                 )
             }
             items(cashAccounts, key = { it.id }) { account ->
@@ -74,7 +74,7 @@ internal fun AccountSelectionContentSimple(
                 Spacer(modifier = Modifier.height(8.dp))
                 AccountSectionHeader(
                     title = "BANK ACCOUNTS",
-                    iconRes = R.drawable.ic_home
+                    iconRes = Icons.ic_home
                 )
             }
             items(bankAccounts, key = { it.id }) { account ->

@@ -1,15 +1,15 @@
 package dev.esbi.mizan.feature.newtransaction.categoryselect.store
 
 import com.arkivanov.mvikotlin.core.store.Store
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 
 interface CategorySelectStore :
     Store<CategorySelectStore.Intent, CategorySelectStore.State, CategorySelectStore.Label> {
 
     data class State(
         val categories: List<Category> = emptyList(),
-        val selectedParentId: String? = null,
+        val selectedParentId: Long? = null,
         val transactionType: TransactionType = TransactionType.EXPENSE,
         val isLoading: Boolean = false,
         val error: String? = null,

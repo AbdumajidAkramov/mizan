@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStoreFactory
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStoreFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -27,13 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R.drawable.ic_arrow_down
-import dev.esbi.mizan.R.drawable.ic_arrow_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.max
@@ -147,8 +146,8 @@ private fun CashFlowItem(
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
     // Icon tanlash: CallReceived (Pastga) = Income, CallMade (Tepaga) = Expense
-    val icon = if (isIncome) IconValue(ic_arrow_down)
-    else IconValue(ic_arrow_up)
+    val icon = if (isIncome) IconValue(Icons.ic_arrow_down)
+    else IconValue(Icons.ic_arrow_up)
 
     Row(
         modifier = modifier,

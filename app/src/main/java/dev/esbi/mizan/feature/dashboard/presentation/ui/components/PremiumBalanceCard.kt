@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -32,7 +32,7 @@ fun PremiumBalanceCard(
     modifier: Modifier = Modifier
 ) {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-    
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -48,22 +48,22 @@ fun PremiumBalanceCard(
             .padding(24.dp)
     ) {
         Text(
-            text = stringResource(R.string.dashboard_total_balance),
+            text = stringResource(Strings.dashboard_total_balance),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.9f)
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         Text(
             text = numberFormat.format(totalBalance),
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
         )
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -76,7 +76,7 @@ fun PremiumBalanceCard(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.dashboard_monthly_income),
+                    text = stringResource(Strings.dashboard_monthly_income),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.9f)
                 )
@@ -88,7 +88,7 @@ fun PremiumBalanceCard(
                     color = Color.White
                 )
             }
-            
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -97,7 +97,7 @@ fun PremiumBalanceCard(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.dashboard_monthly_expenses),
+                    text = stringResource(Strings.dashboard_monthly_expenses),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.9f)
                 )

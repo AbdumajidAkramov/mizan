@@ -4,8 +4,8 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -28,8 +28,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 /**
  * Custom pill-shaped tab row for TransactionsHub
@@ -75,11 +76,11 @@ private fun TabItem(
     )
 
     val iconResId = when (tab) {
-        TransactionsHubStore.Tab.Daily -> R.drawable.ic_list
-        TransactionsHubStore.Tab.Calendar -> R.drawable.ic_calendar
-        TransactionsHubStore.Tab.Monthly -> R.drawable.ic_chart_bar
-        TransactionsHubStore.Tab.Summary -> R.drawable.ic_chart_bar
-        TransactionsHubStore.Tab.Description -> R.drawable.ic_list
+        TransactionsHubStore.Tab.Daily -> Icons.ic_list
+        TransactionsHubStore.Tab.Calendar -> Icons.ic_calendar
+        TransactionsHubStore.Tab.Monthly -> Icons.ic_chart_bar
+        TransactionsHubStore.Tab.Summary -> Icons.ic_chart_bar
+        TransactionsHubStore.Tab.Description -> Icons.ic_list
     }
 
     val label = when (tab) {

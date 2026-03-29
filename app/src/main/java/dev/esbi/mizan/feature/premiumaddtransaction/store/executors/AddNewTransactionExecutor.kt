@@ -3,7 +3,7 @@ package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 import javax.inject.Inject
 
 internal class AddNewTransactionExecutor @Inject constructor(
@@ -56,21 +56,27 @@ internal class AddNewTransactionExecutor @Inject constructor(
             is AddNewTransactionStore.Intent.OnCategorySelected -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectedCategory(intent.category))
             }
+
             is AddNewTransactionStore.Intent.OpenAccountsBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(true))
             }
+
             is AddNewTransactionStore.Intent.CloseAccountsBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateSelectAccountsBottomSheet(false))
             }
+
             is AddNewTransactionStore.Intent.OpenTargetAccountsBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(true))
             }
+
             is AddNewTransactionStore.Intent.CloseTargetAccountsBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateTargetAccountsBottomSheet(false))
             }
+
             is AddNewTransactionStore.Intent.OpenCategoriesBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(true))
             }
+
             is AddNewTransactionStore.Intent.CloseCategoriesBottomSheet -> {
                 dispatch(AddNewTransactionStore.Message.UpdateCategoriesBottomSheet(false))
             }
@@ -98,25 +104,25 @@ internal class AddNewTransactionExecutor @Inject constructor(
 
     private fun validateAndProceedToConfirmation() {
         val state = state()
-        
+
         // Validate required fields
         when {
             state.amountDecimal.toDouble() <= 0.0 -> {
                 publish(AddNewTransactionStore.Label.ShowToast("Please enter an amount"))
             }
-            
+
             state.selectedAccount == null -> {
                 publish(AddNewTransactionStore.Label.ShowToast("Please select an account"))
             }
-            
+
             state.selectedCategory == null -> {
                 publish(AddNewTransactionStore.Label.ShowToast("Please select a category"))
             }
-            
+
             state.transactionType == Transaction.Type.TRANSFER && state.targetAccount == null -> {
                 publish(AddNewTransactionStore.Label.ShowToast("Please select a target account for transfer"))
             }
-            
+
             else -> {
                 // All validations passed, proceed to confirmation (DO NOT SAVE YET)
                 dispatch(AddNewTransactionStore.Message.UpdateStep(AddNewTransactionStore.State.Step.CONFIRMATION))

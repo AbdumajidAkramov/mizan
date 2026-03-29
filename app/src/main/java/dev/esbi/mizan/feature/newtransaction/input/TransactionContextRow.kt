@@ -12,14 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.TransactionTypeChip
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 // Transaction Context Row - Shows Type, Category, Account chips
 
@@ -36,7 +36,7 @@ fun TransactionContextRow(
     onToAccountClick: () -> Unit = {},
     onTypeClick: () -> Unit = {},
     onCategoryClick: () -> Unit = {},
-    ) {
+) {
     val typeColor = when (transactionType) {
         TransactionType.EXPENSE -> Color(0xFFF5576C) // Coral/Red
         TransactionType.INCOME -> Color(0xFF4FACFE) // Blue for income
@@ -52,10 +52,10 @@ fun TransactionContextRow(
     }
 
     val typeIcon = when (transactionType) {
-        TransactionType.EXPENSE -> R.drawable.ic_trend_up
-        TransactionType.INCOME -> R.drawable.ic_down_trend
-        TransactionType.TRANSFER -> R.drawable.ic_swap_horizontal
-        null -> R.drawable.ic_trend_up
+        TransactionType.EXPENSE -> Icons.ic_trend_up
+        TransactionType.INCOME -> Icons.ic_down_trend
+        TransactionType.TRANSFER -> Icons.ic_swap_horizontal
+        null -> Icons.ic_trend_up
     }
 
     Column(
@@ -81,13 +81,13 @@ fun TransactionContextRow(
                 TransferAccountChip(
                     label = fromAccount?.name ?: "From Account",
                     isPlaceholder = fromAccount == null,
-                    iconRes = R.drawable.ic_trend_up,
+                    iconRes = Icons.ic_trend_up,
                     onClick = onFromAccountClick
                 )
 
                 // Swap Icon
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_swap_horizontal),
+                    painter = painterResource(id = Icons.ic_swap_horizontal),
                     contentDescription = null,
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(16.dp)
@@ -97,7 +97,7 @@ fun TransactionContextRow(
                 TransferAccountChip(
                     label = toAccount?.name ?: "To Account",
                     isPlaceholder = toAccount == null,
-                    iconRes = R.drawable.ic_down_trend,
+                    iconRes = Icons.ic_down_trend,
                     onClick = onToAccountClick
                 )
             }

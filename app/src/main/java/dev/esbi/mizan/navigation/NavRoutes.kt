@@ -35,9 +35,6 @@ sealed class NavRoute() {
     data object ManageCategories : NavRoute()
 
     @Serializable
-    data object Accounts : NavRoute()
-
-    @Serializable
     data object AccountManagement : NavRoute()
 
     @Serializable
@@ -48,5 +45,11 @@ sealed class NavRoute() {
 
     @Serializable
     data object Subscriptions : NavRoute()
+
+    @Serializable
+    data object AccountGroupManagement : NavRoute()
+
+    @Serializable
+    data object AddNewAccount : NavRoute()
 
 }

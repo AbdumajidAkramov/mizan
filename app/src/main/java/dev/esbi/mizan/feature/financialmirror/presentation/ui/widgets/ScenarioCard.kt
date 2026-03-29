@@ -19,11 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.financialmirror.domain.model.ScenarioIconType
-import dev.esbi.mizan.feature.financialmirror.domain.model.TimeMachineScenario
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ScenarioIconType
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMachineScenario
 import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
@@ -75,7 +75,7 @@ internal fun ScenarioCard(scenario: TimeMachineScenario) {
                     color = MizanTheme.premium.text.tertiary,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    )
+                )
                 Spacer(Modifier.height(MizanTheme.premium.spacing.sm))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -111,12 +111,12 @@ fun TransactionTypeSelector(
                 )
             }
         }
-       /* Text(
-            modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
-            text = text.value,
-            style = MizanTheme.typography.bodyXs,
-            color = MizanTheme.premium.text.muted
-        )*/
+        /* Text(
+             modifier = Modifier.padding(top = MizanTheme.premium.spacing.md),
+             text = text.value,
+             style = MizanTheme.typography.bodyXs,
+             color = MizanTheme.premium.text.muted
+         )*/
     }
 }
 

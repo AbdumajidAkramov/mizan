@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStore
-import dev.esbi.mizan.feature.dashboard.presentation.store.DashboardStoreFactory
+import dev.esbi.mizan.presentation.feature.dashboard.presentation.store.DashboardStore
+import dev.esbi.mizan.presentation.feature.dashboard.presentation.store.DashboardStoreFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow

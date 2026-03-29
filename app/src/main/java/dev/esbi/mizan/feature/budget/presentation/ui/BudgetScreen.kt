@@ -33,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
 import dev.esbi.mizan.feature.budget.presentation.store.BudgetStore
 import dev.esbi.mizan.feature.budget.presentation.ui.components.CategoryBudgetItem
@@ -44,6 +43,7 @@ import dev.esbi.mizan.ui.components.ErrorState
 import dev.esbi.mizan.ui.components.LoadingSkeleton
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
+import dev.esbi.mizan.ui.utils.Strings
 
 @Composable
 fun BudgetScreen(
@@ -96,7 +96,7 @@ private fun BudgetContent(
                 ) {
                     Icon(
                         painter = painterResource(android.R.drawable.ic_input_add),
-                        contentDescription = stringResource(R.string.budget_add_category),
+                        contentDescription = stringResource(Strings.budget_add_category),
                         tint = Color.White
                     )
                 }
@@ -141,14 +141,14 @@ private fun BudgetContent(
                             ) {
                                 Column {
                                     Text(
-                                        text = stringResource(R.string.budget_title),
+                                        text = stringResource(Strings.budget_title),
                                         fontSize = 32.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
-                                        text = stringResource(R.string.budget_subtitle),
+                                        text = stringResource(Strings.budget_subtitle),
                                         fontSize = 14.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -169,7 +169,7 @@ private fun BudgetContent(
                         // Category Budgets Section
                         StaggeredFadeInUp(index = 2) {
                             Text(
-                                text = stringResource(R.string.budget_category_budgets),
+                                text = stringResource(Strings.budget_category_budgets),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -214,7 +214,7 @@ private fun BudgetContent(
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(
-                                        text = stringResource(R.string.budget_add_category),
+                                        text = stringResource(Strings.budget_add_category),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Medium,
                                         color = Color(0xFF667EEA)
@@ -244,7 +244,7 @@ private fun BudgetContent(
                                     Spacer(modifier = Modifier.width(16.dp))
                                     Column {
                                         Text(
-                                            text = stringResource(R.string.budget_tips_title),
+                                            text = stringResource(Strings.budget_tips_title),
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             color = MaterialTheme.colorScheme.onSurface
@@ -252,17 +252,17 @@ private fun BudgetContent(
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                             Text(
-                                                text = stringResource(R.string.budget_tip_1),
+                                                text = stringResource(Strings.budget_tip_1),
                                                 fontSize = 14.sp,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                             Text(
-                                                text = stringResource(R.string.budget_tip_2),
+                                                text = stringResource(Strings.budget_tip_2),
                                                 fontSize = 14.sp,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                             Text(
-                                                text = stringResource(R.string.budget_tip_3),
+                                                text = stringResource(Strings.budget_tip_3),
                                                 fontSize = 14.sp,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )

@@ -29,12 +29,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.budget.domain.model.BudgetStatus
 import dev.esbi.mizan.feature.budget.domain.model.CategoryBudget
 import dev.esbi.mizan.ui.animation.animateProgressAsState
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -48,7 +48,7 @@ fun CategoryBudgetItem(
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 0
     }
-    
+
     val animatedProgress by animateProgressAsState(
         targetProgress = (budget.percentage / 100f).coerceIn(0f, 1f)
     )
@@ -103,11 +103,15 @@ fun CategoryBudgetItem(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "${numberFormat.format(budget.spentAmount)} / ${numberFormat.format(budget.budgetAmount)}",
+                            text = "${numberFormat.format(budget.spentAmount)} / ${
+                                numberFormat.format(
+                                    budget.budgetAmount
+                                )
+                            }",
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        
+
                         // Status Badge
                         when (budget.status) {
                             BudgetStatus.OVER_BUDGET -> {
@@ -126,7 +130,7 @@ fun CategoryBudgetItem(
                                             fontSize = 10.sp
                                         )
                                         Text(
-                                            text = stringResource(R.string.budget_over_budget),
+                                            text = stringResource(Strings.budget_over_budget),
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = Color(0xFFFF6B6B)
@@ -134,6 +138,7 @@ fun CategoryBudgetItem(
                                     }
                                 }
                             }
+
                             BudgetStatus.NEAR_LIMIT -> {
                                 Box(
                                     modifier = Modifier
@@ -150,7 +155,7 @@ fun CategoryBudgetItem(
                                             fontSize = 10.sp
                                         )
                                         Text(
-                                            text = stringResource(R.string.budget_near_limit),
+                                            text = stringResource(Strings.budget_near_limit),
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = Color(0xFFFEE140)
@@ -158,6 +163,7 @@ fun CategoryBudgetItem(
                                     }
                                 }
                             }
+
                             BudgetStatus.NORMAL -> {}
                         }
                     }
@@ -173,7 +179,7 @@ fun CategoryBudgetItem(
                 ) {
                     Icon(
                         painter = painterResource(android.R.drawable.ic_menu_edit),
-                        contentDescription = stringResource(R.string.budget_edit),
+                        contentDescription = stringResource(Strings.budget_edit),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
@@ -225,12 +231,15 @@ fun CategoryBudgetItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = stringResource(R.string.budget_percentage_used_value, budget.percentage),
+                    text = stringResource(Strings.budget_percentage_used_value, budget.percentage),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = stringResource(R.string.budget_left, numberFormat.format(budget.budgetAmount - budget.spentAmount)),
+                    text = stringResource(
+                        Strings.budget_left,
+                        numberFormat.format(budget.budgetAmount - budget.spentAmount)
+                    ),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

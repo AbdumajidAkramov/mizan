@@ -17,12 +17,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.CameraInputStep
 import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputStep
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.InputModeContent
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
@@ -101,7 +101,11 @@ fun AmountPad(
                     },
                     onVoiceRecognitionError = { error ->
                         // Clear error and restart listening
-                        accept(NewTransactionStore.VoiceRecognitionIntent.OnVoiceRecognitionError(error))
+                        accept(
+                            NewTransactionStore.VoiceRecognitionIntent.OnVoiceRecognitionError(
+                                error
+                            )
+                        )
                     },
                     onSubmitVoice = { voiceText ->
                         // Parse the voice text again and apply it
@@ -121,7 +125,10 @@ fun AmountPad(
                         },
                         onScanResult = { text, confidence ->
                             accept(
-                                NewTransactionStore.CameraScanIntent.OnReceiptScanResult(text, confidence)
+                                NewTransactionStore.CameraScanIntent.OnReceiptScanResult(
+                                    text,
+                                    confidence
+                                )
                             )
                         },
                         onQRCodeScanned = { qrText ->

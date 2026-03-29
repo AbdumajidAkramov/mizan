@@ -21,13 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
+import dev.esbi.mizan.domain.model.profile.UserProfile
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
+import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -45,24 +46,24 @@ internal fun StatsGrid(
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         StatCard(
-            label = stringResource(R.string.profile_income),
+            label = stringResource(Strings.profile_income),
             value = numberFormat.format(profile.totalIncome),
             gradient = listOf(Color(0xFF00F2FE), Color(0xFF4FACFE)),
-            icon = R.drawable.ic_download,
+            icon = Icons.ic_download,
             modifier = Modifier.weight(1f)
         )
         StatCard(
-            label = stringResource(R.string.profile_expenses),
+            label = stringResource(Strings.profile_expenses),
             value = numberFormat.format(profile.totalExpense),
             gradient = listOf(Color(0xFFFF6B6B), Color(0xFFF5576C)),
-            icon = R.drawable.ic_share,
+            icon = Icons.ic_share,
             modifier = Modifier.weight(1f)
         )
         StatCard(
-            label = stringResource(R.string.profile_saved),
+            label = stringResource(Strings.profile_saved),
             value = numberFormat.format(profile.totalSaved),
             gradient = listOf(Color(0xFF667EEA), Color(0xFFF5576C)),
-            icon = R.drawable.ic_star,
+            icon = Icons.ic_star,
             modifier = Modifier.weight(1f)
         )
     }

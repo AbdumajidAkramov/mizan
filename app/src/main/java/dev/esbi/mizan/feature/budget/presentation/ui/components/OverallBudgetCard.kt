@@ -26,8 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.animation.animateProgressAsState
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -42,7 +42,7 @@ fun OverallBudgetCard(
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 0
     }
-    
+
     val animatedProgress by animateProgressAsState(
         targetProgress = (overallPercentage / 100f).coerceIn(0f, 1f)
     )
@@ -71,7 +71,7 @@ fun OverallBudgetCard(
                 .background(Color.White.copy(alpha = 0.1f))
                 .blur(50.dp)
         )
-        
+
         Box(
             modifier = Modifier
                 .size(120.dp)
@@ -94,7 +94,7 @@ fun OverallBudgetCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(R.string.budget_total_monthly),
+                    text = stringResource(Strings.budget_total_monthly),
                     fontSize = 16.sp,
                     color = Color.White.copy(alpha = 0.8f)
                 )
@@ -124,7 +124,7 @@ fun OverallBudgetCard(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = stringResource(R.string.budget_percentage_used, overallPercentage),
+                text = stringResource(Strings.budget_percentage_used, overallPercentage),
                 fontSize = 14.sp,
                 color = Color.White.copy(alpha = 0.7f)
             )
@@ -156,7 +156,7 @@ fun OverallBudgetCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.budget_remaining),
+                    text = stringResource(Strings.budget_remaining),
                     fontSize = 14.sp,
                     color = Color.White.copy(alpha = 0.7f),
                     modifier = Modifier.weight(1f)

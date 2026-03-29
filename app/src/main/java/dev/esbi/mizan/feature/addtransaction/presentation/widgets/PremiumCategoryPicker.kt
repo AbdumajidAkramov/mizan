@@ -35,9 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
@@ -67,11 +67,11 @@ fun PremiumCategoryPicker(
                         onSelect = {
                             // Check if this category has subcategories by looking at its ID pattern
                             // Main categories have IDs like "food_main", "transport_main"
-                            if (category.id.endsWith("_main")) {
+                            /*if (category.id.endsWith("_main")) {
                                 onSelectParentCategory(category.name)
                             } else {
                                 onSelectCategory(category.name)
-                            }
+                            }*/
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -181,53 +181,6 @@ private fun PremiumCategoryItem(
     }
 }
 
-// 1. Soxta ma'lumotlar (Mock Data)
-val MOCK_CATEGORIES = listOf(
-    Category(
-        id = "food",
-        name = "Food & Dining",
-        iconName = "restaurant", // Ikonka nomi (sizning logikangizga qarab)
-        type = "EXPENSE",
-        color = "#FF6B9D"
-    ),
-    Category(
-        id = "transport",
-        name = "Transport",
-        iconName = "directions_car",
-        type = "EXPENSE",
-        color = "#4FACFE"
-    ),
-    Category(
-        id = "shopping",
-        name = "Shopping",
-        iconName = "shopping_bag",
-        type = "EXPENSE",
-        color = "#FFA34D"
-    ),
-    Category(
-        id = "entertainment",
-        name = "Entertainment",
-        iconName = "movie",
-        type = "EXPENSE",
-        color = "#C471F5"
-    ),
-    Category(
-        id = "health",
-        name = "Health",
-        iconName = "favorite",
-        type = "EXPENSE",
-        color = "#FF6B6B"
-    ),
-    // Subcategory misoli (agar kerak bo'lsa)
-    Category(
-        id = "fast_food",
-        name = "Fast Food",
-        iconName = "lunch_dining",
-        type = "EXPENSE",
-        color = "#FF6B9D",
-        parentId = "food"
-    )
-)
 
 // 2. Preview Komponenti
 @Preview(showBackground = true, backgroundColor = 0xFF111827) // Dark mode foni
@@ -239,7 +192,7 @@ fun PremiumCategoryPickerPreview() {
     MizanTheme {
         Box(modifier = Modifier.padding(16.dp)) {
             PremiumCategoryPicker(
-                categories = MOCK_CATEGORIES.filter { it.parentId == null }, // Faqat asosiy kategoriyalarni ko'rsatish
+                categories = emptyList(),
                 selectedCategory = selectedCategoryId,
                 onSelectCategory = { newCategory ->
                     selectedCategoryId = newCategory

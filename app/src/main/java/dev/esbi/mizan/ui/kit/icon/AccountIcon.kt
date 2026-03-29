@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.ui.utils.Icons
 
 @Composable
 fun AccountIcon(
@@ -15,22 +15,22 @@ fun AccountIcon(
     tint: Color,
     modifier: Modifier = Modifier
 ) {
-    val iconRes = when {
-        iconName == "ic_wallet" -> R.drawable.ic_wallet
-        iconName == "ic_card" -> R.drawable.ic_wallet
-        iconName == "ic_bank" -> R.drawable.ic_home
-        iconName == "ic_piggy_bank" -> R.drawable.ic_heart
-        iconName == "ic_cash" -> R.drawable.ic_attach_money
-        iconName == "ic_savings" -> R.drawable.ic_heart
-        iconName == "ic_investment" -> R.drawable.ic_trend_up
+    val iconRes = when (iconName) {
+        "ic_wallet" -> Icons.ic_wallet
+        "ic_card" -> Icons.ic_wallet
+        "ic_bank" -> Icons.ic_home
+        "ic_piggy_bank" -> Icons.ic_heart
+        "ic_cash" -> Icons.ic_attach_money
+        "ic_savings" -> Icons.ic_heart
+        "ic_investment" -> Icons.ic_trend_up
         else -> when (accountType) {
-            Account.Type.CASH -> R.drawable.ic_attach_money
-            Account.Type.CARD -> R.drawable.ic_wallet
-            Account.Type.BANK -> R.drawable.ic_home
-            Account.Type.SAVINGS -> R.drawable.ic_heart
-            Account.Type.DEBT -> R.drawable.ic_wallet
-            Account.Type.CREDIT -> R.drawable.ic_wallet
-            Account.Type.INVESTMENT -> R.drawable.ic_trend_up
+            Account.Type.CASH -> Icons.ic_attach_money
+            Account.Type.CARD -> Icons.ic_wallet
+            Account.Type.BANK -> Icons.ic_home
+            Account.Type.SAVINGS -> Icons.ic_heart
+            Account.Type.DEBT -> Icons.ic_wallet
+            Account.Type.CREDIT -> Icons.ic_wallet
+            Account.Type.INVESTMENT -> Icons.ic_trend_up
         }
     }
 

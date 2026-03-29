@@ -85,6 +85,12 @@ class DatabaseModule {
         }
     }
 
+    private val migration4to5 = object : androidx.room.migration.Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `accounts` ADD COLUMN `is_deleted` INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -94,7 +100,7 @@ class DatabaseModule {
             "mizan_database"
         )
 //            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2, migration2to3, migration3to4)
+            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)

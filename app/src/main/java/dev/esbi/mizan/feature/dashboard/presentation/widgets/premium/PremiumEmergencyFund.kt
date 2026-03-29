@@ -26,12 +26,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R.drawable.ic_shield
-import dev.esbi.mizan.R.drawable.ic_trend_up
 import dev.esbi.mizan.ui.kit.glass.CardVariant
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
@@ -86,7 +84,7 @@ fun PremiumEmergencyFund(
                 // Title & Icon
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MizanIcon(
-                        icon = IconValue(ic_shield), // Shield icon
+                        icon = IconValue(Icons.ic_shield), // Shield icon
                         contentDescription = null,
                         tint = activeColor,
                         modifier = Modifier.size(20.dp)
@@ -247,7 +245,7 @@ fun PremiumEmergencyFund(
                     }
                 } else {
                     MizanIcon(
-                        icon = IconValue(ic_trend_up),
+                        icon = IconValue(Icons.ic_trend_up),
                         contentDescription = null,
                         tint = activeColor,
                         modifier = Modifier

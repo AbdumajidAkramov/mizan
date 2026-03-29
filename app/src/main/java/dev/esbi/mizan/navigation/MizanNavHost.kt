@@ -9,9 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
-import dev.esbi.mizan.feature.accountmanagement.ui.AccountManagementScreen
-import dev.esbi.mizan.feature.accounts.presentation.ui.AccountsScreen
+import dev.esbi.mizan.feature.accountgroups.AccountGroupManagementScreen
+import dev.esbi.mizan.feature.accountmanagement.AccountManagementScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
+import dev.esbi.mizan.feature.addaccount.AddNewAccountScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
 import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
@@ -23,6 +24,9 @@ import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
+import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStoreFactory
+import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStoreFactory
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 
 @Composable
 internal fun MizanNavHost(
@@ -108,6 +112,12 @@ internal fun MizanNavHost(
                 },
                 onNavigateToFinancialGoalsScreen = {
                     navController.navigate(NavRoute.FinancialGoals)
+                },
+                onNavigateToAccountsScreen = {
+                    navController.navigate(NavRoute.AccountManagement)
+                },
+                onNavigateToAccountGroupsScreen = {
+                    navController.navigate(NavRoute.AccountGroupManagement)
                 }
             )
         }
@@ -166,14 +176,10 @@ internal fun MizanNavHost(
                 onCategorySelected = { category ->
                     // Convert Category type and pass back to NewTransactionStore
                     val domainCategory = object : dev.esbi.mizan.domain.model.Category {
-                        override val id = category.id.toLongOrNull() ?: 0L
+                        override val id = category.id
                         override val name = category.name
-                        override val type = when (category.type.uppercase()) {
-                            "EXPENSE" -> dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE
-                            "INCOME" -> dev.esbi.mizan.domain.model.Transaction.Type.INCOME
-                            else -> dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE
-                        }
-                        override val parentId = category.parentId?.toLongOrNull()
+                        override val type = category.type
+                        override val parentId = category.parentId
                         override val iconName = category.iconName
                         override val color = category.color
                         override val budgetLimit: Double? = null
@@ -181,7 +187,7 @@ internal fun MizanNavHost(
                         override val orderIndex = 0
                     }
                     amountInputViewModel?.onNewTransactionStoreIntent(
-                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnCategorySelected(
+                        AddNewTransactionStore.Intent.OnCategorySelected(
                             domainCategory
                         )
                     )
@@ -225,18 +231,7 @@ internal fun MizanNavHost(
                 onBack = { navController.popBackStack() }
             )
         }
-        composable<NavRoute.Accounts> {
-            val component = remember { appComponent.accountsComponent().create() }
-            val viewModel = component.viewModel
-            AccountsScreen(
-                viewModel = viewModel,
-                onNavigateBack = { navController.popBackStack() },
-                onNavigateToAddAccount = { navController.navigate(NavRoute.AccountManagement) },
-                onNavigateToEditAccount = { accountId ->
-                    navController.navigate(NavRoute.AccountManagement) // Modify as needed when route is ready
-                }
-            )
-        }
+
         composable<NavRoute.AccountManagement> {
             val component = remember { appComponent.accountManagementComponent().create() }
             val viewModel = component.viewModel
@@ -247,7 +242,11 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onNavigateToEditAccount = { accountId ->
-                    // TODO: Navigate to edit account screen if needed
+                    if (accountId == null) {
+                        navController.navigate(NavRoute.AddNewAccount)
+                    } else {
+                        // TODO: Navigate to edit account screen
+                    }
                 }
             )
         }
@@ -273,7 +272,7 @@ internal fun MizanNavHost(
                 onAccountSelected = { account ->
                     // Pass the selected account back to NewTransactionStore
                     amountInputViewModel?.onNewTransactionStoreIntent(
-                        dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent.OnAccountSelected(
+                        AddNewTransactionStore.Intent.OnAccountSelected(
                             account
                         )
                     )
@@ -285,5 +284,34 @@ internal fun MizanNavHost(
             )
         }
 
+        composable<NavRoute.AccountGroupManagement> {
+            val store = remember {
+                AccountGroupStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    accountRepository = appComponent.accountRepository
+                ).create()
+            }
+            AccountGroupManagementScreen(
+                store = store,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<NavRoute.AddNewAccount> {
+            val store = remember {
+                AddAccountStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    accountRepository = appComponent.accountRepository
+                ).create()
+            }
+            AddNewAccountScreen(
+                store = store,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }

@@ -8,8 +8,8 @@ import dev.esbi.mizan.feature.newtransaction.store.AmountInputStoreFactory
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.Intent
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore.Label
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStoreFactory
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

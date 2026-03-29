@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -34,12 +31,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -236,7 +233,11 @@ private fun CalendarDayCell(
             .background(backgroundColor)
             .then(
                 if (borderColor != Color.Transparent) {
-                    Modifier.border(borderWidth, borderColor, RoundedCornerShape(MizanTheme.premium.radius.sm))
+                    Modifier.border(
+                        borderWidth,
+                        borderColor,
+                        RoundedCornerShape(MizanTheme.premium.radius.sm)
+                    )
                 } else {
                     Modifier
                 }
@@ -384,9 +385,17 @@ private fun CalendarMonthlySummary(
                     color = MizanTheme.premium.text.tertiary
                 )
                 Text(
-                    text = "${if (balance >= 0) "+" else "-"}$${formatCompactAmount(kotlin.math.abs(balance))}",
+                    text = "${if (balance >= 0) "+" else "-"}$${
+                        formatCompactAmount(
+                            kotlin.math.abs(
+                                balance
+                            )
+                        )
+                    }",
                     style = MizanTheme.typography.bodyMd,
-                    color = if (balance >= 0) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
+                    color = if (balance >= 0) MizanTheme.premium.colors.emerald else Color(
+                        0xFFF5576C
+                    ),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -407,8 +416,11 @@ private fun CalendarTransactionItem(
 
     val categoryColor = remember(category) {
         category?.color?.let {
-            try { Color(android.graphics.Color.parseColor(it)) }
-            catch (e: Exception) { Color(0xFFFF6B9D) }
+            try {
+                Color(android.graphics.Color.parseColor(it))
+            } catch (e: Exception) {
+                Color(0xFFFF6B9D)
+            }
         } ?: Color(0xFFFF6B9D)
     }
 
@@ -472,21 +484,37 @@ private fun CalendarTransactionItem(
 
 private fun formatCompactAmount(amount: Double): String {
     return when {
-        amount >= 1000000 -> "${(amount / 1000000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}M"
-        amount >= 1000 -> "${(amount / 1000).let { if (it == it.toLong().toDouble()) it.toLong().toString() else String.format("%.1f", it) }}k"
+        amount >= 1000000 -> "${
+            (amount / 1000000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }M"
+
+        amount >= 1000 -> "${
+            (amount / 1000).let {
+                if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    "%.1f",
+                    it
+                )
+            }
+        }k"
+
         else -> amount.toLong().toString()
     }
 }
 
 private fun getCategoryIconForCalendar(iconName: String?): Int {
     return when (iconName?.lowercase()) {
-        "food", "food-dining", "restaurant", "utensils" -> R.drawable.ic_utensils
-        "transport", "transportation", "car" -> R.drawable.ic_car
-        "shopping", "shop", "bag" -> R.drawable.ic_shopping_bag
-        "bills", "bills-utilities", "home" -> R.drawable.ic_home
-        "entertainment", "coffee" -> R.drawable.ic_coffee
-        "health", "healthcare" -> R.drawable.ic_heart
-        "income", "salary", "trending-up" -> R.drawable.ic_trending_up
-        else -> R.drawable.ic_wallet
+        "food", "food-dining", "restaurant", "utensils" -> Icons.ic_utensils
+        "transport", "transportation", "car" -> Icons.ic_car
+        "shopping", "shop", "bag" -> Icons.ic_shopping_bag
+        "bills", "bills-utilities", "home" -> Icons.ic_home
+        "entertainment", "coffee" -> Icons.ic_coffee
+        "health", "healthcare" -> Icons.ic_heart
+        "income", "salary", "trending-up" -> Icons.ic_trending_up
+        else -> Icons.ic_wallet
     }
 }

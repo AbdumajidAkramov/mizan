@@ -16,9 +16,10 @@ import dev.esbi.mizan.feature.newtransaction.confirm.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanDatePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.MizanTimePickerDialog
 import dev.esbi.mizan.feature.newtransaction.confirm.state.ConfirmTransactionUiState
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.ui.toast.MizanToast
 import dev.esbi.mizan.ui.toast.MizanToastStatus
 
@@ -35,7 +36,7 @@ internal fun NewTransactionScreen(
     onNavigateToCategorySelector: () -> Unit
 ) {
 
-    val state by viewModel.addNewTransactionState.collectAsState(initial = State())
+    val state by viewModel.addNewTransactionState.collectAsState(initial = AddNewTransactionStore.State())
     val accept = viewModel::onNewTransactionStoreIntent
     val labels by viewModel.addNewTransactionLabels.collectAsState(initial = null)
 
@@ -44,7 +45,7 @@ internal fun NewTransactionScreen(
 
     LaunchedEffect(labels) {
         when (val currentLabel = labels) {
-            Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
+            AddNewTransactionStore.Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
             Label.NavigateToAccountManage -> onNavigateToAccountManage()
             Label.NavigateToTemplateManage -> onNavigateToAccountManage()
             Label.NavigateToAccountSelector -> onNavigateToAccountSelector()
@@ -54,6 +55,7 @@ internal fun NewTransactionScreen(
                 toastMessage = "Transaction deleted"
                 onSubmit()
             }
+
             Label.BackTo -> onBackPressed()
             is Label.ShowToast -> {
                 toastMessage = currentLabel.message
@@ -66,7 +68,7 @@ internal fun NewTransactionScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         when (state.step) {
@@ -117,7 +119,7 @@ internal fun NewTransactionScreen(
                 )
             }
         }
-        
+
         // Toast qatlami (Har doim eng tepada turadi)
         state.error?.let { error ->
             MizanToast(

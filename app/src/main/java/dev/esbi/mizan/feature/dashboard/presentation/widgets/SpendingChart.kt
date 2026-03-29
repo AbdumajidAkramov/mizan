@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.dashboard.domain.model.WeeklySpendingPoint
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.WeeklySpendingPoint
 import dev.esbi.mizan.ui.theme.CardBorderColor
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.TextMuted

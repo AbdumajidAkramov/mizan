@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,9 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
+import dev.esbi.mizan.ui.kit.badge.MizanBadge
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.Arrangement
 
 @Composable
 fun AccountRow(
@@ -35,16 +38,15 @@ fun AccountRow(
     colorHex: String?,
     iconName: String?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    iconContent: @Composable (() -> Unit)? = null
 ) {
-    val formatter = DecimalFormat("#,###.00", DecimalFormatSymbols(Locale.US)).apply {
-        val symbols = this.decimalFormatSymbols
-        symbols.groupingSeparator = ' '
-        this.decimalFormatSymbols = symbols
+    val formatter = java.text.NumberFormat.getNumberInstance(java.util.Locale("uz", "UZ")).apply {
+        minimumFractionDigits = 2
+        maximumFractionDigits = 2
     }
-
     val isNegative = balance < 0
-    val formatted = formatter.format(kotlin.math.abs(balance))
+    val formatted = formatter.format(kotlin.math.abs(balance)).replace(",", ".")
     val parts = formatted.split(".")
     val integer = parts[0]
     val decimal = if (parts.size > 1) parts[1] else "00"
@@ -74,19 +76,21 @@ fun AccountRow(
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(12.dp))
                 .background(parsedColor.copy(alpha = 0.2f))
-                .border(1.dp, parsedColor.copy(alpha = 0.3f), RoundedCornerShape(16.dp)),
+                .border(1.dp, parsedColor.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
-            // Pseudo-icon rendering - ideally we resolve iconName to drawable resource Id
-            // using LocalContext or a helper, here we just use a generic icon text or placeholder
-            Text(
-                text = iconName?.take(1)?.uppercase() ?: "A",
-                color = parsedColor,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
+            if (iconContent != null) {
+                iconContent()
+            } else {
+                Text(
+                    text = iconName?.take(1)?.uppercase() ?: "A",
+                    color = parsedColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -126,28 +130,28 @@ fun AccountRow(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = ".$decimal",
-                    color = balanceColor.copy(alpha = if (isNegative) 0.7f else 0.6f),
+                    text = ".${decimal}",
+                    color = balanceColor.copy(alpha = 0.7f),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
-            Text(
+            Spacer(modifier = Modifier.height(6.dp))
+            MizanBadge(
                 text = currencyCode,
-                color = Color.White.copy(alpha = 0.4f),
-                fontSize = 12.sp
+                backgroundColor = Color.White.copy(alpha = 0.1f),
+                textColor = Color.White.copy(alpha = 0.8f)
             )
         }
 
         Spacer(modifier = Modifier.width(12.dp))
 
         // Chevron
-        Text(
-            text = "›",
-            color = Color.White.copy(alpha = 0.3f),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Light,
-            modifier = Modifier.padding(bottom = 4.dp)
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = Color.White.copy(alpha = 0.3f),
+            modifier = Modifier.size(20.dp)
         )
     }
 }

@@ -6,8 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,27 +13,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,9 +39,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
-import dev.esbi.mizan.feature.managecategories.store.ManageCategoriesStore
+import dev.esbi.mizan.presentation.feature.managecategories.store.ManageCategoriesStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
+import androidx.core.graphics.toColorInt
 
 /**
  * Add/Edit Category Bottom Sheet
@@ -100,17 +92,17 @@ private fun AddEditCategoryContent(
     onSave: (ManageCategoriesStore.CategoryItem) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var name by remember(editingCategory?.name) { 
-        mutableStateOf(editingCategory?.name ?: "") 
+    var name by remember(editingCategory?.name) {
+        mutableStateOf(editingCategory?.name ?: "")
     }
-    var selectedIcon by remember(editingCategory?.iconName) { 
-        mutableStateOf(editingCategory?.iconName ?: "ic_category") 
+    var selectedIcon by remember(editingCategory?.iconName) {
+        mutableStateOf(editingCategory?.iconName ?: "ic_category")
     }
-    var selectedColor by remember(editingCategory?.color) { 
-        mutableStateOf(editingCategory?.color ?: "#10B981") 
+    var selectedColor by remember(editingCategory?.color) {
+        mutableStateOf(editingCategory?.color ?: "#10B981")
     }
-    var selectedType by remember(editingCategory?.type) { 
-        mutableStateOf(editingCategory?.type ?: "EXPENSE") 
+    var selectedType by remember(editingCategory?.type) {
+        mutableStateOf(editingCategory?.type ?: "EXPENSE")
     }
 
     val isEditing = editingCategory != null
@@ -140,12 +132,12 @@ private fun AddEditCategoryContent(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { 
+                label = {
                     Text(
                         "Category Name",
                         style = MizanTheme.typography.bodySm,
                         color = MizanTheme.premium.text.secondary
-                    ) 
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -281,7 +273,7 @@ private fun CategoryTypeButton(
         modifier = modifier
             .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
             .background(
-                if (isSelected) MizanTheme.premium.colors.emerald 
+                if (isSelected) MizanTheme.premium.colors.emerald
                 else MizanTheme.premium.colors.surface2
             )
             .clickable { onClick() }
@@ -333,7 +325,7 @@ private fun IconSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(R.drawable.ic_category),
+                    painter = androidx.compose.ui.res.painterResource(Icons.ic_category),
                     contentDescription = null,
                     tint = if (selectedIcon == icon) MizanTheme.premium.colors.emerald
                     else MizanTheme.premium.text.secondary,
@@ -362,7 +354,7 @@ private fun ColorSelector(
     ) {
         items(colors) { color ->
             val colorValue = try {
-                Color(android.graphics.Color.parseColor(color))
+                Color(color.toColorInt())
             } catch (e: Exception) {
                 MizanTheme.premium.colors.emerald
             }
@@ -383,7 +375,7 @@ private fun ColorSelector(
             ) {
                 if (selectedColor == color) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(R.drawable.ic_check),
+                        painter = androidx.compose.ui.res.painterResource(Icons.ic_check),
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)

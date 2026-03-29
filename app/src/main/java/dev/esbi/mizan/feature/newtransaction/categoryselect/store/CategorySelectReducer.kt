@@ -1,8 +1,8 @@
 package dev.esbi.mizan.feature.newtransaction.categoryselect.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
-import dev.esbi.mizan.feature.addtransaction.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 
 internal object CategorySelectReducer :
     Reducer<CategorySelectStore.State, CategorySelectReducer.Message> {
@@ -11,7 +11,7 @@ internal object CategorySelectReducer :
         class CategoriesLoaded(val categories: List<Category>) : Message
         class LoadingChanged(val isLoading: Boolean) : Message
         class ErrorChanged(val error: String?) : Message
-        class ParentCategorySelected(val parentId: String) : Message
+        class ParentCategorySelected(val parentId: Long?) : Message
         object NavigateToParent : Message
         class TransactionTypeChanged(val transactionType: TransactionType) : Message
         class CategorySelected(val category: Category) : Message

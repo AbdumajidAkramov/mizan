@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
 import dev.esbi.mizan.feature.premiumaddtransaction.ui.TransactionTypeChip
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -66,13 +66,15 @@ fun TransactionContextContent(
     }
 
     val typeIcon = when (transactionType) {
-        TransactionType.EXPENSE -> R.drawable.ic_trend_up
-        TransactionType.INCOME -> R.drawable.ic_down_trend
-        TransactionType.TRANSFER -> R.drawable.ic_swap_horizontal
+        TransactionType.EXPENSE -> Icons.ic_trend_up
+        TransactionType.INCOME -> Icons.ic_down_trend
+        TransactionType.TRANSFER -> Icons.ic_swap_horizontal
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
     ) {
@@ -103,7 +105,7 @@ fun TransactionContextContent(
 
                 // Swap Icon
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_swap_horizontal),
+                    painter = painterResource(id = Icons.ic_swap_horizontal),
                     contentDescription = null,
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(16.dp)

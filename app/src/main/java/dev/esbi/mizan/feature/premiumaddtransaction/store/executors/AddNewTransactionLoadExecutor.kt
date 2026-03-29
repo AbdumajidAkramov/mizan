@@ -1,14 +1,14 @@
 package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.di.MainDispatcher
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
-import dev.esbi.mizan.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,33 +24,34 @@ class AddNewTransactionLoadExecutor @Inject constructor(
             is Action.LoadTransaction -> {
                 loadTransaction()
             }
+
             else -> Unit
         }
     }
 
     private fun loadTransaction() {
         val transactionId = state().editingTransactionId ?: return
-        
+
         scope.launch {
             dispatch(Message.UpdateLoading(true))
             dispatch(Message.UpdateError(null))
-            
+
             try {
                 // Fetch transaction from repository
                 val transaction = transactionRepository.getTransactionById(transactionId)
-                
+
                 if (transaction != null) {
                     // Fetch related entities
                     val account = transaction.accountId?.let { accountRepository.getAccount(it) }
-                    val targetAccount = transaction.targetAccountId?.let { 
-                        accountRepository.getAccount(it) 
+                    val targetAccount = transaction.targetAccountId?.let {
+                        accountRepository.getAccount(it)
                     }
-                    
+
                     // Find category from state (categories will be loaded by InitCategories action)
                     val category = transaction.categoryId?.let { categoryId ->
                         state().allCategories.find { it.id == categoryId }
                     }
-                    
+
                     // Dispatch message to pre-fill state
                     dispatch(
                         Message.TransactionLoaded(

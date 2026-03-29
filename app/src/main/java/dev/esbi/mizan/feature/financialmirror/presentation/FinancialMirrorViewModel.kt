@@ -3,8 +3,8 @@ package dev.esbi.mizan.feature.financialmirror.presentation
 import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStore
-import dev.esbi.mizan.feature.financialmirror.presentation.store.FinancialMirrorStoreFactory
+import dev.esbi.mizan.presentation.feature.financialmirror.presentation.store.FinancialMirrorStore
+import dev.esbi.mizan.presentation.feature.financialmirror.presentation.store.FinancialMirrorStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

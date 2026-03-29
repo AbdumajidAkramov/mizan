@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskFactor
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskStatus
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskFactor
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskStatus
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable

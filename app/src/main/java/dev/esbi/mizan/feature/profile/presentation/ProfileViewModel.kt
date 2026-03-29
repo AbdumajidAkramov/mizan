@@ -3,8 +3,8 @@ package dev.esbi.mizan.feature.profile.presentation
 import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.profile.presentation.store.ProfileStore
-import dev.esbi.mizan.feature.profile.presentation.store.ProfileStoreFactory
+import dev.esbi.mizan.presentation.feature.profile.presentation.store.ProfileStore
+import dev.esbi.mizan.presentation.feature.profile.presentation.store.ProfileStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -13,7 +13,9 @@ import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.data.settings.AppSettingsSerializer
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
+import dev.esbi.mizan.domain.model.profile.AppSettings
+import dev.esbi.mizan.presentation.di.IoDispatcher
+import dev.esbi.mizan.presentation.di.MainDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton

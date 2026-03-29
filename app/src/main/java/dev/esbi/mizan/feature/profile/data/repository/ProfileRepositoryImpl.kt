@@ -1,9 +1,9 @@
 package dev.esbi.mizan.feature.profile.data.repository
 
 import dev.esbi.mizan.data.settings.AppSettingsManager
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
-import dev.esbi.mizan.feature.profile.domain.model.UserProfile
-import dev.esbi.mizan.feature.profile.domain.repository.ProfileRepository
+import dev.esbi.mizan.domain.model.profile.AppSettings
+import dev.esbi.mizan.domain.model.profile.UserProfile
+import dev.esbi.mizan.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

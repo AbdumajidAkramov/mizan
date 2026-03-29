@@ -4,11 +4,12 @@ import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
 import dev.esbi.mizan.data.local.entity.DashboardSummaryEntity
 import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
-import dev.esbi.mizan.feature.dashboard.domain.model.CategorySpending
-import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
-import dev.esbi.mizan.feature.dashboard.domain.model.Transaction
-import dev.esbi.mizan.feature.dashboard.domain.model.TransactionType
-import dev.esbi.mizan.feature.dashboard.domain.model.WeeklySpendingPoint
+import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.CategorySpending
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.DashboardSummary
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.WeeklySpendingPoint
 
 fun DashboardSummaryEntity.toDomain(
     categories: List<CategorySpending>,
@@ -48,17 +49,17 @@ fun WeeklySpendingEntity.toDomain(): WeeklySpendingPoint {
 
 fun TransactionEntity.toDomain(): Transaction {
     return Transaction(
-        id = "id",
+        id = id,
         amount = amount,
-        category = "category",
-        categoryLabel = "categoryLabel",
         description = "description",
-        date = java.util.Date(),
+        date = date,
+        note = note,
         type = when (type.name.uppercase()) {
             "INCOME" -> TransactionType.INCOME
             "TRANSFER" -> TransactionType.TRANSFER
             else -> TransactionType.EXPENSE
         },
-        colorToken = "colorToken"
+        currency = Currency.UZS,
+        exchangeRate = exchangeRate,
     )
 }

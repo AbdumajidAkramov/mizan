@@ -4,13 +4,13 @@ import dev.esbi.mizan.data.local.entity.FinancialProjectionEntity
 import dev.esbi.mizan.data.local.entity.InvestmentOpportunityEntity
 import dev.esbi.mizan.data.local.entity.RiskFactorEntity
 import dev.esbi.mizan.data.local.entity.TimeMachineScenarioEntity
-import dev.esbi.mizan.feature.financialmirror.domain.model.FinancialProjection
-import dev.esbi.mizan.feature.financialmirror.domain.model.InvestmentOpportunity
-import dev.esbi.mizan.feature.financialmirror.domain.model.InvestmentType
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskFactor
-import dev.esbi.mizan.feature.financialmirror.domain.model.RiskStatus
-import dev.esbi.mizan.feature.financialmirror.domain.model.ScenarioIconType
-import dev.esbi.mizan.feature.financialmirror.domain.model.TimeMachineScenario
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.FinancialProjection
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentOpportunity
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentType
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskFactor
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskStatus
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ScenarioIconType
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMachineScenario
 
 fun FinancialProjectionEntity.toDomain(): FinancialProjection {
     return FinancialProjection(

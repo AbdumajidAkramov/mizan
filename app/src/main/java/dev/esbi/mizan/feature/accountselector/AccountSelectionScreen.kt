@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.esbi.mizan.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 
 @Composable
@@ -20,7 +20,7 @@ fun AccountSelectionScreen(
     onAddAccountClick: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState(initial = AccountSelectorStore.State())
-    
+
     // Handle label emissions
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
@@ -29,6 +29,7 @@ fun AccountSelectionScreen(
                     onAccountSelected(label.account)
                     onClose()
                 }
+
                 is AccountSelectorStore.Label.ShowError -> {
                     // Handle error display (could show a snackbar or toast)
                 }
@@ -55,7 +56,7 @@ fun AccountSelectionScreen(
     showBackground = true
 )
 @Composable
-fun AccountSelectionScreenPreview(){
+fun AccountSelectionScreenPreview() {
     MizanTheme() {
 //        AccountSelectionScreen()
     }

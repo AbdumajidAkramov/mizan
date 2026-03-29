@@ -25,8 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.addtransaction.presentation.models.Account
-import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -37,48 +36,6 @@ import java.util.Locale
 
 
 // TypeScriptdagi MOCK_ACCOUNTS ga mos ma'lumotlar
-val MOCK_ACCOUNTS = listOf(
-    Account(
-        id = "cash",
-        name = "Cash",
-        type = "cash",
-        balance = 1250.00,
-        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_wallet), // Wallet icon
-        color = Color(0xFF10B981)    // Emerald
-    ),
-    Account(
-        id = "bank-checking",
-        name = "Bank Checking",
-        type = "bank",
-        balance = 5430.50,
-        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_track_changes), // Building icon
-        color = Color(0xFF667EEA)    // Primary Blue
-    ),
-    Account(
-        id = "savings",
-        name = "Savings Account",
-        type = "savings",
-        balance = 12500.00,
-        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_wallet), // PiggyBank o'rniga Savings yoki shunga o'xshash
-        color = Color(0xFF4FACFE)    // Light Blue
-    ),
-    Account(
-        id = "credit-card",
-        name = "Credit Card",
-        type = "credit",
-        balance = -850.00,
-        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_wallet),
-        color = Color(0xFFF5576C)    // Red/Pink
-    ),
-    Account(
-        id = "investment",
-        name = "Investment",
-        type = "investment",
-        balance = 8200.00,
-        icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_trend_up), // Landmark/Investment o'rniga
-        color = Color(0xFFC471F5)    // Purple
-    )
-)
 
 // ==========================================
 // 2. COMPONENT
@@ -87,14 +44,12 @@ val MOCK_ACCOUNTS = listOf(
 @Composable
 fun PremiumAccountSelector(
     label: String,
-    selectedAccountId: String?,
-    onSelectAccount: (String) -> Unit,
+    selectedAccountId: Long?,
+    onSelectAccount: (Long) -> Unit,
     excludeAccountId: String? = null
 ) {
     // Filtrlash: Agar excludeAccountId berilgan bo'lsa, uni ro'yxatdan olib tashlaymiz
-    val availableAccounts = remember(excludeAccountId) {
-        MOCK_ACCOUNTS.filter { it.id != excludeAccountId }
-    }
+    val availableAccounts = remember(excludeAccountId) { listOf<Account>() }
 
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
@@ -137,22 +92,6 @@ fun PremiumAccountSelector(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
                 ) {
-                    // Icon Box
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-                            .background(account.color.copy(alpha = 0.2f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
-                            icon = account.icon,
-                            contentDescription = null,
-                            tint = account.color,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-
                     // Account Info
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
@@ -203,7 +142,7 @@ private fun AccountSelectorPreview() {
     Box(modifier = Modifier.padding(24.dp)) {
         PremiumAccountSelector(
             label = "From Account",
-            selectedAccountId = "cash",
+            selectedAccountId = 1,
             onSelectAccount = {},
             excludeAccountId = "savings"
         )

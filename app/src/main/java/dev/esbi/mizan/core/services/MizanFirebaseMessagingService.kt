@@ -12,6 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dev.esbi.mizan.MainActivity
 import dev.esbi.mizan.R
+import dev.esbi.mizan.ui.utils.Icons
 
 /**
  * Firebase Cloud Messaging Service for handling push notifications.
@@ -42,7 +43,7 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "New FCM Token: $token")
-        
+
         // TODO: Send token to your backend server for push notification targeting
         sendTokenToServer(token)
     }
@@ -54,7 +55,7 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        
+
         Log.d(TAG, "Message received from: ${remoteMessage.from}")
 
         // Check if message contains a data payload
@@ -89,14 +90,17 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
                 // Handle transaction-related notifications
                 Log.d(TAG, "Transaction notification received")
             }
+
             "budget_alert" -> {
                 // Handle budget alert notifications
                 Log.d(TAG, "Budget alert notification received")
             }
+
             "reminder" -> {
                 // Handle reminder notifications
                 Log.d(TAG, "Reminder notification received")
             }
+
             else -> {
                 // Default handling
                 Log.d(TAG, "Generic notification received")
@@ -117,7 +121,8 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
      * @param body The notification body/message
      */
     private fun showNotification(title: String, body: String) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Create notification channel for Android O and above
         createNotificationChannel(notificationManager)
@@ -136,7 +141,7 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
 
         // Build the notification
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(Icons.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)

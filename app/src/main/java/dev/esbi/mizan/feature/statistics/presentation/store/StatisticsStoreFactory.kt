@@ -5,7 +5,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.di.MainDispatcher
+import dev.esbi.mizan.presentation.di.MainDispatcher
 import dev.esbi.mizan.feature.statistics.domain.model.StatisticsSummary
 import dev.esbi.mizan.feature.statistics.domain.model.TimePeriod
 import dev.esbi.mizan.feature.statistics.domain.usecase.ObserveStatisticsUseCase

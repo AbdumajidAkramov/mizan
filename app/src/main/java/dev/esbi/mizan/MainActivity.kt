@@ -10,7 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.settings.AppSettingsManager
-import dev.esbi.mizan.feature.profile.domain.model.AppSettings
+import dev.esbi.mizan.domain.model.profile.AppSettings
 import dev.esbi.mizan.main.MainAppScreen
 import dev.esbi.mizan.ui.theme.MizanTheme
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +22,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var settingsManager: AppSettingsManager
 
+    @Inject
+    lateinit var mockDataSeeder: dev.esbi.mizan.data.local.seeder.MockDataSeeder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -30,6 +33,7 @@ class MainActivity : ComponentActivity() {
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
 
         lifecycleScope.launch {
+            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
             settingsManager.settings.collect {
                 settingState.value = it
             }

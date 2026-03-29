@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.feature.financialmirror.domain.model.AIRecommendation
+import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.AIRecommendation
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable

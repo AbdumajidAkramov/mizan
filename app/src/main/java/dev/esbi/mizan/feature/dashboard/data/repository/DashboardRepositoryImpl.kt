@@ -2,11 +2,11 @@ package dev.esbi.mizan.feature.dashboard.data.repository
 
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
-import dev.esbi.mizan.di.IoDispatcher
 import dev.esbi.mizan.data.local.entity.DashboardSummaryEntity
 import dev.esbi.mizan.feature.dashboard.data.mapper.toDomain
-import dev.esbi.mizan.feature.dashboard.domain.model.DashboardSummary
-import dev.esbi.mizan.feature.dashboard.domain.repository.DashboardRepository
+import dev.esbi.mizan.presentation.di.IoDispatcher
+import dev.esbi.mizan.presentation.feature.dashboard.domain.model.DashboardSummary
+import dev.esbi.mizan.presentation.feature.dashboard.domain.repository.DashboardRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

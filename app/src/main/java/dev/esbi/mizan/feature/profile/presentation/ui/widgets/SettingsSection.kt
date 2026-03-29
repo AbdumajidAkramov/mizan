@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.profile.domain.model.SettingAction
-import dev.esbi.mizan.feature.profile.domain.model.SettingItem
+import dev.esbi.mizan.domain.model.profile.SettingAction
+import dev.esbi.mizan.domain.model.profile.SettingItem
 import dev.esbi.mizan.feature.profile.presentation.ui.getIconResource
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
@@ -109,21 +109,23 @@ internal fun SettingItemRow(
                         style = MizanTheme.typography.bodyMd,
                         color = MizanTheme.premium.text.primary,
                     )
-                    if (item.description != null) {
+                    item.description?.let { desc ->
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = item.description,
+                            text = desc,
                             style = MizanTheme.typography.bodySm,
                             color = MizanTheme.premium.text.tertiary,
                         )
                     }
-                    if (item.value != null && !isAppearance) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = item.value,
-                            style = MizanTheme.typography.bodySm,
-                            color = MizanTheme.premium.text.tertiary,
-                        )
+                    if (!isAppearance) {
+                        item.value?.let { itemValue ->
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = itemValue,
+                                style = MizanTheme.typography.bodySm,
+                                color = MizanTheme.premium.text.tertiary,
+                            )
+                        }
                     }
                 }
 

@@ -3,8 +3,8 @@ package dev.esbi.mizan.feature.addtransaction.presentation
 import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStore
-import dev.esbi.mizan.feature.addtransaction.presentation.store.AddTransactionStoreFactory
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.store.AddTransactionStore
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.store.AddTransactionStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

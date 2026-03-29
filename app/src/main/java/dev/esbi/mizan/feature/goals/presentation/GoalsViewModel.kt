@@ -3,8 +3,8 @@ package dev.esbi.mizan.feature.goals.presentation
 import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.feature.goals.presentation.store.GoalsStore
-import dev.esbi.mizan.feature.goals.presentation.store.GoalsStoreFactory
+import dev.esbi.mizan.presentation.feature.goals.presentation.store.GoalsStore
+import dev.esbi.mizan.presentation.feature.goals.presentation.store.GoalsStoreFactory
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -22,10 +22,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.ui.animation.animateProgressAsState
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
+import dev.esbi.mizan.ui.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -37,7 +37,7 @@ fun BudgetStatusCard(
     modifier: Modifier = Modifier
 ) {
     val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-    
+
     PremiumCard(
         variant = PremiumCardVariant.Glass,
         modifier = modifier
@@ -48,13 +48,13 @@ fun BudgetStatusCard(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.dashboard_budget_used),
+                text = stringResource(Strings.dashboard_budget_used),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom
@@ -68,7 +68,7 @@ fun BudgetStatusCard(
                     )
                     Text(
                         text = stringResource(
-                            R.string.dashboard_budget_spent_of_limit,
+                            Strings.dashboard_budget_spent_of_limit,
                             numberFormat.format(spentAmount),
                             numberFormat.format(budgetLimit)
                         ),
@@ -77,13 +77,13 @@ fun BudgetStatusCard(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             val animatedProgress by animateProgressAsState(
                 targetProgress = (percentageUsed / 100.0).toFloat()
             )
-            
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

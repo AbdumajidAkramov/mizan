@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import dev.esbi.mizan.feature.accountmanagement.store.AccountManagementStore
-import dev.esbi.mizan.feature.accountmanagement.store.AccountManagementStoreFactory
+import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStoreFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -41,6 +41,10 @@ class AccountManagementViewModel @Inject constructor(
 
     fun onDeleteAccount(id: Long) {
         store.accept(AccountManagementStore.Intent.DeleteAccount(id))
+    }
+
+    fun onConfirmDeleteAccount(id: Long) {
+        store.accept(AccountManagementStore.Intent.ConfirmDeleteAccount(id))
     }
 
     fun onArchiveAccount(id: Long) {

@@ -11,7 +11,8 @@ data class Account(
     val color: String? = null,       // HEX rang kodi (Masalan: "#4FACFE")
     val isArchived: Boolean,
     val excludeFromTotal: Boolean,
-    val description: String? = null
+    val description: String? = null,
+    val isDeleted: Boolean = false
 ) {
     enum class Type {
         CASH,       // Naqd pul

@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.feature.transactionshub.ui.components.DailyTransactionGroup
 import dev.esbi.mizan.feature.transactionshub.ui.components.GlobalTimeSelector
 import dev.esbi.mizan.feature.transactionshub.ui.components.SummaryCardsSection
@@ -26,6 +25,7 @@ import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubHeade
 import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubMonthlyTab
 import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubSummaryTab
 import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubTabRow
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 /**
@@ -119,7 +119,11 @@ fun TransactionsHubContent(
                                 accounts = state.accounts,
                                 categories = state.categories,
                                 onTransactionClick = { transaction ->
-                                    onIntent(TransactionsHubStore.Intent.TransactionClicked(transaction))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.TransactionClicked(
+                                            transaction
+                                        )
+                                    )
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -136,7 +140,11 @@ fun TransactionsHubContent(
                                     onIntent(TransactionsHubStore.Intent.SelectDate(date))
                                 },
                                 onTransactionClick = { transaction ->
-                                    onIntent(TransactionsHubStore.Intent.TransactionClicked(transaction))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.TransactionClicked(
+                                            transaction
+                                        )
+                                    )
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -148,10 +156,18 @@ fun TransactionsHubContent(
                                 accounts = state.accounts,
                                 categories = state.categories,
                                 onToggleWeek = { weekNumber ->
-                                    onIntent(TransactionsHubStore.Intent.ToggleWeekExpansion(weekNumber))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.ToggleWeekExpansion(
+                                            weekNumber
+                                        )
+                                    )
                                 },
                                 onTransactionClick = { transaction ->
-                                    onIntent(TransactionsHubStore.Intent.TransactionClicked(transaction))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.TransactionClicked(
+                                            transaction
+                                        )
+                                    )
                                 },
                                 modifier = Modifier.weight(1f)
                             )
@@ -183,13 +199,21 @@ fun TransactionsHubContent(
                                     onIntent(TransactionsHubStore.Intent.SearchDescription(query))
                                 },
                                 onToggleGroup = { description ->
-                                    onIntent(TransactionsHubStore.Intent.ToggleDescriptionGroup(description))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.ToggleDescriptionGroup(
+                                            description
+                                        )
+                                    )
                                 },
                                 onToggleExpandAll = {
                                     onIntent(TransactionsHubStore.Intent.ToggleExpandAllDescriptions)
                                 },
                                 onTransactionClick = { transaction ->
-                                    onIntent(TransactionsHubStore.Intent.TransactionClicked(transaction))
+                                    onIntent(
+                                        TransactionsHubStore.Intent.TransactionClicked(
+                                            transaction
+                                        )
+                                    )
                                 },
                                 modifier = Modifier.weight(1f)
                             )

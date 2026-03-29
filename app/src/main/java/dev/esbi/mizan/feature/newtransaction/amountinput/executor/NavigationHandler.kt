@@ -1,8 +1,8 @@
 package dev.esbi.mizan.feature.newtransaction.amountinput.executor
 
-import dev.esbi.mizan.feature.addtransaction.presentation.models.InputMode
-import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.feature.newtransaction.store.AmountInputState
+import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
+import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.InputMode
 import javax.inject.Inject
 
 /**
@@ -10,14 +10,14 @@ import javax.inject.Inject
  * Manages state transitions and publishes navigation labels.
  */
 internal class NavigationHandler @Inject constructor() {
-    
+
     /**
      * Handles mode change logic
      */
     fun handleModeChange(mode: InputMode): NewTransactionStore.Message {
         return NewTransactionStore.Message.UpdateMode(mode)
     }
-    
+
     /**
      * Handles submit logic with validation
      * Returns a label if navigation should occur, null otherwise
@@ -31,6 +31,7 @@ internal class NavigationHandler @Inject constructor() {
                     null
                 }
             }
+
             InputMode.Voice -> {
                 if (state.voiceInputState.isValid) {
                     NewTransactionStore.Label.MapsToNextStep
@@ -38,13 +39,14 @@ internal class NavigationHandler @Inject constructor() {
                     null
                 }
             }
+
             InputMode.Scan -> {
                 // TODO: Implement scan validation logic
                 NewTransactionStore.Label.MapsToNextStep
             }
         }
     }
-    
+
     /**
      * Validates current state for submit eligibility
      */

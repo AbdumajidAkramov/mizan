@@ -2,8 +2,8 @@ package dev.esbi.mizan.feature.managecategories
 
 import androidx.lifecycle.ViewModel
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
-import dev.esbi.mizan.feature.managecategories.store.ManageCategoriesStore
-import dev.esbi.mizan.feature.managecategories.store.ManageCategoriesStoreFactory
+import dev.esbi.mizan.presentation.feature.managecategories.store.ManageCategoriesStore
+import dev.esbi.mizan.presentation.feature.managecategories.store.ManageCategoriesStoreFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
