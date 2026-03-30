@@ -109,8 +109,8 @@ fun AccountGroupManagementScreen(
     state.accountGroupEditBottomSheet?.let { model ->
         val accountGroup = model.accountGroupModel
         AddEditAccountGroupSheet(
-            initialName = accountGroup?.name,
-            initialType = accountGroup?.type,
+            initialName = accountGroup?.name.orEmpty(),
+            initialType = accountGroup?.type ?: AccountGroupType.DEFAULT,
             onDismiss = {
                 store.accept(AccountGroupStore.Intent.DismissAddEditAccountGroupSheet())
             },

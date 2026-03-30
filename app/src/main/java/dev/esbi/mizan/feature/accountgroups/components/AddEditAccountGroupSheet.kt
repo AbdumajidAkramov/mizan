@@ -38,8 +38,8 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
 fun AddEditAccountGroupSheet(
     onDismiss: () -> Unit,
     onSave: (name: String, type: AccountGroupType) -> Unit,
-    initialName: String? = "",
-    initialType: AccountGroupType? = AccountGroupType.DEFAULT
+    initialName: String = "",
+    initialType: AccountGroupType = AccountGroupType.DEFAULT
 ) {
     var name by remember { mutableStateOf(initialName) }
     var selectedType by remember { mutableStateOf(initialType) }
