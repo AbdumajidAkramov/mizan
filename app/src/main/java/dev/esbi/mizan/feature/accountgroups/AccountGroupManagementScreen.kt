@@ -21,14 +21,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.extensions.coroutines.states
+import dev.esbi.mizan.domain.model.AccountGroup.Companion.copy
 import dev.esbi.mizan.domain.model.AccountGroupType
 import dev.esbi.mizan.feature.accountgroups.components.AddEditAccountGroupSheet
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore
@@ -45,7 +43,6 @@ fun AccountGroupManagementScreen(
     onBackClick: () -> Unit
 ) {
     val state by store.states.collectAsState(initial = AccountGroupStore.State())
-    var showAddSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -66,7 +63,7 @@ fun AccountGroupManagementScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddSheet = true },
+                onClick = { store.accept(AccountGroupStore.Intent.ShowAddEditAccountGroupSheet()) },
                 containerColor = MizanTheme.premium.colors.emerald
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Group", tint = Color.White)
@@ -95,18 +92,13 @@ fun AccountGroupManagementScreen(
                                 AccountGroupType.CREDIT_CARD -> "Credit Card"
                                 AccountGroupType.DEBIT_CARD -> "Debit Card"
                             },
-                            onClick = { /* Handle Edit / Delete */ },
-                            iconContent = {
-                                val iconName = when (group.type) {
-                                    AccountGroupType.CREDIT_CARD -> "ic_credit_card"
-                                    AccountGroupType.DEBIT_CARD -> "ic_card"
-                                    else -> "ic_accounts"
-                                }
-                                MizanIcon(
-                                    icon = IconValue(iconName),
-                                    tint = MizanTheme.premium.text.primary
+                            onClick = {
+                                store.accept(
+                                    AccountGroupStore.Intent.ShowAddEditAccountGroupSheet(
+                                        accountGroup = group
+                                    )
                                 )
-                            }
+                            },
                         )
                     }
                 }
@@ -114,18 +106,21 @@ fun AccountGroupManagementScreen(
         }
     }
 
-    if (showAddSheet) {
+    state.accountGroupEditBottomSheet?.let { model ->
+        val accountGroup = model.accountGroupModel
         AddEditAccountGroupSheet(
-            onDismiss = { showAddSheet = false },
+            initialName = accountGroup?.name.orEmpty(),
+            initialType = accountGroup?.type ?: AccountGroupType.DEFAULT,
+            onDismiss = {
+                store.accept(AccountGroupStore.Intent.DismissAddEditAccountGroupSheet())
+            },
             onSave = { name, type ->
                 store.accept(
                     AccountGroupStore.Intent.AddOrUpdateGroup(
-                        name = name,
-                        iconName = null, // simplified logic
-                        type = type
+                        accountGroup = model.accountGroupModel?.copy(name = name, type = type)
                     )
                 )
-                showAddSheet = false
+                store.accept(AccountGroupStore.Intent.DismissAddEditAccountGroupSheet())
             }
         )
     }

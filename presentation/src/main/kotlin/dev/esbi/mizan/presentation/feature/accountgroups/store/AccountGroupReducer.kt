@@ -8,5 +8,8 @@ internal class AccountGroupReducer : Reducer<State, Message> {
         when (msg) {
             is Message.GroupsLoaded -> copy(groups = msg.groups, isLoading = false)
             is Message.Loading -> copy(isLoading = msg.isLoading)
+            is Message.UpdateEditGroupBottomSheetState -> copy(
+                accountGroupEditBottomSheet = msg.value
+            )
         }
 }

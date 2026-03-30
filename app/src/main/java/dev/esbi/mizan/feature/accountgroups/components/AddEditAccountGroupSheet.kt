@@ -58,7 +58,7 @@ fun AddEditAccountGroupSheet(
                 style = MizanTheme.premium.typography.headingMd,
                 color = MizanTheme.premium.text.primary
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Name Input
@@ -86,7 +86,7 @@ fun AddEditAccountGroupSheet(
                 color = MizanTheme.premium.text.secondary
             )
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -103,7 +103,9 @@ fun AddEditAccountGroupSheet(
                             )
                             .border(
                                 width = 1.dp,
-                                color = if (isSelected) MizanTheme.premium.colors.emerald else Color.White.copy(alpha = 0.1f),
+                                color = if (isSelected) MizanTheme.premium.colors.emerald else Color.White.copy(
+                                    alpha = 0.1f
+                                ),
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .clickable { selectedType = type }

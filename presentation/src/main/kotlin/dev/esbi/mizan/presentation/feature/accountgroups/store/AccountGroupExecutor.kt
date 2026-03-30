@@ -2,8 +2,8 @@ package dev.esbi.mizan.presentation.feature.accountgroups.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.AccountGroup
-import dev.esbi.mizan.domain.model.AccountGroupType
 import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.presentation.feature.accountgroups.model.AccountGroupBottomSheetModel
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore.Intent
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore.Label
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore.State
@@ -33,21 +33,29 @@ internal class AccountGroupExecutor(
         when (intent) {
             is Intent.AddOrUpdateGroup -> saveGroup(intent)
             is Intent.DeleteGroup -> deleteGroup(intent.id)
+            is Intent.ShowAddEditAccountGroupSheet -> {
+                dispatch(
+                    Message.UpdateEditGroupBottomSheetState(
+                        AccountGroupBottomSheetModel(
+                            accountGroupModel = intent.accountGroup ?: AccountGroup.invoke()
+                        )
+                    )
+                )
+            }
+
+            is Intent.DismissAddEditAccountGroupSheet -> {
+                dispatch(Message.UpdateEditGroupBottomSheetState(null))
+            }
         }
     }
 
     private fun saveGroup(intent: Intent.AddOrUpdateGroup) {
         scope.launch {
             try {
-                val group = object : AccountGroup {
-                    override val id: Long = intent.id
-                    override val name: String = intent.name
-                    override val iconName: String? = intent.iconName
-                    override val orderIndex: Int? = 0 // simplified or fetch max
-                    override val type: AccountGroupType = intent.type
+                intent.accountGroup?.let { group ->
+                    accountRepository.saveAccountGroup(group)
+                    publish(Label.GroupSaved)
                 }
-                accountRepository.saveAccountGroup(group)
-                publish(Label.GroupSaved)
             } catch (e: Exception) {
                 publish(Label.Error(e.message ?: "Failed to save account group"))
             }
