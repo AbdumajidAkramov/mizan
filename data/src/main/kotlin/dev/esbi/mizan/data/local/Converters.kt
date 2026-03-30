@@ -3,7 +3,6 @@ package dev.esbi.mizan.data.local
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.model.AccountGroupType
 import java.util.Date
@@ -27,14 +26,7 @@ class Converters {
     @TypeConverter
     fun fromTransactionType(value: Transaction.Type): String = value.name
 
-    // 3. AccountType (String -> Enum)
-    @TypeConverter
-    fun toAccountType(value: String): Account.Type = enumValueOf<Account.Type>(value)
-
-    @TypeConverter
-    fun fromAccountType(value: Account.Type): String = value.name
-    
-    // 4. AccountGroupType (String -> Enum)
+    // 3. AccountGroupType (String -> Enum)
     @TypeConverter
     fun toAccountGroupType(value: String): AccountGroupType = enumValueOf<AccountGroupType>(value)
 

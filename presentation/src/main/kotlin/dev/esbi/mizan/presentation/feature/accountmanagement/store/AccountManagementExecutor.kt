@@ -2,9 +2,11 @@ package dev.esbi.mizan.presentation.feature.accountmanagement.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.domain.model.AccountGroup
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.repository.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -51,9 +53,7 @@ internal class AccountManagementExecutor(
                         accountRepository.markAccountAsDeleted(intent.id)
                         dispatch(AccountManagementStore.Message.AccountDeleted(intent.id))
                         dispatch(AccountManagementStore.Message.LoadingChanged(false))
-                        dispatch(AccountManagementStore.Message.EditSheetHidden) // hide if open
-                        // Refresh accounts list
-                        loadAccounts()
+                        dispatch(AccountManagementStore.Message.EditSheetHidden)
                     } catch(e: Exception) {
                         dispatch(AccountManagementStore.Message.LoadingChanged(false))
                         dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to delete account: ${e.message}"))
@@ -90,20 +90,25 @@ internal class AccountManagementExecutor(
     private fun loadAccounts() {
         dispatch(AccountManagementStore.Message.LoadingChanged(true))
 
-        accountRepository.observeAccounts()
-            .onEach { accounts ->
+        combine(
+            accountRepository.observeAccounts(),
+            accountRepository.observeAccountGroups()
+        ) { accounts, groups ->
+            Pair(accounts, groups)
+        }
+            .onEach { (accounts, groups) ->
+                val groupMap = groups.associateBy { it.id }
+
                 val accountItems = accounts
-                    .filter { !it.isArchived }
+                    .filter { !it.isArchived && !it.isDeleted }
                     .map { account ->
                         AccountManagementStore.AccountItem(
                             id = account.id,
                             groupId = account.groupId,
+                            groupName = groupMap[account.groupId]?.name ?: "Other",
                             name = account.name,
-                            type = account.type,
                             balance = account.balance,
                             currencyCode = account.currency.code,
-                            iconName = account.iconName,
-                            color = account.color,
                             isArchived = account.isArchived,
                             excludeFromTotal = account.excludeFromTotal,
                             description = account.description
@@ -114,7 +119,16 @@ internal class AccountManagementExecutor(
                     .filter { !it.excludeFromTotal }
                     .sumOf { it.balance }
 
-                dispatch(AccountManagementStore.Message.AccountsLoaded(accountItems, totalBalance))
+                val groupItems = groups.map { group ->
+                    AccountManagementStore.AccountGroupItem(
+                        id = group.id,
+                        name = group.name,
+                        isSystemGroup = group.isSystemGroup,
+                        accounts = accountItems.filter { it.groupId == group.id }
+                    )
+                }.filter { it.accounts.isNotEmpty() }
+
+                dispatch(AccountManagementStore.Message.AccountsLoaded(accountItems, groupItems, totalBalance))
                 dispatch(AccountManagementStore.Message.LoadingChanged(false))
             }
             .launchIn(scope)
@@ -129,7 +143,6 @@ internal class AccountManagementExecutor(
                     id = accountItem.id,
                     groupId = accountItem.groupId,
                     name = accountItem.name,
-                    type = accountItem.type,
                     balance = accountItem.balance,
                     currency = Currency(
                         code = accountItem.currencyCode,
@@ -138,8 +151,6 @@ internal class AccountManagementExecutor(
                         rateToBase = 1.0,
                         isBaseCurrency = accountItem.currencyCode == "UZS"
                     ),
-                    iconName = accountItem.iconName,
-                    color = accountItem.color,
                     isArchived = accountItem.isArchived,
                     excludeFromTotal = accountItem.excludeFromTotal,
                     description = accountItem.description
@@ -173,7 +184,6 @@ internal class AccountManagementExecutor(
                     id = account.id,
                     groupId = account.groupId,
                     name = account.name,
-                    type = account.type,
                     balance = account.balance,
                     currency = Currency(
                         code = account.currencyCode,
@@ -182,8 +192,6 @@ internal class AccountManagementExecutor(
                         rateToBase = 1.0,
                         isBaseCurrency = account.currencyCode == "UZS"
                     ),
-                    iconName = account.iconName,
-                    color = account.color,
                     isArchived = true,
                     excludeFromTotal = account.excludeFromTotal,
                     description = account.description
@@ -195,6 +203,4 @@ internal class AccountManagementExecutor(
             }
         }
     }
-
-    // the confirmDeleteAccount method was removed because the Intent handles it now
 }

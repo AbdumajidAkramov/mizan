@@ -14,6 +14,7 @@ internal class AccountManagementReducer : Reducer<AccountManagementStore.State, 
             is AccountManagementStore.Message.AccountsLoaded -> {
                 copy(
                     accounts = msg.accounts,
+                    groups = msg.groups,
                     totalBalance = msg.totalBalance,
                     error = null
                 )

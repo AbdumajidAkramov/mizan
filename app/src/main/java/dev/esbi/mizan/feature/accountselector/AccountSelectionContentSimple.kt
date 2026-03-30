@@ -29,19 +29,9 @@ internal fun AccountSelectionContentSimple(
 ) {
     val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
-    // Group accounts by type
+    // Group accounts by groupId
     val groupedAccounts = remember(accounts) {
-        accounts.groupBy { account ->
-            when (account.type) {
-                Account.Type.CASH -> AccountGroupType.CASH
-                Account.Type.CARD -> AccountGroupType.BANK
-                Account.Type.BANK -> AccountGroupType.BANK
-                Account.Type.SAVINGS -> AccountGroupType.BANK
-                Account.Type.DEBT -> AccountGroupType.BANK
-                Account.Type.CREDIT -> AccountGroupType.BANK
-                Account.Type.INVESTMENT -> AccountGroupType.BANK
-            }
-        }
+        accounts.groupBy { it.groupId }
     }
 
     // Account List
@@ -50,40 +40,22 @@ internal fun AccountSelectionContentSimple(
         contentPadding = PaddingValues(all = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Cash Section
-        groupedAccounts[AccountGroupType.CASH]?.let { cashAccounts ->
-            item {
-                AccountSectionHeader(
-                    title = "CASH",
-                    iconRes = Icons.ic_attach_money
-                )
-            }
-            items(cashAccounts, key = { it.id }) { account ->
-                AccountCard(
-                    account = account,
-                    isSelected = account.id == selectedAccount?.id,
-                    currencyFormat = currencyFormat,
-                    onClick = { onAccountClick(account) }
-                )
-            }
-        }
-
-        // Bank Accounts Section
-        groupedAccounts[AccountGroupType.BANK]?.let { bankAccounts ->
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                AccountSectionHeader(
-                    title = "BANK ACCOUNTS",
-                    iconRes = Icons.ic_home
-                )
-            }
-            items(bankAccounts, key = { it.id }) { account ->
-                AccountCard(
-                    account = account,
-                    isSelected = account.id == selectedAccount?.id,
-                    currencyFormat = currencyFormat,
-                    onClick = { onAccountClick(account) }
-                )
+        groupedAccounts.forEach { (_, groupAccounts) ->
+            if (groupAccounts.isNotEmpty()) {
+                item {
+                    AccountSectionHeader(
+                        title = "ACCOUNTS",
+                        iconRes = Icons.ic_attach_money
+                    )
+                }
+                items(groupAccounts, key = { it.id }) { account ->
+                    AccountCard(
+                        account = account,
+                        isSelected = account.id == selectedAccount?.id,
+                        currencyFormat = currencyFormat,
+                        onClick = { onAccountClick(account) }
+                    )
+                }
             }
         }
 

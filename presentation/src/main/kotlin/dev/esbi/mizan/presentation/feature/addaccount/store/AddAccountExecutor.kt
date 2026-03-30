@@ -5,8 +5,11 @@ import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Intent
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Label
+import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Message
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.State
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class AddAccountExecutor(
@@ -14,11 +17,24 @@ internal class AddAccountExecutor(
     private val accountRepository: AccountRepository
 ) : CoroutineExecutor<Intent, Unit, State, Message, Label>(mainContext = mainDispatcher) {
 
+    init {
+        loadGroups()
+    }
+
+    private fun loadGroups() {
+        accountRepository.observeAccountGroups()
+            .onEach { groups ->
+                dispatch(Message.GroupsLoaded(groups))
+            }
+            .launchIn(scope)
+    }
+
     override fun executeIntent(intent: Intent) {
         when (intent) {
             is Intent.UpdateName -> dispatch(Message.NameChanged(intent.name))
             is Intent.UpdateBalance -> dispatch(Message.BalanceChanged(intent.balance))
             is Intent.SelectCurrency -> dispatch(Message.CurrencySelected(intent.currency))
+            is Intent.SelectGroup -> dispatch(Message.GroupSelected(intent.groupId))
             is Intent.UpdateDescription -> dispatch(Message.DescriptionChanged(intent.description))
             is Intent.SaveAccount -> validateAndSave()
         }
@@ -36,6 +52,10 @@ internal class AddAccountExecutor(
             errors[State.Field.CURRENCY] = "Currency must be selected"
         }
 
+        if (currentState.availableGroups.none { it.id == currentState.selectedGroupId }) {
+            errors[State.Field.GROUP] = "Please select a valid group"
+        }
+
         if (errors.isNotEmpty()) {
             dispatch(Message.ValidationFailed(errors))
             return
@@ -45,12 +65,10 @@ internal class AddAccountExecutor(
 
         val newAccount = Account(
             id = 0L,
-            groupId = 1L, // Default to General Accounts
+            groupId = currentState.selectedGroupId,
             name = currentState.name.trim(),
-            type = Account.Type.BANK, 
             balance = parsedBalance,
             currency = currentState.selectedCurrency!!,
-            iconName = "ic_accounts",
             isArchived = false,
             excludeFromTotal = false,
             description = currentState.description.takeIf { it.isNotBlank() }

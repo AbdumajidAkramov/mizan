@@ -32,11 +32,8 @@ class AccountRepositoryImpl @Inject constructor(
             id = 0L,
             groupId = account.groupId,
             name = account.name,
-            type = account.type,
             balance = account.balance,
             currencyCode = account.currency.code,
-            iconName = account.iconName,
-            color = account.color,
             isArchived = account.isArchived,
             excludeFromTotal = account.excludeFromTotal,
             description = account.description,
@@ -50,12 +47,10 @@ class AccountRepositoryImpl @Inject constructor(
         accountDao.updateAccount(
             id = account.id,
             name = account.name,
-            type = account.type.name,
             balance = account.balance,
-            iconName = account.iconName,
-            color = account.color,
             isArchived = account.isArchived,
-            description = account.description
+            description = account.description,
+            groupId = account.groupId
         )
     }
 
@@ -83,7 +78,8 @@ class AccountRepositoryImpl @Inject constructor(
             name = group.name,
             iconName = group.iconName,
             orderIndex = group.orderIndex,
-            type = group.type
+            type = group.type,
+            isSystemGroup = group.isSystemGroup
         )
         if (group.id == 0L) {
             accountGroupDao.insertGroup(entity)
@@ -94,5 +90,9 @@ class AccountRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccountGroup(id: Long) {
         accountGroupDao.deleteGroupById(id)
+    }
+
+    override suspend fun isSystemGroup(groupId: Long): Boolean {
+        return accountGroupDao.isSystemGroup(groupId)
     }
 }

@@ -13,15 +13,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,13 +27,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,38 +44,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.feature.accountmanagement.components.AccountGroupSelectorBottomSheet
+import dev.esbi.mizan.feature.accountmanagement.components.AccountGroupSelectorRow
 import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
-import dev.esbi.mizan.ui.kit.icon.AccountIcon
+import dev.esbi.mizan.ui.components.input.CurrencyScrollSelector
+import dev.esbi.mizan.ui.components.input.MizanTextField
+import dev.esbi.mizan.ui.components.input.SelectorCurrency
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
-private val ACCOUNT_COLORS = listOf(
-    "#10B981", // Emerald
-    "#667EEA", // Indigo
-    "#4FACFE", // Blue
-    "#F5576C", // Red/Pink
-    "#C471F5", // Purple
-    "#F093FB", // Pink
-    "#FFD93D", // Yellow
-    "#FF9A3C", // Orange
-    "#00C9FF", // Cyan
-    "#92FE9D"  // Light Green
-)
-
-private val ACCOUNT_ICONS = listOf(
-    "ic_wallet",
-    "ic_card",
-    "ic_bank",
-    "ic_piggy_bank",
-    "ic_cash",
-    "ic_savings",
-    "ic_investment"
+private val DEFAULT_CURRENCIES = listOf(
+    SelectorCurrency("UZS", "сўм"),
+    SelectorCurrency("USD", "$"),
+    SelectorCurrency("EUR", "€"),
+    SelectorCurrency("RUB", "₽")
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditAccountSheet(
     account: AccountManagementStore.AccountItem?,
+    groups: List<AccountManagementStore.AccountGroupItem>,
     onSave: (AccountManagementStore.AccountItem) -> Unit,
     onDelete: (Long) -> Unit = {},
     onDismiss: () -> Unit
@@ -88,13 +72,24 @@ fun AddEditAccountSheet(
     val isEditing = account != null
 
     var name by remember { mutableStateOf(account?.name ?: "") }
+    var nameError by remember { mutableStateOf<String?>(null) }
     var balance by remember { mutableDoubleStateOf(account?.balance ?: 0.0) }
-    var balanceText by remember { mutableStateOf(if (account?.balance != null && account.balance != 0.0) account.balance.toString() else "") }
-    var selectedType by remember { mutableStateOf(account?.type ?: Account.Type.CASH) }
-    var selectedColor by remember { mutableStateOf(account?.color ?: ACCOUNT_COLORS.first()) }
-    var selectedIcon by remember { mutableStateOf(account?.iconName ?: ACCOUNT_ICONS.first()) }
+    var balanceText by remember {
+        mutableStateOf(
+            if (account?.balance != null && account.balance != 0.0) account.balance.toString() else ""
+        )
+    }
+    var selectedGroupId by remember { mutableLongStateOf(account?.groupId ?: 1L) } // Default to "General" group
+    var groupError by remember { mutableStateOf<String?>(null) }
+    var showGroupSelector by remember { mutableStateOf(false) }
+    var selectedCurrency by remember {
+        mutableStateOf(
+            DEFAULT_CURRENCIES.find { it.code == account?.currencyCode } ?: DEFAULT_CURRENCIES.first()
+        )
+    }
+    var description by remember { mutableStateOf(account?.description ?: "") }
 
-    val isValid = name.isNotBlank()
+    val isValid = name.isNotBlank() && selectedGroupId > 0L
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -122,7 +117,6 @@ fun AddEditAccountSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Empty spacer for balance
                 Spacer(modifier = Modifier.weight(if (isEditing) 1f else 0.1f))
 
                 Text(
@@ -155,126 +149,80 @@ fun AddEditAccountSheet(
             Column(
                 verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.lg)
             ) {
-                // Account Name
-                Column {
+                // Account Group (mandatory)
+                Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Account Name",
-                        style = MizanTheme.typography.bodyMd.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
+                        text = "Account Group",
                         color = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        style = MizanTheme.typography.bodyMd.copy(fontWeight = FontWeight.Medium)
                     )
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        placeholder = {
-                            Text(
-                                text = "e.g., Cash Wallet, Humo Card",
-                                color = MizanTheme.premium.text.tertiary
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    AccountGroupSelectorRow(
+                        selectedGroup = groups.find { it.id == selectedGroupId }?.let { 
+                            dev.esbi.mizan.domain.model.AccountGroup(
+                                id = it.id,
+                                name = it.name,
+                                iconName = null,
+                                orderIndex = 0,
+                                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                                isSystemGroup = it.isSystemGroup
                             )
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MizanTheme.premium.colors.emerald,
-                            unfocusedBorderColor = MizanTheme.premium.glass.border,
-                            focusedContainerColor = MizanTheme.premium.colors.surface2,
-                            unfocusedContainerColor = MizanTheme.premium.colors.surface2
-                        ),
-                        shape = RoundedCornerShape(MizanTheme.premium.radius.lg),
-                        singleLine = true
+                        onClick = { showGroupSelector = true }
                     )
+                    
+                    groupError?.let { error ->
+                        Text(
+                            text = error,
+                            color = MizanTheme.premium.colors.error,
+                            style = MizanTheme.typography.bodyXs,
+                            modifier = Modifier.padding(top = 4.dp, start = 4.dp)
+                        )
+                    }
                 }
 
-                // Initial Balance
-                Column {
-                    Text(
-                        text = "Initial Balance",
-                        style = MizanTheme.typography.bodyMd.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    OutlinedTextField(
-                        value = balanceText,
-                        onValueChange = {
-                            balanceText = it
-                            balance = it.toDoubleOrNull() ?: 0.0
-                        },
-                        placeholder = {
-                            Text(
-                                text = "0.00",
-                                color = MizanTheme.premium.text.tertiary
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MizanTheme.premium.colors.emerald,
-                            unfocusedBorderColor = MizanTheme.premium.glass.border,
-                            focusedContainerColor = MizanTheme.premium.colors.surface2,
-                            unfocusedContainerColor = MizanTheme.premium.colors.surface2
-                        ),
-                        shape = RoundedCornerShape(MizanTheme.premium.radius.lg),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                        suffix = {
-                            Text(
-                                text = "UZS",
-                                color = MizanTheme.premium.text.tertiary
-                            )
-                        }
-                    )
-                }
+                // Account Name (mandatory)
+                MizanTextField(
+                    value = name,
+                    onValueChange = {
+                        name = it
+                        nameError = null
+                    },
+                    label = "Account Name",
+                    placeholder = "e.g., Cash Wallet, Humo Card",
+                    errorText = nameError
+                )
 
-                // Account Type
-                Column {
-                    Text(
-                        text = "Account Type",
-                        style = MizanTheme.typography.bodyMd.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    AccountTypeSelector(
-                        selectedType = selectedType,
-                        onTypeSelected = { selectedType = it }
-                    )
-                }
+                // Initial Balance / Amount
+                MizanTextField(
+                    value = balanceText,
+                    onValueChange = {
+                        balanceText = it
+                        balance = it.toDoubleOrNull() ?: 0.0
+                    },
+                    label = "Initial Balance",
+                    placeholder = "0.00",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
 
-                // Color Selector
-                Column {
-                    Text(
-                        text = "Color",
-                        style = MizanTheme.typography.bodyMd.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    ColorSelector(
-                        selectedColor = selectedColor,
-                        onColorSelected = { selectedColor = it }
-                    )
-                }
+                // Currency (Horizontal Scroll Selector)
+                CurrencyScrollSelector(
+                    currencies = DEFAULT_CURRENCIES,
+                    selectedCurrency = selectedCurrency,
+                    onCurrencySelected = { selectedCurrency = it },
+                    onAddCustomClick = { /* TODO: custom currency */ }
+                )
 
-                // Icon Selector
-                Column {
-                    Text(
-                        text = "Icon",
-                        style = MizanTheme.typography.bodyMd.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = MizanTheme.premium.text.secondary,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    IconSelector(
-                        selectedIcon = selectedIcon,
-                        selectedColor = selectedColor,
-                        onIconSelected = { selectedIcon = it }
-                    )
-                }
+                // Description
+                MizanTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    label = "Description",
+                    placeholder = "Optional notes about this account",
+                    singleLine = false
+                )
             }
 
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
@@ -297,18 +245,28 @@ fun AddEditAccountSheet(
 
                 Button(
                     onClick = {
+                        // Validation
+                        var hasError = false
+                        if (name.isBlank()) {
+                            nameError = "Account name is required"
+                            hasError = true
+                        }
+                        if (selectedGroupId <= 0L) {
+                            groupError = "Please select a group"
+                            hasError = true
+                        }
+                        if (hasError) return@Button
+
                         val savedAccount = AccountManagementStore.AccountItem(
                             id = account?.id ?: 0L,
-                            groupId = account?.groupId ?: 1L,
+                            groupId = selectedGroupId,
+                            groupName = groups.find { it.id == selectedGroupId }?.name ?: "",
                             name = name,
-                            type = selectedType,
                             balance = balance,
-                            currencyCode = "UZS",
-                            iconName = selectedIcon,
-                            color = selectedColor,
+                            currencyCode = selectedCurrency.code,
                             isArchived = false,
                             excludeFromTotal = false,
-                            description = null
+                            description = description.ifBlank { null }
                         )
                         onSave(savedAccount)
                     },
@@ -327,151 +285,33 @@ fun AddEditAccountSheet(
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun AccountTypeSelector(
-    selectedType: Account.Type,
-    onTypeSelected: (Account.Type) -> Unit
-) {
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Account.Type.entries.forEach { type ->
-            val isSelected = type == selectedType
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
-                    .background(
-                        if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.15f)
-                        else MizanTheme.premium.colors.surface2
+    
+    // Group Selector Bottom Sheet
+    if (showGroupSelector) {
+        ModalBottomSheet(
+            onDismissRequest = { showGroupSelector = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            containerColor = MizanTheme.premium.background.primary
+        ) {
+            AccountGroupSelectorBottomSheet(
+                groups = groups.map { 
+                    dev.esbi.mizan.domain.model.AccountGroup(
+                        id = it.id,
+                        name = it.name,
+                        iconName = null,
+                        orderIndex = 0,
+                        type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                        isSystemGroup = it.isSystemGroup
                     )
-                    .border(
-                        width = 1.dp,
-                        color = if (isSelected) MizanTheme.premium.colors.emerald
-                        else MizanTheme.premium.glass.border,
-                        shape = RoundedCornerShape(MizanTheme.premium.radius.lg)
-                    )
-                    .clickable { onTypeSelected(type) }
-                    .padding(horizontal = 16.dp, vertical = 10.dp)
-            ) {
-                Text(
-                    text = getTypeLabel(type),
-                    style = MizanTheme.typography.bodySm.copy(
-                        fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-                    ),
-                    color = if (isSelected) MizanTheme.premium.colors.emerald
-                    else MizanTheme.premium.text.secondary
-                )
-            }
+                },
+                selectedGroupId = selectedGroupId,
+                onGroupSelected = { group ->
+                    selectedGroupId = group.id
+                    groupError = null
+                    showGroupSelector = false
+                },
+                onDismiss = { showGroupSelector = false }
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun ColorSelector(
-    selectedColor: String,
-    onColorSelected: (String) -> Unit
-) {
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        ACCOUNT_COLORS.forEach { colorHex ->
-            val color = try {
-                Color(android.graphics.Color.parseColor(colorHex))
-            } catch (e: Exception) {
-                MizanTheme.premium.colors.emerald
-            }
-            val isSelected = colorHex == selectedColor
-
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(color)
-                    .border(
-                        width = if (isSelected) 3.dp else 0.dp,
-                        color = if (isSelected) Color.White else Color.Transparent,
-                        shape = CircleShape
-                    )
-                    .clickable { onColorSelected(colorHex) },
-                contentAlignment = Alignment.Center
-            ) {
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun IconSelector(
-    selectedIcon: String,
-    selectedColor: String,
-    onIconSelected: (String) -> Unit
-) {
-    val color = try {
-        Color(android.graphics.Color.parseColor(selectedColor))
-    } catch (e: Exception) {
-        MizanTheme.premium.colors.emerald
-    }
-
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        ACCOUNT_ICONS.forEach { iconName ->
-            val isSelected = iconName == selectedIcon
-
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-                    .background(
-                        if (isSelected) color.copy(alpha = 0.15f)
-                        else MizanTheme.premium.colors.surface2
-                    )
-                    .border(
-                        width = if (isSelected) 2.dp else 1.dp,
-                        color = if (isSelected) color else MizanTheme.premium.glass.border,
-                        shape = RoundedCornerShape(MizanTheme.premium.radius.md)
-                    )
-                    .clickable { onIconSelected(iconName) },
-                contentAlignment = Alignment.Center
-            ) {
-                AccountIcon(
-                    iconName = iconName,
-                    accountType = Account.Type.CASH,
-                    tint = if (isSelected) color else MizanTheme.premium.text.tertiary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-private fun getTypeLabel(type: Account.Type): String {
-    return when (type) {
-        Account.Type.CASH -> "Cash"
-        Account.Type.CARD -> "Card"
-        Account.Type.SAVINGS -> "Savings"
-        Account.Type.DEBT -> "Debt"
-        Account.Type.INVESTMENT -> "Investment"
-        Account.Type.BANK -> "Bank"
-        Account.Type.CREDIT -> "Credit"
     }
 }

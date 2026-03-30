@@ -41,17 +41,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.feature.accountmanagement.components.AddAccountButton
 import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.ui.components.account.AccountGroupHeader
 import dev.esbi.mizan.ui.components.account.AccountRow
 import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
 import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
-import dev.esbi.mizan.ui.kit.icon.AccountIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -60,7 +57,7 @@ import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 /**
  * Account Management Screen
  *
- * Full CRUD operations for accounts with grouped display
+ * Full CRUD operations for accounts grouped by AccountGroup
  */
 @Composable
 fun AccountManagementScreen(
@@ -119,7 +116,6 @@ fun AccountManagementScreen(
                 .background(MizanTheme.premium.background.primary)
                 .padding(paddingValues)
         ) {
-            // Content
             Box(modifier = Modifier.weight(1f)) {
                 if (state.isLoading && state.accounts.isEmpty()) {
                     Box(
@@ -152,29 +148,32 @@ fun AccountManagementScreen(
                         item {
                             PremiumTotalBalanceCard(
                                 balance = state.totalBalance,
-                                monthlyChange = 2450000.0, // Mock analytics
-                                monthlyChangePercent = 12.5, // Mock analytics
-                                currency = "UZS" // Hardcoded UZS similar to before
+                                monthlyChange = 0.0,
+                                monthlyChangePercent = 0.0,
+                                currency = "UZS"
                             )
                         }
 
-                        // Group accounts by type
-                        val filteredAccounts = if (state.searchQuery.isBlank()) {
-                            state.accounts
+                        // Group accounts by AccountGroup from DB
+                        val searchQuery = state.searchQuery
+                        val groupedAccounts = if (searchQuery.isBlank()) {
+                            state.groups
                         } else {
-                            state.accounts.filter {
-                                it.name.contains(state.searchQuery, ignoreCase = true)
-                            }
+                            state.groups.map { group ->
+                                group.copy(
+                                    accounts = group.accounts.filter {
+                                        it.name.contains(searchQuery, ignoreCase = true)
+                                    }
+                                )
+                            }.filter { it.accounts.isNotEmpty() }
                         }
 
-                        val groupedAccounts = groupAccountsByType(filteredAccounts)
-
                         groupedAccounts.forEach { group ->
-                            // Group Header
-                            item {
+                            // Group Header (from :ui-kit)
+                            item(key = "group_${group.id}") {
                                 AccountGroupHeader(
-                                    label = group.label,
-                                    accountCount = group.accounts.size
+                                    title = group.name,
+                                    count = group.accounts.size
                                 )
                             }
 
@@ -183,34 +182,15 @@ fun AccountManagementScreen(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                val defaultColor = MizanTheme.premium.colors.emerald
-                                val parsedColor = try {
-                                    if (!account.color.isNullOrBlank()) {
-                                        Color(account.color!!.toColorInt())
-                                    } else {
-                                        defaultColor
-                                    }
-                                } catch (e: Exception) {
-                                    defaultColor
-                                }
-
                                 AccountRow(
                                     id = account.id,
                                     name = account.name,
                                     balance = account.balance,
                                     currencyCode = account.currencyCode,
-                                    colorHex = account.color,
-                                    iconName = account.iconName,
+                                    colorHex = null,
+                                    iconName = null,
                                     onClick = {
                                         viewModel.onOpenEditAccountSheet(account)
-                                    },
-                                    iconContent = {
-                                        AccountIcon(
-                                            iconName = account.iconName,
-                                            accountType = account.type,
-                                            tint = parsedColor,
-                                            modifier = Modifier.size(24.dp)
-                                        )
                                     }
                                 )
                             }
@@ -225,7 +205,8 @@ fun AccountManagementScreen(
                         }
 
                         // Empty State
-                        if (filteredAccounts.isEmpty()) {
+                        val allEmpty = groupedAccounts.all { it.accounts.isEmpty() }
+                        if (state.accounts.isEmpty() || allEmpty) {
                             item {
                                 EmptyState(
                                     onAddNew = { viewModel.onOpenAddAccountSheet() }
@@ -247,6 +228,7 @@ fun AccountManagementScreen(
     if (state.isAddEditSheetVisible) {
         AddEditAccountSheet(
             account = state.editingAccount,
+            groups = state.groups,
             onSave = { viewModel.onSaveAccount(it) },
             onDelete = { accountId -> viewModel.onDeleteAccount(accountId) },
             onDismiss = { viewModel.onCloseAddEditSheet() }
@@ -344,34 +326,6 @@ private fun SearchBar(
     )
 }
 
-
-@Composable
-private fun AccountGroupHeader(
-    label: String,
-    accountCount: Int
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = MizanTheme.premium.spacing.sm),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MizanTheme.premium.typography.headingSm.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MizanTheme.premium.text.primary.copy(alpha = 0.9f)
-        )
-        Text(
-            text = "$accountCount ${if (accountCount == 1) "account" else "accounts"}",
-            style = MizanTheme.typography.bodyXs,
-            color = MizanTheme.premium.text.primary.copy(alpha = 0.4f)
-        )
-    }
-}
-
 @Composable
 private fun EmptyState(
     onAddNew: () -> Unit
@@ -410,34 +364,4 @@ private fun EmptyState(
             color = MizanTheme.premium.text.tertiary
         )
     }
-}
-
-private fun groupAccountsByType(accounts: List<AccountManagementStore.AccountItem>): List<AccountManagementStore.AccountGroup> {
-    val liquidAssets = accounts.filter {
-        it.type == Account.Type.CASH || it.type == Account.Type.CARD
-    }
-    val savings = accounts.filter {
-        it.type == Account.Type.SAVINGS || it.type == Account.Type.INVESTMENT
-    }
-    val debts = accounts.filter {
-        it.type == Account.Type.DEBT
-    }
-
-    return listOf(
-        AccountManagementStore.AccountGroup(
-            id = "liquid",
-            label = "Liquid Assets",
-            accounts = liquidAssets
-        ),
-        AccountManagementStore.AccountGroup(
-            id = "savings",
-            label = "Savings & Investments",
-            accounts = savings
-        ),
-        AccountManagementStore.AccountGroup(
-            id = "debts",
-            label = "Debts",
-            accounts = debts
-        )
-    ).filter { it.accounts.isNotEmpty() }
 }

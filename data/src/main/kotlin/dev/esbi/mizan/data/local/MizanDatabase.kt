@@ -1,5 +1,6 @@
 package dev.esbi.mizan.data.local
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -16,13 +17,13 @@ import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionItemDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
-import dev.esbi.mizan.data.local.entity.GoalEntity
-import dev.esbi.mizan.data.local.entity.SubscriptionEntity
 import dev.esbi.mizan.data.local.entity.CategorySpendingEntity
 import dev.esbi.mizan.data.local.entity.DashboardSummaryEntity
 import dev.esbi.mizan.data.local.entity.FinancialProjectionEntity
+import dev.esbi.mizan.data.local.entity.GoalEntity
 import dev.esbi.mizan.data.local.entity.InvestmentOpportunityEntity
 import dev.esbi.mizan.data.local.entity.RiskFactorEntity
+import dev.esbi.mizan.data.local.entity.SubscriptionEntity
 import dev.esbi.mizan.data.local.entity.TimeMachineScenarioEntity
 import dev.esbi.mizan.data.local.entity.TransactionDetailEntity
 import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
@@ -55,7 +56,8 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
         GoalEntity::class,
         SubscriptionEntity::class
     ],
-    version = 5,
+    version = 6,
+    autoMigrations = [],
     exportSchema = true
 )
 @TypeConverters(Converters::class)

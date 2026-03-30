@@ -11,5 +11,6 @@ data class AccountGroupEntity(
     override val name: String,        // "Accounts", "Savings", "Dreams"
     override val iconName: String?,   // Guruh uchun umumiy ikonka
     override val orderIndex: Int? = 0,  // Ro'yxatdagi tartibi
-    override val type: dev.esbi.mizan.domain.model.AccountGroupType = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT
+    override val type: dev.esbi.mizan.domain.model.AccountGroupType = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+    override val isSystemGroup: Boolean = false // System groups cannot be deleted
 ) : AccountGroup()

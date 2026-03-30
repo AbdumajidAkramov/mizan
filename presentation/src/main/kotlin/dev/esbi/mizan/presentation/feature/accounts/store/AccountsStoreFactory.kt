@@ -123,27 +123,16 @@ class AccountsStoreFactory @Inject constructor(
                 if (it.excludeFromTotal) 0.0 else currencyConverter.convertToBase(it.balance, it.currency.code)
             }
 
-            // Grouping logic mapping to Design: Liquid Assets, Savings, Debts
-            val liquidAssets = filteredAccounts.filter { it.type == Account.Type.CASH || it.type == Account.Type.BANK }
-            val savings = filteredAccounts.filter { it.type == Account.Type.SAVINGS || it.type == Account.Type.INVESTMENT }
-            val debts = filteredAccounts.filter { it.type == Account.Type.CREDIT && it.balance < 0 } // Design specific logic for debt
-
-            val groups = mutableListOf<AccountGroupUIModel>()
-            if (liquidAssets.isNotEmpty()) {
-                groups.add(AccountGroupUIModel("liquid", "Liquid Assets", liquidAssets))
-            }
-            if (savings.isNotEmpty()) {
-                groups.add(AccountGroupUIModel("savings", "Savings", savings))
-            }
-            if (debts.isNotEmpty()) {
-                groups.add(AccountGroupUIModel("debts", "Debts", debts))
-            }
-
-            // Uncategorized / Others
-            val uncategorized = filteredAccounts.filter { it !in liquidAssets && it !in savings && it !in debts }
-            if (uncategorized.isNotEmpty()) {
-                groups.add(AccountGroupUIModel("others", "Other Accounts", uncategorized))
-            }
+            // Group by groupId
+            val groups = filteredAccounts
+                .groupBy { it.groupId }
+                .map { (groupId, accounts) ->
+                    AccountGroupUIModel(
+                        id = groupId.toString(),
+                        label = "Accounts",
+                        accounts = accounts
+                    )
+                }
 
             return Pair(groups, totalBalance)
         }
