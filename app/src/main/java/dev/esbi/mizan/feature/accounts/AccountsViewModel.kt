@@ -31,6 +31,10 @@ class AccountsViewModel @Inject constructor(
 
     val labels = store.labels
 
+    init {
+        store.init()
+    }
+
     fun onIntent(intent: AccountsStore.Intent) {
         store.accept(intent = intent)
     }

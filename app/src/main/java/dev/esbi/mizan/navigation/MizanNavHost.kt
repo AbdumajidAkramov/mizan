@@ -235,7 +235,6 @@ internal fun MizanNavHost(
         composable<NavRoute.AccountManagement> {
             val component = remember { appComponent.accountManagementComponent().create() }
             val viewModel = component.viewModel
-
             AccountsScreen(
                 viewModel = viewModel,
                 onBack = {

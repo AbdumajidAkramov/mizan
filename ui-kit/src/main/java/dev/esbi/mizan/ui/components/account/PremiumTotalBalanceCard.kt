@@ -27,7 +27,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.kit.balance.BalanceAmount
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -72,13 +74,16 @@ fun PremiumTotalBalanceCard(
                 color = Color.White.copy(alpha = 0.2f),
                 shape = RoundedCornerShape(24.dp)
             )
-            .padding(MizanTheme.premium.spacing.md)
+            .padding(
+                horizontal = MizanTheme.premium.spacing.xl,
+                vertical = MizanTheme.premium.spacing.md
+            )
     ) {
         // Emerald Glow Effect
         Box(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .size(130.dp)
+                .size(150.dp)
                 .graphicsLayer { alpha = 0.2f }
                 .background(
                     Brush.radialGradient(
@@ -101,31 +106,37 @@ fun PremiumTotalBalanceCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Balance Display
-            Row(verticalAlignment = Alignment.Bottom) {
-                if (balance < 0) {
-                    Text(
-                        text = "-",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-                Text(
-                    text = integerPart,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = ".$decimalPart $currency",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(bottom = 2.dp)
-                )
-            }
+            BalanceAmount(
+                balance = BigDecimal(balance),
+                currency = currency,
+                typography = MizanTheme.typography.displaySm
+            )
+            /*
+                        // Balance Display
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            if (balance < 0) {
+                                Text(
+                                    text = "-",
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                            Text(
+                                text = integerPart,
+                                fontSize = 32.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Text(
+                                text = ".$decimalPart $currency",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White.copy(alpha = 0.7f),
+                                modifier = Modifier.padding(bottom = 2.dp)
+                            )
+                        }
+            */
 
             Spacer(modifier = Modifier.height(16.dp))
 

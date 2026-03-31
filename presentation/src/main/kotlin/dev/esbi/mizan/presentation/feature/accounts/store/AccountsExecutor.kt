@@ -5,18 +5,20 @@ import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
+import dev.esbi.mizan.presentation.di.MainDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Executor for AccountManagement - handles business logic and side effects
  */
-internal class AccountsExecutor(
-    private val mainDispatcher: CoroutineDispatcher,
+class AccountsExecutor @Inject constructor(
+    @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val accountRepository: AccountRepository,
     private val currencyRepository: CurrencyRepository
 ) : CoroutineExecutor<

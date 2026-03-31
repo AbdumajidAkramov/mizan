@@ -76,12 +76,17 @@ fun AddEditAccountSheet(
             if (account?.balance != null && account.balance != 0.0) account.balance.toString() else ""
         )
     }
-    var selectedGroupId by remember { mutableLongStateOf(account?.groupId ?: 1L) } // Default to "General" group
+    var selectedGroupId by remember {
+        mutableLongStateOf(
+            account?.groupId ?: 1L
+        )
+    } // Default to "General" group
     var groupError by remember { mutableStateOf<String?>(null) }
     var showGroupSelector by remember { mutableStateOf(false) }
     var selectedCurrency by remember {
         mutableStateOf(
-            DEFAULT_CURRENCIES.find { it.code == account?.currencyCode } ?: DEFAULT_CURRENCIES.first()
+            DEFAULT_CURRENCIES.find { it.code == account?.currencyCode }
+                ?: DEFAULT_CURRENCIES.first()
         )
     }
     var description by remember { mutableStateOf(account?.description ?: "") }
@@ -153,9 +158,9 @@ fun AddEditAccountSheet(
                         color = MizanTheme.premium.text.secondary,
                         style = MizanTheme.typography.bodyMd.copy(fontWeight = FontWeight.Medium)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     AccountGroupSelectorRow(
                         selectedGroup = groups.find { it.id == selectedGroupId }?.let {
                             AccountGroup(
@@ -169,7 +174,7 @@ fun AddEditAccountSheet(
                         },
                         onClick = { showGroupSelector = true }
                     )
-                    
+
                     groupError?.let { error ->
                         Text(
                             text = error,
@@ -282,7 +287,7 @@ fun AddEditAccountSheet(
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
-    
+
     // Group Selector Bottom Sheet
     if (showGroupSelector) {
         ModalBottomSheet(

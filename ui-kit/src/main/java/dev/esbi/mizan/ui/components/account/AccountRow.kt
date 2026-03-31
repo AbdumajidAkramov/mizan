@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.balance.amountFormat
+import dev.esbi.mizan.ui.kit.balance.BalanceAmount
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.math.BigDecimal
 
@@ -32,11 +32,8 @@ fun AccountRow(
     name: String,
     balance: Double,
     currencyCode: String,
-    colorHex: String?,
     modifier: Modifier = Modifier,
 ) {
-    val amountColor: Color =
-        if (balance < 0) MizanTheme.premium.colors.error else MizanTheme.premium.text.muted
 
     Row(
         modifier = modifier
@@ -60,16 +57,10 @@ fun AccountRow(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Text(
-            text = amountFormat(
-                amount = BigDecimal(balance),
-                currency = currencyCode
-            ),
-            style = MizanTheme.premium.typography.displayMd.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            color = MizanTheme.premium.colors.emerald,
+        BalanceAmount(
+            balance = BigDecimal(balance),
+            currency = currencyCode,
+            typography = MizanTheme.typography.bodyLg
         )
         Spacer(modifier = Modifier.width(12.dp))
 

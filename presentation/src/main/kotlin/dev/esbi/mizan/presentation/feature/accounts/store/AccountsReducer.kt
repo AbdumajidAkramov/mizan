@@ -5,8 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 /**
  * Reducer for AccountManagement - handles state updates
  */
-internal class AccountsReducer :
-    Reducer<AccountsStore.State, AccountsStore.Message> {
+internal class AccountsReducer : Reducer<AccountsStore.State, AccountsStore.Message> {
 
     override fun AccountsStore.State.reduce(
         msg: AccountsStore.Message

@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -26,12 +26,13 @@ import java.util.Locale
 fun BalanceAmount(
     balance: BigDecimal,
     currency: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    typography: TextStyle = MizanTheme.premium.typography.bodyLg
 ) {
     val amountColor: Color = if (balance < BigDecimal.ZERO)
         MizanTheme.premium.colors.error
     else
-        MizanTheme.premium.text.muted
+        MizanTheme.premium.colors.emerald
 
     Box(modifier = modifier) {
         Text(
@@ -39,10 +40,7 @@ fun BalanceAmount(
                 amount = balance,
                 currency = currency
             ),
-            style = MizanTheme.premium.typography.displayMd.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            ),
+            style = typography,
             color = amountColor,
             modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.sm)
         )
@@ -90,7 +88,7 @@ fun FormattableAmountPreview() {
     MizanTheme {
         Box(modifier = Modifier.padding(16.dp)) {
             BalanceAmount(
-                balance = BigDecimal("-124120.23"),
+                balance = BigDecimal("124120.23"),
                 currency = "UZS"
             )
         }

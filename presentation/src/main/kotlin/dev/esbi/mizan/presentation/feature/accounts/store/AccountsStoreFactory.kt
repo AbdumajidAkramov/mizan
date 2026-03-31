@@ -1,36 +1,28 @@
 package dev.esbi.mizan.presentation.feature.accounts.store
 
-import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
-import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import dev.esbi.mizan.domain.repository.AccountRepository
-import dev.esbi.mizan.domain.repository.CurrencyRepository
-import kotlinx.coroutines.Dispatchers
+import dev.esbi.mizan.presentation.mvikotlin.executor.ExecutorsSet
 import javax.inject.Inject
+import javax.inject.Provider
 
 /**
  * Factory for creating AccountManagementStore instances
  */
 class AccountsStoreFactory @Inject constructor(
-    private val storeFactory: StoreFactory,
-    private val accountRepository: AccountRepository,
-    private val currencyRepository: CurrencyRepository
+    private val storeFactory: Provider<StoreFactory>,
+    private val executors: ExecutorsSet<
+            AccountsStore.Intent,
+            AccountsStore.Action,
+            AccountsStore.State,
+            AccountsStore.Message,
+            AccountsStore.Label>,
+    private val observer: AccountsStoreObserver,
 ) {
-
-    fun create(): AccountsStore =
-        object : AccountsStore,
-            Store<AccountsStore.Intent, AccountsStore.State, AccountsStore.Label>
-            by storeFactory.create(
-                name = "AccountManagementStore",
-                initialState = AccountsStore.State(),
-                bootstrapper = SimpleBootstrapper(AccountsStore.Action.FetchMainCurrency()),
-                executorFactory = {
-                    AccountsExecutor(
-                        mainDispatcher = Dispatchers.Main,
-                        accountRepository = accountRepository,
-                        currencyRepository = currencyRepository
-                    )
-                },
-                reducer = AccountsReducer()
-            ) {}
+    fun create(): AccountsStore {
+        return AccountsStoreImpl(
+            executors = executors,
+            observer = observer,
+            storeFactory = storeFactory.get(),
+        )
+    }
 }

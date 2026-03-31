@@ -41,9 +41,14 @@ fun AccountGroupSelectorBottomSheet(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = MizanTheme.premium.radius.xl, topEnd = MizanTheme.premium.radius.xl))
+            .clip(
+                RoundedCornerShape(
+                    topStart = MizanTheme.premium.radius.xl,
+                    topEnd = MizanTheme.premium.radius.xl
+                )
+            )
             .background(MizanTheme.premium.background.primary)
-            .padding(MizanTheme.premium.spacing.lg)
+            .padding(horizontal = MizanTheme.premium.spacing.lg)
     ) {
         // Header
         Row(
@@ -57,7 +62,7 @@ fun AccountGroupSelectorBottomSheet(
                 color = MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.SemiBold
             )
-            
+
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -74,9 +79,9 @@ fun AccountGroupSelectorBottomSheet(
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
-        
+
         // Groups List
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
@@ -92,6 +97,8 @@ fun AccountGroupSelectorBottomSheet(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
     }
 }
 
@@ -133,7 +140,7 @@ private fun GroupItem(
                 modifier = Modifier.size(20.dp)
             )
         }
-        
+
         // Group Info
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -146,7 +153,7 @@ private fun GroupItem(
                 },
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
             )
-            
+
             if (group.isSystemGroup) {
                 Text(
                     text = "System group",
@@ -155,7 +162,7 @@ private fun GroupItem(
                 )
             }
         }
-        
+
         // Selection Indicator
         if (isSelected) {
             MizanIcon(

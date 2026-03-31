@@ -67,7 +67,7 @@ fun AccountsScreen(
     onNavigateToEditAccount: (Long?) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.labels) {
         viewModel.labels.collect { label ->
             when (label) {
                 is AccountsStore.Label.NavigateBack -> onBack()
@@ -191,7 +191,6 @@ fun AccountsScreenContent(
                                             name = account.name,
                                             balance = account.balance,
                                             currencyCode = account.currencyCode,
-                                            colorHex = null,
                                         )
                                     }
                                 }
