@@ -1,6 +1,7 @@
 package dev.esbi.mizan.presentation.feature.accountmanagement.store
 
 import com.arkivanov.mvikotlin.core.store.Store
+import dev.esbi.mizan.domain.model.Currency
 
 /**
  * MVI Store for Account Management Screen
@@ -17,12 +18,15 @@ interface AccountManagementStore : Store<
         val accounts: List<AccountItem> = emptyList(),
         val groups: List<AccountGroupItem> = emptyList(),
         val totalBalance: Double = 0.0,
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = true,
         val error: String? = null,
         val isAddEditSheetVisible: Boolean = false,
         val editingAccount: AccountItem? = null,
-        val searchQuery: String = ""
-    )
+        val searchQuery: String = "",
+        val baseCurrency: Currency? = Currency.UZS,
+        val monthlyChange: Double = 0.0,
+        val monthlyChangePercent: Double = 0.0,
+        )
 
     /**
      * Account item for UI display (no type/color/icon)
@@ -48,6 +52,10 @@ interface AccountManagementStore : Store<
         val isSystemGroup: Boolean = false,
         val accounts: List<AccountItem> = emptyList()
     )
+
+    sealed interface Action {
+        class FetchMainCurrency : Action
+    }
 
     /**
      * User intents
@@ -83,6 +91,7 @@ interface AccountManagementStore : Store<
         data class SearchQueryChanged(val query: String) : Message
         data class LoadingChanged(val isLoading: Boolean) : Message
         data class ErrorOccurred(val error: String?) : Message
+        class MainCurrencyChanged(val value: Currency?) : Message
     }
 
     /**

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,13 +44,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.esbi.mizan.feature.accountmanagement.components.AddAccountButton
 import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.ui.components.PremiumCard
+import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.components.account.AccountGroupHeader
 import dev.esbi.mizan.ui.components.account.AccountRow
 import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
 import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
+import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 /**
@@ -74,6 +77,7 @@ fun AccountManagementScreen(
             when (label) {
                 is AccountManagementStore.Label.NavigateBack -> onBack()
                 is AccountManagementStore.Label.ShowDeleteConfirmation -> {
+                    println(label.account)
                     accountToDelete = label.account
                 }
 
@@ -134,23 +138,25 @@ fun AccountManagementScreen(
                             horizontal = MizanTheme.premium.spacing.lg,
                             vertical = MizanTheme.premium.spacing.lg
                         ),
-                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
                     ) {
                         // Search Bar
                         item {
-                            SearchBar(
-                                query = state.searchQuery,
-                                onQueryChange = { viewModel.onSearchAccounts(it) }
-                            )
+                            Box(modifier = Modifier.padding(vertical = 16.dp)) {
+                                SearchBar(
+                                    query = state.searchQuery,
+                                    onQueryChange = { viewModel.onSearchAccounts(it) }
+                                )
+                            }
                         }
 
                         // Total Balance Card
                         item {
                             PremiumTotalBalanceCard(
                                 balance = state.totalBalance,
-                                monthlyChange = 0.0,
-                                monthlyChangePercent = 0.0,
-                                currency = "UZS"
+                                monthlyChange = state.monthlyChange,
+                                monthlyChangePercent = state.monthlyChangePercent,
+                                currency = state.baseCurrency?.code.orEmpty()
                             )
                         }
 
@@ -182,17 +188,24 @@ fun AccountManagementScreen(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                AccountRow(
-                                    id = account.id,
-                                    name = account.name,
-                                    balance = account.balance,
-                                    currencyCode = account.currencyCode,
-                                    colorHex = null,
-                                    iconName = null,
-                                    onClick = {
-                                        viewModel.onOpenEditAccountSheet(account)
+                                PressCard(
+                                    modifier = Modifier,
+                                    onClick = { viewModel.onOpenEditAccountSheet(account) },
+                                ) {
+                                    PremiumCard(
+                                        variant = PremiumCardVariant.Glass,
+                                        modifier = Modifier.premiumShadow(MizanTheme.premium.shadows.sm),
+                                        cornerShape = RoundedCornerShape(MizanTheme.premium.radius.xs)
+                                    ) {
+                                        AccountRow(
+                                            id = account.id,
+                                            name = account.name,
+                                            balance = account.balance,
+                                            currencyCode = account.currencyCode,
+                                            colorHex = null,
+                                        )
                                     }
-                                )
+                                }
                             }
                         }
 

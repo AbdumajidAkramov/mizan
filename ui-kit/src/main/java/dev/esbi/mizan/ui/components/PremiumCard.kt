@@ -19,16 +19,16 @@ import dev.esbi.mizan.ui.animation.pressScale
 fun PremiumCard(
     modifier: Modifier = Modifier,
     variant: PremiumCardVariant = PremiumCardVariant.Glass,
-    onClick: (() -> Unit)? = null,
     enableInteraction: Boolean = true,
+    cornerShape: RoundedCornerShape = RoundedCornerShape(20.dp),
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val shape = RoundedCornerShape(20.dp)
 
     Box(
         modifier = modifier
-            .clip(shape)
+            .clip(cornerShape)
             .then(
                 if (onClick != null && enableInteraction) {
                     Modifier

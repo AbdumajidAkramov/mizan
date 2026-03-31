@@ -5,12 +5,17 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 /**
  * Reducer for AccountManagement - handles state updates
  */
-internal class AccountManagementReducer : Reducer<AccountManagementStore.State, AccountManagementStore.Message> {
+internal class AccountManagementReducer :
+    Reducer<AccountManagementStore.State, AccountManagementStore.Message> {
 
     override fun AccountManagementStore.State.reduce(
         msg: AccountManagementStore.Message
     ): AccountManagementStore.State {
         return when (msg) {
+            is AccountManagementStore.Message.MainCurrencyChanged -> copy(
+                baseCurrency = msg.value
+            )
+
             is AccountManagementStore.Message.AccountsLoaded -> {
                 copy(
                     accounts = msg.accounts,

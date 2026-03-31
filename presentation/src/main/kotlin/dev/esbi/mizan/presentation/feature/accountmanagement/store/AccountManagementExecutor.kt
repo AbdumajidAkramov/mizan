@@ -2,10 +2,11 @@ package dev.esbi.mizan.presentation.feature.accountmanagement.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.domain.model.AccountGroup
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.domain.repository.CurrencyRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,17 +17,23 @@ import kotlinx.coroutines.launch
  */
 internal class AccountManagementExecutor(
     private val mainDispatcher: CoroutineDispatcher,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val currencyRepository: CurrencyRepository
 ) : CoroutineExecutor<
         AccountManagementStore.Intent,
-        Unit,
+        AccountManagementStore.Action,
         AccountManagementStore.State,
         AccountManagementStore.Message,
         AccountManagementStore.Label>(
     mainContext = mainDispatcher
 ) {
 
-    override fun executeAction(action: Unit) {
+    override fun executeAction(action: AccountManagementStore.Action) {
+        when (action) {
+            is AccountManagementStore.Action.FetchMainCurrency -> {
+                fetchMainCurrency()
+            }
+        }
         loadAccounts()
     }
 
@@ -41,9 +48,10 @@ internal class AccountManagementExecutor(
             }
 
             is AccountManagementStore.Intent.DeleteAccount -> {
-                publish(AccountManagementStore.Label.ShowDeleteConfirmation(
-                    state().accounts.find { it.id == intent.id } ?: return
-                ))
+                publish(
+                    AccountManagementStore.Label.ShowDeleteConfirmation(
+                        state().accounts.find { it.id == intent.id } ?: return
+                    ))
             }
 
             is AccountManagementStore.Intent.ConfirmDeleteAccount -> {
@@ -54,7 +62,7 @@ internal class AccountManagementExecutor(
                         dispatch(AccountManagementStore.Message.AccountDeleted(intent.id))
                         dispatch(AccountManagementStore.Message.LoadingChanged(false))
                         dispatch(AccountManagementStore.Message.EditSheetHidden)
-                    } catch(e: Exception) {
+                    } catch (e: Exception) {
                         dispatch(AccountManagementStore.Message.LoadingChanged(false))
                         dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to delete account: ${e.message}"))
                     }
@@ -84,6 +92,16 @@ internal class AccountManagementExecutor(
             is AccountManagementStore.Intent.BackClicked -> {
                 publish(AccountManagementStore.Label.NavigateBack)
             }
+        }
+    }
+
+    private fun fetchMainCurrency() {
+        scope.launch {
+            currencyRepository.observeCurrencies()
+                .collectLatest { currencies ->
+
+                    dispatch(AccountManagementStore.Message.MainCurrencyChanged(currencies.find { it.isBaseCurrency }))
+                }
         }
     }
 
@@ -128,7 +146,13 @@ internal class AccountManagementExecutor(
                     )
                 }.filter { it.accounts.isNotEmpty() }
 
-                dispatch(AccountManagementStore.Message.AccountsLoaded(accountItems, groupItems, totalBalance))
+                dispatch(
+                    AccountManagementStore.Message.AccountsLoaded(
+                        accountItems,
+                        groupItems,
+                        totalBalance
+                    )
+                )
                 dispatch(AccountManagementStore.Message.LoadingChanged(false))
             }
             .launchIn(scope)
@@ -158,9 +182,11 @@ internal class AccountManagementExecutor(
 
                 if (accountItem.id == 0L) {
                     val newId = accountRepository.createAccount(account)
-                    dispatch(AccountManagementStore.Message.AccountSaved(
-                        accountItem.copy(id = newId)
-                    ))
+                    dispatch(
+                        AccountManagementStore.Message.AccountSaved(
+                            accountItem.copy(id = newId)
+                        )
+                    )
                 } else {
                     accountRepository.updateAccount(account)
                     dispatch(AccountManagementStore.Message.AccountSaved(accountItem))
