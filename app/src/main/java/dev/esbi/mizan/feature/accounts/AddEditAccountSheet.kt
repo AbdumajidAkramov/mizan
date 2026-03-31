@@ -1,13 +1,9 @@
-package dev.esbi.mizan.feature.accountmanagement
+package dev.esbi.mizan.feature.accounts
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,14 +35,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.accountmanagement.components.AccountGroupSelectorBottomSheet
-import dev.esbi.mizan.feature.accountmanagement.components.AccountGroupSelectorRow
-import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.domain.model.AccountGroup
+import dev.esbi.mizan.domain.model.AccountGroupType
+import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorBottomSheet
+import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorRow
+import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
 import dev.esbi.mizan.ui.components.input.CurrencyScrollSelector
 import dev.esbi.mizan.ui.components.input.MizanTextField
 import dev.esbi.mizan.ui.components.input.SelectorCurrency
@@ -62,9 +59,9 @@ private val DEFAULT_CURRENCIES = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditAccountSheet(
-    account: AccountManagementStore.AccountItem?,
-    groups: List<AccountManagementStore.AccountGroupItem>,
-    onSave: (AccountManagementStore.AccountItem) -> Unit,
+    account: AccountsStore.AccountItem?,
+    groups: List<AccountsStore.AccountGroupItem>,
+    onSave: (AccountsStore.AccountItem) -> Unit,
     onDelete: (Long) -> Unit = {},
     onDismiss: () -> Unit
 ) {
@@ -160,13 +157,13 @@ fun AddEditAccountSheet(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     AccountGroupSelectorRow(
-                        selectedGroup = groups.find { it.id == selectedGroupId }?.let { 
-                            dev.esbi.mizan.domain.model.AccountGroup(
+                        selectedGroup = groups.find { it.id == selectedGroupId }?.let {
+                            AccountGroup(
                                 id = it.id,
                                 name = it.name,
                                 iconName = null,
                                 orderIndex = 0,
-                                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                                type = AccountGroupType.DEFAULT,
                                 isSystemGroup = it.isSystemGroup
                             )
                         },
@@ -257,7 +254,7 @@ fun AddEditAccountSheet(
                         }
                         if (hasError) return@Button
 
-                        val savedAccount = AccountManagementStore.AccountItem(
+                        val savedAccount = AccountsStore.AccountItem(
                             id = account?.id ?: 0L,
                             groupId = selectedGroupId,
                             groupName = groups.find { it.id == selectedGroupId }?.name ?: "",
@@ -294,13 +291,13 @@ fun AddEditAccountSheet(
             containerColor = MizanTheme.premium.background.primary
         ) {
             AccountGroupSelectorBottomSheet(
-                groups = groups.map { 
-                    dev.esbi.mizan.domain.model.AccountGroup(
+                groups = groups.map {
+                    AccountGroup(
                         id = it.id,
                         name = it.name,
                         iconName = null,
                         orderIndex = 0,
-                        type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                        type = AccountGroupType.DEFAULT,
                         isSystemGroup = it.isSystemGroup
                     )
                 },

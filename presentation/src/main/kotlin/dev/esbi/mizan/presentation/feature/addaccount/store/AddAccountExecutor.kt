@@ -3,22 +3,56 @@ package dev.esbi.mizan.presentation.feature.addaccount.store
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Intent
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Label
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Message
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.State
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 internal class AddAccountExecutor(
     mainDispatcher: CoroutineDispatcher,
-    private val accountRepository: AccountRepository
-) : CoroutineExecutor<Intent, Unit, State, Message, Label>(mainContext = mainDispatcher) {
+    private val accountRepository: AccountRepository,
+    private val currencyRepository: CurrencyRepository
+) : CoroutineExecutor<Intent, AddAccountStore.Action, State, Message, Label>(mainContext = mainDispatcher) {
 
-    init {
-        loadGroups()
+    override fun executeAction(action: AddAccountStore.Action) {
+        when (action) {
+            is AddAccountStore.Action.FetchAccount -> {
+                action.accountId?.let { accountId ->
+                    fetchAccount(accountId)
+                }
+            }
+
+            is AddAccountStore.Action.FetchCurrencies -> {
+                fetchCurrencies()
+            }
+
+            is AddAccountStore.Action.FetchAccountGroups -> {
+                loadGroups()
+            }
+        }
+    }
+
+    private fun fetchAccount(accountId: Long) {
+        scope.launch {
+            accountRepository.getAccount(accountId)?.let { account ->
+                dispatch(Message.SetSelectAccount(account))
+            }
+        }
+    }
+
+    private fun fetchCurrencies() {
+        scope.launch {
+            currencyRepository.observeCurrencies()
+                .collectLatest { currencies ->
+                    dispatch(Message.UpdateAvailableCurrencies(currencies))
+                }
+        }
     }
 
     private fun loadGroups() {
@@ -37,6 +71,10 @@ internal class AddAccountExecutor(
             is Intent.SelectGroup -> dispatch(Message.GroupSelected(intent.groupId))
             is Intent.UpdateDescription -> dispatch(Message.DescriptionChanged(intent.description))
             is Intent.SaveAccount -> validateAndSave()
+            is Intent.ConfirmDeleteAccount -> {
+                deleteAccount(accountId = intent.accountId)
+            }
+
         }
     }
 
@@ -64,7 +102,7 @@ internal class AddAccountExecutor(
         val parsedBalance = currentState.balance.toDoubleOrNull() ?: 0.0
 
         val newAccount = Account(
-            id = 0L,
+            id = currentState.accountId ?: 0L,
             groupId = currentState.selectedGroupId,
             name = currentState.name.trim(),
             balance = parsedBalance,
@@ -77,12 +115,27 @@ internal class AddAccountExecutor(
         scope.launch {
             dispatch(Message.Loading(true))
             try {
-                accountRepository.createAccount(newAccount)
+                if (currentState.accountId != null) {
+                    accountRepository.updateAccount(newAccount)
+                } else {
+                    accountRepository.createAccount(newAccount)
+                }
                 dispatch(Message.Loading(false))
                 publish(Label.AccountSaved)
             } catch (e: Exception) {
                 dispatch(Message.Loading(false))
                 publish(Label.ShowMessage(e.message ?: "Failed to save account"))
+            }
+        }
+    }
+
+    private fun deleteAccount(accountId: Long) {
+        scope.launch {
+            try {
+                accountRepository.markAccountAsDeleted(accountId)
+                publish(Label.AccountDeleted())
+            } catch (e: Exception) {
+                publish(Label.ShowMessage("Failed to delete account: ${e.message}"))
             }
         }
     }

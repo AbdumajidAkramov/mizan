@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.accountmanagement
+package dev.esbi.mizan.feature.accounts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,28 +33,26 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.esbi.mizan.feature.accountmanagement.components.AddAccountButton
-import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
 import dev.esbi.mizan.ui.components.PremiumCard
 import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.components.account.AccountGroupHeader
 import dev.esbi.mizan.ui.components.account.AccountRow
 import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
-import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
+import dev.esbi.mizan.ui.components.accounts.AddAccountButton
 import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
+import dev.esbi.mizan.ui.toast.MizanToast
+import dev.esbi.mizan.ui.toast.MizanToastStatus
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 /**
@@ -63,53 +61,40 @@ import dev.esbi.mizan.ui.utils.Icons as MizanIcons
  * Full CRUD operations for accounts grouped by AccountGroup
  */
 @Composable
-fun AccountManagementScreen(
-    viewModel: AccountManagementViewModel,
+fun AccountsScreen(
+    viewModel: AccountsViewModel,
     onBack: () -> Unit,
     onNavigateToEditAccount: (Long?) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    var accountToDelete by remember { mutableStateOf<AccountManagementStore.AccountItem?>(null) }
-
     LaunchedEffect(Unit) {
         viewModel.labels.collect { label ->
             when (label) {
-                is AccountManagementStore.Label.NavigateBack -> onBack()
-                is AccountManagementStore.Label.ShowDeleteConfirmation -> {
-                    println(label.account)
-                    accountToDelete = label.account
-                }
-
-                is AccountManagementStore.Label.ShowError -> {
-                    // Handle error display
+                is AccountsStore.Label.NavigateBack -> onBack()
+                is AccountsStore.Label.NavigateToAddNewAccount -> {
+                    onNavigateToEditAccount(label.accountId)
                 }
             }
         }
     }
 
-    if (accountToDelete != null) {
-        PremiumConfirmDialog(
-            title = "Delete Account?",
-            message = "Are you sure you want to delete this account? This action cannot be undone, but your past transaction history will be preserved.",
-            confirmText = "Delete",
-            dismissText = "Cancel",
-            onConfirm = {
-                viewModel.onConfirmDeleteAccount(accountToDelete!!.id)
-                accountToDelete = null
-            },
-            onDismiss = {
-                accountToDelete = null
-            }
-        )
-    }
+    AccountsScreenContent(
+        state = state,
+        accept = viewModel::onIntent
+    )
+}
 
+@Composable
+fun AccountsScreenContent(
+    state: AccountsStore.State,
+    accept: (AccountsStore.Intent) -> Unit
+) {
     Scaffold(
         topBar = {
             AccountManagementHeader(
-                onBack = onBack,
+                onBack = { accept(AccountsStore.Intent.BackClicked) },
                 onAddNew = {
-                    viewModel.onOpenAddAccountSheet()
+                    accept(AccountsStore.Intent.OpenAddNewAccount())
                 }
             )
         }
@@ -145,7 +130,9 @@ fun AccountManagementScreen(
                             Box(modifier = Modifier.padding(vertical = 16.dp)) {
                                 SearchBar(
                                     query = state.searchQuery,
-                                    onQueryChange = { viewModel.onSearchAccounts(it) }
+                                    onQueryChange = {
+                                        accept(AccountsStore.Intent.SearchAccounts(it))
+                                    }
                                 )
                             }
                         }
@@ -190,7 +177,9 @@ fun AccountManagementScreen(
                             ) { account ->
                                 PressCard(
                                     modifier = Modifier,
-                                    onClick = { viewModel.onOpenEditAccountSheet(account) },
+                                    onClick = {
+                                        accept(AccountsStore.Intent.OpenEditAccount(accountId = account.id))
+                                    },
                                 ) {
                                     PremiumCard(
                                         variant = PremiumCardVariant.Glass,
@@ -213,7 +202,9 @@ fun AccountManagementScreen(
                         item {
                             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
                             AddAccountButton(
-                                onClick = { viewModel.onOpenAddAccountSheet() }
+                                onClick = {
+                                    accept(AccountsStore.Intent.OpenAddNewAccount())
+                                }
                             )
                         }
 
@@ -222,7 +213,9 @@ fun AccountManagementScreen(
                         if (state.accounts.isEmpty() || allEmpty) {
                             item {
                                 EmptyState(
-                                    onAddNew = { viewModel.onOpenAddAccountSheet() }
+                                    onAddNew = {
+                                        accept(AccountsStore.Intent.OpenAddNewAccount())
+                                    }
                                 )
                             }
                         }
@@ -237,14 +230,13 @@ fun AccountManagementScreen(
         }
     }
 
-    // Add/Edit Bottom Sheet
-    if (state.isAddEditSheetVisible) {
-        AddEditAccountSheet(
-            account = state.editingAccount,
-            groups = state.groups,
-            onSave = { viewModel.onSaveAccount(it) },
-            onDelete = { accountId -> viewModel.onDeleteAccount(accountId) },
-            onDismiss = { viewModel.onCloseAddEditSheet() }
+    // Toast qatlami (Har doim eng tepada turadi)
+    state.error?.let { error ->
+        MizanToast(
+            message = error,
+            status = MizanToastStatus.ERROR,
+            isVisible = true,
+            onDismiss = { accept(AccountsStore.Intent.CloseToast()) }
         )
     }
 }

@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import dev.esbi.mizan.MizanApplication
 import dev.esbi.mizan.feature.accountgroups.AccountGroupManagementScreen
-import dev.esbi.mizan.feature.accountmanagement.AccountManagementScreen
+import dev.esbi.mizan.feature.accounts.AccountsScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
 import dev.esbi.mizan.feature.addaccount.AddNewAccountScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
@@ -236,17 +236,13 @@ internal fun MizanNavHost(
             val component = remember { appComponent.accountManagementComponent().create() }
             val viewModel = component.viewModel
 
-            AccountManagementScreen(
+            AccountsScreen(
                 viewModel = viewModel,
                 onBack = {
                     navController.popBackStack()
                 },
                 onNavigateToEditAccount = { accountId ->
-                    if (accountId == null) {
-                        navController.navigate(NavRoute.AddNewAccount)
-                    } else {
-                        // TODO: Navigate to edit account screen
-                    }
+                    navController.navigate(NavRoute.AddNewAccount(accountId = accountId))
                 }
             )
         }
@@ -299,11 +295,14 @@ internal fun MizanNavHost(
             )
         }
 
-        composable<NavRoute.AddNewAccount> {
+        composable<NavRoute.AddNewAccount> {backStackEntry ->
+            val route = backStackEntry.toRoute<NavRoute.AddNewAccount>()
             val store = remember {
                 AddAccountStoreFactory(
+                    accountId = route.accountId ,
                     storeFactory = appComponent.storeFactory,
-                    accountRepository = appComponent.accountRepository
+                    accountRepository = appComponent.accountRepository,
+                    currencyRepository = appComponent.currencyRepository
                 ).create()
             }
             AddNewAccountScreen(

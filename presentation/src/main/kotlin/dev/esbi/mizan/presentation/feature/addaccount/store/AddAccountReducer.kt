@@ -7,6 +7,15 @@ import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Stat
 internal class AddAccountReducer : Reducer<State, Message> {
     override fun State.reduce(msg: Message): State =
         when (msg) {
+            is Message.SetSelectAccount -> copy(
+                accountId = msg.account.id,
+                name = msg.account.name,
+                balance = msg.account.balance.toString(),
+                selectedCurrency = msg.account.currency,
+                selectedGroupId = msg.account.groupId,
+                description = msg.account.description.orEmpty(),
+                isLoading = false
+            )
             is Message.NameChanged -> copy(name = msg.name, validationErrors = validationErrors - State.Field.NAME)
             is Message.BalanceChanged -> copy(balance = msg.balance)
             is Message.CurrencySelected -> copy(selectedCurrency = msg.currency, validationErrors = validationErrors - State.Field.CURRENCY)
@@ -15,5 +24,6 @@ internal class AddAccountReducer : Reducer<State, Message> {
             is Message.ValidationFailed -> copy(validationErrors = msg.errors)
             is Message.Loading -> copy(isLoading = msg.isLoading)
             is Message.GroupsLoaded -> copy(availableGroups = msg.groups)
+            is Message.UpdateAvailableCurrencies -> copy(availableCurrencies = msg.currencies)
         }
 }

@@ -44,6 +44,7 @@ import androidx.core.graphics.toColorInt
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.ui.components.accounts.AddAccountButton
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
@@ -145,7 +146,7 @@ fun AccountSelectionContent(
                     )
                 }
                 items(accounts, key = { it.id }) { account ->
-                    AccountCard(
+                    AccountSelectorCard(
                         account = account,
                         isSelected = account.id == state.selectedAccountId,
                         currencyFormat = currencyFormat,
@@ -228,7 +229,7 @@ internal fun AccountSectionHeader(
 }
 
 @Composable
-internal fun AccountCard(
+internal fun AccountSelectorCard(
     account: Account,
     isSelected: Boolean,
     currencyFormat: NumberFormat,
@@ -330,6 +331,7 @@ internal fun AccountCard(
     }
 }
 
+/*
 @Composable
 internal fun AddAccountButton(onClick: () -> Unit) {
     val premiumSystem = LocalPremiumSystem.current
@@ -390,6 +392,7 @@ internal fun AddAccountButton(onClick: () -> Unit) {
         }
     }
 }
+*/
 
 // Helper functions
 private fun getAccountColor(account: Account): Color {

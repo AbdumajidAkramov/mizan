@@ -50,6 +50,6 @@ sealed class NavRoute() {
     data object AccountGroupManagement : NavRoute()
 
     @Serializable
-    data object AddNewAccount : NavRoute()
+    data class AddNewAccount(val accountId: Long? = null) : NavRoute()
 
 }

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.presentation.feature.accountmanagement.store
+package dev.esbi.mizan.presentation.feature.accounts.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Account
@@ -15,82 +15,60 @@ import kotlinx.coroutines.launch
 /**
  * Executor for AccountManagement - handles business logic and side effects
  */
-internal class AccountManagementExecutor(
+internal class AccountsExecutor(
     private val mainDispatcher: CoroutineDispatcher,
     private val accountRepository: AccountRepository,
     private val currencyRepository: CurrencyRepository
 ) : CoroutineExecutor<
-        AccountManagementStore.Intent,
-        AccountManagementStore.Action,
-        AccountManagementStore.State,
-        AccountManagementStore.Message,
-        AccountManagementStore.Label>(
+        AccountsStore.Intent,
+        AccountsStore.Action,
+        AccountsStore.State,
+        AccountsStore.Message,
+        AccountsStore.Label>(
     mainContext = mainDispatcher
 ) {
 
-    override fun executeAction(action: AccountManagementStore.Action) {
+    override fun executeAction(action: AccountsStore.Action) {
         when (action) {
-            is AccountManagementStore.Action.FetchMainCurrency -> {
+            is AccountsStore.Action.FetchMainCurrency -> {
                 fetchMainCurrency()
             }
         }
         loadAccounts()
     }
 
-    override fun executeIntent(intent: AccountManagementStore.Intent) {
+    override fun executeIntent(intent: AccountsStore.Intent) {
         when (intent) {
-            is AccountManagementStore.Intent.LoadAccounts -> {
+            is AccountsStore.Intent.LoadAccounts -> {
                 loadAccounts()
             }
 
-            is AccountManagementStore.Intent.SaveAccount -> {
+            is AccountsStore.Intent.CloseToast -> {
+                dispatch(AccountsStore.Message.UpdateErrorValue())
+            }
+
+            is AccountsStore.Intent.SaveAccount -> {
                 saveAccount(intent.account)
             }
 
-            is AccountManagementStore.Intent.DeleteAccount -> {
-                publish(
-                    AccountManagementStore.Label.ShowDeleteConfirmation(
-                        state().accounts.find { it.id == intent.id } ?: return
-                    ))
-            }
-
-            is AccountManagementStore.Intent.ConfirmDeleteAccount -> {
-                scope.launch {
-                    try {
-                        dispatch(AccountManagementStore.Message.LoadingChanged(true))
-                        accountRepository.markAccountAsDeleted(intent.id)
-                        dispatch(AccountManagementStore.Message.AccountDeleted(intent.id))
-                        dispatch(AccountManagementStore.Message.LoadingChanged(false))
-                        dispatch(AccountManagementStore.Message.EditSheetHidden)
-                    } catch (e: Exception) {
-                        dispatch(AccountManagementStore.Message.LoadingChanged(false))
-                        dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to delete account: ${e.message}"))
-                    }
-                }
-            }
-
-            is AccountManagementStore.Intent.ArchiveAccount -> {
+            is AccountsStore.Intent.ArchiveAccount -> {
                 archiveAccount(intent.id)
             }
 
-            is AccountManagementStore.Intent.OpenAddAccountSheet -> {
-                dispatch(AccountManagementStore.Message.EditSheetShown(null))
+            is AccountsStore.Intent.SearchAccounts -> {
+                dispatch(AccountsStore.Message.SearchQueryChanged(intent.query))
             }
 
-            is AccountManagementStore.Intent.OpenEditAccountSheet -> {
-                dispatch(AccountManagementStore.Message.EditSheetShown(intent.account))
+            is AccountsStore.Intent.BackClicked -> {
+                publish(AccountsStore.Label.NavigateBack)
             }
 
-            is AccountManagementStore.Intent.CloseAddEditSheet -> {
-                dispatch(AccountManagementStore.Message.EditSheetHidden)
+            is AccountsStore.Intent.OpenAddNewAccount -> {
+                publish(AccountsStore.Label.NavigateToAddNewAccount())
             }
 
-            is AccountManagementStore.Intent.SearchAccounts -> {
-                dispatch(AccountManagementStore.Message.SearchQueryChanged(intent.query))
-            }
-
-            is AccountManagementStore.Intent.BackClicked -> {
-                publish(AccountManagementStore.Label.NavigateBack)
+            is AccountsStore.Intent.OpenEditAccount -> {
+                publish(AccountsStore.Label.NavigateToAddNewAccount(intent.accountId))
             }
         }
     }
@@ -100,13 +78,13 @@ internal class AccountManagementExecutor(
             currencyRepository.observeCurrencies()
                 .collectLatest { currencies ->
 
-                    dispatch(AccountManagementStore.Message.MainCurrencyChanged(currencies.find { it.isBaseCurrency }))
+                    dispatch(AccountsStore.Message.MainCurrencyChanged(currencies.find { it.isBaseCurrency }))
                 }
         }
     }
 
     private fun loadAccounts() {
-        dispatch(AccountManagementStore.Message.LoadingChanged(true))
+        dispatch(AccountsStore.Message.LoadingChanged(true))
 
         combine(
             accountRepository.observeAccounts(),
@@ -115,12 +93,13 @@ internal class AccountManagementExecutor(
             Pair(accounts, groups)
         }
             .onEach { (accounts, groups) ->
+                val filteredAccount = accounts.filter { it.isDeleted.not() }
                 val groupMap = groups.associateBy { it.id }
 
-                val accountItems = accounts
+                val accountItems = filteredAccount
                     .filter { !it.isArchived && !it.isDeleted }
                     .map { account ->
-                        AccountManagementStore.AccountItem(
+                        AccountsStore.AccountItem(
                             id = account.id,
                             groupId = account.groupId,
                             groupName = groupMap[account.groupId]?.name ?: "Other",
@@ -138,7 +117,7 @@ internal class AccountManagementExecutor(
                     .sumOf { it.balance }
 
                 val groupItems = groups.map { group ->
-                    AccountManagementStore.AccountGroupItem(
+                    AccountsStore.AccountGroupItem(
                         id = group.id,
                         name = group.name,
                         isSystemGroup = group.isSystemGroup,
@@ -147,21 +126,21 @@ internal class AccountManagementExecutor(
                 }.filter { it.accounts.isNotEmpty() }
 
                 dispatch(
-                    AccountManagementStore.Message.AccountsLoaded(
+                    AccountsStore.Message.AccountsLoaded(
                         accountItems,
                         groupItems,
                         totalBalance
                     )
                 )
-                dispatch(AccountManagementStore.Message.LoadingChanged(false))
+                dispatch(AccountsStore.Message.LoadingChanged(false))
             }
             .launchIn(scope)
     }
 
-    private fun saveAccount(accountItem: AccountManagementStore.AccountItem) {
+    private fun saveAccount(accountItem: AccountsStore.AccountItem) {
         scope.launch {
             try {
-                dispatch(AccountManagementStore.Message.LoadingChanged(true))
+                dispatch(AccountsStore.Message.LoadingChanged(true))
 
                 val account = Account(
                     id = accountItem.id,
@@ -183,21 +162,19 @@ internal class AccountManagementExecutor(
                 if (accountItem.id == 0L) {
                     val newId = accountRepository.createAccount(account)
                     dispatch(
-                        AccountManagementStore.Message.AccountSaved(
+                        AccountsStore.Message.AccountSaved(
                             accountItem.copy(id = newId)
                         )
                     )
                 } else {
                     accountRepository.updateAccount(account)
-                    dispatch(AccountManagementStore.Message.AccountSaved(accountItem))
+                    dispatch(AccountsStore.Message.AccountSaved(accountItem))
                 }
-
-                dispatch(AccountManagementStore.Message.EditSheetHidden)
-                dispatch(AccountManagementStore.Message.LoadingChanged(false))
+                dispatch(AccountsStore.Message.LoadingChanged(false))
             } catch (e: Exception) {
                 e.printStackTrace()
-                dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to save account: ${e.message}"))
-                dispatch(AccountManagementStore.Message.LoadingChanged(false))
+                dispatch(AccountsStore.Message.ErrorOccurred("Failed to save account: ${e.message}"))
+                dispatch(AccountsStore.Message.LoadingChanged(false))
             }
         }
     }
@@ -223,9 +200,9 @@ internal class AccountManagementExecutor(
                     description = account.description
                 )
                 accountRepository.updateAccount(updatedAccount)
-                dispatch(AccountManagementStore.Message.AccountArchived(id))
+                dispatch(AccountsStore.Message.AccountArchived(id))
             } catch (e: Exception) {
-                dispatch(AccountManagementStore.Message.ErrorOccurred("Failed to archive account: ${e.message}"))
+                dispatch(AccountsStore.Message.ErrorOccurred("Failed to archive account: ${e.message}"))
             }
         }
     }

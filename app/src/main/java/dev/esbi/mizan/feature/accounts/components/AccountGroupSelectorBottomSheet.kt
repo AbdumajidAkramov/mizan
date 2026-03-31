@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.accountmanagement.components
+package dev.esbi.mizan.feature.accounts.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

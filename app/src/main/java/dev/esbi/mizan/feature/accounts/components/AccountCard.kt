@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.accountmanagement.components
+package dev.esbi.mizan.feature.accounts.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -33,7 +33,7 @@ import kotlin.math.abs
 
 @Composable
 fun AccountCard(
-    account: AccountManagementStore.AccountItem,
+    account: AccountsStore.AccountItem,
     onTap: () -> Unit,
     onArchive: () -> Unit,
     modifier: Modifier = Modifier
@@ -45,7 +45,7 @@ fun AccountCard(
         maximumFractionDigits = 2
     }
 
-    val isNegative = account.balance < 0
+    val isNegative = account.balance compareTo 0.0 == 0
 
     Box(
         modifier = modifier

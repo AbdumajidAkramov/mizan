@@ -115,7 +115,7 @@ internal class AddNewTransactionExecutor @Inject constructor(
                 publish(AddNewTransactionStore.Label.ShowToast("Please select an account"))
             }
 
-            state.selectedCategory == null -> {
+            state.selectedCategory == null && state.transactionType != Transaction.Type.TRANSFER-> {
                 publish(AddNewTransactionStore.Label.ShowToast("Please select a category"))
             }
 

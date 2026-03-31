@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Account
+import dev.esbi.mizan.ui.components.accounts.AddAccountButton
 import dev.esbi.mizan.ui.utils.Icons
 import java.text.NumberFormat
 import java.util.Locale
@@ -49,7 +50,7 @@ internal fun AccountSelectionContentSimple(
                     )
                 }
                 items(groupAccounts, key = { it.id }) { account ->
-                    AccountCard(
+                    AccountSelectorCard(
                         account = account,
                         isSelected = account.id == selectedAccount?.id,
                         currencyFormat = currencyFormat,
