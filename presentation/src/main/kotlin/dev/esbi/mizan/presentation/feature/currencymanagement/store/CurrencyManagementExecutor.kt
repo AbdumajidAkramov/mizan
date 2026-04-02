@@ -2,6 +2,7 @@ package dev.esbi.mizan.presentation.feature.currencymanagement.store
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.repository.CurrencyRepository
+import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore.Action
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore.Intent
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore.Label
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore.Message
@@ -14,10 +15,13 @@ import kotlinx.coroutines.launch
 internal class CurrencyManagementExecutor(
     mainDispatcher: CoroutineDispatcher,
     private val currencyRepository: CurrencyRepository
-) : CoroutineExecutor<Intent, Unit, State, Message, Label>(mainContext = mainDispatcher) {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainContext = mainDispatcher) {
 
-    override fun executeAction(action: Unit) {
-        loadSubCurrencies()
+    override fun executeAction(action: Action) {
+        when (action) {
+            Action.Init -> loadSubCurrencies()
+            Action.SyncRates -> Unit
+        }
     }
 
     private fun loadSubCurrencies() {
@@ -97,12 +101,14 @@ internal class CurrencyManagementExecutor(
                     unitPosition = intent.unitPosition,
                     decimalDigits = intent.decimalDigits
                 )
-                dispatch(Message.CurrencySettingsUpdated(
-                    code = intent.code,
-                    exchangeRate = intent.exchangeRate,
-                    unitPosition = intent.unitPosition,
-                    decimalDigits = intent.decimalDigits
-                ))
+                dispatch(
+                    Message.CurrencySettingsUpdated(
+                        code = intent.code,
+                        exchangeRate = intent.exchangeRate,
+                        unitPosition = intent.unitPosition,
+                        decimalDigits = intent.decimalDigits
+                    )
+                )
                 dispatch(Message.Loading(false))
                 publish(Label.ShowMessage("Settings updated"))
             } catch (e: Exception) {

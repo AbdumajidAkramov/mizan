@@ -20,6 +20,7 @@ interface CurrencyManagementStore : Store<
             val unitPosition: UnitPosition,
             val decimalDigits: Int
         ) : Intent
+
         data object SyncRates : Intent
         data class SelectCurrency(val code: String) : Intent
     }
@@ -32,6 +33,11 @@ interface CurrencyManagementStore : Store<
         val isSyncing: Boolean = false,
         val error: String? = null
     )
+
+    sealed interface Action {
+        data object Init : Action
+        data object SyncRates : Action
+    }
 
     sealed interface Label {
         data class ShowMessage(val message: String) : Label

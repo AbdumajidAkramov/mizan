@@ -16,7 +16,7 @@ class CurrencyManagementStoreFactory(
             by storeFactory.create(
                 name = "CurrencyManagementStore",
                 initialState = CurrencyManagementStore.State(),
-                bootstrapper = SimpleBootstrapper(Unit),
+                bootstrapper = SimpleBootstrapper(CurrencyManagementStore.Action.Init),
                 executorFactory = {
                     CurrencyManagementExecutor(
                         mainDispatcher = Dispatchers.Main,
