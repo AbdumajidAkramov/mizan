@@ -20,7 +20,13 @@ interface CurrencyManagementStore : Store<
             val unitPosition: UnitPosition,
             val decimalDigits: Int
         ) : Intent
-
+        data class CreateCustomCurrency(
+            val name: String,
+            val unit: String,
+            val rate: BigDecimal,
+            val position: UnitPosition,
+            val decimals: Int
+        ) : Intent
         data object SyncRates : Intent
         data class SelectCurrency(val code: String) : Intent
     }

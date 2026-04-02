@@ -97,7 +97,8 @@ private val ALL_CURRENCIES = listOf(
 @Composable
 fun CurrencyPickerScreen(
     store: CurrencyManagementStore,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onAddCustomCurrencyClick: () -> Unit
 ) {
     val state by store.states.collectAsState(initial = CurrencyManagementStore.State())
     val context = LocalContext.current
@@ -175,6 +176,60 @@ fun CurrencyPickerScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item { Spacer(modifier = Modifier.height(4.dp)) }
+
+                // Add Custom Currency Button
+                item {
+                    PremiumCard(
+                        variant = PremiumCardVariant.Gradient,
+                        onClick = onAddCustomCurrencyClick
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Color.White.copy(alpha = 0.2f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                MizanIcon(
+                                    icon = IconValue(MizanIcons.ic_add),
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Add Custom Currency",
+                                    style = MizanTheme.typography.bodyMd,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = "Create Gold, Silver, Crypto, or any asset",
+                                    style = MizanTheme.typography.bodySm,
+                                    color = Color.White.copy(alpha = 0.8f)
+                                )
+                            }
+
+                            MizanIcon(
+                                icon = IconValue(MizanIcons.ic_chevron_right),
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                }
+
+                item { Spacer(modifier = Modifier.height(8.dp)) }
 
                 items(available, key = { it.first }) { (code, name, symbol) ->
                     PickerCurrencyRow(

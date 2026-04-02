@@ -25,4 +25,6 @@ interface CurrencyRepository {
         decimalDigits: Int
     )
     suspend fun syncExchangeRates(): Result<Unit>
+    
+    suspend fun isCurrencyCodeUnique(code: String): Boolean
 }

@@ -10,5 +10,6 @@ data class CurrencyConfig(
     val unitPosition: UnitPosition = UnitPosition.FRONT,
     val decimalDigits: Int = 2,
     val orderIndex: Int = 0,
-    val isMainCurrency: Boolean = false
+    val isMainCurrency: Boolean = false,
+    val isUserDefined: Boolean = false
 )

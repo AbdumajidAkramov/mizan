@@ -18,7 +18,8 @@ fun SubCurrencyEntity.toDomain(): CurrencyConfig {
         },
         decimalDigits = decimalDigits,
         orderIndex = orderIndex,
-        isMainCurrency = isMainCurrency
+        isMainCurrency = isMainCurrency,
+        isUserDefined = isUserDefined
     )
 }
 
@@ -31,6 +32,7 @@ fun CurrencyConfig.toEntity(): SubCurrencyEntity {
         unitPosition = unitPosition.name,
         decimalDigits = decimalDigits,
         orderIndex = orderIndex,
-        isMainCurrency = isMainCurrency
+        isMainCurrency = isMainCurrency,
+        isUserDefined = isUserDefined
     )
 }

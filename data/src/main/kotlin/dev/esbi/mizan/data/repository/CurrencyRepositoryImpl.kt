@@ -81,4 +81,8 @@ class CurrencyRepositoryImpl @Inject constructor(
         // In production, this would call an exchange rate API and update all sub-currencies
         return Result.success(Unit)
     }
+
+    override suspend fun isCurrencyCodeUnique(code: String): Boolean {
+        return subCurrencyDao.getByCode(code) == null
+    }
 }

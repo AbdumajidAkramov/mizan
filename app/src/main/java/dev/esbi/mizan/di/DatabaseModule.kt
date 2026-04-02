@@ -118,6 +118,12 @@ class DatabaseModule {
         }
     }
 
+    private val migration7to8 = object : androidx.room.migration.Migration(7, 8) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `sub_currencies` ADD COLUMN `is_user_defined` INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -127,7 +133,7 @@ class DatabaseModule {
             "mizan_database"
         )
 //            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5, migration5to6, migration6to7)
+            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5, migration5to6, migration6to7, migration7to8)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)

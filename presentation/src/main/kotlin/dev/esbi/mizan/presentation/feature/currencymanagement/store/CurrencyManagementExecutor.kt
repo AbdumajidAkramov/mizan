@@ -28,7 +28,7 @@ internal class CurrencyManagementExecutor(
         currencyRepository.observeSubCurrencies()
             .onEach { configs ->
                 val main = configs.find { it.isMainCurrency }
-                val subs = configs
+                val subs = configs.filter { it.isMainCurrency.not() }
                 dispatch(Message.SubCurrenciesLoaded(subs))
                 dispatch(Message.MainCurrencyLoaded(main))
             }
@@ -41,6 +41,7 @@ internal class CurrencyManagementExecutor(
             is Intent.RemoveCurrency -> removeCurrency(intent.code)
             is Intent.Reorder -> reorder(intent.configs)
             is Intent.UpdateSettings -> updateSettings(intent)
+            is Intent.CreateCustomCurrency -> createCustomCurrency(intent)
             is Intent.SyncRates -> syncRates()
             is Intent.SelectCurrency -> dispatch(Message.CurrencySelected(intent.code))
         }
@@ -114,6 +115,65 @@ internal class CurrencyManagementExecutor(
             } catch (e: Exception) {
                 dispatch(Message.Loading(false))
                 publish(Label.ShowMessage(e.message ?: "Failed to update settings"))
+            }
+        }
+    }
+
+    private fun createCustomCurrency(intent: Intent.CreateCustomCurrency) {
+        scope.launch {
+            dispatch(Message.Loading(true))
+            try {
+                // Validate unit (code) length: 3-5 characters
+                val unit = intent.unit.trim().uppercase()
+                if (unit.length !in 3..5) {
+                    dispatch(Message.Loading(false))
+                    publish(Label.ShowMessage("Unit/Symbol must be 3-5 characters"))
+                    return@launch
+                }
+
+                // Validate name is not empty
+                if (intent.name.isBlank()) {
+                    dispatch(Message.Loading(false))
+                    publish(Label.ShowMessage("Name cannot be empty"))
+                    return@launch
+                }
+
+                // Validate exchange rate is positive
+                if (intent.rate <= java.math.BigDecimal.ZERO) {
+                    dispatch(Message.Loading(false))
+                    publish(Label.ShowMessage("Exchange rate must be positive"))
+                    return@launch
+                }
+
+                // Check if code is unique
+                val isUnique = currencyRepository.isCurrencyCodeUnique(unit)
+                if (!isUnique) {
+                    dispatch(Message.Loading(false))
+                    publish(Label.ShowMessage("Currency code '$unit' already exists"))
+                    return@launch
+                }
+
+                // Create the custom currency
+                val nextOrder = state().subCurrencies.maxOfOrNull { it.orderIndex }?.plus(1) ?: 0
+                val config = dev.esbi.mizan.domain.model.CurrencyConfig(
+                    code = unit,
+                    name = intent.name.trim(),
+                    symbol = unit, // Use unit as symbol for custom currencies
+                    exchangeRate = intent.rate,
+                    unitPosition = intent.position,
+                    decimalDigits = intent.decimals,
+                    orderIndex = nextOrder,
+                    isMainCurrency = false,
+                    isUserDefined = true
+                )
+
+                currencyRepository.saveSubCurrency(config)
+                dispatch(Message.Loading(false))
+                publish(Label.CurrencyAdded)
+                publish(Label.ShowMessage("Custom currency '${intent.name}' created"))
+            } catch (e: Exception) {
+                dispatch(Message.Loading(false))
+                publish(Label.ShowMessage(e.message ?: "Failed to create custom currency"))
             }
         }
     }

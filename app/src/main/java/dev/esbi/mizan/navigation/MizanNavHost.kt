@@ -28,6 +28,7 @@ import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore
 import dev.esbi.mizan.feature.currencymanagement.CurrencyPickerScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencyListScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencySettingScreen
+import dev.esbi.mizan.feature.currencymanagement.UserDefinedCurrencyScreen
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStoreFactory
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStoreFactory
 import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
@@ -360,6 +361,20 @@ internal fun MizanNavHost(
                 ).create()
             }
             CurrencyPickerScreen(
+                store = store,
+                onBackClick = { navController.popBackStack() },
+                onAddCustomCurrencyClick = { navController.navigate(NavRoute.UserDefinedCurrency) }
+            )
+        }
+
+        composable<NavRoute.UserDefinedCurrency> {
+            val store = remember {
+                CurrencyManagementStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    currencyRepository = appComponent.currencyRepository
+                ).create()
+            }
+            UserDefinedCurrencyScreen(
                 store = store,
                 onBackClick = { navController.popBackStack() }
             )

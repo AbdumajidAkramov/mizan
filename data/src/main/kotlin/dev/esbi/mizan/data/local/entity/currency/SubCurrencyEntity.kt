@@ -26,5 +26,8 @@ data class SubCurrencyEntity(
     val orderIndex: Int = 0,
 
     @ColumnInfo(name = "is_main_currency", defaultValue = "0")
-    val isMainCurrency: Boolean = false
+    val isMainCurrency: Boolean = false,
+
+    @ColumnInfo(name = "is_user_defined", defaultValue = "0")
+    val isUserDefined: Boolean = false
 )

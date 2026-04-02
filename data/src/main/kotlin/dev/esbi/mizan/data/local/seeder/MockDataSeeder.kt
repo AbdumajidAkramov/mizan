@@ -105,7 +105,8 @@ class MockDataSeeder @Inject constructor(
                 unitPosition = "END",
                 decimalDigits = 0,
                 orderIndex = 0,
-                isMainCurrency = true
+                isMainCurrency = true,
+                isUserDefined = false
             ),
             SubCurrencyEntity(
                 code = "USD",
@@ -115,7 +116,8 @@ class MockDataSeeder @Inject constructor(
                 unitPosition = "FRONT",
                 decimalDigits = 2,
                 orderIndex = 1,
-                isMainCurrency = false
+                isMainCurrency = false,
+                isUserDefined = false
             ),
             SubCurrencyEntity(
                 code = "EUR",
@@ -125,7 +127,8 @@ class MockDataSeeder @Inject constructor(
                 unitPosition = "FRONT",
                 decimalDigits = 2,
                 orderIndex = 2,
-                isMainCurrency = false
+                isMainCurrency = false,
+                isUserDefined = false
             ),
             SubCurrencyEntity(
                 code = "RUB",
@@ -135,7 +138,19 @@ class MockDataSeeder @Inject constructor(
                 unitPosition = "END",
                 decimalDigits = 2,
                 orderIndex = 3,
-                isMainCurrency = false
+                isMainCurrency = false,
+                isUserDefined = false
+            ),
+            SubCurrencyEntity(
+                code = "XAU",
+                name = "Gold (Troy Ounce)",
+                symbol = "Au",
+                exchangeRate = "33000000",
+                unitPosition = "END",
+                decimalDigits = 4,
+                orderIndex = 4,
+                isMainCurrency = false,
+                isUserDefined = true
             )
         )
         subCurrencyDao.insertAll(subCurrencies)

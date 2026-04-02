@@ -59,7 +59,7 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
         SubscriptionEntity::class,
         SubCurrencyEntity::class
     ],
-    version = 7,
+    version = 8,
     autoMigrations = [],
     exportSchema = true
 )
