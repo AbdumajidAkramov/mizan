@@ -28,8 +28,11 @@ interface AccountGroupDao {
     @Delete
     suspend fun deleteGroup(group: AccountGroupEntity)
 
-    @Query("DELETE FROM account_groups WHERE id = :groupId")
+    @Query("DELETE FROM account_groups WHERE id = :groupId AND isSystemGroup = 0")
     suspend fun deleteGroupById(groupId: Long)
+
+    @Query("SELECT isSystemGroup FROM account_groups WHERE id = :groupId")
+    suspend fun isSystemGroup(groupId: Long): Boolean
 
     // --- Query ---
     @Query("SELECT * FROM account_groups ORDER BY orderIndex ASC")

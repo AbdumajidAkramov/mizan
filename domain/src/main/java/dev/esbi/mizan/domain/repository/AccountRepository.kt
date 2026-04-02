@@ -18,4 +18,5 @@ interface AccountRepository {
     fun observeAccountGroups(): Flow<List<AccountGroup>>
     suspend fun saveAccountGroup(group: AccountGroup)
     suspend fun deleteAccountGroup(id: Long)
+    suspend fun isSystemGroup(groupId: Long): Boolean
 }

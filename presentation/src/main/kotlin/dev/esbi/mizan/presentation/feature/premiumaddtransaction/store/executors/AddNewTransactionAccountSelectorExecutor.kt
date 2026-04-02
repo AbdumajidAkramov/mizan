@@ -2,7 +2,6 @@ package dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executor
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.presentation.di.MainDispatcher
-import dev.esbi.mizan.domain.model.Account.Type.CASH
 import dev.esbi.mizan.domain.repository.AccountRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
@@ -62,9 +61,7 @@ class AddNewTransactionAccountSelectorExecutor @Inject constructor(
                 dispatch(Message.UpdateAccounts(accounts))
                 // Auto-select first account if none selected
                 if (state().selectedAccount == null && accounts.isNotEmpty()) {
-                    // Prefer CASH type, otherwise first account
-                    val defaultAccount =
-                        accounts.find { it.type == CASH } ?: accounts.firstOrNull()
+                    val defaultAccount = accounts.firstOrNull()
                     dispatch(Message.UpdateSelectedAccount(defaultAccount))
                 }
             }

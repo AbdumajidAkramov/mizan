@@ -1,33 +1,26 @@
 package dev.esbi.mizan.ui.components.account
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.badge.MizanBadge
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Icon
-import androidx.compose.foundation.layout.Arrangement
+import dev.esbi.mizan.ui.kit.balance.BalanceAmount
+import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import java.math.BigDecimal
 
 @Composable
 fun AccountRow(
@@ -35,123 +28,44 @@ fun AccountRow(
     name: String,
     balance: Double,
     currencyCode: String,
-    colorHex: String?,
-    iconName: String?,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    iconContent: @Composable (() -> Unit)? = null
+    onClick: () -> Unit = {}
 ) {
-    val formatter = java.text.NumberFormat.getNumberInstance(java.util.Locale("uz", "UZ")).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
-    }
-    val isNegative = balance < 0
-    val formatted = formatter.format(kotlin.math.abs(balance)).replace(",", ".")
-    val parts = formatted.split(".")
-    val integer = parts[0]
-    val decimal = if (parts.size > 1) parts[1] else "00"
-
-    // Parse the color, fallback to emerald-ish if invalid or null
-    val parsedColor = try {
-        if (!colorHex.isNullOrBlank()) {
-            Color(android.graphics.Color.parseColor(colorHex))
-        } else {
-            Color(0xFF667EEA) // PremiumPrimary as fallback
-        }
-    } catch (e: Exception) {
-        Color(0xFF667EEA)
-    }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color.White.copy(alpha = 0.05f))
-            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+    GlassCard(
+        cornerRadius = RoundedCornerShape(MizanTheme.premium.radius.md)
     ) {
-        // Icon Box
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(parsedColor.copy(alpha = 0.2f))
-                .border(1.dp, parsedColor.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (iconContent != null) {
-                iconContent()
-            } else {
+            // Account Details
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = iconName?.take(1)?.uppercase() ?: "A",
-                    color = parsedColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    text = name,
+                    color = MizanTheme.premium.text.primary,
+                    style = MizanTheme.typography.bodyLg,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Account Details
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = name,
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            BalanceAmount(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                balance = BigDecimal(balance),
+                currency = currencyCode,
+                typography = MizanTheme.typography.bodyLg
             )
-            // Optional Last Four digits simulation can be added here
-        }
 
-        Spacer(modifier = Modifier.width(16.dp))
-
-        // Balance
-        val balanceColor = if (isNegative) Color(0xFFF5576C) else Color.White
-
-        Column(horizontalAlignment = Alignment.End) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (isNegative) {
-                    Text(
-                        text = "-",
-                        color = Color(0xFFF5576C),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-                Text(
-                    text = integer,
-                    color = balanceColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = ".${decimal}",
-                    color = balanceColor.copy(alpha = 0.7f),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Spacer(modifier = Modifier.height(6.dp))
-            MizanBadge(
-                text = currencyCode,
-                backgroundColor = Color.White.copy(alpha = 0.1f),
-                textColor = Color.White.copy(alpha = 0.8f)
+            // Chevron
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.3f),
+                modifier = Modifier.size(20.dp)
             )
         }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // Chevron
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = 0.3f),
-            modifier = Modifier.size(20.dp)
-        )
     }
 }

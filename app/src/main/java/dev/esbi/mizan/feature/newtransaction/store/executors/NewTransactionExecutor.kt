@@ -69,10 +69,7 @@ internal class NewTransactionExecutor @Inject constructor(
 
                 // Auto-select first account if none selected
                 if (state().selectedAccountId == null && accounts.isNotEmpty()) {
-                    // Prefer CASH type, otherwise first account
-                    val defaultAccount =
-                        accounts.find { it.type == dev.esbi.mizan.domain.model.Account.Type.CASH }
-                            ?: accounts.first()
+                    val defaultAccount = accounts.first()
                     dispatch(NewTransactionStore.Message.UpdateSelectedAccount(defaultAccount.id))
                 }
             }

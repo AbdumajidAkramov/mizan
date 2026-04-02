@@ -44,6 +44,7 @@ import androidx.core.graphics.toColorInt
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
+import dev.esbi.mizan.ui.components.accounts.AddAccountButton
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
@@ -125,19 +126,9 @@ fun AccountSelectionContent(
         return
     }
 
-    // Group accounts by type
+    // Group accounts by groupId
     val groupedAccounts = remember(state.accounts) {
-        state.accounts.groupBy { account ->
-            when (account.type) {
-                Account.Type.CASH -> AccountGroupType.CASH
-                Account.Type.CARD -> AccountGroupType.BANK
-                Account.Type.BANK -> AccountGroupType.BANK
-                Account.Type.SAVINGS -> AccountGroupType.BANK
-                Account.Type.DEBT -> AccountGroupType.BANK
-                Account.Type.CREDIT -> AccountGroupType.BANK
-                Account.Type.INVESTMENT -> AccountGroupType.BANK
-            }
-        }
+        state.accounts.groupBy { it.groupId }
     }
 
     // Account List
@@ -146,40 +137,22 @@ fun AccountSelectionContent(
         contentPadding = PaddingValues(all = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Cash Section
-        groupedAccounts[AccountGroupType.CASH]?.let { cashAccounts ->
-            item {
-                AccountSectionHeader(
-                    title = "CASH",
-                    iconRes = Icons.ic_attach_money
-                )
-            }
-            items(cashAccounts, key = { it.id }) { account ->
-                AccountCard(
-                    account = account,
-                    isSelected = account.id == state.selectedAccountId,
-                    currencyFormat = currencyFormat,
-                    onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
-                )
-            }
-        }
-
-        // Bank Accounts Section
-        groupedAccounts[AccountGroupType.BANK]?.let { bankAccounts ->
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                AccountSectionHeader(
-                    title = "BANK ACCOUNTS",
-                    iconRes = Icons.ic_home
-                )
-            }
-            items(bankAccounts, key = { it.id }) { account ->
-                AccountCard(
-                    account = account,
-                    isSelected = account.id == state.selectedAccountId,
-                    currencyFormat = currencyFormat,
-                    onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
-                )
+        groupedAccounts.forEach { (_, accounts) ->
+            if (accounts.isNotEmpty()) {
+                item {
+                    AccountSectionHeader(
+                        title = "ACCOUNTS",
+                        iconRes = Icons.ic_attach_money
+                    )
+                }
+                items(accounts, key = { it.id }) { account ->
+                    AccountSelectorCard(
+                        account = account,
+                        isSelected = account.id == state.selectedAccountId,
+                        currencyFormat = currencyFormat,
+                        onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
+                    )
+                }
             }
         }
 
@@ -256,7 +229,7 @@ internal fun AccountSectionHeader(
 }
 
 @Composable
-internal fun AccountCard(
+internal fun AccountSelectorCard(
     account: Account,
     isSelected: Boolean,
     currencyFormat: NumberFormat,
@@ -305,7 +278,7 @@ internal fun AccountCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Account Icon
+            // Account Icon (first letter)
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -313,11 +286,10 @@ internal fun AccountCard(
                     .background(accountColor.copy(alpha = 0.2f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    painter = painterResource(id = getAccountIcon(account.type)),
-                    contentDescription = null,
-                    tint = accountColor,
-                    modifier = Modifier.size(24.dp)
+                Text(
+                    text = account.name.take(1).uppercase(),
+                    color = accountColor,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -359,6 +331,7 @@ internal fun AccountCard(
     }
 }
 
+/*
 @Composable
 internal fun AddAccountButton(onClick: () -> Unit) {
     val premiumSystem = LocalPremiumSystem.current
@@ -419,45 +392,11 @@ internal fun AddAccountButton(onClick: () -> Unit) {
         }
     }
 }
+*/
 
 // Helper functions
-internal enum class AccountGroupType {
-    CASH,
-    BANK
-}
-
 private fun getAccountColor(account: Account): Color {
-    // Try to parse the account's custom color first
-    account.color?.let { colorHex ->
-        try {
-            return Color(colorHex.toColorInt())
-        } catch (e: Exception) {
-            // Fall through to default
-        }
-    }
-
-    // Default colors based on account type
-    return when (account.type) {
-        Account.Type.CASH -> Color(0xFF10B981)      // Emerald
-        Account.Type.CARD -> Color(0xFF667EEA)      // Primary Blue
-        Account.Type.BANK -> Color(0xFF667EEA)      // Primary Blue
-        Account.Type.SAVINGS -> Color(0xFF4FACFE)   // Light Blue
-        Account.Type.DEBT -> Color(0xFFF5576C)      // Red/Pink
-        Account.Type.CREDIT -> Color(0xFFF5576C)    // Red/Pink
-        Account.Type.INVESTMENT -> Color(0xFFC471F5) // Purple
-    }
-}
-
-private fun getAccountIcon(type: Account.Type): Int {
-    return when (type) {
-        Account.Type.CASH -> Icons.ic_attach_money
-        Account.Type.CARD -> Icons.ic_attach_money
-        Account.Type.BANK -> Icons.ic_attach_money
-        Account.Type.SAVINGS -> Icons.ic_attach_money
-        Account.Type.DEBT -> Icons.ic_attach_money
-        Account.Type.CREDIT -> Icons.ic_attach_money
-        Account.Type.INVESTMENT -> Icons.ic_attach_money
-    }
+    return Color(0xFF667EEA) // Default primary color
 }
 
 private fun formatBalance(balance: Double, currencySymbol: String): String {
@@ -472,7 +411,6 @@ private fun formatBalance(balance: Double, currencySymbol: String): String {
         "$formatted $currencySymbol"
     }
 }
-
 
 @Preview(showBackground = false)
 @Composable
@@ -499,11 +437,8 @@ fun AccountSelectionContentPreview() {
             id = 1L,
             groupId = 100L,
             name = "Cash Wallet",
-            type = Account.Type.CASH,
             balance = 250_000.0,
             currency = uzs,
-            iconName = "ic_cash",
-            color = "#4CAF50",
             isArchived = false,
             excludeFromTotal = false,
             description = "Main daily cash"
@@ -512,11 +447,8 @@ fun AccountSelectionContentPreview() {
             id = 2L,
             groupId = 100L,
             name = "Humo Card",
-            type = Account.Type.CARD,
             balance = 1_450_000.0,
             currency = uzs,
-            iconName = "ic_card",
-            color = "#2196F3",
             isArchived = false,
             excludeFromTotal = false,
             description = null
@@ -525,11 +457,8 @@ fun AccountSelectionContentPreview() {
             id = 3L,
             groupId = 200L,
             name = "Visa USD",
-            type = Account.Type.CARD,
             balance = 320.0,
             currency = usd,
-            iconName = "ic_visa",
-            color = "#FF9800",
             isArchived = false,
             excludeFromTotal = false,
             description = "Online payments"

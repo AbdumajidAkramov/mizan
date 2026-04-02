@@ -1,25 +1,31 @@
-package dev.esbi.mizan.presentation.feature.accountmanagement.store
+package dev.esbi.mizan.presentation.feature.accounts.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 
 /**
  * Reducer for AccountManagement - handles state updates
  */
-internal class AccountManagementReducer : Reducer<AccountManagementStore.State, AccountManagementStore.Message> {
+internal class AccountsReducer : Reducer<AccountsStore.State, AccountsStore.Message> {
 
-    override fun AccountManagementStore.State.reduce(
-        msg: AccountManagementStore.Message
-    ): AccountManagementStore.State {
+    override fun AccountsStore.State.reduce(
+        msg: AccountsStore.Message
+    ): AccountsStore.State {
         return when (msg) {
-            is AccountManagementStore.Message.AccountsLoaded -> {
+            is AccountsStore.Message.MainCurrencyChanged -> copy(
+                baseCurrency = msg.value
+            )
+
+            is AccountsStore.Message.UpdateErrorValue -> copy(error = msg.value)
+            is AccountsStore.Message.AccountsLoaded -> {
                 copy(
                     accounts = msg.accounts,
+                    groups = msg.groups,
                     totalBalance = msg.totalBalance,
                     error = null
                 )
             }
 
-            is AccountManagementStore.Message.AccountSaved -> {
+            is AccountsStore.Message.AccountSaved -> {
                 val existingIndex = accounts.indexOfFirst { it.id == msg.account.id }
                 val updatedAccounts = if (existingIndex >= 0) {
                     accounts.toMutableList().apply {
@@ -37,7 +43,7 @@ internal class AccountManagementReducer : Reducer<AccountManagementStore.State, 
                 )
             }
 
-            is AccountManagementStore.Message.AccountDeleted -> {
+            is AccountsStore.Message.AccountDeleted -> {
                 val updatedAccounts = accounts.filter { it.id != msg.id }
                 val newTotal = updatedAccounts
                     .filter { !it.excludeFromTotal }
@@ -48,7 +54,7 @@ internal class AccountManagementReducer : Reducer<AccountManagementStore.State, 
                 )
             }
 
-            is AccountManagementStore.Message.AccountArchived -> {
+            is AccountsStore.Message.AccountArchived -> {
                 val updatedAccounts = accounts.filter { it.id != msg.id }
                 val newTotal = updatedAccounts
                     .filter { !it.excludeFromTotal }
@@ -59,29 +65,15 @@ internal class AccountManagementReducer : Reducer<AccountManagementStore.State, 
                 )
             }
 
-            is AccountManagementStore.Message.EditSheetShown -> {
-                copy(
-                    isAddEditSheetVisible = true,
-                    editingAccount = msg.account
-                )
-            }
-
-            is AccountManagementStore.Message.EditSheetHidden -> {
-                copy(
-                    isAddEditSheetVisible = false,
-                    editingAccount = null
-                )
-            }
-
-            is AccountManagementStore.Message.SearchQueryChanged -> {
+            is AccountsStore.Message.SearchQueryChanged -> {
                 copy(searchQuery = msg.query)
             }
 
-            is AccountManagementStore.Message.LoadingChanged -> {
+            is AccountsStore.Message.LoadingChanged -> {
                 copy(isLoading = msg.isLoading)
             }
 
-            is AccountManagementStore.Message.ErrorOccurred -> {
+            is AccountsStore.Message.ErrorOccurred -> {
                 copy(error = msg.error)
             }
         }

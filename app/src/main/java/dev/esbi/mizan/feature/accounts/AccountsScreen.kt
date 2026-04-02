@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.accountmanagement
+package dev.esbi.mizan.feature.accounts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,81 +33,65 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.feature.accountmanagement.components.AddAccountButton
-import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
+import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
+import dev.esbi.mizan.ui.components.account.AccountGroupHeader
 import dev.esbi.mizan.ui.components.account.AccountRow
 import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
-import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
-import dev.esbi.mizan.ui.kit.icon.AccountIcon
+import dev.esbi.mizan.ui.components.accounts.AddAccountButton
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.toast.MizanToast
+import dev.esbi.mizan.ui.toast.MizanToastStatus
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 /**
  * Account Management Screen
  *
- * Full CRUD operations for accounts with grouped display
+ * Full CRUD operations for accounts grouped by AccountGroup
  */
 @Composable
-fun AccountManagementScreen(
-    viewModel: AccountManagementViewModel,
+fun AccountsScreen(
+    viewModel: AccountsViewModel,
     onBack: () -> Unit,
     onNavigateToEditAccount: (Long?) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
-    var accountToDelete by remember { mutableStateOf<AccountManagementStore.AccountItem?>(null) }
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.labels) {
         viewModel.labels.collect { label ->
             when (label) {
-                is AccountManagementStore.Label.NavigateBack -> onBack()
-                is AccountManagementStore.Label.ShowDeleteConfirmation -> {
-                    accountToDelete = label.account
-                }
-
-                is AccountManagementStore.Label.ShowError -> {
-                    // Handle error display
+                is AccountsStore.Label.NavigateBack -> onBack()
+                is AccountsStore.Label.NavigateToAddNewAccount -> {
+                    onNavigateToEditAccount(label.accountId)
                 }
             }
         }
     }
 
-    if (accountToDelete != null) {
-        PremiumConfirmDialog(
-            title = "Delete Account?",
-            message = "Are you sure you want to delete this account? This action cannot be undone, but your past transaction history will be preserved.",
-            confirmText = "Delete",
-            dismissText = "Cancel",
-            onConfirm = {
-                viewModel.onConfirmDeleteAccount(accountToDelete!!.id)
-                accountToDelete = null
-            },
-            onDismiss = {
-                accountToDelete = null
-            }
-        )
-    }
+    AccountsScreenContent(
+        state = state,
+        accept = viewModel::onIntent
+    )
+}
 
+@Composable
+fun AccountsScreenContent(
+    state: AccountsStore.State,
+    accept: (AccountsStore.Intent) -> Unit
+) {
     Scaffold(
         topBar = {
             AccountManagementHeader(
-                onBack = onBack,
+                onBack = { accept(AccountsStore.Intent.BackClicked) },
                 onAddNew = {
-                    viewModel.onOpenAddAccountSheet()
+                    accept(AccountsStore.Intent.OpenAddNewAccount())
                 }
             )
         }
@@ -119,7 +102,6 @@ fun AccountManagementScreen(
                 .background(MizanTheme.premium.background.primary)
                 .padding(paddingValues)
         ) {
-            // Content
             Box(modifier = Modifier.weight(1f)) {
                 if (state.isLoading && state.accounts.isEmpty()) {
                     Box(
@@ -138,43 +120,50 @@ fun AccountManagementScreen(
                             horizontal = MizanTheme.premium.spacing.lg,
                             vertical = MizanTheme.premium.spacing.lg
                         ),
-                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
+                        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
                     ) {
                         // Search Bar
                         item {
-                            SearchBar(
-                                query = state.searchQuery,
-                                onQueryChange = { viewModel.onSearchAccounts(it) }
-                            )
+                            Box(modifier = Modifier.padding(vertical = 16.dp)) {
+                                SearchBar(
+                                    query = state.searchQuery,
+                                    onQueryChange = {
+                                        accept(AccountsStore.Intent.SearchAccounts(it))
+                                    }
+                                )
+                            }
                         }
 
                         // Total Balance Card
                         item {
                             PremiumTotalBalanceCard(
                                 balance = state.totalBalance,
-                                monthlyChange = 2450000.0, // Mock analytics
-                                monthlyChangePercent = 12.5, // Mock analytics
-                                currency = "UZS" // Hardcoded UZS similar to before
+                                monthlyChange = state.monthlyChange,
+                                monthlyChangePercent = state.monthlyChangePercent,
+                                currency = state.baseCurrency?.code.orEmpty()
                             )
                         }
 
-                        // Group accounts by type
-                        val filteredAccounts = if (state.searchQuery.isBlank()) {
-                            state.accounts
+                        // Group accounts by AccountGroup from DB
+                        val searchQuery = state.searchQuery
+                        val groupedAccounts = if (searchQuery.isBlank()) {
+                            state.groups
                         } else {
-                            state.accounts.filter {
-                                it.name.contains(state.searchQuery, ignoreCase = true)
-                            }
+                            state.groups.map { group ->
+                                group.copy(
+                                    accounts = group.accounts.filter {
+                                        it.name.contains(searchQuery, ignoreCase = true)
+                                    }
+                                )
+                            }.filter { it.accounts.isNotEmpty() }
                         }
 
-                        val groupedAccounts = groupAccountsByType(filteredAccounts)
-
                         groupedAccounts.forEach { group ->
-                            // Group Header
-                            item {
+                            // Group Header (from :ui-kit)
+                            item(key = "group_${group.id}") {
                                 AccountGroupHeader(
-                                    label = group.label,
-                                    accountCount = group.accounts.size
+                                    title = group.name,
+                                    count = group.accounts.size
                                 )
                             }
 
@@ -183,34 +172,13 @@ fun AccountManagementScreen(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                val defaultColor = MizanTheme.premium.colors.emerald
-                                val parsedColor = try {
-                                    if (!account.color.isNullOrBlank()) {
-                                        Color(account.color!!.toColorInt())
-                                    } else {
-                                        defaultColor
-                                    }
-                                } catch (e: Exception) {
-                                    defaultColor
-                                }
-
                                 AccountRow(
                                     id = account.id,
                                     name = account.name,
                                     balance = account.balance,
                                     currencyCode = account.currencyCode,
-                                    colorHex = account.color,
-                                    iconName = account.iconName,
                                     onClick = {
-                                        viewModel.onOpenEditAccountSheet(account)
-                                    },
-                                    iconContent = {
-                                        AccountIcon(
-                                            iconName = account.iconName,
-                                            accountType = account.type,
-                                            tint = parsedColor,
-                                            modifier = Modifier.size(24.dp)
-                                        )
+                                        accept(AccountsStore.Intent.OpenEditAccount(accountId = account.id))
                                     }
                                 )
                             }
@@ -220,15 +188,18 @@ fun AccountManagementScreen(
                         item {
                             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
                             AddAccountButton(
-                                onClick = { viewModel.onOpenAddAccountSheet() }
+                                onClick = {
+                                    accept(AccountsStore.Intent.OpenAddNewAccount())
+                                }
                             )
                         }
 
                         // Empty State
-                        if (filteredAccounts.isEmpty()) {
+                        val allEmpty = groupedAccounts.all { it.accounts.isEmpty() }
+                        if (state.accounts.isEmpty() || allEmpty) {
                             item {
                                 EmptyState(
-                                    onAddNew = { viewModel.onOpenAddAccountSheet() }
+
                                 )
                             }
                         }
@@ -243,13 +214,13 @@ fun AccountManagementScreen(
         }
     }
 
-    // Add/Edit Bottom Sheet
-    if (state.isAddEditSheetVisible) {
-        AddEditAccountSheet(
-            account = state.editingAccount,
-            onSave = { viewModel.onSaveAccount(it) },
-            onDelete = { accountId -> viewModel.onDeleteAccount(accountId) },
-            onDismiss = { viewModel.onCloseAddEditSheet() }
+    // Toast qatlami (Har doim eng tepada turadi)
+    state.error?.let { error ->
+        MizanToast(
+            message = error,
+            status = MizanToastStatus.ERROR,
+            isVisible = true,
+            onDismiss = { accept(AccountsStore.Intent.CloseToast()) }
         )
     }
 }
@@ -344,37 +315,9 @@ private fun SearchBar(
     )
 }
 
-
-@Composable
-private fun AccountGroupHeader(
-    label: String,
-    accountCount: Int
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = MizanTheme.premium.spacing.sm),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MizanTheme.premium.typography.headingSm.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MizanTheme.premium.text.primary.copy(alpha = 0.9f)
-        )
-        Text(
-            text = "$accountCount ${if (accountCount == 1) "account" else "accounts"}",
-            style = MizanTheme.typography.bodyXs,
-            color = MizanTheme.premium.text.primary.copy(alpha = 0.4f)
-        )
-    }
-}
-
 @Composable
 private fun EmptyState(
-    onAddNew: () -> Unit
+    onAddNew: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -387,6 +330,7 @@ private fun EmptyState(
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
+                .clickable(enabled = true, onClick = onAddNew)
                 .background(MizanTheme.premium.colors.surface2),
             contentAlignment = Alignment.Center
         ) {
@@ -412,32 +356,14 @@ private fun EmptyState(
     }
 }
 
-private fun groupAccountsByType(accounts: List<AccountManagementStore.AccountItem>): List<AccountManagementStore.AccountGroup> {
-    val liquidAssets = accounts.filter {
-        it.type == Account.Type.CASH || it.type == Account.Type.CARD
+@Preview(showBackground = true)
+@Composable
+fun EmptyStatePreview() {
+    dev.esbi.mizan.ui.theme.MizanTheme() {
+        Box(modifier = Modifier.padding(16.dp)) {
+            EmptyState(
+                onAddNew = {}
+            )
+        }
     }
-    val savings = accounts.filter {
-        it.type == Account.Type.SAVINGS || it.type == Account.Type.INVESTMENT
-    }
-    val debts = accounts.filter {
-        it.type == Account.Type.DEBT
-    }
-
-    return listOf(
-        AccountManagementStore.AccountGroup(
-            id = "liquid",
-            label = "Liquid Assets",
-            accounts = liquidAssets
-        ),
-        AccountManagementStore.AccountGroup(
-            id = "savings",
-            label = "Savings & Investments",
-            accounts = savings
-        ),
-        AccountManagementStore.AccountGroup(
-            id = "debts",
-            label = "Debts",
-            accounts = debts
-        )
-    ).filter { it.accounts.isNotEmpty() }
 }

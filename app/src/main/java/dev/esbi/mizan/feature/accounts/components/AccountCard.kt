@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.accountmanagement.components
+package dev.esbi.mizan.feature.accounts.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,7 +18,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,9 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.presentation.feature.accountmanagement.store.AccountManagementStore
-import dev.esbi.mizan.ui.kit.icon.AccountIcon
+import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -36,30 +33,19 @@ import kotlin.math.abs
 
 @Composable
 fun AccountCard(
-    account: AccountManagementStore.AccountItem,
+    account: AccountsStore.AccountItem,
     onTap: () -> Unit,
     onArchive: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val defaultColor = MizanTheme.premium.colors.emerald
-    val accountColor = remember(account.color, defaultColor) {
-        try {
-            if (account.color != null) {
-                Color(android.graphics.Color.parseColor(account.color))
-            } else {
-                defaultColor
-            }
-        } catch (e: Exception) {
-            defaultColor
-        }
-    }
+    val accountColor = MizanTheme.premium.colors.emerald
 
     val currencyFormat = NumberFormat.getNumberInstance(Locale("uz", "UZ")).apply {
         minimumFractionDigits = 2
         maximumFractionDigits = 2
     }
 
-    val isNegative = account.balance < 0
+    val isNegative = account.balance compareTo 0.0 == 0
 
     Box(
         modifier = modifier
@@ -79,7 +65,7 @@ fun AccountCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
         ) {
-            // Account Icon
+            // Account Icon (first letter of name)
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -87,11 +73,11 @@ fun AccountCard(
                     .background(accountColor.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
-                AccountIcon(
-                    iconName = account.iconName,
-                    accountType = account.type,
-                    tint = accountColor,
-                    modifier = Modifier.size(24.dp)
+                Text(
+                    text = account.name.take(1).uppercase(),
+                    color = accountColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
                 )
             }
 
@@ -109,7 +95,7 @@ fun AccountCard(
                 )
 
                 Text(
-                    text = getAccountTypeLabel(account.type),
+                    text = account.groupName,
                     style = MizanTheme.typography.bodySm,
                     color = MizanTheme.premium.text.tertiary
                 )
@@ -151,17 +137,5 @@ fun AccountCard(
                 modifier = Modifier.size(20.dp)
             )
         }
-    }
-}
-
-private fun getAccountTypeLabel(type: Account.Type): String {
-    return when (type) {
-        Account.Type.CASH -> "Cash"
-        Account.Type.CARD -> "Card"
-        Account.Type.SAVINGS -> "Savings"
-        Account.Type.DEBT -> "Debt"
-        Account.Type.INVESTMENT -> "Investment"
-        Account.Type.BANK -> "Bank"
-        Account.Type.CREDIT -> "Credit"
     }
 }

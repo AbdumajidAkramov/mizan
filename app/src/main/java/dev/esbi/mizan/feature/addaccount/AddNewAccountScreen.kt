@@ -15,14 +15,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,10 +37,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
+import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorBottomSheet
+import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorRow
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore
 import dev.esbi.mizan.ui.components.input.CurrencyScrollSelector
 import dev.esbi.mizan.ui.components.input.MizanTextField
 import dev.esbi.mizan.ui.components.input.SelectorCurrency
+import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.premium.PremiumButton
@@ -50,16 +58,40 @@ fun AddNewAccountScreen(
 ) {
     val state by store.states.collectAsState(initial = AddAccountStore.State())
     val context = LocalContext.current
+    var showGroupSelector by remember { mutableStateOf(false) }
+    var accountToDelete by remember { mutableStateOf<Long?>(null) }
+
 
     LaunchedEffect(Unit) {
         store.labels.collect { label ->
             when (label) {
                 is AddAccountStore.Label.AccountSaved -> onBackClick()
+                is AddAccountStore.Label.AccountDeleted -> {
+                    Toast.makeText(context, "Account deleted!", Toast.LENGTH_SHORT).show()
+                    onBackClick()
+                }
                 is AddAccountStore.Label.ShowMessage -> {
                     Toast.makeText(context, label.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+    if (accountToDelete != null) {
+        PremiumConfirmDialog(
+            title = "Delete Account?",
+            message = "Are you sure you want to delete this account? This action cannot be undone, but your past transaction history will be preserved.",
+            confirmText = "Delete",
+            dismissText = "Cancel",
+            onConfirm = {
+                state.accountId?.let { accountId ->
+                    store.accept(AddAccountStore.Intent.ConfirmDeleteAccount(accountId))
+                }
+                accountToDelete = null
+            },
+            onDismiss = {
+                accountToDelete = null
+            }
+        )
     }
 
     Scaffold(
@@ -76,14 +108,31 @@ fun AddNewAccountScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MizanTheme.premium.background.primary
-                )
+                ),
+                actions = {
+                    if (state.accountId != null) {
+                        IconButton(
+                            onClick = {
+                                accountToDelete = state.accountId
+                            },
+                            content = {
+                                MizanIcon(
+                                    icon = IconValue(MizanIcons.ic_delete),
+                                    tint = MizanTheme.premium.text.primary
+                                )
+                            }
+                        )
+                    }
+                }
             )
         },
         containerColor = MizanTheme.premium.background.primary
     ) { padding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,6 +146,36 @@ fun AddNewAccountScreen(
                     placeholder = "e.g., Main Checking",
                     errorText = state.validationErrors[AddAccountStore.State.Field.NAME]
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Account Group Field
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    androidx.compose.material3.Text(
+                        text = "Account Group",
+                        color = MizanTheme.premium.text.secondary,
+                        style = MizanTheme.typography.bodyMd.copy(fontWeight = FontWeight.Medium)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    AccountGroupSelectorRow(
+                        selectedGroup = state.availableGroups.find { it.id == state.selectedGroupId },
+                        onClick = { showGroupSelector = true }
+                    )
+
+                    state.validationErrors[AddAccountStore.State.Field.GROUP]?.let { error ->
+                        androidx.compose.material3.Text(
+                            text = error,
+                            color = MizanTheme.premium.colors.error,
+                            style = MizanTheme.typography.bodyXs,
+                            modifier = androidx.compose.ui.Modifier.padding(
+                                top = 4.dp,
+                                start = 4.dp
+                            )
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -173,6 +252,25 @@ fun AddNewAccountScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(color = MizanTheme.premium.colors.emerald)
+                }
+            }
+
+            // Group Selector Bottom Sheet
+            if (showGroupSelector) {
+                ModalBottomSheet(
+                    onDismissRequest = { showGroupSelector = false },
+                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                    containerColor = MizanTheme.premium.background.primary
+                ) {
+                    AccountGroupSelectorBottomSheet(
+                        groups = state.availableGroups,
+                        selectedGroupId = state.selectedGroupId,
+                        onGroupSelected = { group ->
+                            store.accept(AddAccountStore.Intent.SelectGroup(group.id))
+                            showGroupSelector = false
+                        },
+                        onDismiss = { showGroupSelector = false }
+                    )
                 }
             }
         }

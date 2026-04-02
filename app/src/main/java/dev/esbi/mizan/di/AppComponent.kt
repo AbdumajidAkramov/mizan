@@ -4,7 +4,9 @@ import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 import dev.esbi.mizan.MainActivity
-import dev.esbi.mizan.feature.accountmanagement.di.AccountManagementComponent
+import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.domain.repository.CurrencyRepository
+import dev.esbi.mizan.feature.accounts.di.AccountsComponent
 import dev.esbi.mizan.feature.accountselector.di.AccountSelectorComponent
 import dev.esbi.mizan.feature.budget.di.BudgetComponent
 import dev.esbi.mizan.feature.calc.di.MizanCalculatorComponent
@@ -30,7 +32,7 @@ import javax.inject.Singleton
         BudgetModule::class,
         GoalsModule::class,
         SubscriptionsModule::class,
-        TransactionsModule::class,
+        RepositoryModule::class,
         StatisticsModule::class,
         ProfileModule::class,
         ViewModelModule::class,
@@ -46,7 +48,7 @@ internal interface AppComponent {
     fun categorySelectComponent(): CategorySelectComponent.Factory
 
     // Subcomponent factories for Main Screens
-    fun accountManagementComponent(): AccountManagementComponent.Factory
+    fun accountManagementComponent(): AccountsComponent.Factory
     fun accountSelectorComponent(): AccountSelectorComponent.Factory
     fun budgetComponent(): BudgetComponent.Factory
     fun dashboardComponent(): DashboardComponent.Factory
@@ -61,7 +63,8 @@ internal interface AppComponent {
     fun mizanCalculatorComponent(): MizanCalculatorComponent.Factory
 
     // Provide globally
-    val accountRepository: dev.esbi.mizan.domain.repository.AccountRepository
+    val accountRepository: AccountRepository
+    val currencyRepository: CurrencyRepository
     val storeFactory: com.arkivanov.mvikotlin.core.store.StoreFactory
 
     @Component.Factory

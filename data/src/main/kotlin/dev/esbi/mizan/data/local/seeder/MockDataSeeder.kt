@@ -63,6 +63,11 @@ class MockDataSeeder @Inject constructor(
         const val ACC_CASH = 1L
         const val ACC_CARD = 2L
         const val ACC_SAVINGS = 3L
+
+        // System Group IDs
+        const val GROUP_GENERAL = 1L
+        const val GROUP_CASH = 2L
+        const val GROUP_CREDIT_CARD = 3L
     }
 
     private suspend fun seedCurrencies() {
@@ -88,25 +93,28 @@ class MockDataSeeder @Inject constructor(
     private suspend fun seedAccountGroups() {
         val accountGroups = listOf(
             dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
-                id = 1,
-                name = "General Accounts",
+                id = GROUP_GENERAL,
+                name = "General",
                 iconName = "ic_accounts",
                 orderIndex = 0,
-                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT
+                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                isSystemGroup = true
             ),
             dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
-                id = 2,
-                name = "Credit Cards",
-                iconName = "ic_credit_card",
+                id = GROUP_CASH,
+                name = "Cash",
+                iconName = "ic_cash",
                 orderIndex = 1,
-                type = dev.esbi.mizan.domain.model.AccountGroupType.CREDIT_CARD
+                type = dev.esbi.mizan.domain.model.AccountGroupType.DEFAULT,
+                isSystemGroup = true
             ),
             dev.esbi.mizan.data.local.entity.account.AccountGroupEntity(
-                id = 3,
-                name = "Debit Cards",
-                iconName = "ic_card",
+                id = GROUP_CREDIT_CARD,
+                name = "Credit card",
+                iconName = "ic_credit_card",
                 orderIndex = 2,
-                type = dev.esbi.mizan.domain.model.AccountGroupType.DEBIT_CARD
+                type = dev.esbi.mizan.domain.model.AccountGroupType.CREDIT_CARD,
+                isSystemGroup = true
             )
         )
         accountGroups.forEach { accountGroupDao.insertGroup(it) }
@@ -269,11 +277,8 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CASH,
                 groupId = 1,
                 name = "Cash Wallet",
-                type = dev.esbi.mizan.domain.model.Account.Type.CASH,
                 balance = 2_500_000.0,
                 currencyCode = "UZS",
-                iconName = "ic_cash",
-                color = "#10B981",
                 isArchived = false,
                 excludeFromTotal = false,
                 description = "Cash at hand"
@@ -282,11 +287,8 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CARD,
                 groupId = 1,
                 name = "Visa Gold",
-                type = dev.esbi.mizan.domain.model.Account.Type.BANK,
                 balance = 8_500_000.0,
                 currencyCode = "UZS",
-                iconName = "ic_card",
-                color = "#8B5CF6",
                 isArchived = false,
                 excludeFromTotal = false,
                 description = "Visa Gold Debit Card"
@@ -295,11 +297,8 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_SAVINGS,
                 groupId = 1,
                 name = "Savings",
-                type = dev.esbi.mizan.domain.model.Account.Type.SAVINGS,
                 balance = 15_000_000.0,
                 currencyCode = "UZS",
-                iconName = "ic_savings",
-                color = "#F59E0B",
                 isArchived = false,
                 excludeFromTotal = false,
                 description = "Emergency fund"
