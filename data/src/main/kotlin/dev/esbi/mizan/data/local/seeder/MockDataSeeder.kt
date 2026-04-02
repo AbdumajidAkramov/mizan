@@ -9,7 +9,9 @@ import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.AccountGroupDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.CurrencyDao
+import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
+import dev.esbi.mizan.data.local.entity.currency.SubCurrencyEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
@@ -23,6 +25,7 @@ import kotlin.random.Random
 @Singleton
 class MockDataSeeder @Inject constructor(
     private val currencyDao: CurrencyDao,
+    private val subCurrencyDao: SubCurrencyDao,
     private val accountDao: AccountDao,
     private val accountGroupDao: AccountGroupDao,
     private val categoryDao: CategoryDao,
@@ -35,6 +38,7 @@ class MockDataSeeder @Inject constructor(
 
         Log.d(TAG, "Starting database seeding...")
         seedCurrencies()
+        seedSubCurrencies()
         seedAccountGroups()
         seedCategories()
         seedAccounts()
@@ -88,6 +92,53 @@ class MockDataSeeder @Inject constructor(
             )
         )
         currencies.forEach { currencyDao.insert(it) }
+    }
+
+    private suspend fun seedSubCurrencies() {
+        if (subCurrencyDao.getCount() > 0) return
+        val subCurrencies = listOf(
+            SubCurrencyEntity(
+                code = "UZS",
+                name = "O'zbek so'mi",
+                symbol = "so'm",
+                exchangeRate = "1",
+                unitPosition = "END",
+                decimalDigits = 0,
+                orderIndex = 0,
+                isMainCurrency = true
+            ),
+            SubCurrencyEntity(
+                code = "USD",
+                name = "US Dollar",
+                symbol = "$",
+                exchangeRate = "12800",
+                unitPosition = "FRONT",
+                decimalDigits = 2,
+                orderIndex = 1,
+                isMainCurrency = false
+            ),
+            SubCurrencyEntity(
+                code = "EUR",
+                name = "Euro",
+                symbol = "€",
+                exchangeRate = "13800",
+                unitPosition = "FRONT",
+                decimalDigits = 2,
+                orderIndex = 2,
+                isMainCurrency = false
+            ),
+            SubCurrencyEntity(
+                code = "RUB",
+                name = "Russian Ruble",
+                symbol = "₽",
+                exchangeRate = "135",
+                unitPosition = "END",
+                decimalDigits = 2,
+                orderIndex = 3,
+                isMainCurrency = false
+            )
+        )
+        subCurrencyDao.insertAll(subCurrencies)
     }
 
     private suspend fun seedAccountGroups() {

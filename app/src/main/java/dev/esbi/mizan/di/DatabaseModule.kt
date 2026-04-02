@@ -17,6 +17,7 @@ import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.GoalDao
+import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
@@ -91,6 +92,32 @@ class DatabaseModule {
         }
     }
 
+    private val migration5to6 = object : androidx.room.migration.Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Account groups isSystemGroup column
+            db.execSQL("ALTER TABLE `account_groups` ADD COLUMN `isSystemGroup` INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
+    private val migration6to7 = object : androidx.room.migration.Migration(6, 7) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `sub_currencies` (
+                    `code` TEXT NOT NULL PRIMARY KEY,
+                    `name` TEXT NOT NULL,
+                    `symbol` TEXT NOT NULL,
+                    `exchange_rate` TEXT NOT NULL,
+                    `unit_position` TEXT NOT NULL DEFAULT 'FRONT',
+                    `decimal_digits` INTEGER NOT NULL DEFAULT 2,
+                    `order_index` INTEGER NOT NULL DEFAULT 0,
+                    `is_main_currency` INTEGER NOT NULL DEFAULT 0
+                )
+                """.trimIndent()
+            )
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -100,7 +127,7 @@ class DatabaseModule {
             "mizan_database"
         )
 //            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5)
+            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5, migration5to6, migration6to7)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)
@@ -178,6 +205,12 @@ class DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideSubCurrencyDao(database: MizanDatabase): SubCurrencyDao {
+        return database.subCurrencyDao()
+    }
+
+    @Provides
+    @Singleton
     fun provideDatabaseSeedingManager(database: MizanDatabase): DatabaseSeedingManager {
         return DatabaseSeedingManager(database)
     }
@@ -192,6 +225,7 @@ class DatabaseModule {
     @Singleton
     fun provideMockDataSeeder(
         currencyDao: CurrencyDao,
+        subCurrencyDao: SubCurrencyDao,
         accountDao: AccountDao,
         accountGroupDao: AccountGroupDao,
         categoryDao: CategoryDao,
@@ -199,6 +233,7 @@ class DatabaseModule {
     ): MockDataSeeder {
         return MockDataSeeder(
             currencyDao,
+            subCurrencyDao,
             accountDao,
             accountGroupDao,
             categoryDao,
