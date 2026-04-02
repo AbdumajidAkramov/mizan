@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,15 +41,6 @@ fun PremiumTotalBalanceCard(
     currency: String,
     modifier: Modifier = Modifier
 ) {
-    val formatter = NumberFormat.getNumberInstance(Locale("uz", "UZ")).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
-    }
-    val formatted = formatter.format(kotlin.math.abs(balance)).replace(",", ".")
-    val parts = formatted.split(".")
-    val integerPart = parts[0]
-    val decimalPart = if (parts.size > 1) parts[1] else "00"
-
     val changeFormatter = NumberFormat.getNumberInstance(Locale("uz", "UZ")).apply {
         minimumFractionDigits = 0
         maximumFractionDigits = 2

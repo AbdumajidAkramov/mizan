@@ -73,7 +73,7 @@ fun MizanTextField(
         
         if (isError) {
             Text(
-                text = errorText!!,
+                text = errorText,
                 color = MizanTheme.premium.colors.error,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(top = 4.dp, start = 4.dp)

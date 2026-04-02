@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,8 +89,10 @@ private fun CurrencyChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val borderColor = if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.background.secondary
-    val bgColor = if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) else MizanTheme.premium.background.secondary
+    val borderColor =
+        if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.background.secondary
+    val bgColor =
+        if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) else MizanTheme.premium.background.secondary
 
     Box(
         modifier = Modifier
