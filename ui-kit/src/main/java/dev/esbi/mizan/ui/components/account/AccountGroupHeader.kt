@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
 fun AccountGroupHeader(
@@ -25,9 +26,8 @@ fun AccountGroupHeader(
     ) {
         Text(
             text = title,
-            color = Color.White.copy(alpha = 0.9f),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold
+            color = MizanTheme.premium.text.primary.copy(alpha = 0.9f),
+            style = MizanTheme.typography.headingSm,
         )
         Text(
             text = "$count ${if (count == 1) "account" else "accounts"}",

@@ -40,17 +40,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.components.account.AccountGroupHeader
 import dev.esbi.mizan.ui.components.account.AccountRow
 import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
 import dev.esbi.mizan.ui.components.accounts.AddAccountButton
-import dev.esbi.mizan.ui.kit.glass.PressCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import dev.esbi.mizan.ui.toast.MizanToast
 import dev.esbi.mizan.ui.toast.MizanToastStatus
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
@@ -175,25 +171,15 @@ fun AccountsScreenContent(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                PressCard(
-                                    modifier = Modifier,
+                                AccountRow(
+                                    id = account.id,
+                                    name = account.name,
+                                    balance = account.balance,
+                                    currencyCode = account.currencyCode,
                                     onClick = {
                                         accept(AccountsStore.Intent.OpenEditAccount(accountId = account.id))
-                                    },
-                                ) {
-                                    PremiumCard(
-                                        variant = PremiumCardVariant.Glass,
-                                        modifier = Modifier.premiumShadow(MizanTheme.premium.shadows.sm),
-                                        cornerShape = RoundedCornerShape(MizanTheme.premium.radius.xs)
-                                    ) {
-                                        AccountRow(
-                                            id = account.id,
-                                            name = account.name,
-                                            balance = account.balance,
-                                            currencyCode = account.currencyCode,
-                                        )
                                     }
-                                }
+                                )
                             }
                         }
 

@@ -28,6 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.balance.BalanceAmount
+import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -57,7 +60,7 @@ fun PremiumTotalBalanceCard(
     val formattedChange = changeFormatter.format(kotlin.math.abs(monthlyChange)).replace(",", ".")
     val isPositive = monthlyChange >= 0
 
-    Box(
+    GlassCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
@@ -69,28 +72,21 @@ fun PremiumTotalBalanceCard(
                     )
                 )
             )
-            .border(
-                width = 0.5.dp,
-                color = Color.White.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(24.dp)
-            )
             .padding(
                 horizontal = MizanTheme.premium.spacing.xl,
                 vertical = MizanTheme.premium.spacing.md
             )
+
     ) {
         // Emerald Glow Effect
         Box(
             modifier = Modifier
-                .align(Alignment.CenterStart)
                 .size(150.dp)
-                .graphicsLayer { alpha = 0.2f }
+                .graphicsLayer { alpha = 0.3f }
                 .background(
                     Brush.radialGradient(
                         colors = listOf(
-                            MizanTheme.premium.colors.emerald.copy(
-                                alpha = 0.6f
-                            ),
+                            MizanTheme.premium.colors.emerald.copy(alpha = 0.6f),
                             Color.Transparent
                         )
                     ),
@@ -98,7 +94,7 @@ fun PremiumTotalBalanceCard(
                 )
         )
 
-        Column(modifier = Modifier.align(Alignment.CenterStart)) {
+        Column(modifier = Modifier) {
             Text(
                 text = "Total Balance",
                 style = MizanTheme.typography.bodySm,
@@ -111,32 +107,6 @@ fun PremiumTotalBalanceCard(
                 currency = currency,
                 typography = MizanTheme.typography.displaySm
             )
-            /*
-                        // Balance Display
-                        Row(verticalAlignment = Alignment.Bottom) {
-                            if (balance < 0) {
-                                Text(
-                                    text = "-",
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White
-                                )
-                            }
-                            Text(
-                                text = integerPart,
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = ".$decimalPart $currency",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.White.copy(alpha = 0.7f),
-                                modifier = Modifier.padding(bottom = 2.dp)
-                            )
-                        }
-            */
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -153,8 +123,8 @@ fun PremiumTotalBalanceCard(
                     .padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
+                MizanIcon(
+                    icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_trend_up),
                     contentDescription = null,
                     tint = MizanTheme.premium.colors.emerald,
                     modifier = Modifier.size(14.dp)
@@ -170,7 +140,7 @@ fun PremiumTotalBalanceCard(
                 Text(
                     text = "• ${if (isPositive) "+" else ""}$monthlyChangePercent% this month",
                     style = MizanTheme.typography.bodyXs,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = MizanTheme.premium.colors.emerald.copy(alpha = 0.7f)
                 )
             }
         }

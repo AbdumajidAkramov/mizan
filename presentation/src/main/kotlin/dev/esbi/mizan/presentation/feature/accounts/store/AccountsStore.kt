@@ -18,7 +18,7 @@ interface AccountsStore : Store<
         val accounts: List<AccountItem> = emptyList(),
         val groups: List<AccountGroupItem> = emptyList(),
         val totalBalance: Double = 0.0,
-        val isLoading: Boolean = true,
+        val isLoading: Boolean = false,
         val error: String? = null,
         val editingAccount: AccountItem? = null,
         val searchQuery: String = "",

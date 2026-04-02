@@ -60,16 +60,10 @@ fun MizanTextField(
                     shape = RoundedCornerShape(16.dp)
                 ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                errorBorderColor = Color.Transparent,
+                focusedBorderColor = MizanTheme.premium.colors.emerald,
                 focusedTextColor = MizanTheme.premium.text.primary,
                 unfocusedTextColor = MizanTheme.premium.text.primary,
-                errorTextColor = MizanTheme.premium.text.primary,
-                cursorColor = MizanTheme.premium.colors.emerald,
-                focusedContainerColor = Color.White.copy(alpha = 0.05f),
-                unfocusedContainerColor = Color.White.copy(alpha = 0.05f),
-                errorContainerColor = MizanTheme.premium.colors.error.copy(alpha = 0.05f),
+                cursorColor = MizanTheme.premium.colors.emerald
             ),
             shape = RoundedCornerShape(16.dp),
             isError = isError,

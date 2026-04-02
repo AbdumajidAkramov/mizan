@@ -53,7 +53,7 @@ fun CurrencyScrollSelector(
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(8.dp))
-        
+
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -67,7 +67,7 @@ fun CurrencyScrollSelector(
                     onClick = { onCurrencySelected(currency) }
                 )
             }
-            
+
             item {
                 AddCustomCurrencyChip(onClick = onAddCustomClick)
             }
@@ -90,12 +90,12 @@ private fun CurrencyChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val borderColor = if (isSelected) MizanTheme.premium.colors.emerald else Color.White.copy(alpha = 0.1f)
-    val bgColor = if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.05f)
-    
+    val borderColor = if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.background.secondary
+    val bgColor = if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) else MizanTheme.premium.background.secondary
+
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(bgColor)
             .border(1.dp, borderColor, RoundedCornerShape(12.dp))
@@ -103,32 +103,24 @@ private fun CurrencyChip(
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = currency.symbol,
-                color = if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.text.secondary,
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = currency.code,
-                color = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.secondary,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                fontSize = 14.sp
-            )
-        }
+        Text(
+            text = currency.symbol,
+            color = if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.text.secondary,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        )
     }
 }
 
 @Composable
 private fun AddCustomCurrencyChip(onClick: () -> Unit) {
+
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.05f))
-            .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+            .background(MizanTheme.premium.background.secondary)
+            .border(1.dp, MizanTheme.premium.background.secondary, RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp),
         contentAlignment = Alignment.Center
