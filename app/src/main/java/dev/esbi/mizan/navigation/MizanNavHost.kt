@@ -25,7 +25,12 @@ import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStoreFactory
+import dev.esbi.mizan.feature.currencymanagement.CurrencyPickerScreen
+import dev.esbi.mizan.feature.currencymanagement.SubCurrencyListScreen
+import dev.esbi.mizan.feature.currencymanagement.SubCurrencySettingScreen
+import dev.esbi.mizan.feature.currencymanagement.UserDefinedCurrencyScreen
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStoreFactory
+import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStoreFactory
 import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
 
 @Composable
@@ -118,6 +123,9 @@ internal fun MizanNavHost(
                 },
                 onNavigateToAccountGroupsScreen = {
                     navController.navigate(NavRoute.AccountGroupManagement)
+                },
+                onNavigateToCurrencyManagementScreen = {
+                    navController.navigate(NavRoute.SubCurrencyList)
                 }
             )
         }
@@ -309,6 +317,66 @@ internal fun MizanNavHost(
                 onBackClick = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        // --- Currency Management ---
+        composable<NavRoute.SubCurrencyList> {
+            val store = remember {
+                CurrencyManagementStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    currencyRepository = appComponent.currencyRepository
+                ).create()
+            }
+            SubCurrencyListScreen(
+                store = store,
+                onBackClick = { navController.popBackStack() },
+                onAddCurrencyClick = { navController.navigate(NavRoute.CurrencyPicker) },
+                onCurrencySettingsClick = { code ->
+                    navController.navigate(NavRoute.SubCurrencySetting(currencyCode = code))
+                }
+            )
+        }
+
+        composable<NavRoute.SubCurrencySetting> { backStackEntry ->
+            val route = backStackEntry.toRoute<NavRoute.SubCurrencySetting>()
+            val store = remember {
+                CurrencyManagementStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    currencyRepository = appComponent.currencyRepository
+                ).create()
+            }
+            SubCurrencySettingScreen(
+                store = store,
+                currencyCode = route.currencyCode,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable<NavRoute.CurrencyPicker> {
+            val store = remember {
+                CurrencyManagementStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    currencyRepository = appComponent.currencyRepository
+                ).create()
+            }
+            CurrencyPickerScreen(
+                store = store,
+                onBackClick = { navController.popBackStack() },
+                onAddCustomCurrencyClick = { navController.navigate(NavRoute.UserDefinedCurrency) }
+            )
+        }
+
+        composable<NavRoute.UserDefinedCurrency> {
+            val store = remember {
+                CurrencyManagementStoreFactory(
+                    storeFactory = appComponent.storeFactory,
+                    currencyRepository = appComponent.currencyRepository
+                ).create()
+            }
+            UserDefinedCurrencyScreen(
+                store = store,
+                onBackClick = { navController.popBackStack() }
             )
         }
     }

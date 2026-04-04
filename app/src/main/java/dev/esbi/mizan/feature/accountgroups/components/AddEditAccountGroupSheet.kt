@@ -69,12 +69,12 @@ fun AddEditAccountGroupSheet(
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MizanTheme.premium.colors.emerald,
-                    unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
                     focusedTextColor = MizanTheme.premium.text.primary,
                     unfocusedTextColor = MizanTheme.premium.text.primary,
                     cursorColor = MizanTheme.premium.colors.emerald
                 ),
-                singleLine = true
+                shape = RoundedCornerShape(12.dp),
+                        singleLine = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -91,21 +91,19 @@ fun AddEditAccountGroupSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
                 AccountGroupType.entries.forEach { type ->
                     val isSelected = selectedType == type
+                    val borderColor = if (isSelected) MizanTheme.premium.colors.emerald else MizanTheme.premium.background.secondary
+                    val bgColor = if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) else MizanTheme.premium.background.secondary
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(
-                                if (isSelected) MizanTheme.premium.colors.emerald.copy(alpha = 0.2f)
-                                else Color.White.copy(alpha = 0.05f)
-                            )
+                            .background(bgColor)
                             .border(
                                 width = 1.dp,
-                                color = if (isSelected) MizanTheme.premium.colors.emerald else Color.White.copy(
-                                    alpha = 0.1f
-                                ),
+                                color = borderColor,
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .clickable { selectedType = type }

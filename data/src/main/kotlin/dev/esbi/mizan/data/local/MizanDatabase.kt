@@ -12,6 +12,7 @@ import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.GoalDao
+import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionItemDao
@@ -31,6 +32,7 @@ import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import dev.esbi.mizan.data.local.entity.account.AccountGroupEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import dev.esbi.mizan.data.local.entity.currency.SubCurrencyEntity
 import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
@@ -54,9 +56,10 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
         AccountGroupEntity::class,
         TemplateEntity::class,
         GoalEntity::class,
-        SubscriptionEntity::class
+        SubscriptionEntity::class,
+        SubCurrencyEntity::class
     ],
-    version = 6,
+    version = 8,
     autoMigrations = [],
     exportSchema = true
 )
@@ -74,4 +77,5 @@ abstract class MizanDatabase : RoomDatabase() {
     abstract fun templateDao(): TemplateDao
     abstract fun goalDao(): GoalDao
     abstract fun subscriptionDao(): SubscriptionDao
+    abstract fun subCurrencyDao(): SubCurrencyDao
 }

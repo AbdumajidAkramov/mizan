@@ -26,8 +26,8 @@ fun AccountGroupHeader(
     ) {
         Text(
             text = title,
-            style = MizanTheme.typography.bodyMd,
             color = MizanTheme.premium.text.primary.copy(alpha = 0.9f),
+            style = MizanTheme.typography.headingSm,
         )
         Text(
             text = "$count ${if (count == 1) "account" else "accounts"}",
