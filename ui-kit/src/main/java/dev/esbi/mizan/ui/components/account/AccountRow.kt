@@ -26,7 +26,7 @@ import java.math.BigDecimal
 fun AccountRow(
     id: Long,
     name: String,
-    balance: Double,
+    balance: BigDecimal,
     currencyCode: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
@@ -54,7 +54,7 @@ fun AccountRow(
 
             BalanceAmount(
                 modifier = Modifier.padding(horizontal = 12.dp),
-                balance = BigDecimal(balance),
+                balance = balance,
                 currency = currencyCode,
                 typography = MizanTheme.typography.bodyLg
             )

@@ -14,6 +14,7 @@ import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.entity.currency.SubCurrencyEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -80,14 +81,14 @@ class MockDataSeeder @Inject constructor(
                 code = "UZS",
                 name = "O'zbek so'mi",
                 symbol = "so'm",
-                rateToBase = 1.0,
+                rateToBase = BigDecimal.ONE,
                 isBaseCurrency = true
             ),
             CurrencyEntity(
                 code = "USD",
                 name = "US Dollar",
                 symbol = "$",
-                rateToBase = 12800.0,
+                rateToBase = 12800.0.toBigDecimal(),
                 isBaseCurrency = false
             )
         )
@@ -343,7 +344,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CASH,
                 groupId = 1,
                 name = "Cash Wallet",
-                balance = 2_500_000.0,
+                balance = BigDecimal(2_500_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -353,7 +354,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CARD,
                 groupId = 1,
                 name = "Visa Gold",
-                balance = 8_500_000.0,
+                balance = BigDecimal(8_500_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -363,7 +364,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_SAVINGS,
                 groupId = 1,
                 name = "Savings",
-                balance = 15_000_000.0,
+                balance = BigDecimal(15_000_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -491,7 +492,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (8..20).random(),
             note = note,
@@ -516,7 +517,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (7..22).random(),
             note = note,
@@ -537,7 +538,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (10..18).random(),
             note = note,
@@ -555,7 +556,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = 10,
             note = "Monthly rent payment",
@@ -576,7 +577,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = 11,
             note = utilityTypes.random(),
@@ -599,7 +600,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = 14,
             note = notes.random(),
@@ -624,7 +625,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (10..18).random(),
             note = note,
@@ -651,7 +652,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (11..20).random(),
             note = note,
@@ -676,7 +677,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (18..23).random(),
             note = note,
@@ -701,7 +702,7 @@ class MockDataSeeder @Inject constructor(
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
-            amount = amount,
+            amount = amount.toBigDecimal(),
             date = date,
             hour = (9..17).random(),
             note = note,
@@ -715,7 +716,7 @@ class MockDataSeeder @Inject constructor(
     private fun createTransactionEntity(
         id: Long,
         type: dev.esbi.mizan.domain.model.Transaction.Type,
-        amount: Double,
+        amount: BigDecimal,
         date: LocalDate,
         hour: Int,
         note: String,

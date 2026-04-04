@@ -35,7 +35,7 @@ import java.util.Locale
 
 @Composable
 fun PremiumTotalBalanceCard(
-    balance: Double,
+    balance: BigDecimal,
     monthlyChange: Double,
     monthlyChangePercent: Double,
     currency: String,
@@ -91,7 +91,7 @@ fun PremiumTotalBalanceCard(
 
             Spacer(modifier = Modifier.height(8.dp))
             BalanceAmount(
-                balance = BigDecimal(balance),
+                balance = balance,
                 currency = currency,
                 typography = MizanTheme.typography.displaySm
             )
