@@ -10,6 +10,8 @@ import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Mess
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.State
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -22,7 +24,7 @@ import java.util.Locale
 internal class AddAccountExecutor(
     mainDispatcher: CoroutineDispatcher,
     private val accountRepository: AccountRepository,
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
 ) : CoroutineExecutor<Intent, AddAccountStore.Action, State, Message, Label>(mainContext = mainDispatcher) {
 
     override fun executeAction(action: AddAccountStore.Action) {
