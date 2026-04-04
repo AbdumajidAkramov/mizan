@@ -2,8 +2,10 @@ package dev.esbi.mizan.feature.addaccount
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,6 +43,8 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorBottomSheet
 import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorRow
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore
+import dev.esbi.mizan.ui.components.PremiumCard
+import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.components.input.CurrencyScrollSelector
 import dev.esbi.mizan.ui.components.input.MizanTextField
 import dev.esbi.mizan.ui.components.input.SelectorCurrency
@@ -48,6 +53,7 @@ import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.premium.PremiumButton
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +76,7 @@ fun AddNewAccountScreen(
                     Toast.makeText(context, "Account deleted!", Toast.LENGTH_SHORT).show()
                     onBackClick()
                 }
+
                 is AddAccountStore.Label.ShowMessage -> {
                     Toast.makeText(context, label.message, Toast.LENGTH_SHORT).show()
                 }
@@ -151,7 +158,7 @@ fun AddNewAccountScreen(
 
                 // Account Group Field
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = "Account Group",
                         color = MizanTheme.premium.text.secondary,
                         style = MizanTheme.typography.bodyMd.copy(fontWeight = FontWeight.Medium)
@@ -165,7 +172,7 @@ fun AddNewAccountScreen(
                     )
 
                     state.validationErrors[AddAccountStore.State.Field.GROUP]?.let { error ->
-                        androidx.compose.material3.Text(
+                        Text(
                             text = error,
                             color = MizanTheme.premium.colors.error,
                             style = MizanTheme.typography.bodyXs,
@@ -225,6 +232,36 @@ fun AddNewAccountScreen(
                     placeholder = "Notes or remarks",
                     errorText = null // Not validated
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PremiumCard(
+                    variant = PremiumCardVariant.Glass,
+                    modifier = Modifier.premiumShadow(MizanTheme.premium.shadows.sm),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "Include in Totals",
+                            style = MizanTheme.typography.bodyMd,
+                            color = MizanTheme.premium.text.primary,
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Switch(
+                            checked = state.excludeFromTotal,
+                            onCheckedChange = {
+                                store.accept(AddAccountStore.Intent.UpdateIncludeInTotals(it))
+                            },
+                        )
+
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(48.dp))
 

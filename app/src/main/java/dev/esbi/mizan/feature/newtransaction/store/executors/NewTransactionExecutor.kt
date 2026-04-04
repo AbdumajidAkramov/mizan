@@ -213,7 +213,7 @@ internal class NewTransactionExecutor @Inject constructor(
                         // Get exchange rate for the selected currency
                         val currency =
                             currencyRepository.getCurrencyByCode(currentState.currency)
-                        val exchangeRate = currency?.rateToBase ?: 1.0
+                        val exchangeRate = currency?.rateToBase ?: java.math.BigDecimal.ONE
 
                         // Get category ID (prefer child category if selected)
                         val categoryId = currentState.categoryChooserState.selectedChildId
@@ -232,7 +232,7 @@ internal class NewTransactionExecutor @Inject constructor(
                                 TransactionType.TRANSFER ->
                                     Transaction.Type.TRANSFER
                             },
-                            amount = currentState.amount,
+                            amount = java.math.BigDecimal.valueOf(currentState.amount),
                             currency = currency ?: dev.esbi.mizan.domain.model.Currency(
                                 code = currentState.currency,
                                 name = currentState.currency,
@@ -240,7 +240,7 @@ internal class NewTransactionExecutor @Inject constructor(
                                 rateToBase = exchangeRate,
                                 isBaseCurrency = currentState.currency == "UZS"
                             ),
-                            exchangeRate = exchangeRate,
+                            exchangeRate = exchangeRate.toDouble(),
                             targetAmount = null, // TODO: Calculate for transfers if needed
                             date = currentState.transactionDate,
                             note = currentState.note.takeIf { it.isNotBlank() },
@@ -250,7 +250,7 @@ internal class NewTransactionExecutor @Inject constructor(
                             categoryId = categoryId,
                             subCategoryId = null,
                             targetAccountId = currentState.targetAccountId,
-                            fee = 0.0,
+                            fee = java.math.BigDecimal.ZERO,
                             isBookmarked = false,
                             recurrenceRule = null,
                             isInstallment = false,
@@ -272,7 +272,7 @@ internal class NewTransactionExecutor @Inject constructor(
                                         ?: "Template"
                                 val template = Template(
                                     name = categoryName,
-                                    amount = currentState.amount,
+                                    amount = java.math.BigDecimal.valueOf(currentState.amount),
                                     iconName = currentState.categoryChooserState.selectedCategory?.iconName,
                                     transactionType = transaction.type,
                                     categoryId = categoryId,

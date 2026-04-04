@@ -182,7 +182,7 @@ internal fun MizanNavHost(
                         override val parentId = category.parentId
                         override val iconName = category.iconName
                         override val color = category.color
-                        override val budgetLimit: Double? = null
+                        override val budgetLimit: java.math.BigDecimal? = null
                         override val isArchived = false
                         override val orderIndex = 0
                     }

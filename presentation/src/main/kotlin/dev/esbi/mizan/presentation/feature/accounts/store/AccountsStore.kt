@@ -2,6 +2,7 @@ package dev.esbi.mizan.presentation.feature.accounts.store
 
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Currency
+import java.math.BigDecimal
 
 /**
  * MVI Store for Account Management Screen
@@ -17,13 +18,13 @@ interface AccountsStore : Store<
     data class State(
         val accounts: List<AccountItem> = emptyList(),
         val groups: List<AccountGroupItem> = emptyList(),
-        val totalBalance: Double = 0.0,
+        val totalBalance: BigDecimal = BigDecimal.ZERO,
         val isLoading: Boolean = true,
         val error: String? = null,
         val editingAccount: AccountItem? = null,
         val searchQuery: String = "",
         val baseCurrency: Currency? = Currency.UZS,
-        val monthlyChange: Double = 0.0,
+        val monthlyChange: BigDecimal = BigDecimal.ZERO,
         val monthlyChangePercent: Double = 0.0,
     )
 
@@ -35,7 +36,7 @@ interface AccountsStore : Store<
         val groupId: Long,
         val groupName: String = "",
         val name: String,
-        val balance: Double,
+        val balance: BigDecimal,
         val currencyCode: String,
         val isArchived: Boolean = false,
         val excludeFromTotal: Boolean = false,
@@ -78,7 +79,7 @@ interface AccountsStore : Store<
         data class AccountsLoaded(
             val accounts: List<AccountItem>,
             val groups: List<AccountGroupItem>,
-            val totalBalance: Double
+            val totalBalance: BigDecimal
         ) : Message
 
         class UpdateErrorValue(val value: String? = null) : Message

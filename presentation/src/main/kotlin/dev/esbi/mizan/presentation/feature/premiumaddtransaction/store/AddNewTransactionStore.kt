@@ -50,7 +50,7 @@ interface AddNewTransactionStore :
 
         val isBookmarked: Boolean = false,
 
-        val fee: Double? = null,
+        val fee: BigDecimal? = null,
 
         val note: String = "",
         val description: String = "",

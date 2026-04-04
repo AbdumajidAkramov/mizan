@@ -2,6 +2,7 @@ package dev.esbi.mizan.presentation.feature.addtransaction.domain.usecase
 
 import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.TransactionData
+import java.math.BigDecimal
 import java.util.regex.Pattern
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -101,31 +102,31 @@ class AddTransactionUseCase @Inject constructor(
                             group1 to group2
                         }
 
-                        val amount = amountStr.toDoubleOrNull() ?: 0.0
+                        val amount = amountStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
                         val detectedCategory = detectCategory(note)
 
                         TransactionData(
                             amount = amount,
                             note = note,
                             category = detectedCategory,
-                            confidence = if (amount > 0) 0.9f else 0.3f
+                            confidence = if (amount > BigDecimal.ZERO) 0.9f else 0.3f
                         )
                     }
 
                     1 -> {
                         val amountStr = matcher.group(1)?.trim() ?: "0"
-                        val amount = amountStr.toDoubleOrNull() ?: 0.0
+                        val amount = amountStr.toBigDecimalOrNull() ?: BigDecimal.ZERO
 
                         TransactionData(
                             amount = amount,
                             note = "Voice transaction",
                             category = null,
-                            confidence = if (amount > 0) 0.7f else 0.2f
+                            confidence = if (amount > BigDecimal.ZERO) 0.7f else 0.2f
                         )
                     }
 
                     else -> TransactionData(
-                        amount = 0.0,
+                        amount = BigDecimal.ZERO,
                         note = cleanText,
                         category = null,
                         confidence = 0.1f
@@ -138,7 +139,7 @@ class AddTransactionUseCase @Inject constructor(
         val numberMatcher = numberPattern.matcher(cleanText)
 
         if (numberMatcher.find()) {
-            val amount = numberMatcher.group(1)?.toDoubleOrNull() ?: 0.0
+            val amount = numberMatcher.group(1)?.toBigDecimalOrNull() ?: BigDecimal.ZERO
             return TransactionData(
                 amount = amount,
                 note = cleanText,
@@ -148,7 +149,7 @@ class AddTransactionUseCase @Inject constructor(
         }
 
         return TransactionData(
-            amount = 0.0,
+            amount = BigDecimal.ZERO,
             note = cleanText,
             category = null,
             confidence = 0.1f

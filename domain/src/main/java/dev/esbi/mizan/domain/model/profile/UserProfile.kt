@@ -10,8 +10,8 @@ data class UserProfile(
     val phoneNumber: String?,
     val memberSince: String,
     val totalTransactions: Int,
-    val totalIncome: Double,
-    val totalExpense: Double,
-    val totalSaved: Double,
+    val totalIncome: java.math.BigDecimal,
+    val totalExpense: java.math.BigDecimal,
+    val totalSaved: java.math.BigDecimal,
     val avatarInitials: String
 )

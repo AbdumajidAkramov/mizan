@@ -15,18 +15,18 @@ import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMach
 fun FinancialProjectionEntity.toDomain(): FinancialProjection {
     return FinancialProjection(
         year = year,
-        conservative = conservative,
-        realistic = realistic,
-        optimistic = optimistic
+        conservative = conservative.toDouble(),
+        realistic = realistic.toDouble(),
+        optimistic = optimistic.toDouble()
     )
 }
 
 fun FinancialProjection.toEntity(): FinancialProjectionEntity {
     return FinancialProjectionEntity(
         year = year,
-        conservative = conservative,
-        realistic = realistic,
-        optimistic = optimistic
+        conservative = java.math.BigDecimal.valueOf(conservative),
+        realistic = java.math.BigDecimal.valueOf(realistic),
+        optimistic = java.math.BigDecimal.valueOf(optimistic)
     )
 }
 

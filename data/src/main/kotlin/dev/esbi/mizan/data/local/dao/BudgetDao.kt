@@ -8,6 +8,8 @@ import androidx.room.Update
 import dev.esbi.mizan.data.local.entity.CategoryBudgetEntity
 import kotlinx.coroutines.flow.Flow
 
+import java.math.BigDecimal
+
 @Dao
 interface BudgetDao {
     
@@ -27,10 +29,10 @@ interface BudgetDao {
     suspend fun updateBudget(budget: CategoryBudgetEntity)
     
     @Query("UPDATE category_budgets SET budgetAmount = :budgetAmount WHERE categoryId = :categoryId")
-    suspend fun updateBudgetAmount(categoryId: String, budgetAmount: Double)
+    suspend fun updateBudgetAmount(categoryId: String, budgetAmount: BigDecimal)
     
     @Query("UPDATE category_budgets SET spentAmount = :spentAmount WHERE categoryId = :categoryId")
-    suspend fun updateSpentAmount(categoryId: String, spentAmount: Double)
+    suspend fun updateSpentAmount(categoryId: String, spentAmount: BigDecimal)
     
     @Query("DELETE FROM category_budgets WHERE categoryId = :categoryId")
     suspend fun deleteBudget(categoryId: String)

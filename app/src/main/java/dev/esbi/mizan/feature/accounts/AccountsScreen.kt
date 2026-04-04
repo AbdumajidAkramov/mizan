@@ -141,7 +141,7 @@ fun AccountsScreenContent(
                         item {
                             PremiumTotalBalanceCard(
                                 balance = state.totalBalance,
-                                monthlyChange = state.monthlyChange,
+                                monthlyChange = state.monthlyChange.toDouble(),
                                 monthlyChangePercent = state.monthlyChangePercent,
                                 currency = state.baseCurrency?.code.orEmpty()
                             )
@@ -184,13 +184,14 @@ fun AccountsScreenContent(
                                     PremiumCard(
                                         variant = PremiumCardVariant.Glass,
                                         modifier = Modifier.premiumShadow(MizanTheme.premium.shadows.sm),
-                                        cornerShape = RoundedCornerShape(MizanTheme.premium.radius.xs)
+                                        cornerShape = RoundedCornerShape(MizanTheme.premium.radius.md)
                                     ) {
                                         AccountRow(
                                             id = account.id,
                                             name = account.name,
                                             balance = account.balance,
                                             currencyCode = account.currencyCode,
+                                            excludeFromTotal = account.excludeFromTotal
                                         )
                                     }
                                 }

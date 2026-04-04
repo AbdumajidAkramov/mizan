@@ -97,7 +97,7 @@ fun TransactionsHubSummaryTab(
                 MetricCard(
                     title = "INCOME",
                     subtitle = "This month",
-                    amount = summary.totalIncome,
+                    amount = summary.totalIncome.toDouble(),
                     color = MizanTheme.premium.colors.emerald,
                     iconResId = Icons.ic_trending_up
                 )
@@ -106,14 +106,14 @@ fun TransactionsHubSummaryTab(
                 MetricCard(
                     title = "EXPENSES",
                     subtitle = "This month",
-                    amount = summary.totalExpense,
+                    amount = summary.totalExpense.toDouble(),
                     color = Color(0xFFF5576C),
                     iconResId = Icons.ic_trending_down
                 )
 
                 // Net Savings Card
                 NetSavingsCard(
-                    netSavings = summary.balance,
+                    netSavings = summary.balance.toDouble(),
                     savingsRate = savingsRate
                 )
             }
@@ -162,8 +162,8 @@ fun TransactionsHubSummaryTab(
                     ) {
                         DonutChart(
                             categorySummaries = currentSummaries,
-                            totalAmount = currentTotal,
-                            centerLabel = "$${formatCompactAmountSummary(currentTotal)}",
+                            totalAmount = currentTotal.toDouble(),
+                            centerLabel = "$${formatCompactAmountSummary(currentTotal.toDouble())}",
                             centerColor = centerColor,
                             chartSize = 200.dp,
                             strokeWidth = 28.dp
@@ -588,7 +588,7 @@ private fun CategoryLegendItem(
         // Amount and Percentage
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = "$${formatCompactAmountSummary(categorySummary.totalAmount)}",
+                text = "$${formatCompactAmountSummary(categorySummary.totalAmount.toDouble())}",
                 style = MizanTheme.typography.bodyLg,
                 color = MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.Bold
@@ -702,7 +702,7 @@ private fun TopCategoryItem(
         // Amount
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "$${formatCompactAmountSummary(categorySummary.totalAmount)}",
+                text = "$${formatCompactAmountSummary(categorySummary.totalAmount.toDouble())}",
                 style = MizanTheme.typography.bodyLg,
                 color = MizanTheme.premium.text.primary,
                 fontWeight = FontWeight.Bold
@@ -779,7 +779,7 @@ private fun AccountUsageItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "$${formatCompactAmountSummary(accountSummary.totalAmount)}",
+                        text = "$${formatCompactAmountSummary(accountSummary.totalAmount.toDouble())}",
                         style = MizanTheme.typography.bodyLg,
                         color = MizanTheme.premium.text.primary,
                         fontWeight = FontWeight.Bold

@@ -20,8 +20,8 @@ fun DashboardSummaryEntity.toDomain(
         totalBalance = totalBalance,
         monthlyExpenses = monthlyExpenses,
         monthlySavings = monthlySavings,
-        budgetLimit = budgetLimit,
-        budgetPercentageUsed = budgetPercentageUsed,
+        budgetLimit = budgetLimit.toDouble(),
+        budgetPercentageUsed = budgetPercentageUsed.toDouble(),
         topCategories = categories,
         weeklySpending = weeklySpending,
         recentTransactions = transactions
@@ -32,9 +32,9 @@ fun CategorySpendingEntity.toDomain(): CategorySpending {
     return CategorySpending(
         category = category,
         categoryLabel = categoryLabel,
-        totalAmount = totalAmount,
+        totalAmount = totalAmount.toDouble(),
         transactionCount = transactionCount,
-        percentage = percentage,
+        percentage = percentage.toDouble(),
         colorToken = colorToken
     )
 }
@@ -42,7 +42,7 @@ fun CategorySpendingEntity.toDomain(): CategorySpending {
 fun WeeklySpendingEntity.toDomain(): WeeklySpendingPoint {
     return WeeklySpendingPoint(
         dayLabel = dayLabel,
-        totalAmount = totalAmount,
+        totalAmount = totalAmount.toDouble(),
         dayIndex = dayIndex
     )
 }

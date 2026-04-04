@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "914c0d057e9b30ee7aa66aa64e423908",
+    "identityHash": "80b89d617f033cca6fbbf5ffb1f2c0f3",
     "entities": [
       {
         "tableName": "dashboard_summary",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `totalBalance` REAL NOT NULL, `monthlyExpenses` REAL NOT NULL, `monthlySavings` REAL NOT NULL, `budgetLimit` REAL NOT NULL, `budgetPercentageUsed` REAL NOT NULL, `lastUpdated` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `totalBalance` TEXT NOT NULL, `monthlyExpenses` TEXT NOT NULL, `monthlySavings` TEXT NOT NULL, `budgetLimit` TEXT NOT NULL, `budgetPercentageUsed` TEXT NOT NULL, `lastUpdated` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,31 +17,31 @@
           {
             "fieldPath": "totalBalance",
             "columnName": "totalBalance",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "monthlyExpenses",
             "columnName": "monthlyExpenses",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "monthlySavings",
             "columnName": "monthlySavings",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "budgetLimit",
             "columnName": "budgetLimit",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "budgetPercentageUsed",
             "columnName": "budgetPercentageUsed",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "category_spending",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `categoryLabel` TEXT NOT NULL, `totalAmount` REAL NOT NULL, `transactionCount` INTEGER NOT NULL, `percentage` REAL NOT NULL, `colorToken` TEXT NOT NULL, PRIMARY KEY(`category`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `categoryLabel` TEXT NOT NULL, `totalAmount` TEXT NOT NULL, `transactionCount` INTEGER NOT NULL, `percentage` TEXT NOT NULL, `colorToken` TEXT NOT NULL, PRIMARY KEY(`category`))",
         "fields": [
           {
             "fieldPath": "category",
@@ -79,7 +79,7 @@
           {
             "fieldPath": "totalAmount",
             "columnName": "totalAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -91,7 +91,7 @@
           {
             "fieldPath": "percentage",
             "columnName": "percentage",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -112,7 +112,7 @@
       },
       {
         "tableName": "weekly_spending",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dayLabel` TEXT NOT NULL, `totalAmount` REAL NOT NULL, `dayIndex` INTEGER NOT NULL, PRIMARY KEY(`dayLabel`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dayLabel` TEXT NOT NULL, `totalAmount` TEXT NOT NULL, `dayIndex` INTEGER NOT NULL, PRIMARY KEY(`dayLabel`))",
         "fields": [
           {
             "fieldPath": "dayLabel",
@@ -123,7 +123,7 @@
           {
             "fieldPath": "totalAmount",
             "columnName": "totalAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -144,7 +144,7 @@
       },
       {
         "tableName": "transaction_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `amount` REAL NOT NULL, `type` TEXT NOT NULL, `category` TEXT NOT NULL, `categoryName` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `description` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `amount` TEXT NOT NULL, `type` TEXT NOT NULL, `category` TEXT NOT NULL, `categoryName` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `description` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -161,7 +161,7 @@
           {
             "fieldPath": "amount",
             "columnName": "amount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -206,7 +206,7 @@
       },
       {
         "tableName": "financial_projections",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`year` TEXT NOT NULL, `conservative` REAL NOT NULL, `realistic` REAL NOT NULL, `optimistic` REAL NOT NULL, PRIMARY KEY(`year`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`year` TEXT NOT NULL, `conservative` TEXT NOT NULL, `realistic` TEXT NOT NULL, `optimistic` TEXT NOT NULL, PRIMARY KEY(`year`))",
         "fields": [
           {
             "fieldPath": "year",
@@ -217,19 +217,19 @@
           {
             "fieldPath": "conservative",
             "columnName": "conservative",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "realistic",
             "columnName": "realistic",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "optimistic",
             "columnName": "optimistic",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -388,7 +388,7 @@
       },
       {
         "tableName": "category_budgets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` TEXT NOT NULL, `categoryName` TEXT NOT NULL, `budgetAmount` REAL NOT NULL, `spentAmount` REAL NOT NULL, PRIMARY KEY(`categoryId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` TEXT NOT NULL, `categoryName` TEXT NOT NULL, `budgetAmount` TEXT NOT NULL, `spentAmount` TEXT NOT NULL, PRIMARY KEY(`categoryId`))",
         "fields": [
           {
             "fieldPath": "categoryId",
@@ -405,13 +405,13 @@
           {
             "fieldPath": "budgetAmount",
             "columnName": "budgetAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "spentAmount",
             "columnName": "spentAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -426,7 +426,7 @@
       },
       {
         "tableName": "accounts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `balance` REAL NOT NULL, `currencyCode` TEXT NOT NULL, `iconName` TEXT, `color` TEXT, `isArchived` INTEGER NOT NULL, `excludeFromTotal` INTEGER NOT NULL, `description` TEXT, `is_deleted` INTEGER NOT NULL, FOREIGN KEY(`groupId`) REFERENCES `account_groups`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`currencyCode`) REFERENCES `currencies`(`code`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `balance` TEXT NOT NULL, `currencyCode` TEXT NOT NULL, `iconName` TEXT, `color` TEXT, `isArchived` INTEGER NOT NULL, `excludeFromTotal` INTEGER NOT NULL, `description` TEXT, `is_deleted` INTEGER NOT NULL, FOREIGN KEY(`groupId`) REFERENCES `account_groups`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`currencyCode`) REFERENCES `currencies`(`code`) ON UPDATE NO ACTION ON DELETE RESTRICT )",
         "fields": [
           {
             "fieldPath": "id",
@@ -455,7 +455,7 @@
           {
             "fieldPath": "balance",
             "columnName": "balance",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -535,7 +535,7 @@
       },
       {
         "tableName": "transactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `amount` REAL NOT NULL, `currencyCode` TEXT NOT NULL, `exchangeRate` REAL NOT NULL, `targetAmount` REAL, `date` INTEGER NOT NULL, `note` TEXT, `description` TEXT, `photoPaths` TEXT NOT NULL, `accountId` INTEGER, `categoryId` INTEGER, `targetAccountId` INTEGER, `isBookmarked` INTEGER NOT NULL, `recurrenceRule` TEXT, `isInstallment` INTEGER NOT NULL, `installmentTotalMonths` INTEGER, `installmentCurrentMonth` INTEGER, `parentTransactionId` INTEGER, `merchantName` TEXT, `fiscalSign` TEXT, FOREIGN KEY(`accountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`targetAccountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `amount` TEXT NOT NULL, `currencyCode` TEXT NOT NULL, `exchangeRate` REAL NOT NULL, `targetAmount` TEXT, `date` INTEGER NOT NULL, `note` TEXT, `description` TEXT, `photoPaths` TEXT NOT NULL, `accountId` INTEGER, `categoryId` INTEGER, `targetAccountId` INTEGER, `isBookmarked` INTEGER NOT NULL, `recurrenceRule` TEXT, `isInstallment` INTEGER NOT NULL, `installmentTotalMonths` INTEGER, `installmentCurrentMonth` INTEGER, `parentTransactionId` INTEGER, `merchantName` TEXT, `fiscalSign` TEXT, FOREIGN KEY(`accountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`targetAccountId`) REFERENCES `accounts`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -552,7 +552,7 @@
           {
             "fieldPath": "amount",
             "columnName": "amount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -570,7 +570,7 @@
           {
             "fieldPath": "targetAmount",
             "columnName": "targetAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -737,7 +737,7 @@
       },
       {
         "tableName": "transaction_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `transactionId` INTEGER NOT NULL, `name` TEXT NOT NULL, `mxikCode` TEXT, `quantity` REAL NOT NULL, `price` REAL NOT NULL, `totalPrice` REAL NOT NULL, `unitName` TEXT, `vatAmount` REAL NOT NULL, FOREIGN KEY(`transactionId`) REFERENCES `transactions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `transactionId` INTEGER NOT NULL, `name` TEXT NOT NULL, `mxikCode` TEXT, `quantity` TEXT NOT NULL, `price` TEXT NOT NULL, `totalPrice` TEXT NOT NULL, `unitName` TEXT, `vatAmount` TEXT NOT NULL, FOREIGN KEY(`transactionId`) REFERENCES `transactions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -766,19 +766,19 @@
           {
             "fieldPath": "quantity",
             "columnName": "quantity",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "price",
             "columnName": "price",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "totalPrice",
             "columnName": "totalPrice",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -790,7 +790,7 @@
           {
             "fieldPath": "vatAmount",
             "columnName": "vatAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -817,7 +817,7 @@
       },
       {
         "tableName": "categories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `parentId` INTEGER, `iconName` TEXT NOT NULL, `color` TEXT NOT NULL, `budgetLimit` REAL, `isArchived` INTEGER NOT NULL, `orderIndex` INTEGER NOT NULL, FOREIGN KEY(`parentId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `type` TEXT NOT NULL, `parentId` INTEGER, `iconName` TEXT NOT NULL, `color` TEXT NOT NULL, `budgetLimit` TEXT, `isArchived` INTEGER NOT NULL, `orderIndex` INTEGER NOT NULL, FOREIGN KEY(`parentId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -858,7 +858,7 @@
           {
             "fieldPath": "budgetLimit",
             "columnName": "budgetLimit",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -907,7 +907,7 @@
       },
       {
         "tableName": "currencies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `rateToBase` REAL NOT NULL, `isBaseCurrency` INTEGER NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `rateToBase` TEXT NOT NULL, `isBaseCurrency` INTEGER NOT NULL, PRIMARY KEY(`code`))",
         "fields": [
           {
             "fieldPath": "code",
@@ -930,7 +930,7 @@
           {
             "fieldPath": "rateToBase",
             "columnName": "rateToBase",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1001,7 +1001,7 @@
       },
       {
         "tableName": "templates",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` REAL NOT NULL, `iconName` TEXT, `transactionType` TEXT NOT NULL, `categoryId` INTEGER, `accountId` INTEGER, `note` TEXT, FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` TEXT NOT NULL, `iconName` TEXT, `transactionType` TEXT NOT NULL, `categoryId` INTEGER, `accountId` INTEGER, `note` TEXT, FOREIGN KEY(`categoryId`) REFERENCES `categories`(`id`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1018,7 +1018,7 @@
           {
             "fieldPath": "amount",
             "columnName": "amount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1094,7 +1094,7 @@
       },
       {
         "tableName": "goals",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `targetAmount` REAL NOT NULL, `currentAmount` REAL NOT NULL, `deadline` INTEGER, `icon` TEXT NOT NULL, `color` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `targetAmount` TEXT NOT NULL, `currentAmount` TEXT NOT NULL, `deadline` INTEGER, `icon` TEXT NOT NULL, `color` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1111,13 +1111,13 @@
           {
             "fieldPath": "targetAmount",
             "columnName": "targetAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "currentAmount",
             "columnName": "currentAmount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1150,7 +1150,7 @@
       },
       {
         "tableName": "subscriptions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` REAL NOT NULL, `billingCycle` TEXT NOT NULL, `nextRenewalDate` INTEGER NOT NULL, `icon` TEXT NOT NULL, `color` TEXT NOT NULL, `category` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `amount` TEXT NOT NULL, `billingCycle` TEXT NOT NULL, `nextRenewalDate` INTEGER NOT NULL, `icon` TEXT NOT NULL, `color` TEXT NOT NULL, `category` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -1167,7 +1167,7 @@
           {
             "fieldPath": "amount",
             "columnName": "amount",
-            "affinity": "REAL",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1214,7 +1214,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '914c0d057e9b30ee7aa66aa64e423908')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80b89d617f033cca6fbbf5ffb1f2c0f3')"
     ]
   }
 }

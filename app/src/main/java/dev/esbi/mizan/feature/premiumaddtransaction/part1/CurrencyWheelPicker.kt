@@ -134,10 +134,10 @@ fun CurrencyWheelPickerPreview() {
     dev.esbi.mizan.ui.theme.MizanTheme() {
         CurrencyWheelPicker(
             currencies = listOf(
-                Currency("EUR", "Euro", "€", 1.0, false),
-                Currency("UZS", "Uzbek Som", "so'm", 1.0, true),
-                Currency("RUB", "Russian Ruble", "₽", 1.0, false),
-                Currency("USD", "US Dollar", "$", 1.0, false)
+                Currency("EUR", "Euro", "€", java.math.BigDecimal.ONE, false),
+                Currency("UZS", "Uzbek Som", "so'm", java.math.BigDecimal.ONE, true),
+                Currency("RUB", "Russian Ruble", "₽", java.math.BigDecimal.ONE, false),
+                Currency("USD", "US Dollar", "$", java.math.BigDecimal.ONE, false)
             ),
             initialCurrency = "UZS",
             onCurrencySelected = {},

@@ -41,7 +41,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
     private fun generateMockSubscriptions(): List<SubscriptionEntity> = listOf(
         SubscriptionEntity(
             name = "Netflix",
-            amount = 120_000.0,
+            amount = java.math.BigDecimal("120000"),
             billingCycle = "MONTHLY",
             nextRenewalDate = System.currentTimeMillis() + 5L * 86_400_000,
             icon = "tv",
@@ -50,7 +50,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
         ),
         SubscriptionEntity(
             name = "Spotify",
-            amount = 80_000.0,
+            amount = java.math.BigDecimal("80000"),
             billingCycle = "MONTHLY",
             nextRenewalDate = System.currentTimeMillis() + 9L * 86_400_000,
             icon = "music",
@@ -59,7 +59,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
         ),
         SubscriptionEntity(
             name = "YouTube Premium",
-            amount = 95_000.0,
+            amount = java.math.BigDecimal("95000"),
             billingCycle = "MONTHLY",
             nextRenewalDate = System.currentTimeMillis() + 14L * 86_400_000,
             icon = "play",
@@ -68,7 +68,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
         ),
         SubscriptionEntity(
             name = "iCloud Storage",
-            amount = 50_000.0,
+            amount = java.math.BigDecimal("50000"),
             billingCycle = "MONTHLY",
             nextRenewalDate = System.currentTimeMillis() + 19L * 86_400_000,
             icon = "cloud",
@@ -77,7 +77,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
         ),
         SubscriptionEntity(
             name = "Adobe Creative",
-            amount = 1_200_000.0,
+            amount = java.math.BigDecimal("1200000"),
             billingCycle = "YEARLY",
             nextRenewalDate = System.currentTimeMillis() + 180L * 86_400_000,
             icon = "film",
@@ -86,7 +86,7 @@ class SubscriptionRepositoryImpl @Inject constructor(
         ),
         SubscriptionEntity(
             name = "ChatGPT Plus",
-            amount = 150_000.0,
+            amount = java.math.BigDecimal("150000"),
             billingCycle = "MONTHLY",
             nextRenewalDate = System.currentTimeMillis() + 6L * 86_400_000,
             icon = "zap",

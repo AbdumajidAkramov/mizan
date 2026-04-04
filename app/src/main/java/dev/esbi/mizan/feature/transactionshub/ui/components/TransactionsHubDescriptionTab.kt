@@ -298,7 +298,7 @@ private fun DescriptionGroupCard(
     onTransactionClick: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isPositive = group.netAmount >= 0
+    val isPositive = group.netAmount >= java.math.BigDecimal.ZERO
 
     Column(
         modifier = modifier
@@ -395,7 +395,7 @@ private fun DescriptionGroupCard(
                     }
 
                     // Income/Expense Breakdown (if both exist)
-                    if (group.incomeAmount > 0 && group.expenseAmount > 0) {
+                    if (group.incomeAmount > java.math.BigDecimal.ZERO && group.expenseAmount > java.math.BigDecimal.ZERO) {
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Row(
@@ -412,7 +412,7 @@ private fun DescriptionGroupCard(
                                     modifier = Modifier.size(12.dp)
                                 )
                                 Text(
-                                    text = "$${formatDescriptionAmount(group.incomeAmount)}",
+                                    text = "+${formatCompactAmountDescription(group.incomeAmount.toDouble())}",
                                     style = MizanTheme.typography.labelSm,
                                     color = MizanTheme.premium.colors.emerald
                                 )
@@ -429,7 +429,7 @@ private fun DescriptionGroupCard(
                                     modifier = Modifier.size(12.dp)
                                 )
                                 Text(
-                                    text = "$${formatDescriptionAmount(group.expenseAmount)}",
+                                    text = "-${formatCompactAmountDescription(group.expenseAmount.toDouble())}",
                                     style = MizanTheme.typography.labelSm,
                                     color = Color(0xFFF5576C)
                                 )
@@ -442,19 +442,13 @@ private fun DescriptionGroupCard(
             // Right: Total Amount
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "${if (isPositive) "+" else "-"}$${
-                        formatDescriptionAmount(
-                            kotlin.math.abs(
-                                group.netAmount
-                            )
-                        )
-                    }",
+                    text = "${if (group.netAmount >= java.math.BigDecimal.ZERO) "+" else ""}${formatCompactAmountDescription(group.netAmount.abs().toDouble())}",
                     style = MizanTheme.typography.headingLg,
                     color = if (isPositive) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = if (group.incomeAmount > 0 && group.expenseAmount > 0) "Total net" else "Total",
+                    text = if (group.incomeAmount > java.math.BigDecimal.ZERO && group.expenseAmount > java.math.BigDecimal.ZERO) "Total net" else "Total",
                     style = MizanTheme.typography.labelSm,
                     color = MizanTheme.premium.text.tertiary
                 )
@@ -479,12 +473,13 @@ private fun DescriptionGroupCard(
 
                 Column(modifier = Modifier.padding(MizanTheme.premium.spacing.sm)) {
                     group.transactions.forEachIndexed { index, transaction ->
-                        DescriptionTransactionRow(
-                            transaction = transaction,
-                            accounts = accounts,
-                            categories = categories,
-                            onClick = { onTransactionClick(transaction) }
-                        )
+                        // TODO: Implement DescriptionTransactionRow component
+                        // DescriptionTransactionRow(
+                        //     transaction = transaction,
+                        //     accounts = accounts,
+                        //     categories = categories,
+                        //     onClick = { onTransactionClick(transaction) }
+                        // )
                         if (index < group.transactions.size - 1) {
                             Spacer(modifier = Modifier.height(4.dp))
                         }
@@ -495,90 +490,8 @@ private fun DescriptionGroupCard(
     }
 }
 
-@Composable
-private fun DescriptionTransactionRow(
-    transaction: Transaction,
-    accounts: List<Account>,
-    categories: List<Category>,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val isExpense = transaction.type == Transaction.Type.EXPENSE
-    val category = categories.find { it.id == transaction.categoryId }
-    val account = accounts.find { it.id == transaction.accountId }
-
-    val dateFormat = remember { SimpleDateFormat("MMM d", Locale.getDefault()) }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-            .clickable { onClick() }
-            .padding(MizanTheme.premium.spacing.sm),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Category Icon
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
-                .background(MizanTheme.premium.colors.surface3),
-            contentAlignment = Alignment.Center
-        ) {
-            val iconResId = getCategoryIconDescription(category?.iconName)
-            Icon(
-                painter = painterResource(id = iconResId),
-                contentDescription = null,
-                tint = MizanTheme.premium.text.secondary,
-                modifier = Modifier.size(18.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.sm))
-
-        // Transaction Details
-        Column(modifier = Modifier.weight(1f)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
-            ) {
-                Text(
-                    text = dateFormat.format(Date(transaction.date)),
-                    style = MizanTheme.typography.bodySm,
-                    color = MizanTheme.premium.text.primary,
-                    fontWeight = FontWeight.Medium
-                )
-                if (category != null) {
-                    Text(
-                        text = "•",
-                        style = MizanTheme.typography.labelSm,
-                        color = MizanTheme.premium.text.tertiary
-                    )
-                    Text(
-                        text = category.name,
-                        style = MizanTheme.typography.labelSm,
-                        color = MizanTheme.premium.text.tertiary,
-                        maxLines = 1
-                    )
-                }
-            }
-
-            Text(
-                text = account?.name ?: "Unknown Account",
-                style = MizanTheme.typography.labelSm,
-                color = MizanTheme.premium.text.tertiary,
-                maxLines = 1
-            )
-        }
-
-        // Amount
-        Text(
-            text = "${if (isExpense) "-" else "+"}$${formatDescriptionAmount(transaction.amount)}",
-            style = MizanTheme.typography.bodyLg,
-            color = if (isExpense) Color(0xFFF5576C) else MizanTheme.premium.colors.emerald,
-            fontWeight = FontWeight.Bold
-        )
-    }
+private fun formatCompactAmountDescription(amount: Double): String {
+    return formatDescriptionAmount(amount)
 }
 
 private fun formatDescriptionAmount(amount: Double): String {

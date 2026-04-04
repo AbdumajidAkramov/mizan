@@ -53,9 +53,9 @@ class ProfileRepositoryImpl @Inject constructor(
             phoneNumber = "+1 (555) 123-4567",
             memberSince = "Jan 2024",
             totalTransactions = 156,
-            totalIncome = 12500.0,
-            totalExpense = 8200.0,
-            totalSaved = 4300.0,
+            totalIncome = java.math.BigDecimal("12500"),
+            totalExpense = java.math.BigDecimal("8200"),
+            totalSaved = java.math.BigDecimal("4300"),
             avatarInitials = "JD"
         )
     }

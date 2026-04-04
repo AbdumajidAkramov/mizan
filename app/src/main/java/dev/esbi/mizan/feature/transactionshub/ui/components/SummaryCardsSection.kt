@@ -46,7 +46,7 @@ fun SummaryCardsSection(
         // Income Card
         SummaryCard(
             label = "INCOME",
-            amount = summary.totalIncome,
+            amount = summary.totalIncome.toDouble(),
             color = MizanTheme.premium.colors.emerald,
             iconResId = Icons.ic_trending_up,
             modifier = Modifier.weight(1f)
@@ -55,7 +55,7 @@ fun SummaryCardsSection(
         // Expense Card
         SummaryCard(
             label = "EXPENSE",
-            amount = summary.totalExpense,
+            amount = summary.totalExpense.toDouble(),
             color = Color(0xFFF5576C), // Red/Pink
             iconResId = Icons.ic_trending_down,
             modifier = Modifier.weight(1f)
@@ -64,8 +64,8 @@ fun SummaryCardsSection(
         // Total Card
         SummaryCard(
             label = "TOTAL",
-            amount = summary.balance,
-            color = if (summary.balance >= 0) MizanTheme.premium.colors.emerald else Color(
+            amount = summary.balance.toDouble(),
+            color = if (summary.balance >= java.math.BigDecimal.ZERO) MizanTheme.premium.colors.emerald else Color(
                 0xFFF5576C
             ),
             iconResId = Icons.ic_wallet,

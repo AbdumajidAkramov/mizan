@@ -91,8 +91,8 @@ fun FinancialGoalsScreen(
             // Overall Progress Card
             item {
                 OverallProgressCard(
-                    totalSaved = state.totalSaved,
-                    totalTarget = state.totalTarget,
+                    totalSaved = state.totalSaved.toDouble(),
+                    totalTarget = state.totalTarget.toDouble(),
                     overallProgress = state.overallProgress,
                     goalCount = state.goals.size
                 )
@@ -157,7 +157,7 @@ fun FinancialGoalsScreen(
                 viewModel.onIntent(
                     GoalsStore.Intent.AddAmountToGoal(
                         state.selectedGoalId!!,
-                        amount
+                        java.math.BigDecimal.valueOf(amount)
                     )
                 )
             }
@@ -172,7 +172,7 @@ fun FinancialGoalsScreen(
                 viewModel.onIntent(
                     GoalsStore.Intent.AddGoal(
                         name = name,
-                        targetAmount = target,
+                        targetAmount = java.math.BigDecimal.valueOf(target),
                         deadline = null,
                         icon = "target",
                         color = "#0EA5E9"
@@ -458,13 +458,13 @@ private fun GoalCard(goal: Goal, onClick: () -> Unit) {
                     Spacer(Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(
-                            formatUZS(goal.currentAmount),
+                            formatUZS(goal.currentAmount.toDouble()),
                             style = MizanTheme.premium.typography.labelMd,
                             color = Color.White
                         )
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            "/ ${formatUZS(goal.targetAmount)} UZS",
+                            "/ ${formatUZS(goal.targetAmount.toDouble())} UZS",
                             style = MizanTheme.premium.typography.bodySm,
                             color = Color.White.copy(alpha = 0.4f)
                         )

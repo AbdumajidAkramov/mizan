@@ -7,14 +7,14 @@ data class Transaction(
     // Expense uchun: Xarajat summasi (Account valyutasida)
     // Income uchun: Daromad summasi (Account valyutasida)
     // Transfer uchun: "From Account" dan qancha pul ketgani
-    val amount: Double,
+    val amount: java.math.BigDecimal,
     // Transaction currency at the time of transaction
     val currency: Currency,
     // Exchange rate snapshot at the time of transaction (currency -> base)
     val exchangeRate: Double,
     // 2. TRANSFER UCHUN QO'SHIMCHA
     // Faqat TRANSFER bo'lganda va valyutalar har xil bo'lganda to'ldiriladi.
-    val targetAmount: Double? = null,
+    val targetAmount: java.math.BigDecimal? = null,
     val date: Long,
     val note: String? = null,
     val description: String? = null,
@@ -25,7 +25,7 @@ data class Transaction(
     val subCategoryId: Long? = null,   // Deprecated - not used in new schema
     // --- Transfer Specific ---
     val targetAccountId: Long? = null,
-    val fee: Double = 0.0,             // Deprecated - not used in new schema
+    val fee: java.math.BigDecimal = java.math.BigDecimal.ZERO,             // Deprecated - not used in new schema
     val isBookmarked: Boolean = false,
     val recurrenceRule: String? = null,
     val isInstallment: Boolean = false,

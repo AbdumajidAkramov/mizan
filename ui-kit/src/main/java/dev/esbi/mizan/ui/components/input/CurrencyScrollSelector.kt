@@ -95,7 +95,7 @@ private fun CurrencyChip(
     
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(bgColor)
             .border(1.dp, borderColor, RoundedCornerShape(12.dp))
@@ -125,7 +125,7 @@ private fun CurrencyChip(
 private fun AddCustomCurrencyChip(onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(36.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White.copy(alpha = 0.05f))
             .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))

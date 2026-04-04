@@ -31,14 +31,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
 fun PremiumBalanceCard(
-    totalBalance: Double,
-    monthlyIncome: Double,
-    monthlyExpenses: Double,
+    totalBalance: BigDecimal,
+    monthlyIncome: BigDecimal,
+    monthlyExpenses: BigDecimal,
     modifier: Modifier = Modifier
 ) {
     var balanceVisible by remember { mutableStateOf(true) }
@@ -128,7 +129,7 @@ fun PremiumBalanceCard(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = if (balanceVisible) numberFormat.format(totalBalance) else "••••••",
+                text = if (balanceVisible) numberFormat.format(totalBalance.toDouble()) else "••••••",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -174,7 +175,7 @@ fun PremiumBalanceCard(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "$${monthlyIncome.toInt().toString().replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,")}",
+                            text = "\$${monthlyIncome.toInt().toString().replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,")}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White
@@ -216,7 +217,7 @@ fun PremiumBalanceCard(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "$${monthlyExpenses.toInt().toString().replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,")}",
+                            text = "\$${monthlyExpenses.toInt().toString().replace(Regex("(\\d)(?=(\\d{3})+$)"), "$1,")}",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White

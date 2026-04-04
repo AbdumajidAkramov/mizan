@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -109,7 +110,7 @@ private fun AccountItem(
     }
 }
 
-private fun formatCurrency(amount: Double, currency: String): String {
+private fun formatCurrency(amount: BigDecimal, currency: String): String {
     val format = NumberFormat.getCurrencyInstance(Locale.US)
     try {
         format.currency = java.util.Currency.getInstance(currency)

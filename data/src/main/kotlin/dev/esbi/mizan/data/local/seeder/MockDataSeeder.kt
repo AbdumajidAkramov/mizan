@@ -1,17 +1,18 @@
 package dev.esbi.mizan.data.local.seeder
 
 import android.util.Log
-import dev.esbi.mizan.data.local.entity.account.AccountEntity
-import dev.esbi.mizan.data.local.entity.category.CategoryEntity
-import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
-import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.AccountGroupDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
+import dev.esbi.mizan.data.local.entity.account.AccountEntity
+import dev.esbi.mizan.data.local.entity.category.CategoryEntity
+import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -44,7 +45,7 @@ class MockDataSeeder @Inject constructor(
 
     companion object {
         private const val TAG = "MockDataSeeder"
-        
+
         // Category IDs
         const val CAT_FOOD = 1L
         const val CAT_TRANSPORT = 2L
@@ -76,14 +77,14 @@ class MockDataSeeder @Inject constructor(
                 code = "UZS",
                 name = "O'zbek so'mi",
                 symbol = "so'm",
-                rateToBase = 1.0,
+                rateToBase = BigDecimal.ONE,
                 isBaseCurrency = true
             ),
             CurrencyEntity(
                 code = "USD",
                 name = "US Dollar",
                 symbol = "$",
-                rateToBase = 12800.0,
+                rateToBase = BigDecimal("12800.0"),
                 isBaseCurrency = false
             )
         )
@@ -277,7 +278,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CASH,
                 groupId = 1,
                 name = "Cash Wallet",
-                balance = 2_500_000.0,
+                balance = BigDecimal(2_500_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -287,7 +288,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_CARD,
                 groupId = 1,
                 name = "Visa Gold",
-                balance = 8_500_000.0,
+                balance = BigDecimal(8_500_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -297,7 +298,7 @@ class MockDataSeeder @Inject constructor(
                 id = ACC_SAVINGS,
                 groupId = 1,
                 name = "Savings",
-                balance = 15_000_000.0,
+                balance = BigDecimal(15_000_000.0),
                 currencyCode = "UZS",
                 isArchived = false,
                 excludeFromTotal = false,
@@ -313,10 +314,10 @@ class MockDataSeeder @Inject constructor(
      */
     private suspend fun seedHighDensityTransactions() {
         val transactions = mutableListOf<TransactionEntity>()
-        
+
         val endDate = LocalDate.now()
         val startDate = endDate.minusYears(3)
-        
+
         var currentDate = startDate
         var transactionId = 1L
 
@@ -362,14 +363,22 @@ class MockDataSeeder @Inject constructor(
 
             // ============ OCCASIONAL EXPENSES ============
             // Shopping (2-3 times per week on weekends)
-            if (dayOfWeek in listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY) && Random.nextFloat() < 0.4f) {
+            if (dayOfWeek in listOf(
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY
+                ) && Random.nextFloat() < 0.4f
+            ) {
                 transactions.add(
                     createShoppingExpense(currentDate, transactionId++)
                 )
             }
 
             // Entertainment (Friday/Saturday evenings)
-            if (dayOfWeek in listOf(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY) && Random.nextFloat() < 0.3f) {
+            if (dayOfWeek in listOf(
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY
+                ) && Random.nextFloat() < 0.3f
+            ) {
                 transactions.add(
                     createEntertainmentExpense(currentDate, transactionId++)
                 )
@@ -393,10 +402,10 @@ class MockDataSeeder @Inject constructor(
         }
 
         Log.d(TAG, "Generated ${transactions.size} transactions. Inserting in batch...")
-        
+
         // Batch insert for performance
         transactionsDao.insertTransactions(transactions)
-        
+
         Log.d(TAG, "Batch insert complete!")
     }
 
@@ -404,7 +413,7 @@ class MockDataSeeder @Inject constructor(
 
     private fun createDailyExpense(date: LocalDate, id: Long): TransactionEntity {
         val isFood = Random.nextFloat() < 0.7f
-        
+
         return if (isFood) {
             createFoodExpense(date, id)
         } else {
@@ -415,13 +424,23 @@ class MockDataSeeder @Inject constructor(
     private fun createFoodExpense(date: LocalDate, id: Long): TransactionEntity {
         // Amount: 25,000 - 250,000 UZS (~$2-$20)
         val amount = (25_000..250_000).random().toDouble()
-        
-        val restaurants = listOf("Osmos", "Rayhon", "Milliy Taomlar", "Evos", "KFC", "Burger House", "Sushi Master", "Doner Kebab")
+
+        val restaurants = listOf(
+            "Osmos",
+            "Rayhon",
+            "Milliy Taomlar",
+            "Evos",
+            "KFC",
+            "Burger House",
+            "Sushi Master",
+            "Doner Kebab"
+        )
         val foodTypes = listOf("Lunch", "Coffee", "Breakfast", "Dinner", "Snack")
-        val companions = listOf("", " with Ali", " with Sardor", " with colleagues", " solo", " with team")
-        
+        val companions =
+            listOf("", " with Ali", " with Sardor", " with colleagues", " solo", " with team")
+
         val note = "${foodTypes.random()} at ${restaurants.random()}${companions.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -437,16 +456,17 @@ class MockDataSeeder @Inject constructor(
     private fun createTransportExpense(date: LocalDate, id: Long): TransactionEntity {
         // Amount: 10,000 - 100,000 UZS (~$1-$8)
         val amount = (10_000..100_000).random().toDouble()
-        
+
         val transportTypes = listOf(
             "Yandex taxi", "Uber ride", "Metro", "Bus fare",
             "Taxi to work", "Taxi home", "Taxi to meeting",
             "Petrol", "Parking fee"
         )
-        val destinations = listOf("", " to office", " to mall", " to meeting", " downtown", " to airport")
-        
+        val destinations =
+            listOf("", " to office", " to mall", " to meeting", " downtown", " to airport")
+
         val note = "${transportTypes.random()}${destinations.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -464,10 +484,10 @@ class MockDataSeeder @Inject constructor(
     private fun createWeeklyGroceries(date: LocalDate, id: Long): TransactionEntity {
         // Amount: 1,000,000 - 2,500,000 UZS (~$80-$200)
         val amount = (1_000_000..2_500_000).random().toDouble()
-        
+
         val stores = listOf("Makro", "Korzinka", "Havas", "Carrefour", "Mega Planet")
         val note = "Weekly groceries at ${stores.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -485,7 +505,7 @@ class MockDataSeeder @Inject constructor(
     private fun createMonthlyRent(date: LocalDate, id: Long): TransactionEntity {
         // Fixed rent: ~15,000,000 UZS (~$1,200)
         val amount = (14_500_000..15_500_000).random().toDouble()
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -501,12 +521,12 @@ class MockDataSeeder @Inject constructor(
     private fun createMonthlyUtilities(date: LocalDate, id: Long): TransactionEntity {
         // Utilities: 1,250,000 - 1,875,000 UZS (~$100-$150)
         val amount = (1_250_000..1_875_000).random().toDouble()
-        
+
         val utilityTypes = listOf(
             "Electric bill", "Gas bill", "Water bill",
             "Internet bill", "Phone bill", "Utilities combined"
         )
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -524,12 +544,12 @@ class MockDataSeeder @Inject constructor(
     private fun createWeeklyIncome(date: LocalDate, id: Long): TransactionEntity {
         // Weekly salary portion: 6,250,000 - 10,000,000 UZS (~$500-$800)
         val amount = (6_250_000..10_000_000).random().toDouble()
-        
+
         val notes = listOf(
             "Weekly salary", "Salary payment", "Paycheck",
             "Work income", "Company transfer"
         )
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
@@ -545,16 +565,22 @@ class MockDataSeeder @Inject constructor(
     private fun createFreelanceIncome(date: LocalDate, id: Long): TransactionEntity {
         // Freelance: 1,250,000 - 6,250,000 UZS (~$100-$500)
         val amount = (1_250_000..6_250_000).random().toDouble()
-        
+
         val projectTypes = listOf(
             "Website project", "App development", "Design work",
             "Logo design", "Consulting fee", "Translation work",
             "Video editing", "Content writing", "SEO project"
         )
-        val clients = listOf("", " for TechCorp", " for StartupXYZ", " for local client", " for overseas client")
-        
+        val clients = listOf(
+            "",
+            " for TechCorp",
+            " for StartupXYZ",
+            " for local client",
+            " for overseas client"
+        )
+
         val note = "${projectTypes.random()}${clients.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.INCOME,
@@ -572,16 +598,16 @@ class MockDataSeeder @Inject constructor(
     private fun createShoppingExpense(date: LocalDate, id: Long): TransactionEntity {
         // Shopping: 250,000 - 2,500,000 UZS (~$20-$200)
         val amount = (250_000..2_500_000).random().toDouble()
-        
+
         val items = listOf(
             "New clothes", "Shoes", "Electronics", "Home decor",
             "Kitchen items", "Books", "Accessories", "Tech gadget",
             "Gift for friend", "Household items", "Sports gear"
         )
         val stores = listOf("", " at Samarkand Darvoza", " at Next", " at Mega Planet", " online")
-        
+
         val note = "${items.random()}${stores.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -597,16 +623,16 @@ class MockDataSeeder @Inject constructor(
     private fun createEntertainmentExpense(date: LocalDate, id: Long): TransactionEntity {
         // Entertainment: 125,000 - 625,000 UZS (~$10-$50)
         val amount = (125_000..625_000).random().toDouble()
-        
+
         val activities = listOf(
             "Movie night", "Bowling", "Concert tickets", "Comedy show",
             "Night out", "Karaoke", "Game center", "Escape room",
             "Billiards", "Netflix subscription", "Spotify"
         )
         val companions = listOf("", " with friends", " with family", " solo", " date night")
-        
+
         val note = "${activities.random()}${companions.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -622,16 +648,16 @@ class MockDataSeeder @Inject constructor(
     private fun createHealthcareExpense(date: LocalDate, id: Long): TransactionEntity {
         // Healthcare: 125,000 - 1,250,000 UZS (~$10-$100)
         val amount = (125_000..1_250_000).random().toDouble()
-        
+
         val types = listOf(
             "Doctor visit", "Pharmacy", "Medicine",
             "Dentist", "Health checkup", "Vitamins",
             "Eye exam", "Lab tests", "Physiotherapy"
         )
         val clinics = listOf("", " at Akfa Medline", " at Premium Clinic", " at local pharmacy")
-        
+
         val note = "${types.random()}${clinics.random()}"
-        
+
         return createTransactionEntity(
             id = id,
             type = dev.esbi.mizan.domain.model.Transaction.Type.EXPENSE,
@@ -661,11 +687,11 @@ class MockDataSeeder @Inject constructor(
             hour, (0..59).random(), (0..59).random()
         )
         val epochMillis = dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        
+
         return TransactionEntity(
             id = 0, // Auto-generate
             type = type,
-            amount = amount,
+            amount = BigDecimal(amount.toString()),
             currencyCode = "UZS",
             exchangeRate = 1.0,
             targetAmount = null,

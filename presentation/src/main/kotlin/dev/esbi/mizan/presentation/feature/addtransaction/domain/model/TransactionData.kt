@@ -3,11 +3,13 @@ package dev.esbi.mizan.presentation.feature.addtransaction.domain.model
 import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import java.util.Date
 
+import java.math.BigDecimal
+
 /**
  * Represents parsed transaction data from voice input or receipt scanning
  */
 data class TransactionData(
-    val amount: Double,
+    val amount: BigDecimal,
     val note: String,
     val category: String? = null,
     val confidence: Float = 1.0f,

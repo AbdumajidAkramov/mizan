@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+import java.math.BigDecimal
+
 class CurrencyRepositoryImpl @Inject constructor(
     private val currencyDao: CurrencyDao
 ) : CurrencyRepository {
@@ -23,7 +25,7 @@ class CurrencyRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateRate(code: String, rateToBase: Double) {
-        currencyDao.updateRate(code, rateToBase)
+        currencyDao.updateRate(code, BigDecimal.valueOf(rateToBase))
     }
 
     override suspend fun getCurrencyByCode(code: String): Currency? {

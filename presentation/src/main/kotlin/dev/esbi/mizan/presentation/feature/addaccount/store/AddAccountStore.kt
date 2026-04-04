@@ -22,6 +22,7 @@ interface AddAccountStore :
         data class UpdateDescription(val description: String) : Intent
         data object SaveAccount : Intent
         class ConfirmDeleteAccount(val accountId: Long) : Intent
+        class UpdateIncludeInTotals(val value: Boolean) : Intent
     }
 
     data class State(
@@ -34,7 +35,8 @@ interface AddAccountStore :
         val availableGroups: List<AccountGroup> = emptyList(),
         val description: String = "",
         val validationErrors: Map<Field, String?> = emptyMap(),
-        val isLoading: Boolean = false
+        val isLoading: Boolean = false,
+        val excludeFromTotal: Boolean = false
     ) {
         enum class Field {
             NAME, CURRENCY, GROUP
@@ -58,5 +60,6 @@ interface AddAccountStore :
         data class ValidationFailed(val errors: Map<State.Field, String?>) : Message
         data class Loading(val isLoading: Boolean) : Message
         data class GroupsLoaded(val groups: List<AccountGroup>) : Message
+        class IncludeInTotalsChanged(val value: Boolean) : Message
     }
 }

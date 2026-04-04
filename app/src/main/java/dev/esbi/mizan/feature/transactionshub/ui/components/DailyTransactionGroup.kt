@@ -67,9 +67,9 @@ fun DailyTransactionGroup(
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = formatAmount(group.dayTotal, numberFormat),
+                text = formatAmount(group.dayTotal.toDouble(), numberFormat),
                 style = MizanTheme.typography.bodySm,
-                color = if (group.dayTotal >= 0) MizanTheme.premium.colors.emerald else Color(
+                color = if (group.dayTotal >= java.math.BigDecimal.ZERO) MizanTheme.premium.colors.emerald else Color(
                     0xFFF5576C
                 ),
                 fontWeight = FontWeight.SemiBold

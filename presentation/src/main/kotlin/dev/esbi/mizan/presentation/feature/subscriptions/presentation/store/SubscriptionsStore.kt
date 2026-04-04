@@ -3,6 +3,8 @@ package dev.esbi.mizan.presentation.feature.subscriptions.presentation.store
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.presentation.feature.subscriptions.domain.model.Subscription
 
+import java.math.BigDecimal
+
 interface SubscriptionsStore : Store<SubscriptionsStore.Intent, SubscriptionsStore.State, SubscriptionsStore.Label> {
 
     sealed interface Action {
@@ -12,7 +14,7 @@ interface SubscriptionsStore : Store<SubscriptionsStore.Intent, SubscriptionsSto
     sealed interface Intent {
         data class AddSubscription(
             val name: String,
-            val amount: Double,
+            val amount: BigDecimal,
             val billingCycle: String,
             val nextRenewalDate: Long,
             val icon: String,
@@ -29,7 +31,7 @@ interface SubscriptionsStore : Store<SubscriptionsStore.Intent, SubscriptionsSto
         val subscriptions: List<Subscription> = emptyList(),
         val isLoading: Boolean = false,
         val error: String? = null,
-        val totalMonthlyCost: Double = 0.0,
+        val totalMonthlyCost: BigDecimal = BigDecimal.ZERO,
         val showAddDialog: Boolean = false
     )
 

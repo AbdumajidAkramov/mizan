@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
 
+import java.math.BigDecimal
+
 @Entity(
     tableName = "templates",
     foreignKeys = [
@@ -24,7 +26,7 @@ data class TemplateEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("id") val id: Long = 0,
     @ColumnInfo("name") val name: String,
-    @ColumnInfo("amount") val amount: Double,
+    @ColumnInfo("amount") val amount: BigDecimal,
     @ColumnInfo("iconName") val iconName: String? = null,
     @ColumnInfo("transactionType") val transactionType: Transaction.Type,
     @ColumnInfo("categoryId") val categoryId: Long? = null,

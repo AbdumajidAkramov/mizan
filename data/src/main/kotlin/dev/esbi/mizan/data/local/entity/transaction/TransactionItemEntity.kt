@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
+import java.math.BigDecimal
+
 @Entity(
     tableName = "transaction_items",
     foreignKeys = [
@@ -30,17 +32,17 @@ data class TransactionItemEntity(
     val mxikCode: String? = null,    // Soliq tizimidagi MXIK (IKPU) kodi
 
     @ColumnInfo(name = "quantity")
-    val quantity: Double = 1.0,      // Miqdori (masalan: 2.5 kg yoki 1 ta)
+    val quantity: BigDecimal = BigDecimal.ONE,      // Miqdori (masalan: 2.5 kg yoki 1 ta)
 
     @ColumnInfo(name = "price")
-    val price: Double,               // Bir birlik uchun narxi
+    val price: BigDecimal,               // Bir birlik uchun narxi
 
     @ColumnInfo(name = "totalPrice")
-    val totalPrice: Double,          // Jami narxi (quantity * price)
+    val totalPrice: BigDecimal,          // Jami narxi (quantity * price)
 
     @ColumnInfo(name = "unitName")
     val unitName: String? = null,    // O'lchov birligi (dona, kg, litr)
 
     @ColumnInfo(name = "vatAmount")
-    val vatAmount: Double = 0.0      // Ushbu mahsulot uchun hisoblangan QQS (NDS)
+    val vatAmount: BigDecimal = BigDecimal.ZERO      // Ushbu mahsulot uchun hisoblangan QQS (NDS)
 )

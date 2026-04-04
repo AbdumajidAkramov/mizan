@@ -27,12 +27,14 @@ fun BalanceAmount(
     balance: BigDecimal,
     currency: String,
     modifier: Modifier = Modifier,
+    excludeFromTotal: Boolean = false,
     typography: TextStyle = MizanTheme.premium.typography.bodyLg
 ) {
-    val amountColor: Color = if (balance < BigDecimal.ZERO)
-        MizanTheme.premium.colors.error
-    else
-        MizanTheme.premium.colors.emerald
+    val amountColor: Color = when {
+        excludeFromTotal -> MizanTheme.premium.text.muted
+        balance < BigDecimal.ZERO -> MizanTheme.premium.colors.error
+        else -> MizanTheme.premium.colors.emerald
+    }
 
     Box(modifier = modifier) {
         Text(
@@ -89,7 +91,8 @@ fun FormattableAmountPreview() {
         Box(modifier = Modifier.padding(16.dp)) {
             BalanceAmount(
                 balance = BigDecimal("124120.23"),
-                currency = "UZS"
+                currency = "UZS",
+                excludeFromTotal = true
             )
         }
     }

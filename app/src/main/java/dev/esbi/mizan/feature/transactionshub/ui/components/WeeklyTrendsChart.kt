@@ -109,8 +109,8 @@ fun WeeklyTrendsChart(
                     val groupX = startX + index * (barWidthPx * 2 + barSpacingPx + 16.dp.toPx())
 
                     // Draw income bar
-                    val incomeHeight = if (maxValue > 0) {
-                        (week.income / maxValue * chartBottom * animationProgress.value).toFloat()
+                    val incomeHeight = if (maxValue > java.math.BigDecimal.ZERO) {
+                        (week.income.toFloat() / maxValue.toFloat() * chartBottom * animationProgress.value).toFloat()
                     } else 0f
 
                     if (incomeHeight > 0) {
@@ -123,8 +123,8 @@ fun WeeklyTrendsChart(
                     }
 
                     // Draw expense bar
-                    val expenseHeight = if (maxValue > 0) {
-                        (week.expense / maxValue * chartBottom * animationProgress.value).toFloat()
+                    val expenseHeight = if (maxValue > java.math.BigDecimal.ZERO) {
+                        (week.expense.toFloat() / maxValue.toFloat() * chartBottom * animationProgress.value).toFloat()
                     } else 0f
 
                     if (expenseHeight > 0) {

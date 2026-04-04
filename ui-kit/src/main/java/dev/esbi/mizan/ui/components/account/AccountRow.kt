@@ -30,15 +30,16 @@ import java.math.BigDecimal
 fun AccountRow(
     id: Long,
     name: String,
-    balance: Double,
+    balance: BigDecimal,
     currencyCode: String,
+    excludeFromTotal: Boolean,
     modifier: Modifier = Modifier,
 ) {
 
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(MizanTheme.premium.radius.xs))
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
             .background(MizanTheme.premium.background.primary.copy(alpha = 0.05f))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -58,9 +59,10 @@ fun AccountRow(
         Spacer(modifier = Modifier.weight(1f))
 
         BalanceAmount(
-            balance = BigDecimal(balance),
+            balance = balance,
             currency = currencyCode,
-            typography = MizanTheme.typography.bodyLg
+            typography = MizanTheme.typography.bodyLg,
+            excludeFromTotal = excludeFromTotal
         )
         Spacer(modifier = Modifier.width(12.dp))
 

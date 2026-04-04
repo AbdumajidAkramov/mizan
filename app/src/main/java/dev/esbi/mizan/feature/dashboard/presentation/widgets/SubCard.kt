@@ -26,12 +26,14 @@ import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Red
 import dev.esbi.mizan.ui.utils.Icons
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun SubCard(label: String, amount: Double, isIncome: Boolean, modifier: Modifier) {
+fun SubCard(label: String, amount: BigDecimal, isIncome: Boolean, modifier: Modifier) {
     val fmt = NumberFormat.getCurrencyInstance(Locale.US)
+    val amountDouble = amount.toDouble()
     Column(
         modifier
             .clip(RoundedCornerShape(16.dp))
@@ -56,7 +58,7 @@ fun SubCard(label: String, amount: Double, isIncome: Boolean, modifier: Modifier
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            fmt.format(amount),
+            fmt.format(amountDouble),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -68,6 +70,6 @@ fun SubCard(label: String, amount: Double, isIncome: Boolean, modifier: Modifier
 @Composable
 fun SubCardPreview() {
     MizanTheme {
-        SubCard("Income", 12000.0, true, Modifier)
+        SubCard("Income", java.math.BigDecimal("12000"), true, Modifier)
     }
 }

@@ -2,37 +2,45 @@ package dev.esbi.mizan.ui.components.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.theme.MizanTheme
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 // Matching #10b981 from Next.js implementation
-private val PremiumEmerald = Color(0xFF10B981)
+val PremiumEmerald = Color(0xFF10B981)
 
 @Composable
 fun TotalBalanceCard(
-    totalBalance: Double,
+    totalBalance: BigDecimal,
     baseCurrencyCode: String,
     modifier: Modifier = Modifier,
-    monthlyChange: Double = 2450000.0,
-    monthlyChangePercent: Double = 12.5 
+    monthlyChange: BigDecimal = BigDecimal("2450000"),
+    monthlyChangePercent: Double = 12.5
 ) {
     val formatter = DecimalFormat("#,###.00", DecimalFormatSymbols(Locale.US)).apply {
         val symbols = this.decimalFormatSymbols
@@ -52,14 +60,14 @@ fun TotalBalanceCard(
             .background(
                 Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.1f),
-                        Color.White.copy(alpha = 0.05f)
+                        MizanTheme.premium.background.primary.copy(alpha = 0.1f),
+                        MizanTheme.premium.background.primary.copy(alpha = 0.05f)
                     )
                 )
             )
             .border(
                 width = 1.dp,
-                color = Color.White.copy(alpha = 0.2f),
+                color = MizanTheme.premium.background.primary.copy(alpha = 0.2f),
                 shape = RoundedCornerShape(24.dp)
             )
             // Emerald Glow simulation
@@ -79,9 +87,9 @@ fun TotalBalanceCard(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -133,12 +141,12 @@ fun TotalBalanceCard(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                
+
                 val changeStr = DecimalFormat("#,###", DecimalFormatSymbols(Locale.US)).apply {
                     val symbols = this.decimalFormatSymbols
                     symbols.groupingSeparator = ' '
                     this.decimalFormatSymbols = symbols
-                }.format(monthlyChange)
+                }.format(monthlyChange.toDouble())
 
                 Text(
                     text = "+$changeStr $baseCurrencyCode",
@@ -154,6 +162,21 @@ fun TotalBalanceCard(
                     fontWeight = FontWeight.Normal
                 )
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TotalBalanceCardPreview() {
+    MizanTheme() {
+        Box(modifier = Modifier.padding(16.dp)) {
+            TotalBalanceCard(
+                totalBalance = BigDecimal("123456789"),
+                baseCurrencyCode = "USD",
+                monthlyChange = BigDecimal("2450000"),
+                monthlyChangePercent = 12.5
+            )
         }
     }
 }

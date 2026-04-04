@@ -8,6 +8,7 @@ import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.Cate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -176,11 +177,11 @@ class TransactionsHubExecutor(
                 calendar.timeInMillis
             }
             .map { (dateMillis, txns) ->
-                val dayTotal = txns.sumOf { txn ->
+                val dayTotal = txns.fold(BigDecimal.ZERO) { acc, txn ->
                     when (txn.type) {
-                        Transaction.Type.INCOME -> txn.amount
-                        Transaction.Type.EXPENSE -> -txn.amount
-                        Transaction.Type.TRANSFER -> 0.0
+                        Transaction.Type.INCOME -> acc.add(txn.amount)
+                        Transaction.Type.EXPENSE -> acc.subtract(txn.amount)
+                        Transaction.Type.TRANSFER -> acc
                     }
                 }
                 TransactionsHubStore.DailyGroup(
@@ -243,13 +244,13 @@ class TransactionsHubExecutor(
 
             val income = dayTransactions
                 .filter { it.type == Transaction.Type.INCOME }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
             val expense = dayTransactions
                 .filter { it.type == Transaction.Type.EXPENSE }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
-            val balance = income - expense
+            val balance = income.subtract(expense)
             val transactionCount = dayTransactions.size
 
             if (transactionCount > 0) {
@@ -304,16 +305,15 @@ class TransactionsHubExecutor(
                 !txnDate.isBefore(currentWeekStart) && !txnDate.isAfter(currentWeekEnd)
             }
 
-            // Calculate totals
             val income = weekTransactions
                 .filter { it.type == Transaction.Type.INCOME }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
             val expense = weekTransactions
                 .filter { it.type == Transaction.Type.EXPENSE }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
-            val balance = income - expense
+            val balance = income.subtract(expense)
 
             // Format date range
             val dateRangeFormatted = formatWeekDateRange(currentWeekStart, currentWeekEnd)
@@ -361,15 +361,15 @@ class TransactionsHubExecutor(
 
         // Calculate expense category summaries
         val expenseTransactions = monthTransactions.filter { it.type == Transaction.Type.EXPENSE }
-        val totalExpense = expenseTransactions.sumOf { it.amount }
+        val totalExpense = expenseTransactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
         val expenseSummaries = expenseTransactions
             .groupBy { it.categoryId }
             .map { (categoryId, transactions) ->
                 val category = categories.find { it.id == categoryId }
-                val totalAmount = transactions.sumOf { it.amount }
+                val totalAmount = transactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
                 val percentage =
-                    if (totalExpense > 0) (totalAmount / totalExpense * 100).toFloat() else 0f
+                    if (totalExpense > BigDecimal.ZERO) (totalAmount.toFloat() / totalExpense.toFloat() * 100) else 0f
 
                 TransactionsHubStore.CategorySummary(
                     categoryId = categoryId,
@@ -385,15 +385,15 @@ class TransactionsHubExecutor(
 
         // Calculate income category summaries
         val incomeTransactions = monthTransactions.filter { it.type == Transaction.Type.INCOME }
-        val totalIncome = incomeTransactions.sumOf { it.amount }
+        val totalIncome = incomeTransactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
         val incomeSummaries = incomeTransactions
             .groupBy { it.categoryId }
             .map { (categoryId, transactions) ->
                 val category = categories.find { it.id == categoryId }
-                val totalAmount = transactions.sumOf { it.amount }
+                val totalAmount = transactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
                 val percentage =
-                    if (totalIncome > 0) (totalAmount / totalIncome * 100).toFloat() else 0f
+                    if (totalIncome > BigDecimal.ZERO) (totalAmount.toFloat() / totalIncome.toFloat() * 100) else 0f
 
                 TransactionsHubStore.CategorySummary(
                     categoryId = categoryId,
@@ -408,8 +408,8 @@ class TransactionsHubExecutor(
             .sortedByDescending { it.totalAmount }
 
         // Calculate savings rate
-        val netSavings = totalIncome - totalExpense
-        val savingsRate = if (totalIncome > 0) (netSavings / totalIncome * 100).toFloat() else 0f
+        val netSavings = totalIncome.subtract(totalExpense)
+        val savingsRate = if (totalIncome > BigDecimal.ZERO) (netSavings.toFloat() / totalIncome.toFloat() * 100) else 0f
 
         dispatch(
             TransactionsHubStore.Message.CategorySummariesCalculated(
@@ -425,15 +425,15 @@ class TransactionsHubExecutor(
 
         // Calculate expense account summaries
         val expenseTransactions = monthTransactions.filter { it.type == Transaction.Type.EXPENSE }
-        val totalExpense = expenseTransactions.sumOf { it.amount }
+        val totalExpense = expenseTransactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
         val expenseAccountSummaries = expenseTransactions
             .groupBy { it.accountId }
             .map { (accountId, transactions) ->
                 val account = accounts.find { it.id == accountId }
-                val totalAmount = transactions.sumOf { it.amount }
+                val totalAmount = transactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
                 val percentage =
-                    if (totalExpense > 0) (totalAmount / totalExpense * 100).toFloat() else 0f
+                    if (totalExpense > BigDecimal.ZERO) (totalAmount.toFloat() / totalExpense.toFloat() * 100) else 0f
 
                 TransactionsHubStore.AccountSummary(
                     accountId = accountId,
@@ -447,15 +447,15 @@ class TransactionsHubExecutor(
 
         // Calculate income account summaries
         val incomeTransactions = monthTransactions.filter { it.type == Transaction.Type.INCOME }
-        val totalIncome = incomeTransactions.sumOf { it.amount }
+        val totalIncome = incomeTransactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
         val incomeAccountSummaries = incomeTransactions
             .groupBy { it.accountId }
             .map { (accountId, transactions) ->
                 val account = accounts.find { it.id == accountId }
-                val totalAmount = transactions.sumOf { it.amount }
+                val totalAmount = transactions.fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
                 val percentage =
-                    if (totalIncome > 0) (totalAmount / totalIncome * 100).toFloat() else 0f
+                    if (totalIncome > BigDecimal.ZERO) (totalAmount.toFloat() / totalIncome.toFloat() * 100) else 0f
 
                 TransactionsHubStore.AccountSummary(
                     accountId = accountId,
@@ -497,13 +497,13 @@ class TransactionsHubExecutor(
 
             val incomeAmount = transactions
                 .filter { it.type == Transaction.Type.INCOME }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
             val expenseAmount = transactions
                 .filter { it.type == Transaction.Type.EXPENSE }
-                .sumOf { it.amount }
+                .fold(BigDecimal.ZERO) { acc, t -> acc.add(t.amount) }
 
-            val netAmount = incomeAmount - expenseAmount
+            val netAmount = incomeAmount.subtract(expenseAmount)
 
             // Calculate date range
             val dates = transactions.map { it.date }
