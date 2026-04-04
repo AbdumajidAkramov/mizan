@@ -52,4 +52,16 @@ sealed class NavRoute() {
     @Serializable
     data class AddNewAccount(val accountId: Long? = null) : NavRoute()
 
+    @Serializable
+    data object SubCurrencyList : NavRoute()
+
+    @Serializable
+    data class SubCurrencySetting(val currencyCode: String) : NavRoute()
+
+    @Serializable
+    data object CurrencyPicker : NavRoute()
+
+    @Serializable
+    data object UserDefinedCurrency : NavRoute()
+
 }

@@ -58,7 +58,8 @@ fun ProfileScreen(
     onNavigateToBudgetManagementScreen: () -> Unit = {},
     onNavigateToFinancialGoalsScreen: () -> Unit = {},
     onNavigateToAccountsScreen: () -> Unit = {},
-    onNavigateToAccountGroupsScreen: () -> Unit = {}
+    onNavigateToAccountGroupsScreen: () -> Unit = {},
+    onNavigateToCurrencyManagementScreen: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState(initial = ProfileStore.State())
 
@@ -90,6 +91,10 @@ fun ProfileScreen(
 
                         SettingAction.ACCOUNT_GROUP_MANAGEMENT -> {
                             onNavigateToAccountGroupsScreen()
+                        }
+
+                        SettingAction.CURRENCY_MANAGEMENT -> {
+                            onNavigateToCurrencyManagementScreen()
                         }
 
                         else -> Unit
@@ -295,6 +300,13 @@ internal fun getSettingsSections(
                 label = "Account Groups",
                 description = "Manage credit/debit groupings",
                 action = SettingAction.ACCOUNT_GROUP_MANAGEMENT
+            ),
+            SettingItem(
+                id = "currency_management",
+                icon = SettingIcon.DOLLAR,
+                label = "Sub-Currencies",
+                description = "Manage currencies & exchange rates",
+                action = SettingAction.CURRENCY_MANAGEMENT
             ),
             SettingItem(
                 id = "budget_management",
