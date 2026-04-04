@@ -10,20 +10,35 @@ internal class AddAccountReducer : Reducer<State, Message> {
             is Message.SetSelectAccount -> copy(
                 accountId = msg.account.id,
                 name = msg.account.name,
-                balance = msg.account.balance.toString(),
+                balance = msg.account.balance.toEditString(),
                 selectedCurrency = msg.account.currency,
                 selectedGroupId = msg.account.groupId,
                 description = msg.account.description.orEmpty(),
-                isLoading = false
+                isLoading = false,
+                excludeFromTotal = msg.account.excludeFromTotal
             )
-            is Message.NameChanged -> copy(name = msg.name, validationErrors = validationErrors - State.Field.NAME)
+
+            is Message.NameChanged -> copy(
+                name = msg.name,
+                validationErrors = validationErrors - State.Field.NAME
+            )
+
             is Message.BalanceChanged -> copy(balance = msg.balance)
-            is Message.CurrencySelected -> copy(selectedCurrency = msg.currency, validationErrors = validationErrors - State.Field.CURRENCY)
-            is Message.GroupSelected -> copy(selectedGroupId = msg.groupId, validationErrors = validationErrors - State.Field.GROUP)
+            is Message.CurrencySelected -> copy(
+                selectedCurrency = msg.currency,
+                validationErrors = validationErrors - State.Field.CURRENCY
+            )
+
+            is Message.GroupSelected -> copy(
+                selectedGroupId = msg.groupId,
+                validationErrors = validationErrors - State.Field.GROUP
+            )
+
             is Message.DescriptionChanged -> copy(description = msg.description)
             is Message.ValidationFailed -> copy(validationErrors = msg.errors)
             is Message.Loading -> copy(isLoading = msg.isLoading)
             is Message.GroupsLoaded -> copy(availableGroups = msg.groups)
             is Message.UpdateAvailableCurrencies -> copy(availableCurrencies = msg.currencies)
+            is Message.IncludeInTotalsChanged -> copy(excludeFromTotal = !msg.value)
         }
 }

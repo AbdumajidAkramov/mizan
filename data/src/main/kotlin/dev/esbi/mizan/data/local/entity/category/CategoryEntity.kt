@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 
+import java.math.BigDecimal
+
 @Entity(
     tableName = "categories",
     // Subkategoriyani ota kategoriyaga bog'lash (Otasi o'chsa, bolasi ham o'chadi yoki cascade)
@@ -36,7 +38,7 @@ data class CategoryEntity(
     override val color: String,          // HEX rang kodi ("#FF5722")
 
     // Budjet (ixtiyoriy, kelajak uchun)
-    override val budgetLimit: Double? = null, // Shu kategoriya uchun oylik limit
+    override val budgetLimit: BigDecimal? = null, // Shu kategoriya uchun oylik limit
 
     override val isArchived: Boolean = false,  // Ishlatilmaydigan kategoriyalar uchun
     override val orderIndex: Int = 0           // Ro'yxatda chiqish tartibi

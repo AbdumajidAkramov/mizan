@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.model.AccountGroupType
+import java.math.BigDecimal
 import java.util.Date
 
 class Converters {
@@ -32,6 +33,17 @@ class Converters {
 
     @TypeConverter
     fun fromAccountGroupType(value: AccountGroupType): String = value.name
+
+    // 4. BigDecimal (String -> BigDecimal)
+    @TypeConverter
+    fun fromBigDecimal(value: BigDecimal?): String? {
+        return value?.toString()
+    }
+
+    @TypeConverter
+    fun toBigDecimal(value: String?): BigDecimal? {
+        return value?.let { BigDecimal(it) }
+    }
 
     // 5. PhotoPaths/String Lists (JSON String -> List<String>)
     @TypeConverter

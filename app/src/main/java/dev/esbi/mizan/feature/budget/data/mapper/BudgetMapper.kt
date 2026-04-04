@@ -5,8 +5,8 @@ import dev.esbi.mizan.feature.budget.domain.model.CategoryBudget
 import dev.esbi.mizan.feature.budget.domain.model.calculateBudgetStatus
 
 fun CategoryBudgetEntity.toDomain(): CategoryBudget {
-    val percentage = if (budgetAmount > 0) {
-        ((spentAmount / budgetAmount) * 100).toInt()
+    val percentage = if (budgetAmount > java.math.BigDecimal.ZERO) {
+        ((spentAmount.toDouble() / budgetAmount.toDouble()) * 100).toInt()
     } else {
         0
     }
@@ -14,8 +14,8 @@ fun CategoryBudgetEntity.toDomain(): CategoryBudget {
     return CategoryBudget(
         categoryId = categoryId,
         categoryName = categoryName,
-        budgetAmount = budgetAmount,
-        spentAmount = spentAmount,
+        budgetAmount = budgetAmount.toDouble(),
+        spentAmount = spentAmount.toDouble(),
         percentage = percentage,
         status = calculateBudgetStatus(percentage)
     )
@@ -25,7 +25,7 @@ fun CategoryBudget.toEntity(): CategoryBudgetEntity {
     return CategoryBudgetEntity(
         categoryId = categoryId,
         categoryName = categoryName,
-        budgetAmount = budgetAmount,
-        spentAmount = spentAmount
+        budgetAmount = java.math.BigDecimal.valueOf(budgetAmount),
+        spentAmount = java.math.BigDecimal.valueOf(spentAmount)
     )
 }

@@ -6,6 +6,8 @@ import dev.esbi.mizan.domain.model.Transaction
 /**
  * Simple implementation of the Category interface for use in presentation layer.
  */
+import java.math.BigDecimal
+
 data class CategoryData(
     override val id: Long,
     override val name: String,
@@ -14,6 +16,6 @@ data class CategoryData(
     override val type: Transaction.Type,
     override val orderIndex: Int = 0,
     override val parentId: Long? = null,
-    override val budgetLimit: Double? = null,
+    override val budgetLimit: BigDecimal? = null,
     override val isArchived: Boolean = false
 ) : Category

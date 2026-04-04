@@ -9,6 +9,8 @@ import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
 
+import java.math.BigDecimal
+
 @Entity(
     tableName = "transactions",
     foreignKeys = [
@@ -43,7 +45,7 @@ data class TransactionEntity(
     // Expense uchun: Xarajat summasi (Account valyutasida)
     // Income uchun: Daromad summasi (Account valyutasida)
     // Transfer uchun: "From Account" dan qancha pul ketgani
-    val amount: Double,
+    val amount: BigDecimal,
 
     // Transaction currency at the time of transaction (usually matches account currency)
     val currencyCode: String = "UZS",
@@ -54,7 +56,7 @@ data class TransactionEntity(
     // 2. TRASFER UCHUN QO'SHIMCHA (Exchange Rate)
     // Faqat TRANSFER bo'lganda va valyutalar har xil bo'lganda to'ldiriladi.
     // "To Account" ga qancha pul tushgani (Target Currency da).
-    val targetAmount: Double? = null,
+    val targetAmount: BigDecimal? = null,
 
     val date: Long,
     val note: String? = null,

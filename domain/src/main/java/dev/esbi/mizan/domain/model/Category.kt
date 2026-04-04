@@ -14,7 +14,7 @@ interface Category {
     val color: String          // HEX rang kodi ("#FF5722")
 
     // Budjet (ixtiyoriy, kelajak uchun)
-    val budgetLimit: Double?   // Shu kategoriya uchun oylik limit
+    val budgetLimit: java.math.BigDecimal?   // Shu kategoriya uchun oylik limit
 
     val isArchived: Boolean    // Ishlatilmaydigan kategoriyalar uchun
     val orderIndex: Int        // Ro'yxatda chiqish tartibi

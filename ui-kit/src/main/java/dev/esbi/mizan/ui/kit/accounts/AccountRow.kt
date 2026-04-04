@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.badge.MizanBadge
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -35,7 +36,7 @@ import java.util.Locale
 fun AccountRow(
     name: String,
     subtitle: String?,
-    balance: Double,
+    balance: BigDecimal,
     currencyCode: String,
     iconName: String?,
     color: String?,
@@ -122,13 +123,13 @@ private fun AccountIcon(
     }
 }
 
-private fun formatBalance(amount: Double): String {
+private fun formatBalance(amount: BigDecimal): String {
     val formatter = NumberFormat.getNumberInstance(Locale.US).apply {
         minimumFractionDigits = 2
         maximumFractionDigits = 2
         isGroupingUsed = true
     }
-    return formatter.format(amount)
+    return formatter.format(amount.toDouble())
 }
 
 private fun parseHexColor(hex: String?): Color {

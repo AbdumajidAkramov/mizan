@@ -34,11 +34,12 @@ import dev.esbi.mizan.ui.theme.TextGray
 import dev.esbi.mizan.ui.theme.TextMuted
 import dev.esbi.mizan.ui.theme.TextWhite
 import dev.esbi.mizan.ui.utils.Icons
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
+fun StatsRow(budget: Double, spent: BigDecimal, limit: Double, savings: BigDecimal) {
     val fmt = NumberFormat.getCurrencyInstance(Locale.US)
     Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(12.dp)) {
         GlassCard(Modifier.weight(1f)) {
@@ -71,7 +72,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                     color = TextWhite
                 )
                 Text(
-                    "${fmt.format(spent)} of ${fmt.format(limit)}",
+                    "${fmt.format(spent.toDouble())} of ${fmt.format(limit)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = TextMuted
                 )
@@ -113,7 +114,7 @@ fun StatsRow(budget: Double, spent: Double, limit: Double, savings: Double) {
                 }
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    fmt.format(savings),
+                    fmt.format(savings.toDouble()),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextWhite

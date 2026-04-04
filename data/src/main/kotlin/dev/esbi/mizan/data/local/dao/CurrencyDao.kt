@@ -8,6 +8,8 @@ import androidx.room.Transaction
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
 import kotlinx.coroutines.flow.Flow
 
+import java.math.BigDecimal
+
 @Dao
 interface CurrencyDao {
 
@@ -27,7 +29,7 @@ interface CurrencyDao {
     suspend fun insertAll(currencies: List<CurrencyEntity>)
 
     @Query("UPDATE currencies SET rateToBase = :rate WHERE code = :code")
-    suspend fun updateRate(code: String, rate: Double)
+    suspend fun updateRate(code: String, rate: BigDecimal)
 
     @Query("UPDATE currencies SET isBaseCurrency = 0")
     suspend fun clearBaseCurrency()

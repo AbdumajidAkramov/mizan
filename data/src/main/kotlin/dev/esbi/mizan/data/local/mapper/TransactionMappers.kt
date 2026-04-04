@@ -4,6 +4,8 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionWithCurrencyEntity
 import dev.esbi.mizan.domain.model.Transaction
 
+import java.math.BigDecimal
+
 fun TransactionWithCurrencyEntity.toDomain(): Transaction {
     return Transaction(
         id = transaction.id,
@@ -20,7 +22,7 @@ fun TransactionWithCurrencyEntity.toDomain(): Transaction {
         categoryId = transaction.categoryId,
         subCategoryId = null, // Removed from schema
         targetAccountId = transaction.targetAccountId,
-        fee = 0.0, // Removed from schema
+        fee = BigDecimal.ZERO, // Removed from schema
         isBookmarked = transaction.isBookmarked,
         recurrenceRule = transaction.recurrenceRule,
         isInstallment = transaction.isInstallment,

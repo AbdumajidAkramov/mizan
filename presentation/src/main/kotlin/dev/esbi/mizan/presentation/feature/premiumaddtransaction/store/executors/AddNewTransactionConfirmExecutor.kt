@@ -98,7 +98,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                                 val currency = state.selectedCurrency?.code?.let { code ->
                                     currencyRepository.getCurrencyByCode(code)
                                 }
-                                val exchangeRate = currency?.rateToBase ?: 1.0
+                                val exchangeRate = currency?.rateToBase ?: BigDecimal.ONE
 
                                 // Get category ID (prefer child category if selected)
                                 val categoryId = state.selectedSubCategory?.id
@@ -108,9 +108,9 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                                 val transaction = Transaction(
                                     id = if (state.isEditMode) state.editingTransactionId!! else 0,
                                     type = state.transactionType,
-                                    amount = state.amount.value.toDouble(),
+                                    amount = state.amount.value,
                                     currency = currency ?: Currency.UZS,
-                                    exchangeRate = exchangeRate,
+                                    exchangeRate = exchangeRate.toDouble(),
                                     targetAmount = null, // TODO: Calculate for transfers if needed
                                     date = state.transactionDate,
                                     note = state.note.takeIf { it.isNotBlank() },
@@ -120,7 +120,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                                     categoryId = categoryId,
                                     subCategoryId = null,
                                     targetAccountId = state.targetAccount?.id,
-                                    fee = state.fee ?: 0.0,
+                                    fee = state.fee ?: BigDecimal.ZERO,
                                     isBookmarked = state.isBookmarked,
                                     recurrenceRule = null,
                                     isInstallment = false,
@@ -145,7 +145,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                                             state.selectedCategory?.name ?: "Template"
                                         val template = Template(
                                             name = categoryName,
-                                            amount = state.amount.value.toDouble(),
+                                            amount = state.amount.value,
                                             iconName = state.selectedCategory?.iconName,
                                             transactionType = transaction.type,
                                             categoryId = categoryId,
@@ -213,7 +213,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
     private fun checkPadState() {
         val state = state()
         when {
-            state.amount.value.toDouble() == 0.0 -> {
+            state.amount.value.compareTo(BigDecimal.ZERO) == 0 -> {
                 dispatch(
                     Message.UpdatePad(pad = State.Pad.AmountInput)
                 )

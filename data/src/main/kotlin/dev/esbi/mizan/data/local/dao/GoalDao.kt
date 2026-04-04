@@ -9,6 +9,8 @@ import androidx.room.Update
 import dev.esbi.mizan.data.local.entity.GoalEntity
 import kotlinx.coroutines.flow.Flow
 
+import java.math.BigDecimal
+
 @Dao
 interface GoalDao {
 
@@ -31,5 +33,5 @@ interface GoalDao {
     suspend fun deleteById(id: Long)
 
     @Query("UPDATE goals SET currentAmount = currentAmount + :amount WHERE id = :id")
-    suspend fun addAmount(id: Long, amount: Double)
+    suspend fun addAmount(id: Long, amount: BigDecimal)
 }

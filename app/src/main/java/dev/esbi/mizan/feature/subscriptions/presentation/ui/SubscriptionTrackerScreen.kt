@@ -86,7 +86,7 @@ fun SubscriptionTrackerScreen(
             // Monthly Summary Card
             item {
                 MonthlySummaryCard(
-                    monthlyTotal = state.totalMonthlyCost,
+                    monthlyTotal = state.totalMonthlyCost.toDouble(),
                     subscriptionCount = state.subscriptions.size,
                     subscriptions = state.subscriptions
                 )
@@ -126,7 +126,7 @@ fun SubscriptionTrackerScreen(
 
             // Insights Card
             item {
-                InsightsCard(monthlyTotal = state.totalMonthlyCost)
+                InsightsCard(monthlyTotal = state.totalMonthlyCost.toDouble())
             }
         }
     }
@@ -385,7 +385,7 @@ private fun SubscriptionItem(subscription: Subscription) {
                 // Amount
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        formatUZS(subscription.amount),
+                        formatUZS(subscription.amount.toDouble()),
                         style = MizanTheme.premium.typography.labelLg,
                         color = Color.White
                     )

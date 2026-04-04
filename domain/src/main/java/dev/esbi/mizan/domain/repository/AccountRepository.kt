@@ -12,7 +12,7 @@ interface AccountRepository {
     suspend fun updateAccount(account: Account)
     suspend fun deleteAccount(id: Long)
     suspend fun markAccountAsDeleted(id: Long)
-    suspend fun updateBalance(id: Long, amount: Double)
+    suspend fun updateBalance(id: Long, amount: java.math.BigDecimal)
 
     // Account Groups
     fun observeAccountGroups(): Flow<List<AccountGroup>>

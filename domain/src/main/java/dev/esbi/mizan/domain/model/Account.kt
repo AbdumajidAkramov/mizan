@@ -1,10 +1,12 @@
 package dev.esbi.mizan.domain.model
 
+import java.math.BigDecimal
+
 data class Account(
     val id: Long,
     val groupId: Long,
     val name: String,
-    val balance: Double,
+    val balance: BigDecimal,
     val currency: Currency,
     val isArchived: Boolean,
     val excludeFromTotal: Boolean,

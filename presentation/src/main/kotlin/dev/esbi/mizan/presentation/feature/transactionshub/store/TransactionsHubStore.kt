@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -29,9 +30,9 @@ interface TransactionsHubStore :
      * Summary data for income/expense/total
      */
     data class MonthlySummary(
-        val totalIncome: Double = 0.0,
-        val totalExpense: Double = 0.0,
-        val balance: Double = 0.0
+        val totalIncome: BigDecimal = BigDecimal.ZERO,
+        val totalExpense: BigDecimal = BigDecimal.ZERO,
+        val balance: BigDecimal = BigDecimal.ZERO
     )
 
     /**
@@ -41,7 +42,7 @@ interface TransactionsHubStore :
         val date: Long,
         val dateFormatted: String,
         val transactions: List<Transaction>,
-        val dayTotal: Double
+        val dayTotal: BigDecimal
     )
 
     /**
@@ -49,9 +50,9 @@ interface TransactionsHubStore :
      */
     data class CalendarDaySummary(
         val date: LocalDate,
-        val income: Double = 0.0,
-        val expense: Double = 0.0,
-        val balance: Double = 0.0,
+        val income: BigDecimal = BigDecimal.ZERO,
+        val expense: BigDecimal = BigDecimal.ZERO,
+        val balance: BigDecimal = BigDecimal.ZERO,
         val transactionCount: Int = 0
     )
 
@@ -63,9 +64,9 @@ interface TransactionsHubStore :
         val startDate: LocalDate,
         val endDate: LocalDate,
         val dateRangeFormatted: String,
-        val income: Double = 0.0,
-        val expense: Double = 0.0,
-        val balance: Double = 0.0,
+        val income: BigDecimal = BigDecimal.ZERO,
+        val expense: BigDecimal = BigDecimal.ZERO,
+        val balance: BigDecimal = BigDecimal.ZERO,
         val transactions: List<Transaction> = emptyList(),
         val isExpanded: Boolean = true
     )
@@ -78,7 +79,7 @@ interface TransactionsHubStore :
         val categoryName: String,
         val categoryColor: String,
         val categoryIcon: String?,
-        val totalAmount: Double,
+        val totalAmount: BigDecimal,
         val percentage: Float,
         val transactionCount: Int
     )
@@ -89,7 +90,7 @@ interface TransactionsHubStore :
     data class AccountSummary(
         val accountId: Long?,
         val accountName: String,
-        val totalAmount: Double,
+        val totalAmount: BigDecimal,
         val percentage: Float,
         val transactionCount: Int
     )
@@ -100,9 +101,9 @@ interface TransactionsHubStore :
     data class DescriptionGroup(
         val description: String,
         val transactions: List<Transaction>,
-        val netAmount: Double,
-        val incomeAmount: Double,
-        val expenseAmount: Double,
+        val netAmount: BigDecimal,
+        val incomeAmount: BigDecimal,
+        val expenseAmount: BigDecimal,
         val transactionCount: Int,
         val dateRange: String,
         val isExpanded: Boolean = false

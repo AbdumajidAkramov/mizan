@@ -10,14 +10,21 @@ import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.Mess
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore.State
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 internal class AddAccountExecutor(
     mainDispatcher: CoroutineDispatcher,
     private val accountRepository: AccountRepository,
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
 ) : CoroutineExecutor<Intent, AddAccountStore.Action, State, Message, Label>(mainContext = mainDispatcher) {
 
     override fun executeAction(action: AddAccountStore.Action) {
@@ -75,6 +82,10 @@ internal class AddAccountExecutor(
                 deleteAccount(accountId = intent.accountId)
             }
 
+            is Intent.UpdateIncludeInTotals -> {
+                dispatch(Message.IncludeInTotalsChanged(intent.value))
+            }
+
         }
     }
 
@@ -99,7 +110,7 @@ internal class AddAccountExecutor(
             return
         }
 
-        val parsedBalance = currentState.balance.toDoubleOrNull() ?: 0.0
+        val parsedBalance = currentState.balance.toBigDecimal()
 
         val newAccount = Account(
             id = currentState.accountId ?: 0L,
@@ -108,7 +119,7 @@ internal class AddAccountExecutor(
             balance = parsedBalance,
             currency = currentState.selectedCurrency!!,
             isArchived = false,
-            excludeFromTotal = false,
+            excludeFromTotal = currentState.excludeFromTotal,
             description = currentState.description.takeIf { it.isNotBlank() }
         )
 
@@ -139,4 +150,20 @@ internal class AddAccountExecutor(
             }
         }
     }
+}
+
+fun formatForEditing(amount: BigDecimal): String {
+    val symbols = DecimalFormatSymbols(Locale.US).apply {
+        decimalSeparator = '.' // Har doim nuqta ishlatish uchun
+        groupingSeparator = ' ' // Mingliklarni ajratmaslik (tahrirlashda oson bo'lishi uchun)
+    }
+
+    // "0.##" -> Butun qismini ko'rsat, nuqtadan keyin 2 tagacha ixtiyoriy son
+    val df = DecimalFormat("0.##", symbols)
+    df.isGroupingUsed = false // 15 000 000 emas, 15000000 ko'rinishida chiqadi
+
+    return df.format(amount)
+}
+fun BigDecimal.toEditString(): String {
+    return this.stripTrailingZeros().toPlainString()
 }

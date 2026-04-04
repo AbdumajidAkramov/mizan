@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
@@ -36,6 +35,7 @@ import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
+import java.math.BigDecimal
 
 @Composable
 internal fun PremiumTransactionInputContent(
@@ -255,7 +255,7 @@ object MockAccount {
         code = "UZS",
         name = "O'zbek so'mi",
         symbol = "so'm",
-        rateToBase = 1.0,
+        rateToBase = java.math.BigDecimal.ONE,
         isBaseCurrency = true
     )
 
@@ -263,7 +263,7 @@ object MockAccount {
         code = "USD",
         name = "US Dollar",
         symbol = "$",
-        rateToBase = 12_500.0,
+        rateToBase = java.math.BigDecimal("12500"),
         isBaseCurrency = false
     )
 
@@ -272,7 +272,7 @@ object MockAccount {
             id = 1L,
             groupId = 100L,
             name = "Cash Wallet",
-            balance = 250_000.0,
+            balance = BigDecimal(250_000.0),
             currency = uzs,
             isArchived = false,
             excludeFromTotal = false,
@@ -282,7 +282,7 @@ object MockAccount {
             id = 4L,
             groupId = 100L,
             name = "Cash Wallet",
-            balance = 250_000.0,
+            balance = BigDecimal(250_000.0),
             currency = uzs,
             isArchived = false,
             excludeFromTotal = false,
@@ -292,7 +292,7 @@ object MockAccount {
             id = 2L,
             groupId = 100L,
             name = "Humo Card",
-            balance = 1_450_000.0,
+            balance = BigDecimal(1_450_000.0),
             currency = uzs,
             isArchived = false,
             excludeFromTotal = false,
@@ -302,7 +302,7 @@ object MockAccount {
             id = 3L,
             groupId = 200L,
             name = "Visa USD",
-            balance = 320.0,
+            balance = BigDecimal(320.0),
             currency = usd,
             isArchived = false,
             excludeFromTotal = false,

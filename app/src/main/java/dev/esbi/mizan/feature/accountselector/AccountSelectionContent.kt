@@ -1,11 +1,8 @@
 package dev.esbi.mizan.feature.accountselector
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -28,19 +24,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
@@ -49,9 +42,9 @@ import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
 import dev.esbi.mizan.ui.utils.Icons
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
-import kotlin.math.abs
 
 /**
  * Account Selection Bottom Sheet Content
@@ -399,13 +392,13 @@ private fun getAccountColor(account: Account): Color {
     return Color(0xFF667EEA) // Default primary color
 }
 
-private fun formatBalance(balance: Double, currencySymbol: String): String {
+private fun formatBalance(balance: BigDecimal, currencySymbol: String): String {
     val formatted = NumberFormat.getNumberInstance(Locale.US).apply {
         minimumFractionDigits = 2
         maximumFractionDigits = 2
-    }.format(abs(balance))
+    }.format(balance)
 
-    return if (balance < 0) {
+    return if (balance < BigDecimal.ZERO) {
         "-$formatted $currencySymbol"
     } else {
         "$formatted $currencySymbol"
@@ -420,7 +413,7 @@ fun AccountSelectionContentPreview() {
         code = "UZS",
         name = "O'zbek so'mi",
         symbol = "so'm",
-        rateToBase = 1.0,
+        rateToBase = java.math.BigDecimal.ONE,
         isBaseCurrency = true
     )
 
@@ -428,7 +421,7 @@ fun AccountSelectionContentPreview() {
         code = "USD",
         name = "US Dollar",
         symbol = "$",
-        rateToBase = 12_500.0,
+        rateToBase = java.math.BigDecimal("12500"),
         isBaseCurrency = false
     )
 
@@ -437,7 +430,7 @@ fun AccountSelectionContentPreview() {
             id = 1L,
             groupId = 100L,
             name = "Cash Wallet",
-            balance = 250_000.0,
+            balance = BigDecimal(250_000.0),
             currency = uzs,
             isArchived = false,
             excludeFromTotal = false,
@@ -447,7 +440,7 @@ fun AccountSelectionContentPreview() {
             id = 2L,
             groupId = 100L,
             name = "Humo Card",
-            balance = 1_450_000.0,
+            balance = BigDecimal(1_450_000.0),
             currency = uzs,
             isArchived = false,
             excludeFromTotal = false,
@@ -457,7 +450,7 @@ fun AccountSelectionContentPreview() {
             id = 3L,
             groupId = 200L,
             name = "Visa USD",
-            balance = 320.0,
+            balance = BigDecimal(320.0),
             currency = usd,
             isArchived = false,
             excludeFromTotal = false,

@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import java.math.BigDecimal
+
 class SubscriptionsStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val subscriptionRepository: SubscriptionRepository,
@@ -106,7 +108,7 @@ class SubscriptionsStoreFactory @Inject constructor(
         override fun SubscriptionsStore.State.reduce(msg: Msg): SubscriptionsStore.State = when (msg) {
             is Msg.Loading -> copy(isLoading = true, error = null)
             is Msg.SubscriptionsLoaded -> {
-                val monthlyCost = msg.subscriptions.sumOf { it.monthlyAmount }
+                val monthlyCost = msg.subscriptions.fold(BigDecimal.ZERO) { acc, s -> acc.add(s.monthlyAmount) }
                 copy(
                     isLoading = false,
                     subscriptions = msg.subscriptions,

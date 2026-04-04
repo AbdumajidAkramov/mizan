@@ -33,8 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Pink
 import dev.esbi.mizan.ui.theme.Purple
@@ -42,11 +42,16 @@ import dev.esbi.mizan.ui.theme.Purple2
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 import dev.esbi.mizan.ui.utils.Icons
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun BalanceCard(total: Double, income: Double, expenses: Double) {
+fun BalanceCard(
+    total: BigDecimal,
+    income: BigDecimal,
+    expenses: BigDecimal
+) {
     var show by remember { mutableStateOf(true) }
     val fmt = NumberFormat.getCurrencyInstance(Locale.US)
     PressCard {
@@ -120,6 +125,10 @@ fun BalanceCard(total: Double, income: Double, expenses: Double) {
 @Composable
 fun BalanceCardPreview() {
     MizanTheme {
-        BalanceCard(total = 12450.34, income = 11312.23, expenses = 5654.2)
+        BalanceCard(
+            total = java.math.BigDecimal("12450.34"), 
+            income = java.math.BigDecimal("11312.23"), 
+            expenses = java.math.BigDecimal("5654.2")
+        )
     }
 }

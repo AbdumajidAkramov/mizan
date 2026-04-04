@@ -44,14 +44,18 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateAccount(account: Account) {
-        accountDao.updateAccount(
+        val entity = AccountEntity(
             id = account.id,
+            groupId = account.groupId,
             name = account.name,
             balance = account.balance,
+            currencyCode = account.currency.code,
             isArchived = account.isArchived,
+            excludeFromTotal = account.excludeFromTotal,
             description = account.description,
-            groupId = account.groupId
+            isDeleted = account.isDeleted
         )
+        accountDao.updateAccount(entity)
     }
 
     override suspend fun deleteAccount(id: Long) {
@@ -62,7 +66,7 @@ class AccountRepositoryImpl @Inject constructor(
         accountDao.markAsDeleted(id)
     }
 
-    override suspend fun updateBalance(id: Long, amount: Double) {
+    override suspend fun updateBalance(id: Long, amount: java.math.BigDecimal) {
         accountDao.updateBalance(id, amount)
     }
 

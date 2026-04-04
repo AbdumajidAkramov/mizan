@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import java.math.BigDecimal
+
 class GoalsStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val goalRepository: GoalRepository,
@@ -77,7 +79,7 @@ class GoalsStoreFactory @Inject constructor(
                         Goal(
                             name = intent.name,
                             targetAmount = intent.targetAmount,
-                            currentAmount = 0.0,
+                            currentAmount = BigDecimal.ZERO,
                             deadline = intent.deadline,
                             icon = intent.icon,
                             color = intent.color
@@ -91,7 +93,7 @@ class GoalsStoreFactory @Inject constructor(
             }
         }
 
-        private fun addAmount(goalId: Long, amount: Double) {
+        private fun addAmount(goalId: Long, amount: BigDecimal) {
             scope.launch {
                 try {
                     goalRepository.addAmount(goalId, amount)
@@ -119,9 +121,9 @@ class GoalsStoreFactory @Inject constructor(
         override fun GoalsStore.State.reduce(msg: Msg): GoalsStore.State = when (msg) {
             is Msg.Loading -> copy(isLoading = true, error = null)
             is Msg.GoalsLoaded -> {
-                val totalSaved = msg.goals.sumOf { it.currentAmount }
-                val totalTarget = msg.goals.sumOf { it.targetAmount }
-                val overall = if (totalTarget > 0) (totalSaved / totalTarget) * 100 else 0.0
+                val totalSaved = msg.goals.fold(BigDecimal.ZERO) { acc, g -> acc.add(g.currentAmount) }
+                val totalTarget = msg.goals.fold(BigDecimal.ZERO) { acc, g -> acc.add(g.targetAmount) }
+                val overall = if (totalTarget > BigDecimal.ZERO) (totalSaved.toFloat() / totalTarget.toFloat() * 100).toDouble() else 0.0
                 copy(
                     isLoading = false,
                     goals = msg.goals,

@@ -40,18 +40,20 @@ class DashboardRepositoryImpl @Inject constructor(
 
         val totalBalanceBase = accounts
             .filter { !it.account.excludeFromTotal }
-            .sumOf { it.account.balance * it.currency.rateToBase }
+            .fold(java.math.BigDecimal.ZERO) { acc, it -> 
+                acc.add(it.account.balance.multiply(it.currency.rateToBase))
+            }
 
         val existing = dashboardDao.observeDashboardSummary().first()
 
         dashboardDao.insertDashboardSummary(
             DashboardSummaryEntity(
                 id = 1,
-                totalBalance = totalBalanceBase,
-                monthlyExpenses = existing?.monthlyExpenses ?: 0.0,
-                monthlySavings = existing?.monthlySavings ?: 0.0,
-                budgetLimit = existing?.budgetLimit ?: 0.0,
-                budgetPercentageUsed = existing?.budgetPercentageUsed ?: 0.0,
+                totalBalance =  totalBalanceBase,
+                monthlyExpenses = existing?.monthlyExpenses ?: java.math.BigDecimal.ZERO,
+                monthlySavings = existing?.monthlySavings ?: java.math.BigDecimal.ZERO,
+                budgetLimit = existing?.budgetLimit ?: java.math.BigDecimal.ZERO,
+                budgetPercentageUsed = existing?.budgetPercentageUsed ?: java.math.BigDecimal.ZERO,
                 lastUpdated = System.currentTimeMillis()
             )
         )

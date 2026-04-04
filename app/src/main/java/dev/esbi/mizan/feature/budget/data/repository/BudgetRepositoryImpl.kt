@@ -32,7 +32,7 @@ class BudgetRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateCategoryBudget(categoryId: String, budgetAmount: Double) {
-        budgetDao.updateBudgetAmount(categoryId, budgetAmount)
+        budgetDao.updateBudgetAmount(categoryId, java.math.BigDecimal.valueOf(budgetAmount))
     }
 
     override suspend fun createCategoryBudget(
@@ -43,8 +43,8 @@ class BudgetRepositoryImpl @Inject constructor(
         val budget = CategoryBudgetEntity(
             categoryId = categoryId,
             categoryName = categoryName,
-            budgetAmount = budgetAmount,
-            spentAmount = 0.0
+            budgetAmount = java.math.BigDecimal.valueOf(budgetAmount),
+            spentAmount = java.math.BigDecimal.ZERO
         )
         budgetDao.insertBudget(budget)
     }
@@ -79,12 +79,12 @@ class BudgetRepositoryImpl @Inject constructor(
 
     private fun generateMockBudgets(): List<CategoryBudgetEntity> {
         return listOf(
-            CategoryBudgetEntity("food", "Food & Dining", 500.0, 387.0),
-            CategoryBudgetEntity("transport", "Transport", 300.0, 245.0),
-            CategoryBudgetEntity("shopping", "Shopping", 400.0, 299.0),
-            CategoryBudgetEntity("bills", "Bills & Utilities", 250.0, 204.0),
-            CategoryBudgetEntity("entertainment", "Entertainment", 200.0, 156.0),
-            CategoryBudgetEntity("health", "Health & Fitness", 150.0, 89.0)
+            CategoryBudgetEntity("food", "Food & Dining", java.math.BigDecimal("500.0"), java.math.BigDecimal("387.0")),
+            CategoryBudgetEntity("transport", "Transport", java.math.BigDecimal("300.0"), java.math.BigDecimal("245.0")),
+            CategoryBudgetEntity("shopping", "Shopping", java.math.BigDecimal("400.0"), java.math.BigDecimal("299.0")),
+            CategoryBudgetEntity("bills", "Bills & Utilities", java.math.BigDecimal("250.0"), java.math.BigDecimal("204.0")),
+            CategoryBudgetEntity("entertainment", "Entertainment", java.math.BigDecimal("200.0"), java.math.BigDecimal("156.0")),
+            CategoryBudgetEntity("health", "Health & Fitness", java.math.BigDecimal("150.0"), java.math.BigDecimal("89.0"))
         )
     }
 }

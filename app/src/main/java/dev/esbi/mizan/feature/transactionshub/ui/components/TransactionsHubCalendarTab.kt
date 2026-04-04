@@ -268,9 +268,9 @@ private fun CalendarDayCell(
 
                 if (hasTransactions) {
                     // Income
-                    if (daySummary.income > 0) {
+                    if (daySummary.income > java.math.BigDecimal.ZERO) {
                         Text(
-                            text = "+${formatCompactAmount(daySummary.income)}",
+                            text = "+${formatCompactAmount(daySummary.income.toDouble())}",
                             style = MizanTheme.typography.labelSm,
                             color = MizanTheme.premium.colors.emerald,
                             fontSize = 8.sp,
@@ -279,9 +279,9 @@ private fun CalendarDayCell(
                     }
 
                     // Expense
-                    if (daySummary.expense > 0) {
+                    if (daySummary.expense > java.math.BigDecimal.ZERO) {
                         Text(
-                            text = "-${formatCompactAmount(daySummary.expense)}",
+                            text = "-${formatCompactAmount(daySummary.expense.toDouble())}",
                             style = MizanTheme.typography.labelSm,
                             color = Color(0xFFF5576C),
                             fontSize = 8.sp,
@@ -291,7 +291,7 @@ private fun CalendarDayCell(
 
                     // Balance
                     Text(
-                        text = formatCompactAmount(kotlin.math.abs(daySummary.balance)),
+                        text = formatCompactAmount(daySummary.balance.abs().toDouble()),
                         style = MizanTheme.typography.labelSm,
                         color = MizanTheme.premium.text.primary,
                         fontWeight = FontWeight.Bold,
@@ -355,7 +355,7 @@ private fun CalendarMonthlySummary(
                     color = MizanTheme.premium.text.tertiary
                 )
                 Text(
-                    text = "$${formatCompactAmount(totalIncome)}",
+                    text = "$${formatCompactAmount(totalIncome.toDouble())}",
                     style = MizanTheme.typography.bodyMd,
                     color = MizanTheme.premium.colors.emerald,
                     fontWeight = FontWeight.Bold
@@ -370,7 +370,7 @@ private fun CalendarMonthlySummary(
                     color = MizanTheme.premium.text.tertiary
                 )
                 Text(
-                    text = "$${formatCompactAmount(totalExpense)}",
+                    text = "$${formatCompactAmount(totalExpense.toDouble())}",
                     style = MizanTheme.typography.bodyMd,
                     color = Color(0xFFF5576C),
                     fontWeight = FontWeight.Bold
@@ -385,15 +385,15 @@ private fun CalendarMonthlySummary(
                     color = MizanTheme.premium.text.tertiary
                 )
                 Text(
-                    text = "${if (balance >= 0) "+" else "-"}$${
+                    text = "${if (balance >= java.math.BigDecimal.ZERO) "+" else "-"}$${
                         formatCompactAmount(
                             kotlin.math.abs(
-                                balance
+                                balance.toDouble()
                             )
                         )
                     }",
                     style = MizanTheme.typography.bodyMd,
-                    color = if (balance >= 0) MizanTheme.premium.colors.emerald else Color(
+                    color = if (balance >= java.math.BigDecimal.ZERO) MizanTheme.premium.colors.emerald else Color(
                         0xFFF5576C
                     ),
                     fontWeight = FontWeight.Bold

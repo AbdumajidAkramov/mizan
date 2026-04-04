@@ -1,7 +1,7 @@
 package dev.esbi.mizan.domain.util
 
 interface CurrencyConverter {
-    fun convertToBase(amount: Double, fromCurrencyCode: String): Double
-    fun convert(amount: Double, fromCurrencyCode: String, toCurrencyCode: String): Double
+    fun convertToBase(amount: java.math.BigDecimal, fromCurrencyCode: String): java.math.BigDecimal
+    fun convert(amount: java.math.BigDecimal, fromCurrencyCode: String, toCurrencyCode: String): java.math.BigDecimal
     fun getBaseCurrencyCode(): String
 }

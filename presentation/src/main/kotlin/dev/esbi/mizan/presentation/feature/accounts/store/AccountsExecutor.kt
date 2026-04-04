@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import java.math.BigDecimal
 
 /**
  * Executor for AccountManagement - handles business logic and side effects
@@ -153,7 +154,7 @@ class AccountsExecutor @Inject constructor(
                         code = accountItem.currencyCode,
                         name = accountItem.currencyCode,
                         symbol = accountItem.currencyCode,
-                        rateToBase = 1.0,
+                        rateToBase = BigDecimal.ONE,
                         isBaseCurrency = accountItem.currencyCode == "UZS"
                     ),
                     isArchived = accountItem.isArchived,
@@ -194,7 +195,7 @@ class AccountsExecutor @Inject constructor(
                         code = account.currencyCode,
                         name = account.currencyCode,
                         symbol = account.currencyCode,
-                        rateToBase = 1.0,
+                        rateToBase = BigDecimal.ONE,
                         isBaseCurrency = account.currencyCode == "UZS"
                     ),
                     isArchived = true,

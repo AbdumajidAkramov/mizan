@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
+import java.math.BigDecimal
 
 @Entity(
     tableName = "accounts",
@@ -29,7 +30,7 @@ data class AccountEntity(
     @ColumnInfo("groupId") val groupId: Long,
     @ColumnInfo("name") val name: String,
     @ColumnInfo("type") val type: String = "CASH",
-    @ColumnInfo("balance") val balance: Double,
+    @ColumnInfo("balance") val balance: BigDecimal,
     @ColumnInfo("currencyCode") val currencyCode: String,
     @ColumnInfo("iconName") val iconName: String? = null,
     @ColumnInfo("color") val color: String? = null,

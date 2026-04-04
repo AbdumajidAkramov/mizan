@@ -31,9 +31,8 @@ fun AccountGroupHeader(
         )
         Text(
             text = "$count ${if (count == 1) "account" else "accounts"}",
-            color = Color.White.copy(alpha = 0.4f),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Normal
+            style = MizanTheme.typography.bodySm,
+            color = MizanTheme.premium.text.primary.copy(alpha = 0.9f),
         )
     }
 }

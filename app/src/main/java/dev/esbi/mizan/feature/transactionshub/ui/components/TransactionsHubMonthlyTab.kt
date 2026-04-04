@@ -170,23 +170,23 @@ private fun WeekSection(
             // Right side: Totals
             Column(horizontalAlignment = Alignment.End) {
                 Row(horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)) {
-                    if (week.income > 0) {
+                    if (week.income > java.math.BigDecimal.ZERO) {
                         Text(
-                            text = "+$${formatCompactAmountMonthly(week.income)}",
+                            text = "+$${formatCompactAmountMonthly(week.income.toDouble())}",
                             style = MizanTheme.typography.bodySm,
                             color = MizanTheme.premium.colors.emerald
                         )
                     }
-                    if (week.expense > 0) {
+                    if (week.expense > java.math.BigDecimal.ZERO) {
                         Text(
-                            text = "-$${formatCompactAmountMonthly(week.expense)}",
+                            text = "-$${formatCompactAmountMonthly(week.expense.toDouble())}",
                             style = MizanTheme.typography.bodySm,
                             color = Color(0xFFF5576C)
                         )
                     }
                 }
                 Text(
-                    text = "${if (week.balance >= 0) "+" else ""}$${formatCompactAmountMonthly(week.balance)}",
+                    text = "${if (week.balance >= java.math.BigDecimal.ZERO) "+" else ""}$${formatCompactAmountMonthly(week.balance.toDouble())}",
                     style = MizanTheme.typography.bodyMd,
                     color = MizanTheme.premium.text.primary,
                     fontWeight = FontWeight.Bold
