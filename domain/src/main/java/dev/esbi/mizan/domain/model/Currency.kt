@@ -3,21 +3,27 @@ package dev.esbi.mizan.domain.model
 import java.math.BigDecimal
 
 data class Currency(
-    val code: String,    // "UZS", "USD", "EUR" - Primary Key bo'ladi
-    val name: String,    // "O'zbek so'mi", "US Dollar"
-    val symbol: String,  // "so'm", "$", "€"
-    // Asosiy valyutaga nisbatan kursi (Reports va Total Balance uchun kerak)
-    // Agar Code == BaseCurrency (UZS) bo'lsa, rate = 1.0 bo'ladi.
-    val rateToBase: BigDecimal,
-    val isBaseCurrency: Boolean // Qaysi biri asosiy ekanligini bilish uchun
+    val code: String,
+    val name: String,
+    val symbol: String,
+    val exchangeRate: BigDecimal,
+    val unitPosition: UnitPosition = UnitPosition.FRONT,
+    val decimalDigits: Int = 2,
+    val orderIndex: Int = 0,
+    val isMainCurrency: Boolean = false,
+    val isUserDefined: Boolean = false
 ) {
     companion object {
         val UZS = Currency(
             code = "UZS",
             name = "O'zbek so'mi",
             symbol = "so'm",
-            rateToBase = BigDecimal.ONE,
-            isBaseCurrency = true
+            exchangeRate = BigDecimal.ONE,
+            unitPosition = UnitPosition.FRONT,
+            decimalDigits = 0,
+            orderIndex = 0,
+            isMainCurrency = true,
+            isUserDefined = false
         )
     }
 }

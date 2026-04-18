@@ -413,16 +413,24 @@ fun AccountSelectionContentPreview() {
         code = "UZS",
         name = "O'zbek so'mi",
         symbol = "so'm",
-        rateToBase = java.math.BigDecimal.ONE,
-        isBaseCurrency = true
+        exchangeRate = java.math.BigDecimal.ONE,
+        unitPosition = dev.esbi.mizan.domain.model.UnitPosition.FRONT,
+        decimalDigits = 0,
+        orderIndex = 0,
+        isMainCurrency = true,
+        isUserDefined = false
     )
 
     val usd = Currency(
         code = "USD",
         name = "US Dollar",
         symbol = "$",
-        rateToBase = java.math.BigDecimal("12500"),
-        isBaseCurrency = false
+        exchangeRate = java.math.BigDecimal("12500"),
+        unitPosition = dev.esbi.mizan.domain.model.UnitPosition.FRONT,
+        decimalDigits = 2,
+        orderIndex = 1,
+        isMainCurrency = false,
+        isUserDefined = false
     )
 
     val mockAccounts = listOf(

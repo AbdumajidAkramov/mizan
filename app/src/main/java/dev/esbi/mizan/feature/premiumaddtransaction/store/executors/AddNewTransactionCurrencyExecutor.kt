@@ -47,7 +47,7 @@ internal class AddNewTransactionCurrencyExecutor @Inject constructor(
 
                 // Auto-select base currency if available
                 if (state().selectedCurrency == null && currencies.isNotEmpty()) {
-                    val baseCurrency = currencies.find { it.isBaseCurrency }
+                    val baseCurrency = currencies.find { it.isMainCurrency }
                     baseCurrency?.let {
                         dispatch(Message.UpdateCurrency(it))
                     }

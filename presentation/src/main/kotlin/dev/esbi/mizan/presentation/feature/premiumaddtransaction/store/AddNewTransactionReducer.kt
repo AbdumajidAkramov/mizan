@@ -4,8 +4,6 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
 import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.State
 
-import java.math.BigDecimal
-
 object AddNewTransactionReducer :
     Reducer<State, Message> {
 
@@ -29,7 +27,7 @@ object AddNewTransactionReducer :
             is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
             is Message.UpdateCurrencies -> copy(
                 currencies = msg.currencies,
-                selectedCurrency = msg.currencies.firstOrNull { it.isBaseCurrency }?:msg.currencies.firstOrNull())
+                selectedCurrency = msg.currencies.firstOrNull { it.isMainCurrency }?:msg.currencies.firstOrNull())
 
             is Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
             is Message.UpdateTargetAccount -> copy(targetAccount = msg.account)

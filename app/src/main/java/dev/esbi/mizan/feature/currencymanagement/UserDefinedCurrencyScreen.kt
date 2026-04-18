@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,8 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,8 +59,8 @@ import dev.esbi.mizan.ui.components.input.MizanTextField
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 import java.math.BigDecimal
+import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -210,7 +210,7 @@ fun UserDefinedCurrencyScreen(
 
                     val previewAmount = BigDecimal("15000")
                     val previewRate = exchangeRateText.toBigDecimalOrNull() ?: BigDecimal.ONE
-                    val previewConfig = dev.esbi.mizan.domain.model.CurrencyConfig(
+                    val previewConfig = dev.esbi.mizan.domain.model.Currency(
                         code = unit.ifBlank { "XXX" },
                         name = name.ifBlank { "Custom Currency" },
                         symbol = unit.ifBlank { "?" },

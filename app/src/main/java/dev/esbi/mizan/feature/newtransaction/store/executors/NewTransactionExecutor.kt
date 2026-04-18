@@ -213,7 +213,7 @@ internal class NewTransactionExecutor @Inject constructor(
                         // Get exchange rate for the selected currency
                         val currency =
                             currencyRepository.getCurrencyByCode(currentState.currency)
-                        val exchangeRate = currency?.rateToBase ?: java.math.BigDecimal.ONE
+                        val exchangeRate = currency?.exchangeRate ?: java.math.BigDecimal.ONE
 
                         // Get category ID (prefer child category if selected)
                         val categoryId = currentState.categoryChooserState.selectedChildId
@@ -237,8 +237,12 @@ internal class NewTransactionExecutor @Inject constructor(
                                 code = currentState.currency,
                                 name = currentState.currency,
                                 symbol = currentState.currency,
-                                rateToBase = exchangeRate,
-                                isBaseCurrency = currentState.currency == "UZS"
+                                exchangeRate = exchangeRate,
+                                unitPosition = dev.esbi.mizan.domain.model.UnitPosition.FRONT,
+                                decimalDigits = 2,
+                                orderIndex = 0,
+                                isMainCurrency = currentState.currency == "UZS",
+                                isUserDefined = false
                             ),
                             exchangeRate = exchangeRate.toDouble(),
                             targetAmount = null, // TODO: Calculate for transfers if needed
