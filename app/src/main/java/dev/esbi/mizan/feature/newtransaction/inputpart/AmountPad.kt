@@ -23,6 +23,8 @@ import dev.esbi.mizan.feature.newtransaction.amountinput.inputtypes.VoiceInputSt
 import dev.esbi.mizan.feature.newtransaction.amountinput.widgets.InputModeContent
 import dev.esbi.mizan.feature.newtransaction.store.NewTransactionStore
 import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.InputMode
+import dev.esbi.mizan.ui.components.currency.ExchangeRateEditor
+import dev.esbi.mizan.ui.components.currency.HorizontalCurrencySelector
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @Composable
@@ -55,6 +57,38 @@ fun AmountPad(
 
             when (state.inputMode) {
                 InputMode.Manual -> {
+                    // Horizontal Currency Selector
+                    if (state.availableCurrencies.isNotEmpty()) {
+                        HorizontalCurrencySelector(
+                            currencies = state.availableCurrencies,
+                            selectedCurrency = state.selectedCurrency,
+                            onCurrencySelected = { currency ->
+                                accept(NewTransactionStore.Intent.SelectCurrency(currency))
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    // Exchange Rate Editor (visible only for sub-currencies)
+                    if (state.selectedCurrency != null && state.mainCurrency != null && !state.selectedCurrency.isMainCurrency) {
+                        Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.sm))
+                        ExchangeRateEditor(
+                            selectedCurrency = state.selectedCurrency,
+                            mainCurrency = state.mainCurrency,
+                            enteredAmount = state.amountBigDecimal,
+                            manualExchangeRate = state.manualExchangeRate,
+                            equivalentAmount = state.equivalentInMainCurrency,
+                            onRateChanged = { rate ->
+                                accept(NewTransactionStore.Intent.UpdateManualRate(rate))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+
                     PremiumCalculatorKeypad(onNumberClick = {
                         accept(NewTransactionStore.AmountInputIntent.OnNumberClick(it))
                     })
