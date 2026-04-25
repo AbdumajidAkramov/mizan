@@ -124,6 +124,25 @@ internal object NewTransactionReducer : Reducer<AmountInputState, NewTransaction
                     selectedChildId = if (msg.category.parentId != null) msg.category.id else null
                 )
             )
+
+            // Multi-Currency Transaction Messages
+            is NewTransactionStore.Message.CurrenciesLoaded -> copy(
+                availableCurrencies = msg.currencies,
+                mainCurrency = msg.mainCurrency,
+                selectedCurrency = msg.mainCurrency,
+                manualExchangeRate = msg.mainCurrency?.exchangeRate ?: java.math.BigDecimal.ONE,
+                currency = msg.mainCurrency?.code ?: "UZS"
+            )
+
+            is NewTransactionStore.Message.CurrencySelected -> copy(
+                selectedCurrency = msg.currency,
+                currency = msg.currency.code,
+                manualExchangeRate = msg.currency.exchangeRate
+            )
+
+            is NewTransactionStore.Message.ManualRateUpdated -> copy(
+                manualExchangeRate = msg.rate
+            )
         }
     }
 }

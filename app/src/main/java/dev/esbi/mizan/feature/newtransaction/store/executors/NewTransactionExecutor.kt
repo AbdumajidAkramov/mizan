@@ -60,6 +60,7 @@ internal class NewTransactionExecutor @Inject constructor(
         voiceRecognitionManager.initialize()
         setupVoiceRecognitionFlow()
         loadAccounts()
+        loadCurrencies()
     }
 
     private fun loadAccounts() {
@@ -72,6 +73,15 @@ internal class NewTransactionExecutor @Inject constructor(
                     val defaultAccount = accounts.first()
                     dispatch(NewTransactionStore.Message.UpdateSelectedAccount(defaultAccount.id))
                 }
+            }
+            .launchIn(scope)
+    }
+
+    private fun loadCurrencies() {
+        currencyRepository.observeCurrencies()
+            .onEach { currencies ->
+                val mainCurrency = currencies.firstOrNull { it.isMainCurrency }
+                dispatch(NewTransactionStore.Message.CurrenciesLoaded(currencies, mainCurrency))
             }
             .launchIn(scope)
     }
@@ -210,10 +220,11 @@ internal class NewTransactionExecutor @Inject constructor(
                     try {
                         val currentState = state()
 
-                        // Get exchange rate for the selected currency
-                        val currency =
-                            currencyRepository.getCurrencyByCode(currentState.currency)
-                        val exchangeRate = currency?.exchangeRate ?: java.math.BigDecimal.ONE
+                        // Use selected currency and manual exchange rate from state
+                        val currency = currentState.selectedCurrency
+                            ?: currencyRepository.getCurrencyByCode(currentState.currency)
+                        // Use manual exchange rate (user may have edited it)
+                        val effectiveExchangeRate = currentState.manualExchangeRate
 
                         // Get category ID (prefer child category if selected)
                         val categoryId = currentState.categoryChooserState.selectedChildId
@@ -232,19 +243,20 @@ internal class NewTransactionExecutor @Inject constructor(
                                 TransactionType.TRANSFER ->
                                     Transaction.Type.TRANSFER
                             },
-                            amount = java.math.BigDecimal.valueOf(currentState.amount),
+                            amount = currentState.amountBigDecimal,
                             currency = currency ?: dev.esbi.mizan.domain.model.Currency(
                                 code = currentState.currency,
                                 name = currentState.currency,
                                 symbol = currentState.currency,
-                                exchangeRate = exchangeRate,
+                                exchangeRate = effectiveExchangeRate,
                                 unitPosition = dev.esbi.mizan.domain.model.UnitPosition.FRONT,
                                 decimalDigits = 2,
                                 orderIndex = 0,
                                 isMainCurrency = currentState.currency == "UZS",
                                 isUserDefined = false
                             ),
-                            exchangeRate = exchangeRate.toDouble(),
+                            // Store the effective exchange rate used at transaction time
+                            exchangeRate = effectiveExchangeRate.toDouble(),
                             targetAmount = null, // TODO: Calculate for transfers if needed
                             date = currentState.transactionDate,
                             note = currentState.note.takeIf { it.isNotBlank() },
@@ -476,6 +488,15 @@ internal class NewTransactionExecutor @Inject constructor(
 
             is NewTransactionStore.Intent.OnCategorySelected -> {
                 dispatch(NewTransactionStore.Message.CategoryUpdated(intent.category))
+            }
+
+            // Multi-Currency Transaction Intents
+            is NewTransactionStore.Intent.SelectCurrency -> {
+                dispatch(NewTransactionStore.Message.CurrencySelected(intent.currency))
+            }
+
+            is NewTransactionStore.Intent.UpdateManualRate -> {
+                dispatch(NewTransactionStore.Message.ManualRateUpdated(intent.rate))
             }
         }
     }

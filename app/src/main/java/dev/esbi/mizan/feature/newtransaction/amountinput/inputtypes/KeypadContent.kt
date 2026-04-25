@@ -19,18 +19,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
 import dev.esbi.mizan.feature.addtransaction.presentation.widgets.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.store.state.KeypadState
 import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.Keypad
+import dev.esbi.mizan.ui.components.currency.ExchangeRateEditor
+import dev.esbi.mizan.ui.components.currency.HorizontalCurrencySelector
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
+import java.math.BigDecimal
 
 @Composable
 internal fun KeypadContent(
     state: KeypadState,
     onNumberClick: (Keypad) -> Unit,
-    onSubmit: () -> Unit
+    onSubmit: () -> Unit,
+    // Multi-Currency Parameters
+    availableCurrencies: List<Currency> = emptyList(),
+    selectedCurrency: Currency? = null,
+    mainCurrency: Currency? = null,
+    manualExchangeRate: BigDecimal = BigDecimal.ONE,
+    equivalentInMainCurrency: BigDecimal = BigDecimal.ZERO,
+    onCurrencySelected: (Currency) -> Unit = {},
+    onRateChanged: (BigDecimal) -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -55,7 +67,34 @@ internal fun KeypadContent(
             modifier = Modifier
                 .padding(vertical = MizanTheme.premium.spacing.md)
         )
-        Spacer(Modifier.height(MizanTheme.premium.spacing.lg))
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
+
+        // Horizontal Currency Selector
+        if (availableCurrencies.isNotEmpty()) {
+            HorizontalCurrencySelector(
+                currencies = availableCurrencies,
+                selectedCurrency = selectedCurrency,
+                onCurrencySelected = onCurrencySelected,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        // Exchange Rate Editor (visible only for sub-currencies)
+        if (selectedCurrency != null && mainCurrency != null && !selectedCurrency.isMainCurrency) {
+            ExchangeRateEditor(
+                selectedCurrency = selectedCurrency,
+                mainCurrency = mainCurrency,
+                enteredAmount = state.leftNumber,
+                manualExchangeRate = manualExchangeRate,
+                equivalentAmount = equivalentInMainCurrency,
+                onRateChanged = onRateChanged,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+
+        Spacer(Modifier.height(MizanTheme.premium.spacing.md))
 
         Box(
             modifier = Modifier

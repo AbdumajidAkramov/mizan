@@ -4,6 +4,7 @@ import androidx.compose.ui.text.AnnotatedString
 import com.arkivanov.mvikotlin.core.store.Store
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.TransactionStep
 import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
@@ -16,6 +17,8 @@ import dev.esbi.mizan.presentation.feature.addtransaction.domain.model.Keypad
 import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.InputMode
 import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
 import dev.esbi.mizan.utils.annotatedString
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 
 interface NewTransactionStore :
@@ -30,6 +33,12 @@ interface NewTransactionStore :
         val leftNumber: String = "",
         val rightNumber: String = "",
         val currency: String = "UZS",
+
+        // Multi-Currency Transaction Fields
+        val selectedCurrency: Currency? = null,
+        val availableCurrencies: List<Currency> = emptyList(),
+        val manualExchangeRate: BigDecimal = BigDecimal.ONE,
+        val mainCurrency: Currency? = null,
 
 //        val keypadState: KeypadState = KeypadState(),
         val voiceInputState: VoiceInputState = VoiceInputState(),
@@ -80,6 +89,21 @@ interface NewTransactionStore :
 
         val amount: Double
             get() = leftNumber.toDoubleOrNull() ?: 0.0
+
+        val amountBigDecimal: BigDecimal
+            get() = leftNumber.toBigDecimalOrNull() ?: BigDecimal.ZERO
+
+        /**
+         * Calculate equivalent amount in main currency using manual exchange rate.
+         * Formula: enteredAmount * manualExchangeRate
+         */
+        val equivalentInMainCurrency: BigDecimal
+            get() {
+                if (selectedCurrency == null || mainCurrency == null) return amountBigDecimal
+                if (selectedCurrency.isMainCurrency) return amountBigDecimal
+                return amountBigDecimal.multiply(manualExchangeRate)
+                    .setScale(12, RoundingMode.HALF_EVEN)
+            }
 
         val canSubmit: Boolean get() = amount > 0.0
 
@@ -162,6 +186,10 @@ interface NewTransactionStore :
          * if something is missing, or navigates to Confirm if all fields are valid.
          */
         data object SmartNext : Intent
+
+        // Multi-Currency Transaction Intents
+        class SelectCurrency(val currency: Currency) : Intent
+        class UpdateManualRate(val rate: BigDecimal) : Intent
     }
 
     sealed interface AmountInputIntent : Intent {
@@ -197,6 +225,11 @@ interface NewTransactionStore :
         class UpdateSelectedAccountActive(val isActive: Boolean) : Message
         class AccountUpdated(val account: Account) : Message
         class CategoryUpdated(val category: Category) : Message
+
+        // Multi-Currency Transaction Messages
+        class CurrenciesLoaded(val currencies: List<Currency>, val mainCurrency: Currency?) : Message
+        class CurrencySelected(val currency: Currency) : Message
+        class ManualRateUpdated(val rate: BigDecimal) : Message
     }
 
     sealed interface CategoryChooserMessage : Message {
