@@ -27,7 +27,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
     private val templateRepository: TemplateRepository
-) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
     override fun executeAction(action: Action) {
         when (action) {

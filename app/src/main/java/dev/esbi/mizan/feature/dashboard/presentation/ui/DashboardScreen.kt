@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.domain.model.dashboard.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
@@ -42,23 +44,25 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumNetW
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumSpendingChart
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumTopCategories
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.SpendingPoint
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.DashboardSummary
-import dev.esbi.mizan.presentation.feature.dashboard.presentation.store.DashboardStore
+import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
+import dev.esbi.mizan.presentation.feature.dashboard.store.DashboardStore
 import dev.esbi.mizan.ui.animation.AnimSection
 import dev.esbi.mizan.ui.components.ErrorState
+import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
+import java.math.BigDecimal
 
 
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel,
     onNavigateToCategory: (String) -> Unit,
+    modifier: Modifier = Modifier,
     onNavigateToNewTransaction: () -> Unit = {},
     onNavigateToTransactionsHub: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
     onNavigateToGoals: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
-    onNavigateToTransfer: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onNavigateToTransfer: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -103,6 +107,8 @@ fun DashboardScreen(
         state.dashboardData != null -> DashboardScrollContent(
             modifier = modifier,
             data = state.dashboardData!!,
+            totalBalance = state.totalBalance,
+            mainCurrency = state.mainCurrency,
             onCategoryClick = { viewModel.onIntent(DashboardStore.Intent.CategoryClicked(it)) },
             onAddTransactionClick = { viewModel.onIntent(DashboardStore.Intent.AddTransactionClicked) },
             onSeeAllTransactions = { viewModel.onIntent(DashboardStore.Intent.ViewAllTransactionsClicked) },
@@ -116,13 +122,15 @@ fun DashboardScreen(
 @Composable
 private fun DashboardScrollContent(
     data: DashboardSummary,
+    totalBalance: BigDecimal,
+    mainCurrency: Currency?,
     onCategoryClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
     onAddTransactionClick: () -> Unit = {},
     onSeeAllTransactions: () -> Unit = {},
     onNavigateToGoals: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
-    onNavigateToTransfer: () -> Unit = {},
-    modifier: Modifier = Modifier
+    onNavigateToTransfer: () -> Unit = {}
 ) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
@@ -138,10 +146,23 @@ private fun DashboardScrollContent(
 
         item {
             AnimSection(visible) {
+                val displayCurrency = mainCurrency ?: Currency.UZS
+                val formattedTotal = CurrencyFormatter.format(totalBalance, displayCurrency, isAbbreviated = false)
+                val abbreviatedTotal = CurrencyFormatter.format(totalBalance, displayCurrency, isAbbreviated = true)
                 BalanceCard(
-                    data.totalBalance,
-                    data.totalBalance - data.monthlyExpenses + data.monthlySavings,
-                    data.monthlyExpenses
+                    total = data.totalBalance,
+                    income = data.totalBalance - data.monthlyExpenses + data.monthlySavings,
+                    expenses = data.monthlyExpenses,
+                    mainCurrency = displayCurrency.code
+                )
+                PremiumTotalBalanceCard(
+                    balance = totalBalance,
+                    monthlyChange = data.monthlySavings.toDouble() - data.monthlyExpenses.toDouble(),
+                    monthlyChangePercent = data.budgetPercentageUsed,
+                    currency = displayCurrency.code,
+                    formattedBalance = formattedTotal,
+                    abbreviatedBalance = abbreviatedTotal,
+                    enableLongPressPrecision = true
                 )
             }
         }
@@ -167,7 +188,7 @@ private fun DashboardScrollContent(
                     income = 4250.0,
                     expenses = 2800.0,
                     listOf(
-                        CashFlowDataPoint("Week 1", 950f, 520f),
+                        CashFlowDataPoint("Week 1", 1950f, 520f),
                         CashFlowDataPoint("Week 2", 1900f, 680f),
                         CashFlowDataPoint("Week 3", 2900f, 720f),
                         CashFlowDataPoint("Week 4", 1000f, 685f),

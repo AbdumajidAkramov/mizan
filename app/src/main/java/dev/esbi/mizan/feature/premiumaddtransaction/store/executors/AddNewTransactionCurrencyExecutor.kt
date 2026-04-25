@@ -18,7 +18,7 @@ import javax.inject.Inject
 internal class AddNewTransactionCurrencyExecutor @Inject constructor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val currencyRepository: CurrencyRepository,
-) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
     override fun executeAction(action: Action) {
         when (action) {

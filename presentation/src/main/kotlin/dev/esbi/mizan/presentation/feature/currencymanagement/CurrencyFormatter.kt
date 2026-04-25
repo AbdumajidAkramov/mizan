@@ -14,8 +14,13 @@ object CurrencyFormatter {
      * Format an amount using the given Currency.
      * Example: 15000.0 with USD config -> "$15,000.00"
      * Example: 15000.0 with UZS config -> "15,000 so'm"
+     * 
+     * @param isAbbreviated If true, formats large numbers with K/M suffixes
      */
-    fun format(amount: BigDecimal, config: Currency): String {
+    fun format(amount: BigDecimal, config: Currency, isAbbreviated: Boolean = false): String {
+        if (isAbbreviated) {
+            return formatAbbreviated(amount, config)
+        }
         val rounded = amount.setScale(config.decimalDigits, RoundingMode.HALF_UP)
 
         val symbols = DecimalFormatSymbols(Locale.US).apply {
@@ -36,8 +41,48 @@ object CurrencyFormatter {
     /**
      * Format a Double amount using the given Currency.
      */
-    fun format(amount: Double, config: Currency): String {
-        return format(BigDecimal.valueOf(amount), config)
+    fun format(amount: Double, config: Currency, isAbbreviated: Boolean = false): String {
+        return format(BigDecimal.valueOf(amount), config, isAbbreviated)
+    }
+
+    /**
+     * Format amount with K/M abbreviation for large numbers.
+     * - >= 1,000,000: Shows as "X.X M"
+     * - >= 1,000: Shows as "X.X K"
+     * - < 1,000: Shows full amount
+     */
+    private fun formatAbbreviated(amount: BigDecimal, config: Currency): String {
+        val absAmount = amount.abs()
+        val million = BigDecimal("1000000")
+        val thousand = BigDecimal("1000")
+
+        val (value, suffix) = when {
+            absAmount >= million -> {
+                val scaled = amount.divide(million, 1, RoundingMode.HALF_EVEN)
+                Pair(scaled, "M")
+            }
+            absAmount >= thousand -> {
+                val scaled = amount.divide(thousand, 1, RoundingMode.HALF_EVEN)
+                Pair(scaled, "K")
+            }
+            else -> {
+                return format(amount, config, isAbbreviated = false)
+            }
+        }
+
+        val symbols = DecimalFormatSymbols(Locale.US).apply {
+            groupingSeparator = ','
+            decimalSeparator = '.'
+        }
+
+        val formatter = DecimalFormat("#,##0.0", symbols)
+        val formatted = formatter.format(value)
+
+        val withSuffix = "$formatted $suffix"
+        return when (config.unitPosition) {
+            UnitPosition.FRONT -> "${config.symbol}$withSuffix"
+            UnitPosition.END -> "$withSuffix ${config.symbol}"
+        }
     }
 
     /**
