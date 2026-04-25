@@ -28,7 +28,6 @@ import androidx.core.content.ContextCompat
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.dashboard.DashboardSummary
 import dev.esbi.mizan.feature.dashboard.presentation.DashboardViewModel
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.BalanceCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HeaderSection
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.HealthCard
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.InsightsSection
@@ -149,12 +148,13 @@ private fun DashboardScrollContent(
                 val displayCurrency = mainCurrency ?: Currency.UZS
                 val formattedTotal = CurrencyFormatter.format(totalBalance, displayCurrency, isAbbreviated = false)
                 val abbreviatedTotal = CurrencyFormatter.format(totalBalance, displayCurrency, isAbbreviated = true)
-                BalanceCard(
+
+   /*             BalanceCard(
                     total = data.totalBalance,
                     income = data.totalBalance - data.monthlyExpenses + data.monthlySavings,
                     expenses = data.monthlyExpenses,
                     mainCurrency = displayCurrency.code
-                )
+                )*/
                 PremiumTotalBalanceCard(
                     balance = totalBalance,
                     monthlyChange = data.monthlySavings.toDouble() - data.monthlyExpenses.toDouble(),

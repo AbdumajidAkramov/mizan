@@ -2,6 +2,7 @@ package dev.esbi.mizan.ui.components.account
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,23 +14,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.kit.balance.BalanceAmount
 import dev.esbi.mizan.ui.kit.balance.BalanceAmountWithPrecision
-import dev.esbi.mizan.ui.kit.glass.GlassCard
+import dev.esbi.mizan.ui.kit.card.GradientColorCard
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
@@ -45,6 +51,8 @@ fun PremiumTotalBalanceCard(
     abbreviatedBalance: String? = null,
     enableLongPressPrecision: Boolean = false
 ) {
+    var show by remember { mutableStateOf(true) }
+
     val changeFormatter = NumberFormat.getNumberInstance(Locale("uz", "UZ")).apply {
         minimumFractionDigits = 0
         maximumFractionDigits = 2
@@ -52,50 +60,50 @@ fun PremiumTotalBalanceCard(
     val formattedChange = changeFormatter.format(kotlin.math.abs(monthlyChange)).replace(",", ".")
     val isPositive = monthlyChange >= 0
 
-    GlassCard(
+    GradientColorCard(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.1f),
-                        Color.White.copy(alpha = 0.05f)
-                    )
-                )
-            )
-            .padding(
-                horizontal = MizanTheme.premium.spacing.xl,
-                vertical = MizanTheme.premium.spacing.md
-            )
-
     ) {
-        // Emerald Glow Effect
-        Box(
-            modifier = Modifier
-                .size(150.dp)
-                .graphicsLayer { alpha = 0.3f }
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            MizanTheme.premium.colors.emerald.copy(alpha = 0.6f),
-                            Color.Transparent
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(0.2f)), Alignment.Center
+                    ) {
+                        MizanIcon(
+                            icon = IconValue(Icons.ic_wallet),
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White
                         )
-                    ),
-                    shape = CircleShape
-                )
-        )
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        "Total Balance",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White.copy(0.9f)
+                    )
+                }
+                IconButton({ show = !show }) {
+                    MizanIcon(
 
-        Column(modifier = Modifier) {
-            Text(
-                text = "Total Balance",
-                style = MizanTheme.typography.bodySm,
-                color = Color.White.copy(alpha = 0.6f)
-            )
+                        icon = IconValue(if (show) Icons.ic_visibility else Icons.ic_visibility_off),
+                        modifier = Modifier.size(20.dp),
+                        tint = Color.White.copy(0.8f)
+                    )
+                }
+            }
 
-            Spacer(modifier = Modifier.height(8.dp))
-            
+            Spacer(Modifier.height(16.dp))
+
             when {
+                show.not() -> {
+                    Text(
+                        text = "••••••",
+                        style = MizanTheme.typography.displaySm,
+                    )
+                }
                 // Long-press precision mode with abbreviated display
                 enableLongPressPrecision && abbreviatedBalance != null && formattedBalance != null -> {
                     BalanceAmountWithPrecision(
@@ -103,7 +111,8 @@ fun PremiumTotalBalanceCard(
                         currency = currency,
                         fullPrecisionText = formattedBalance,
                         abbreviatedText = abbreviatedBalance,
-                        typography = MizanTheme.typography.displaySm
+                        typography = MizanTheme.typography.displaySm,
+                        color = MizanTheme.premium.colors.white
                     )
                 }
                 // Pre-formatted balance (legacy support)
@@ -140,7 +149,7 @@ fun PremiumTotalBalanceCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 MizanIcon(
-                    icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_trend_up),
+                    icon = IconValue(Icons.ic_trend_up),
                     contentDescription = null,
                     tint = MizanTheme.premium.colors.emerald,
                     modifier = Modifier.size(14.dp)

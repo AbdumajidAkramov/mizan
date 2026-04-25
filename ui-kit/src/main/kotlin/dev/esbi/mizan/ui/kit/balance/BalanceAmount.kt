@@ -109,10 +109,12 @@ fun formatAbbreviatedAmount(
             val scaled = amount.divide(million, 1, java.math.RoundingMode.HALF_EVEN)
             Pair(scaled, "M")
         }
+
         absAmount >= thousand -> {
             val scaled = amount.divide(thousand, 1, java.math.RoundingMode.HALF_EVEN)
             Pair(scaled, "K")
         }
+
         else -> {
             return formatBalanceAmount(amount, currency, amountSize, isAbbreviated = false)
         }

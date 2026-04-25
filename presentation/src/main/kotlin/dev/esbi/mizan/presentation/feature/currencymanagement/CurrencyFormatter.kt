@@ -33,7 +33,7 @@ object CurrencyFormatter {
         val formatted = formatter.format(rounded)
 
         return when (config.unitPosition) {
-            UnitPosition.FRONT -> "${config.symbol}$formatted"
+            UnitPosition.FRONT -> "${config.symbol} $formatted"
             UnitPosition.END -> "$formatted ${config.symbol}"
         }
     }
@@ -61,10 +61,12 @@ object CurrencyFormatter {
                 val scaled = amount.divide(million, 1, RoundingMode.HALF_EVEN)
                 Pair(scaled, "M")
             }
+
             absAmount >= thousand -> {
                 val scaled = amount.divide(thousand, 1, RoundingMode.HALF_EVEN)
                 Pair(scaled, "K")
             }
+
             else -> {
                 return format(amount, config, isAbbreviated = false)
             }
@@ -80,7 +82,7 @@ object CurrencyFormatter {
 
         val withSuffix = "$formatted $suffix"
         return when (config.unitPosition) {
-            UnitPosition.FRONT -> "${config.symbol}$withSuffix"
+            UnitPosition.FRONT -> "${config.symbol} $withSuffix"
             UnitPosition.END -> "$withSuffix ${config.symbol}"
         }
     }
