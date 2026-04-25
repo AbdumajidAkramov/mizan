@@ -1,10 +1,9 @@
 package dev.esbi.mizan.data.util
 
 import dev.esbi.mizan.domain.util.CurrencyConverter
-import javax.inject.Inject
-
 import java.math.BigDecimal
 import java.math.RoundingMode
+import javax.inject.Inject
 
 class MockCurrencyConverter @Inject constructor() : CurrencyConverter {
 
@@ -25,7 +24,7 @@ class MockCurrencyConverter @Inject constructor() : CurrencyConverter {
 
     override fun convertToBase(amount: BigDecimal, fromCurrencyCode: String): BigDecimal {
         val rate = ratesRelativeToBase[fromCurrencyCode.uppercase()] ?: BigDecimal.ONE
-        return amount.multiply(rate).setScale(2, RoundingMode.HALF_EVEN)
+        return amount.multiply(rate).setScale(INTERNAL_SCALE, RoundingMode.HALF_EVEN)
     }
 
     override fun convert(
@@ -35,8 +34,13 @@ class MockCurrencyConverter @Inject constructor() : CurrencyConverter {
     ): BigDecimal {
         val amountInBase = convertToBase(amount, fromCurrencyCode)
         val toRate = ratesRelativeToBase[toCurrencyCode.uppercase()] ?: BigDecimal.ONE
-        return amountInBase.divide(toRate, 2, RoundingMode.HALF_EVEN)
+        return amountInBase.divide(toRate, INTERNAL_SCALE, RoundingMode.HALF_EVEN)
     }
 
     override fun getBaseCurrencyCode(): String = "UZS"
+
+    companion object {
+        /** Keep high precision internally; UI layer rounds to currency.decimalDigits on display. */
+        private const val INTERNAL_SCALE: Int = 12
+    }
 }

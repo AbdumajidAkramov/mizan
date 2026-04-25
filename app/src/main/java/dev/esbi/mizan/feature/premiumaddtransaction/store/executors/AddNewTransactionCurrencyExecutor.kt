@@ -18,7 +18,7 @@ import javax.inject.Inject
 internal class AddNewTransactionCurrencyExecutor @Inject constructor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val currencyRepository: CurrencyRepository,
-) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
     override fun executeAction(action: Action) {
         when (action) {
@@ -47,7 +47,7 @@ internal class AddNewTransactionCurrencyExecutor @Inject constructor(
 
                 // Auto-select base currency if available
                 if (state().selectedCurrency == null && currencies.isNotEmpty()) {
-                    val baseCurrency = currencies.find { it.isBaseCurrency }
+                    val baseCurrency = currencies.find { it.isMainCurrency }
                     baseCurrency?.let {
                         dispatch(Message.UpdateCurrency(it))
                     }

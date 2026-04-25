@@ -6,10 +6,10 @@ import dev.esbi.mizan.data.local.entity.WeeklySpendingEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.domain.model.dashboard.CategorySpending
+import dev.esbi.mizan.domain.model.dashboard.DashboardSummary
+import dev.esbi.mizan.domain.model.dashboard.WeeklySpendingPoint
 import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.CategorySpending
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.DashboardSummary
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.WeeklySpendingPoint
 
 fun DashboardSummaryEntity.toDomain(
     categories: List<CategorySpending>,

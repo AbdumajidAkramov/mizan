@@ -1,13 +1,13 @@
 package dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import dev.esbi.mizan.presentation.di.MainDispatcher
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Template
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
+import dev.esbi.mizan.presentation.di.MainDispatcher
 import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
 import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.TemplateRepository
 import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
@@ -27,7 +27,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
     private val templateRepository: TemplateRepository
-) : CoroutineExecutor<Intent, Action, State, Message, Label>() {
+) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
     override fun executeAction(action: Action) {
         when (action) {
@@ -98,7 +98,7 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                                 val currency = state.selectedCurrency?.code?.let { code ->
                                     currencyRepository.getCurrencyByCode(code)
                                 }
-                                val exchangeRate = currency?.rateToBase ?: BigDecimal.ONE
+                                val exchangeRate = currency?.exchangeRate ?: BigDecimal.ONE
 
                                 // Get category ID (prefer child category if selected)
                                 val categoryId = state.selectedSubCategory?.id

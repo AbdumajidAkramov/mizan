@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.CategorySpending
+import dev.esbi.mizan.domain.model.dashboard.CategorySpending
 import dev.esbi.mizan.ui.kit.glass.GlassCard
 import dev.esbi.mizan.ui.theme.Purple
 import dev.esbi.mizan.ui.theme.TextWhite

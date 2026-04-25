@@ -1,12 +1,12 @@
 package dev.esbi.mizan.data.local.mapper
 
 import dev.esbi.mizan.data.local.entity.currency.SubCurrencyEntity
-import dev.esbi.mizan.domain.model.CurrencyConfig
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.UnitPosition
 import java.math.BigDecimal
 
-fun SubCurrencyEntity.toDomain(): CurrencyConfig {
-    return CurrencyConfig(
+fun SubCurrencyEntity.toDomain(): Currency {
+    return Currency(
         code = code,
         name = name,
         symbol = symbol,
@@ -23,7 +23,7 @@ fun SubCurrencyEntity.toDomain(): CurrencyConfig {
     )
 }
 
-fun CurrencyConfig.toEntity(): SubCurrencyEntity {
+fun Currency.toEntity(): SubCurrencyEntity {
     return SubCurrencyEntity(
         code = code,
         name = name,

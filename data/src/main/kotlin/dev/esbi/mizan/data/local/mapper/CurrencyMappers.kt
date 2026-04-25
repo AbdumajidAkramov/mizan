@@ -8,7 +8,11 @@ fun CurrencyEntity.toDomain(): Currency {
         code = code,
         name = name,
         symbol = symbol,
-        rateToBase = rateToBase,
-        isBaseCurrency = isBaseCurrency
+        exchangeRate = rateToBase,
+        unitPosition = dev.esbi.mizan.domain.model.UnitPosition.FRONT,
+        decimalDigits = 2,
+        orderIndex = 0,
+        isMainCurrency = isBaseCurrency,
+        isUserDefined = false
     )
 }

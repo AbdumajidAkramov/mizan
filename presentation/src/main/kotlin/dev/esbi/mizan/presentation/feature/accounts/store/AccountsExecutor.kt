@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import java.math.BigDecimal
+import javax.inject.Inject
 
 /**
  * Executor for AccountManagement - handles business logic and side effects
@@ -81,7 +81,7 @@ class AccountsExecutor @Inject constructor(
             currencyRepository.observeCurrencies()
                 .collectLatest { currencies ->
 
-                    dispatch(AccountsStore.Message.MainCurrencyChanged(currencies.find { it.isBaseCurrency }))
+                    dispatch(AccountsStore.Message.MainCurrencyChanged(currencies.find { it.isMainCurrency }))
                 }
         }
     }
@@ -154,8 +154,8 @@ class AccountsExecutor @Inject constructor(
                         code = accountItem.currencyCode,
                         name = accountItem.currencyCode,
                         symbol = accountItem.currencyCode,
-                        rateToBase = BigDecimal.ONE,
-                        isBaseCurrency = accountItem.currencyCode == "UZS"
+                        exchangeRate = BigDecimal.ONE,
+                        isMainCurrency = accountItem.currencyCode == "UZS"
                     ),
                     isArchived = accountItem.isArchived,
                     excludeFromTotal = accountItem.excludeFromTotal,
@@ -195,8 +195,8 @@ class AccountsExecutor @Inject constructor(
                         code = account.currencyCode,
                         name = account.currencyCode,
                         symbol = account.currencyCode,
-                        rateToBase = BigDecimal.ONE,
-                        isBaseCurrency = account.currencyCode == "UZS"
+                        exchangeRate = BigDecimal.ONE,
+                        isMainCurrency = account.currencyCode == "UZS"
                     ),
                     isArchived = true,
                     excludeFromTotal = account.excludeFromTotal,

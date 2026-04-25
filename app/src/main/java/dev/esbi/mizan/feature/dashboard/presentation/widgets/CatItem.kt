@@ -19,7 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.presentation.feature.dashboard.domain.model.CategorySpending
+import dev.esbi.mizan.domain.model.dashboard.CategorySpending
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange
 import dev.esbi.mizan.ui.theme.Purple

@@ -5,7 +5,6 @@ import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.mapper.toDomain
 import dev.esbi.mizan.data.local.mapper.toEntity
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.domain.model.CurrencyConfig
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
@@ -38,17 +37,17 @@ class CurrencyRepositoryImpl @Inject constructor(
 
     // Sub-currency management
 
-    override fun observeSubCurrencies(): Flow<List<CurrencyConfig>> {
+    override fun observeSubCurrencies(): Flow<List<Currency>> {
         return subCurrencyDao.observeAll().map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    override suspend fun getSubCurrency(code: String): CurrencyConfig? {
+    override suspend fun getSubCurrency(code: String): Currency? {
         return subCurrencyDao.getByCode(code)?.toDomain()
     }
 
-    override suspend fun saveSubCurrency(config: CurrencyConfig) {
+    override suspend fun saveSubCurrency(config: Currency) {
         subCurrencyDao.insert(config.toEntity())
     }
 
@@ -56,7 +55,7 @@ class CurrencyRepositoryImpl @Inject constructor(
         subCurrencyDao.deleteByCode(code)
     }
 
-    override suspend fun updateSubCurrencyOrder(configs: List<CurrencyConfig>) {
+    override suspend fun updateSubCurrencyOrder(configs: List<Currency>) {
         configs.forEachIndexed { index, config ->
             subCurrencyDao.updateOrder(config.code, index)
         }

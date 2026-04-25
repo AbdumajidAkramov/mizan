@@ -47,7 +47,7 @@ internal class CurrencyManagementExecutor(
         }
     }
 
-    private fun addCurrency(config: dev.esbi.mizan.domain.model.CurrencyConfig) {
+    private fun addCurrency(config: dev.esbi.mizan.domain.model.Currency) {
         scope.launch {
             dispatch(Message.Loading(true))
             try {
@@ -82,7 +82,7 @@ internal class CurrencyManagementExecutor(
         }
     }
 
-    private fun reorder(configs: List<dev.esbi.mizan.domain.model.CurrencyConfig>) {
+    private fun reorder(configs: List<dev.esbi.mizan.domain.model.Currency>) {
         scope.launch {
             try {
                 currencyRepository.updateSubCurrencyOrder(configs)
@@ -155,7 +155,7 @@ internal class CurrencyManagementExecutor(
 
                 // Create the custom currency
                 val nextOrder = state().subCurrencies.maxOfOrNull { it.orderIndex }?.plus(1) ?: 0
-                val config = dev.esbi.mizan.domain.model.CurrencyConfig(
+                val config = dev.esbi.mizan.domain.model.Currency(
                     code = unit,
                     name = intent.name.trim(),
                     symbol = unit, // Use unit as symbol for custom currencies

@@ -2,8 +2,8 @@ package dev.esbi.mizan.di
 
 import dagger.Binds
 import dagger.Module
+import dev.esbi.mizan.domain.repository.DashboardRepository
 import dev.esbi.mizan.feature.dashboard.data.repository.DashboardRepositoryImpl
-import dev.esbi.mizan.presentation.feature.dashboard.domain.repository.DashboardRepository
 import javax.inject.Singleton
 
 @Module

@@ -18,21 +18,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.ui.kit.balance.BalanceAmount
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.Red
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 import java.math.BigDecimal
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
-fun SubCard(label: String, amount: BigDecimal, isIncome: Boolean, modifier: Modifier) {
-    val fmt = NumberFormat.getCurrencyInstance(Locale.US)
+fun SubCard(
+    label: String,
+    amount: BigDecimal,
+    isIncome: Boolean,
+    mainCurrency: String,
+    modifier: Modifier = Modifier
+) {
     val amountDouble = amount.toDouble()
     Column(
         modifier
@@ -57,11 +61,12 @@ fun SubCard(label: String, amount: BigDecimal, isIncome: Boolean, modifier: Modi
             Text(label, style = MaterialTheme.typography.bodySmall, color = Color.White.copy(0.8f))
         }
         Spacer(Modifier.height(8.dp))
-        Text(
-            fmt.format(amountDouble),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
+        BalanceAmount(
+            modifier = Modifier,
+            balance = amountDouble.toBigDecimal(),
+            currency = mainCurrency,
+            color = MizanTheme.premium.colors.white,
+            typography = MizanTheme.typography.bodyLg
         )
     }
 }
@@ -70,6 +75,12 @@ fun SubCard(label: String, amount: BigDecimal, isIncome: Boolean, modifier: Modi
 @Composable
 fun SubCardPreview() {
     MizanTheme {
-        SubCard("Income", java.math.BigDecimal("12000"), true, Modifier)
+        SubCard(
+            label = "Income",
+            amount = BigDecimal("12000"),
+            isIncome = true,
+            mainCurrency = "UZS",
+            modifier = Modifier,
+        )
     }
 }

@@ -2,7 +2,6 @@ package dev.esbi.mizan.feature.currencymanagement
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
-import dev.esbi.mizan.domain.model.CurrencyConfig
+import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore
 import dev.esbi.mizan.ui.components.PremiumCard
@@ -48,8 +47,8 @@ import dev.esbi.mizan.ui.components.input.MizanTextField
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 import java.math.BigDecimal
+import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 /**
  * All available world currencies for selection.
@@ -239,7 +238,7 @@ fun CurrencyPickerScreen(
                         onClick = {
                             store.accept(
                                 CurrencyManagementStore.Intent.AddCurrency(
-                                    CurrencyConfig(
+                                    Currency(
                                         code = code,
                                         name = name,
                                         symbol = symbol,
