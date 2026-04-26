@@ -49,6 +49,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.theme.shadows.premiumShadow
@@ -133,7 +134,7 @@ fun PremiumBottomNavigation(
         // --- FLOATING ACTION BUTTON (Markazda alohida qatlamda) ---
         PremiumFab(
             onClick = {
-                navController.navigate(NavRoute.AmountInput)
+                navController.navigate(NavRoute.AddTransaction)
             },
             modifier = Modifier
                 .align(Alignment.Center)
@@ -270,10 +271,10 @@ private fun PremiumFab(
                     onClick = onClick
                 )
         ) {
-            dev.esbi.mizan.ui.kit.icon.MizanIcon(
+            MizanIcon(
                 icon = IconValue(Icons.ic_add),
                 contentDescription = "Add Expense",
-                tint = Color.White,
+                tint = MizanTheme.premium.colors.white,
                 modifier = Modifier.size(28.dp)
             )
         }

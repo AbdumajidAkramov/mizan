@@ -10,11 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryChooserState
-import dev.esbi.mizan.feature.newtransaction.categorychooser.CategoryList
-import dev.esbi.mizan.feature.newtransaction.categorychooser.ErrorView
-import dev.esbi.mizan.feature.newtransaction.categorychooser.LoadingView
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryChooserState
+import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryList
+import dev.esbi.mizan.feature.newtransaction2.categorychooser.ErrorView
+import dev.esbi.mizan.feature.newtransaction2.categorychooser.LoadingView
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

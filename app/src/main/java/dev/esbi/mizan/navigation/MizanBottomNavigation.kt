@@ -22,7 +22,7 @@ val bottomNavItems = listOf(
         icon = Icons.ic_ai_insight
     ),
     BottomNavItem(
-        route = NavRoute.AmountInput,
+        route = NavRoute.AddTransaction,
         labelResId = Strings.add_new_transactions,
         icon = Icons.ic_add,
         isSpecial = true

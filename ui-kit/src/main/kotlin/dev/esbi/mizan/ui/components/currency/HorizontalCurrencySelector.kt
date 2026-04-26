@@ -1,4 +1,4 @@
-package dev.esbi.mizan.ui.components.currency
+package dev.esbi.mizan.presentation.utils.currency
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.ui.components.currency.CurrencyModel
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 /**
@@ -34,14 +34,14 @@ import dev.esbi.mizan.ui.theme.colors.MizanTheme
  */
 @Composable
 fun HorizontalCurrencySelector(
-    currencies: List<Currency>,
-    selectedCurrency: Currency?,
-    onCurrencySelected: (Currency) -> Unit,
+    currencies: List<CurrencyModel>,
+    selectedCurrency: CurrencyModel?,
+    onCurrencySelected: (CurrencyModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Sort: Main currency first, then others by order index
     val sortedCurrencies = currencies.sortedWith(
-        compareByDescending<Currency> { it.isMainCurrency }
+        compareByDescending<CurrencyModel> { it.isMainCurrency }
             .thenBy { it.orderIndex }
     )
 
@@ -65,7 +65,7 @@ fun HorizontalCurrencySelector(
  */
 @Composable
 private fun CurrencyBadge(
-    currency: Currency,
+    currency: CurrencyModel,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier

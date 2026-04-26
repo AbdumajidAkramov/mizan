@@ -3,7 +3,7 @@ package dev.esbi.mizan.feature.premiumaddtransaction.store.executors
 import android.util.Log
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore
 import javax.inject.Inject
 
 internal class AddNewTransactionExecutor @Inject constructor(

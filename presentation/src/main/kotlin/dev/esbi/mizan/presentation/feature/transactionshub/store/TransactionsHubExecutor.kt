@@ -3,8 +3,8 @@ package dev.esbi.mizan.presentation.feature.transactionshub.store
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.domain.repository.CategoryRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
-import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

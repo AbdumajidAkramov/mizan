@@ -25,13 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.AccountChip
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.CategoryChip
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.TransactionTypeChip
-import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.feature.newtransaction.ui.AccountChip
+import dev.esbi.mizan.feature.newtransaction.ui.CategoryChip
+import dev.esbi.mizan.feature.newtransaction.ui.TransactionTypeChip
+import dev.esbi.mizan.presentation.feature.addtransaction.model.TransactionType
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme

@@ -4,11 +4,11 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
 import dev.esbi.mizan.presentation.di.MainDispatcher
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Action
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Intent
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Label
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.Message
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Action
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Label
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Message
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject

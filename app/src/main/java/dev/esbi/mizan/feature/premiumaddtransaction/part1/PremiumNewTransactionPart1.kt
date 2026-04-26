@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.addtransaction.presentation.utils.AutoResizingText
-import dev.esbi.mizan.feature.premiumaddtransaction.ui.TemplatesCarousel
-import dev.esbi.mizan.presentation.feature.premiumaddtransaction.store.AddNewTransactionStore
+import dev.esbi.mizan.feature.addtransaction2.presentation.utils.AutoResizingText
+import dev.esbi.mizan.feature.newtransaction.ui.template.TemplatesCarousel
+import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
