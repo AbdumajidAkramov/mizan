@@ -26,11 +26,18 @@ import androidx.compose.ui.unit.sp
 /**
  * Custom numeric keypad for exchange rate input.
  * Features:
- * - 4x4 grid layout (1-9, C, 0, ., Backspace)
+ * - Strict 4x4 grid layout (16 slots total)
+ * - Data-driven architecture with KeypadKey sealed class
  * - Clear (C) button for instant reset
  * - Glassmorphic styling
  * - Haptic feedback on each press
  * - BigDecimal-safe input handling
+ * 
+ * Layout:
+ * Row 1: [ 1 ] [ 2 ] [ 3 ] [ C ]
+ * Row 2: [ 4 ] [ 5 ] [ 6 ] [ ⌫ ]
+ * Row 3: [ 7 ] [ 8 ] [ 9 ] [   ]
+ * Row 4: [ . ] [ 0 ] [   ] [   ]
  */
 @Composable
 fun ExchangeRateNumericKeypad(
@@ -42,78 +49,115 @@ fun ExchangeRateNumericKeypad(
 ) {
     val haptic = LocalHapticFeedback.current
 
+    // Define 4x4 grid data structure
+    val keypadLayout = listOf(
+        // Row 1: 1, 2, 3, C
+        listOf(
+            KeypadKey.Number("1"),
+            KeypadKey.Number("2"),
+            KeypadKey.Number("3"),
+            KeypadKey.Clear
+        ),
+        // Row 2: 4, 5, 6, Backspace
+        listOf(
+            KeypadKey.Number("4"),
+            KeypadKey.Number("5"),
+            KeypadKey.Number("6"),
+            KeypadKey.Backspace
+        ),
+        // Row 3: 7, 8, 9, Empty
+        listOf(
+            KeypadKey.Number("7"),
+            KeypadKey.Number("8"),
+            KeypadKey.Number("9"),
+            KeypadKey.Empty
+        ),
+        // Row 4: Decimal, 0, Empty, Empty
+        listOf(
+            KeypadKey.Decimal,
+            KeypadKey.Number("0"),
+            KeypadKey.Empty,
+            KeypadKey.Empty
+        )
+    )
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Rows 1-3: Numbers 1-9
-        for (row in 0..2) {
+        keypadLayout.forEach { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                for (col in 1..3) {
-                    val number = (row * 3 + col).toString()
-                    KeypadButton(
-                        text = number,
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onNumberClick(number)
-                        },
-                        modifier = Modifier.weight(1f)
-                    )
+                row.forEach { key ->
+                    when (key) {
+                        is KeypadKey.Number -> {
+                            KeypadButton(
+                                text = key.value,
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onNumberClick(key.value)
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        is KeypadKey.Decimal -> {
+                            KeypadButton(
+                                text = ".",
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onDecimalClick()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        is KeypadKey.Clear -> {
+                            KeypadButton(
+                                text = "C",
+                                isClear = true,
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onClear()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        is KeypadKey.Backspace -> {
+                            KeypadButton(
+                                text = "⌫",
+                                isBackspace = true,
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    onBackspaceClick()
+                                },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        is KeypadKey.Empty -> {
+                            // Empty slot - maintains grid alignment
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1.5f)
+                            )
+                        }
+                    }
                 }
             }
         }
-
-        // Row 4: Clear, 0, Decimal, Backspace
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            // Clear button
-            KeypadButton(
-                text = "C",
-                isClear = true,
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onClear()
-                },
-                modifier = Modifier.weight(1f)
-            )
-
-            // Zero
-            KeypadButton(
-                text = "0",
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onNumberClick("0")
-                },
-                modifier = Modifier.weight(1f)
-            )
-
-            // Decimal point
-            KeypadButton(
-                text = ".",
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onDecimalClick()
-                },
-                modifier = Modifier.weight(1f)
-            )
-
-            // Backspace
-            KeypadButton(
-                text = "⌫",
-                isBackspace = true,
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onBackspaceClick()
-                },
-                modifier = Modifier.weight(1f)
-            )
-        }
     }
+}
+
+/**
+ * Sealed class representing all possible keypad keys in the 4x4 grid.
+ */
+private sealed class KeypadKey {
+    data class Number(val value: String) : KeypadKey()
+    object Decimal : KeypadKey()
+    object Clear : KeypadKey()
+    object Backspace : KeypadKey()
+    object Empty : KeypadKey()
 }
 
 /**
