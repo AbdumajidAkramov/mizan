@@ -21,6 +21,7 @@ import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNew
 import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNewTransactionCalculatorExecutor
 import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNewTransactionCategorySelectorExecutor
 import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNewTransactionConfirmExecutor
+import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNewTransactionExchangeRateExecutor
 import dev.esbi.mizan.presentation.feature.addtransaction.store.executors.AddNewTransactionTemplatesExecutor
 
 @Module
@@ -88,6 +89,12 @@ internal interface AddNewTransactionDepsModule {
     @IntoSet
     fun bindsAddNewTransactionLoadExecutor(
         impl: AddNewTransactionLoadExecutor
+    ): Executor<Intent, Action, State, Message, Label>
+
+    @Binds
+    @IntoSet
+    fun bindsAddNewTransactionExchangeRateExecutor(
+        impl: AddNewTransactionExchangeRateExecutor
     ): Executor<Intent, Action, State, Message, Label>
 
 }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
@@ -24,7 +25,7 @@ fun AmountContent(
     accept: (Intent) -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -39,6 +40,8 @@ fun AmountContent(
             MizanResizableAmount(
                 modifier = Modifier.padding(vertical = MizanTheme.premium.spacing.sm),
                 amount = state.currentValue.toBigDecimalOrNull() ?: BigDecimal.ZERO,
+                maxFontSize = 40.sp,
+                currency = state.selectedCurrency?.code,
                 color = state.transactionType.color(),
             )
         }

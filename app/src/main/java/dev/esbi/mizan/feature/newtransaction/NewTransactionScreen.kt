@@ -22,6 +22,7 @@ import dev.esbi.mizan.feature.newtransaction2.confirm.state.ConfirmTransactionUi
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Label
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
+import dev.esbi.mizan.ui.components.currency.ExchangeRateBottomSheet
 import dev.esbi.mizan.ui.toast.MizanToast
 import dev.esbi.mizan.ui.toast.MizanToastStatus
 
@@ -179,5 +180,30 @@ internal fun NewTransactionScreen(
                 showDeleteConfirmation = false
             }
         )
+    }
+
+    // Exchange Rate Bottom Sheet
+    if (state.isExchangeRateBottomSheetVisible) {
+        val mainCurrency = state.currencies.firstOrNull { it.isMainCurrency }
+        val selectedCurrency = state.selectedCurrency
+        
+        if (selectedCurrency != null && mainCurrency != null) {
+            ExchangeRateBottomSheet(
+                isVisible = true,
+                currencyCode = selectedCurrency.code,
+                mainCurrencyCode = mainCurrency.code,
+                currentRate = state.manualExchangeRate ?: selectedCurrency.exchangeRate,
+                transactionAmount = state.amountDecimal,
+                onRateChanged = { newRate ->
+                    accept(Intent.UpdateManualExchangeRate(newRate))
+                },
+                onSyncRate = {
+                    accept(Intent.SyncExchangeRateFromCBU)
+                },
+                onDismiss = {
+                    accept(Intent.CloseExchangeRateBottomSheet)
+                }
+            )
+        }
     }
 }

@@ -89,6 +89,18 @@ fun PremiumNewTransaction(
                 state = state,
                 accept = accept
             )
+            
+            // Compact Exchange Rate + Equivalent Display (single row, minimal space)
+            CompactExchangeRateRow(
+                selectedCurrency = state.selectedCurrency,
+                mainCurrency = state.currencies.firstOrNull { it.isMainCurrency },
+                manualExchangeRate = state.manualExchangeRate,
+                equivalentAmount = state.equivalentInMainCurrency,
+                onClick = {
+                    accept(Intent.OpenExchangeRateBottomSheet)
+                }
+            )
+
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier

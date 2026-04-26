@@ -64,6 +64,9 @@ interface AddNewTransactionStore :
         val isSelectAccountsBottomSheetVisible: Boolean = false,
         val isTargetAccountsBottomSheetVisible: Boolean = false,
         val isCategoriesBottomSheetVisible: Boolean = false,
+        val isExchangeRateBottomSheetVisible: Boolean = false,
+        
+        val manualExchangeRate: BigDecimal? = null,
     ) {
 
         val categories: List<Category> get() = allCategories.filter { it.type == transactionType }
@@ -75,6 +78,22 @@ interface AddNewTransactionStore :
                 value = amountDecimal,
                 currency = selectedCurrency?.symbol
             )
+
+        /**
+         * Real-time equivalent amount in main currency.
+         * Uses manual exchange rate if set, otherwise uses currency's default rate.
+         * Scale: 12 for precision, 2 for display.
+         */
+        val equivalentInMainCurrency: BigDecimal
+            get() {
+                if (selectedCurrency == null || selectedCurrency.isMainCurrency) {
+                    return amountDecimal
+                }
+                
+                val effectiveRate = manualExchangeRate ?: selectedCurrency.exchangeRate
+                return amountDecimal.multiply(effectiveRate)
+                    .setScale(12, java.math.RoundingMode.HALF_EVEN)
+            }
 
         enum class Pad {
             TypeSelector, CategorySelector, AccountSelector, TargetAccountSelector, AmountInput
@@ -150,6 +169,12 @@ interface AddNewTransactionStore :
         data object NavigateToCategorySelector : Intent
         data class OnAccountSelected(val account: Account) : Intent
         data class OnCategorySelected(val category: Category) : Intent
+        
+        // Exchange Rate Bottom Sheet
+        data object OpenExchangeRateBottomSheet : Intent
+        data object CloseExchangeRateBottomSheet : Intent
+        data class UpdateManualExchangeRate(val rate: BigDecimal) : Intent
+        data object SyncExchangeRateFromCBU : Intent
     }
 
     sealed interface Label {
@@ -181,6 +206,8 @@ interface AddNewTransactionStore :
         class UpdateSelectAccountsBottomSheet(val isVisible: Boolean) : Message
         class UpdateTargetAccountsBottomSheet(val isVisible: Boolean) : Message
         class UpdateCategoriesBottomSheet(val isVisible: Boolean) : Message
+        class UpdateExchangeRateBottomSheet(val isVisible: Boolean) : Message
+        class UpdateManualExchangeRate(val rate: BigDecimal?) : Message
 
         data object CloseToast : Message
 

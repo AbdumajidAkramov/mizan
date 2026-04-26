@@ -81,6 +81,8 @@ object AddNewTransactionReducer :
             is Message.UpdateSelectAccountsBottomSheet -> copy(isSelectAccountsBottomSheetVisible = msg.isVisible)
             is Message.UpdateTargetAccountsBottomSheet -> copy(isTargetAccountsBottomSheetVisible = msg.isVisible)
             is Message.UpdateCategoriesBottomSheet -> copy(isCategoriesBottomSheetVisible = msg.isVisible)
+            is Message.UpdateExchangeRateBottomSheet -> copy(isExchangeRateBottomSheetVisible = msg.isVisible)
+            is Message.UpdateManualExchangeRate -> copy(manualExchangeRate = msg.rate)
             is Message.CloseToast -> copy(error = null)
         }
 }
