@@ -26,7 +26,8 @@ import androidx.compose.ui.unit.sp
 /**
  * Custom numeric keypad for exchange rate input.
  * Features:
- * - 4x3 grid layout (1-9, 0, ., Backspace)
+ * - 4x4 grid layout (1-9, C, 0, ., Backspace)
+ * - Clear (C) button for instant reset
  * - Glassmorphic styling
  * - Haptic feedback on each press
  * - BigDecimal-safe input handling
@@ -36,6 +37,7 @@ fun ExchangeRateNumericKeypad(
     onNumberClick: (String) -> Unit,
     onDecimalClick: () -> Unit,
     onBackspaceClick: () -> Unit,
+    onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val haptic = LocalHapticFeedback.current
@@ -64,17 +66,18 @@ fun ExchangeRateNumericKeypad(
             }
         }
 
-        // Row 4: Decimal, 0, Backspace
+        // Row 4: Clear, 0, Decimal, Backspace
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Decimal point
+            // Clear button
             KeypadButton(
-                text = ".",
+                text = "C",
+                isClear = true,
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onDecimalClick()
+                    onClear()
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -89,9 +92,20 @@ fun ExchangeRateNumericKeypad(
                 modifier = Modifier.weight(1f)
             )
 
+            // Decimal point
+            KeypadButton(
+                text = ".",
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onDecimalClick()
+                },
+                modifier = Modifier.weight(1f)
+            )
+
             // Backspace
             KeypadButton(
-                icon = true,
+                text = "⌫",
+                isBackspace = true,
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onBackspaceClick()
@@ -104,13 +118,17 @@ fun ExchangeRateNumericKeypad(
 
 /**
  * Individual keypad button with glassmorphic styling.
+ * 
+ * @param isClear If true, applies warning/red tint for Clear button
+ * @param isBackspace If true, uses larger font size for backspace icon
  */
 @Composable
 private fun KeypadButton(
+    modifier: Modifier = Modifier,
     text: String = "",
-    icon: Boolean = false,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isClear: Boolean = false,
+    isBackspace: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -118,10 +136,18 @@ private fun KeypadButton(
             .clip(RoundedCornerShape(16.dp))
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = 0.15f),
-                        Color.White.copy(alpha = 0.08f)
-                    )
+                    colors = if (isClear) {
+                        // Subtle red/warning tint for Clear button
+                        listOf(
+                            Color(0xFFF5576C).copy(alpha = 0.2f),
+                            Color(0xFFF5576C).copy(alpha = 0.12f)
+                        )
+                    } else {
+                        listOf(
+                            Color.White.copy(alpha = 0.15f),
+                            Color.White.copy(alpha = 0.08f)
+                        )
+                    }
                 )
             )
             .clickable(onClick = onClick)
@@ -129,10 +155,18 @@ private fun KeypadButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = if (icon) "⌫" else text,
-            fontSize = if (icon) 28.sp else 24.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.White.copy(alpha = 0.9f)
+            text = text,
+            fontSize = when {
+                isBackspace -> 28.sp
+                isClear -> 22.sp
+                else -> 24.sp
+            },
+            fontWeight = if (isClear) FontWeight.SemiBold else FontWeight.Medium,
+            color = if (isClear) {
+                Color(0xFFF5576C).copy(alpha = 0.95f)
+            } else {
+                Color.White.copy(alpha = 0.9f)
+            }
         )
     }
 }

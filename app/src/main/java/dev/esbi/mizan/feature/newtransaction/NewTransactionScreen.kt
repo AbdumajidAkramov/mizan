@@ -12,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.ui.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.ui.DeleteConfirmationDialog
 import dev.esbi.mizan.feature.newtransaction.ui.MizanDatePickerDialog
@@ -186,7 +188,7 @@ internal fun NewTransactionScreen(
     if (state.isExchangeRateBottomSheetVisible) {
         val mainCurrency = state.currencies.firstOrNull { it.isMainCurrency }
         val selectedCurrency = state.selectedCurrency
-        
+
         if (selectedCurrency != null && mainCurrency != null) {
             ExchangeRateBottomSheet(
                 isVisible = true,
@@ -206,4 +208,11 @@ internal fun NewTransactionScreen(
             )
         }
     }
+}
+
+@Composable
+fun Transaction.Type.color(): Color = when (this) {
+    Transaction.Type.EXPENSE -> Color(0xFFF5576C)
+    Transaction.Type.INCOME -> Color(0xFF4FACFE)
+    Transaction.Type.TRANSFER -> Color(0xFF10B981)
 }

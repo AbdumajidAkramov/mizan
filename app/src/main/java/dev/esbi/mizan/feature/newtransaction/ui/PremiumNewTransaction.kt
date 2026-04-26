@@ -28,11 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.feature.newtransaction.color
 import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectionContentSimple
+import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategorySelectorBottomSheet
 import dev.esbi.mizan.feature.newtransaction.ui.header.AddTransactionHeader
 import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryChooserState
-import dev.esbi.mizan.feature.premiumaddtransaction.bottomsheet.CategorySelectorBottomSheet
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.color
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.ui.theme.MizanTheme
@@ -89,7 +89,7 @@ fun PremiumNewTransaction(
                 state = state,
                 accept = accept
             )
-            
+
             // Compact Exchange Rate + Equivalent Display (single row, minimal space)
             CompactExchangeRateRow(
                 selectedCurrency = state.selectedCurrency,
@@ -195,14 +195,14 @@ fun PremiumNewTransaction(
                     .padding(top = MizanTheme.premium.spacing.md),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MizanCurrencySelector(
+                AddTransactionCurrencySelector(
+                    modifier = Modifier.padding(vertical = 8.dp),
                     currencies = state.currencies,
                     selectedCurrency = state.selectedCurrency,
                     onCurrencySelected = {
                         accept(Intent.OnUpdateCurrency(it))
                     }
                 )
-                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
                 PremiumCalculatorKeypad(
                     onNumberClick = {
                         accept(Intent.OnNumberClick(it))

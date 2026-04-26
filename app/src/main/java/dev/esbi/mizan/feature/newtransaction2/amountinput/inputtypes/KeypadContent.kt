@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Currency
@@ -172,5 +173,39 @@ internal fun KeypadContent(
             }
         }
 
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun KeypadContentPreview() {
+    val uzs = Currency(
+        code = "UZS",
+        name = "O'zbek so'mi",
+        symbol = "so'm",
+        exchangeRate = BigDecimal.ONE,
+        isMainCurrency = true
+    )
+    val usd = Currency(
+        code = "USD",
+        name = "US Dollar",
+        symbol = "$",
+        exchangeRate = BigDecimal(12800),
+        isMainCurrency = false
+    )
+    val availableCurrencies = listOf(uzs, usd)
+
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        KeypadContent(
+            state = KeypadState(
+                leftNumber = BigDecimal("150000"),
+                currency = "UZS"
+            ),
+            onNumberClick = {},
+            onSubmit = {},
+            availableCurrencies = availableCurrencies,
+            selectedCurrency = uzs,
+            mainCurrency = uzs
+        )
     }
 }

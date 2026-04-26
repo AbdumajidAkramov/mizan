@@ -208,6 +208,10 @@ private fun ExchangeRateContent(
                 if (rateInput.isNotEmpty()) {
                     onRateInputChange(rateInput.dropLast(1))
                 }
+            },
+            onClear = {
+                // Clear all input - reset to empty string
+                onRateInputChange("")
             }
         )
 
