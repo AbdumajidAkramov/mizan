@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction2.store.state
+package dev.esbi.mizan.feature.newtransaction.inputtypes
 
 import androidx.compose.ui.text.AnnotatedString
 import dev.esbi.mizan.utils.annotatedString
@@ -10,8 +10,6 @@ data class KeypadState(
     val rightNumber: BigDecimal = BigDecimal.ZERO,
     val currency: String = "UZS"
 ) {
-
-    val isLeftNumberActive: Boolean = operator.isEmpty()
 
     val displayText: String
         get() {

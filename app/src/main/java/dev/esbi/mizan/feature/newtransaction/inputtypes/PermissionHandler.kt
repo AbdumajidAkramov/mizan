@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction2.amountinput.widgets
+package dev.esbi.mizan.feature.newtransaction.inputtypes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

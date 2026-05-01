@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction2.amountinput.widgets
+package dev.esbi.mizan.feature.newtransaction.inputtypes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.addtransaction.model.InputMode
 import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
 
@@ -51,7 +52,7 @@ internal fun InputModeContent(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                dev.esbi.mizan.ui.kit.icon.MizanIcon(
+                MizanIcon(
                     icon = icon,
                     modifier = Modifier.size(22.dp),
                     tint = if (isSelected) MizanTheme.premium.text.primary else MizanTheme.premium.text.tertiary

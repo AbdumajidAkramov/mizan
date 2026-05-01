@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.feature.newtransaction.ui.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.utils.AutoResizingText
-import dev.esbi.mizan.feature.newtransaction2.store.state.KeypadState
 import dev.esbi.mizan.presentation.feature.addtransaction.model.Keypad
 import dev.esbi.mizan.presentation.utils.currency.HorizontalCurrencySelector
 import dev.esbi.mizan.ui.components.currency.CurrencyModel

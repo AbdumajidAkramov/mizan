@@ -37,9 +37,6 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import dev.esbi.mizan.feature.newtransaction2.amountinput.widgets.PermissionDeniedScreen
-import dev.esbi.mizan.feature.newtransaction2.amountinput.widgets.PermissionHandler
-import dev.esbi.mizan.feature.newtransaction2.store.state.VoiceInputState
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.MizanTheme
