@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.addtransaction2.data.repository
+package dev.esbi.mizan.data.repository
 
 import android.util.Log
 import dev.esbi.mizan.data.local.dao.CategoryDao

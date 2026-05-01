@@ -2,12 +2,12 @@ package dev.esbi.mizan.di
 
 import dagger.Binds
 import dagger.Module
+import dev.esbi.mizan.data.repository.CategoryRepositoryImpl
+import dev.esbi.mizan.data.repository.TemplateRepositoryImpl
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CategoryRepository
 import dev.esbi.mizan.domain.repository.CurrencyRepository
 import dev.esbi.mizan.domain.repository.TemplateRepository
-import dev.esbi.mizan.feature.addtransaction2.data.repository.CategoryRepositoryImpl
-import dev.esbi.mizan.feature.addtransaction2.data.repository.TemplateRepositoryImpl
 import dev.esbi.mizan.data.repository.AccountRepositoryImpl as CoreAccountRepositoryImpl
 import dev.esbi.mizan.data.repository.CurrencyRepositoryImpl as CoreCurrencyRepositoryImpl
 import dev.esbi.mizan.data.repository.TransactionRepositoryImpl as CoreTransactionRepositoryImpl
