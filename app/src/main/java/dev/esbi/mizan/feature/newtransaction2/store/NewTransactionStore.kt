@@ -6,11 +6,10 @@ import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.feature.newtransaction.inputtypes.CameraInputState
+import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategoryChooserState
 import dev.esbi.mizan.feature.newtransaction2.TransactionStep
-import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryChooserState
 import dev.esbi.mizan.feature.newtransaction2.input.TransactionInputState
-import dev.esbi.mizan.feature.newtransaction2.inputpart.ActivePads
-import dev.esbi.mizan.feature.newtransaction2.store.state.CameraInputState
 import dev.esbi.mizan.feature.newtransaction2.store.state.KeypadState
 import dev.esbi.mizan.feature.newtransaction2.store.state.VoiceInputState
 import dev.esbi.mizan.presentation.feature.addtransaction.model.InputMode
@@ -43,7 +42,6 @@ interface NewTransactionStore :
         val voiceInputState: VoiceInputState = VoiceInputState(),
         val cameraInputState: CameraInputState = CameraInputState(),
         val categoryChooserState: CategoryChooserState = CategoryChooserState(Transaction.Type.EXPENSE),
-        val activePad: ActivePads = ActivePads.AmountPad(),
 
         val note: String = "",
         val description: String = "",
@@ -226,7 +224,9 @@ interface NewTransactionStore :
         class CategoryUpdated(val category: Category) : Message
 
         // Multi-Currency Transaction Messages
-        class CurrenciesLoaded(val currencies: List<Currency>, val mainCurrency: Currency?) : Message
+        class CurrenciesLoaded(val currencies: List<Currency>, val mainCurrency: Currency?) :
+            Message
+
         class CurrencySelected(val currency: Currency) : Message
         class ManualRateUpdated(val rate: BigDecimal) : Message
     }

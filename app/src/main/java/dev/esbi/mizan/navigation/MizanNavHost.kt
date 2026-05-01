@@ -23,7 +23,6 @@ import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScr
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
 import dev.esbi.mizan.feature.newtransaction.NewTransactionScreen
-import dev.esbi.mizan.feature.newtransaction2.categoryselect.CategorySelectScreen
 import dev.esbi.mizan.feature.profile.presentation.ui.ProfileScreen
 import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
@@ -142,52 +141,6 @@ internal fun MizanNavHost(
                 navController = navController,
             )
         }
-        composable<NavRoute.CategorySelect> { backStackEntry ->
-            val route = backStackEntry.toRoute<NavRoute.CategorySelect>()
-
-            val component = remember { appComponent.categorySelectComponent().create() }
-            val viewModel = component.viewModel
-
-            // Get the previous back stack entry to access the NewTransaction ViewModel
-            val previousEntry = remember(navController.currentBackStackEntry) {
-                navController.previousBackStackEntry
-            }
-
-            // Get the AmountInput component from previous entry if it exists
-            val amountInputViewModel = previousEntry?.let {
-                remember { appComponent.amountInputComponent().create().viewModel }
-            }
-
-            CategorySelectScreen(
-                viewModel = viewModel,
-                onCategorySelected = { category ->
-                    // Convert Category type and pass back to NewTransactionStore
-                    val domainCategory = object : dev.esbi.mizan.domain.model.Category {
-                        override val id = category.id
-                        override val name = category.name
-                        override val type = category.type
-                        override val parentId = category.parentId
-                        override val iconName = category.iconName
-                        override val color = category.color
-                        override val budgetLimit: java.math.BigDecimal? = null
-                        override val isArchived = false
-                        override val orderIndex = 0
-                    }
-                    amountInputViewModel?.onNewTransactionStoreIntent(
-                        AddNewTransactionStore.Intent.OnCategorySelected(
-                            domainCategory
-                        )
-                    )
-                    navController.popBackStack()
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onManageCategories = {
-                    navController.navigate(NavRoute.ManageCategories)
-                }
-            )
-        }
         composable<NavRoute.ManageCategories> {
             val component = remember { appComponent.manageCategoriesComponent().create() }
             val viewModel = component.viewModel
@@ -278,11 +231,11 @@ internal fun MizanNavHost(
                 }
             )
         }
-        composable<NavRoute.AddNewAccount> {backStackEntry ->
+        composable<NavRoute.AddNewAccount> { backStackEntry ->
             val route = backStackEntry.toRoute<NavRoute.AddNewAccount>()
             val store = remember {
                 AddAccountStoreFactory(
-                    accountId = route.accountId ,
+                    accountId = route.accountId,
                     storeFactory = appComponent.storeFactory,
                     accountRepository = appComponent.accountRepository,
                     currencyRepository = appComponent.currencyRepository

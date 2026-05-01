@@ -47,14 +47,4 @@ internal class NavigationHandler @Inject constructor() {
         }
     }
 
-    /**
-     * Validates current state for submit eligibility
-     */
-    fun canSubmit(state: AmountInputState): Boolean {
-        return when (state.inputMode) {
-            InputMode.Manual -> state.canSubmit
-            InputMode.Voice -> state.voiceInputState.isValid
-            InputMode.Scan -> true // TODO: Implement scan validation
-        }
-    }
 }

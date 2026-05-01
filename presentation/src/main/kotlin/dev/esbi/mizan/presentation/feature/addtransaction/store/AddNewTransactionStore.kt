@@ -166,7 +166,6 @@ interface AddNewTransactionStore :
 
         // Selector navigation intents
         data object NavigateToAccountSelector : Intent
-        data object NavigateToCategorySelector : Intent
         data class OnAccountSelected(val account: Account) : Intent
         data class OnCategorySelected(val category: Category) : Intent
         
@@ -184,7 +183,6 @@ interface AddNewTransactionStore :
         data object NavigateToTemplateManage : Label
         data object BackTo : Label
         data object NavigateToAccountSelector : Label
-        data object NavigateToCategorySelector : Label
         class ShowToast(val message: String) : Label
 
         object TransactionSaved : Label

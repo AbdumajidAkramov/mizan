@@ -29,9 +29,6 @@ sealed class NavRoute() {
     data object AddTransaction : NavRoute()
 
     @Serializable
-    data class CategorySelect(val transactionType: String) : NavRoute()
-
-    @Serializable
     data object ManageCategories : NavRoute()
 
     @Serializable

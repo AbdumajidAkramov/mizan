@@ -1,7 +1,7 @@
 package dev.esbi.mizan.feature.newtransaction2.store
 
 import com.arkivanov.mvikotlin.core.store.Reducer
-import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryChooserState
+import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategoryChooserState
 
 internal object NewTransactionReducer : Reducer<AmountInputState, NewTransactionStore.Message> {
     override fun AmountInputState.reduce(msg: NewTransactionStore.Message): AmountInputState {

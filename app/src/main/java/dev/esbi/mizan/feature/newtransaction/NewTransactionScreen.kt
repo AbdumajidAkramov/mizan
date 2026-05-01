@@ -63,10 +63,6 @@ internal fun NewTransactionScreen(
                 navController.navigate(NavRoute.AccountSelector)
             }
 
-            Label.NavigateToCategorySelector -> {
-                navController.navigate(NavRoute.CategorySelect(transactionType = "EXPENSE"))
-            }
-
             Label.TransactionSaved -> {
                 navController.navigate(NavRoute.Transactions) {
                     popUpTo(NavRoute.Transactions) {

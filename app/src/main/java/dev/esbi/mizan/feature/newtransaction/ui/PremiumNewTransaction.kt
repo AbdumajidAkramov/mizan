@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.color
 import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectionContentSimple
+import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategoryChooserState
 import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategorySelectorBottomSheet
 import dev.esbi.mizan.feature.newtransaction.ui.header.AddTransactionHeader
-import dev.esbi.mizan.feature.newtransaction2.categorychooser.CategoryChooserState
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.ui.theme.MizanTheme
