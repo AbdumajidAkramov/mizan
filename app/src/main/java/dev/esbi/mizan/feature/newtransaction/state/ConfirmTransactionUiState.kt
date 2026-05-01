@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction2.confirm.state
+package dev.esbi.mizan.feature.newtransaction.state
 
 import dev.esbi.mizan.domain.model.Amount
 import dev.esbi.mizan.domain.model.Transaction

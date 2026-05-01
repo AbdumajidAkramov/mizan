@@ -201,6 +201,9 @@ fun PremiumNewTransaction(
                     selectedCurrency = state.selectedCurrency,
                     onCurrencySelected = {
                         accept(Intent.OnUpdateCurrency(it))
+                    },
+                    onAddNewSubCurrency = {
+                        accept(Intent.OnAddSubCategory)
                     }
                 )
                 PremiumCalculatorKeypad(

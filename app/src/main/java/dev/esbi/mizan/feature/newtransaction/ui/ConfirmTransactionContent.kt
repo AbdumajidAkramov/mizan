@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.newtransaction2.confirm.state.ConfirmTransactionUiState
+import dev.esbi.mizan.feature.newtransaction.state.ConfirmTransactionUiState
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme

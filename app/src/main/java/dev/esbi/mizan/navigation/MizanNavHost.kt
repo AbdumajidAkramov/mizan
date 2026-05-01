@@ -139,28 +139,7 @@ internal fun MizanNavHost(
 
             NewTransactionScreen(
                 viewModel = viewModel,
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                onNavigateToManageCategories = {
-                    navController.navigate(NavRoute.ManageCategories)
-                },
-                onNavigateToAccountManage = {
-                    navController.navigate(NavRoute.AccountManagement)
-                },
-                onNavigateToAccountSelector = {
-                    navController.navigate(NavRoute.AccountSelector)
-                },
-                onNavigateToCategorySelector = {
-                    navController.navigate(NavRoute.CategorySelect(transactionType = "EXPENSE"))
-                },
-                onSubmit = {
-                    navController.navigate(NavRoute.Transactions) {
-                        popUpTo(NavRoute.Transactions) {
-                            inclusive = true
-                        }
-                    }
-                }
+                navController = navController,
             )
         }
         composable<NavRoute.CategorySelect> { backStackEntry ->

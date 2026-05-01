@@ -14,13 +14,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import dev.esbi.mizan.domain.model.Transaction
+import dev.esbi.mizan.feature.newtransaction.state.ConfirmTransactionUiState
 import dev.esbi.mizan.feature.newtransaction.ui.ConfirmTransactionContent
 import dev.esbi.mizan.feature.newtransaction.ui.DeleteConfirmationDialog
 import dev.esbi.mizan.feature.newtransaction.ui.MizanDatePickerDialog
 import dev.esbi.mizan.feature.newtransaction.ui.MizanTimePickerDialog
 import dev.esbi.mizan.feature.newtransaction.ui.PremiumNewTransaction
-import dev.esbi.mizan.feature.newtransaction2.confirm.state.ConfirmTransactionUiState
+import dev.esbi.mizan.navigation.NavRoute
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Label
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
@@ -33,12 +35,7 @@ import dev.esbi.mizan.ui.toast.MizanToastStatus
 @Composable
 internal fun NewTransactionScreen(
     viewModel: AmountInputViewModel,
-    onBackPressed: () -> Unit,
-    onSubmit: () -> Unit,
-    onNavigateToManageCategories: () -> Unit,
-    onNavigateToAccountManage: () -> Unit,
-    onNavigateToAccountSelector: () -> Unit,
-    onNavigateToCategorySelector: () -> Unit
+    navController: NavHostController,
 ) {
 
     val state by viewModel.addNewTransactionState.collectAsState(initial = State())
@@ -50,20 +47,55 @@ internal fun NewTransactionScreen(
 
     LaunchedEffect(labels) {
         when (val currentLabel = labels) {
-            Label.OpenCategoryManageScreen -> onNavigateToManageCategories()
-            Label.NavigateToAccountManage -> onNavigateToAccountManage()
-            Label.NavigateToTemplateManage -> onNavigateToAccountManage()
-            Label.NavigateToAccountSelector -> onNavigateToAccountSelector()
-            Label.NavigateToCategorySelector -> onNavigateToCategorySelector()
-            Label.TransactionSaved -> onSubmit()
-            Label.TransactionDeleted -> {
-                toastMessage = "Transaction deleted"
-                onSubmit()
+            Label.OpenCategoryManageScreen -> {
+                navController.navigate(NavRoute.ManageCategories)
             }
 
-            Label.BackTo -> onBackPressed()
+            Label.NavigateToAccountManage -> {
+                navController.navigate(NavRoute.AccountManagement)
+            }
+
+            Label.NavigateToTemplateManage -> {
+                navController.navigate(NavRoute.AccountManagement)
+            }
+
+            Label.NavigateToAccountSelector -> {
+                navController.navigate(NavRoute.AccountSelector)
+            }
+
+            Label.NavigateToCategorySelector -> {
+                navController.navigate(NavRoute.CategorySelect(transactionType = "EXPENSE"))
+            }
+
+            Label.TransactionSaved -> {
+                navController.navigate(NavRoute.Transactions) {
+                    popUpTo(NavRoute.Transactions) {
+                        inclusive = true
+                    }
+                }
+            }
+
+            Label.TransactionDeleted -> {
+                toastMessage = "Transaction deleted"
+                navController.navigate(NavRoute.Transactions) {
+                    popUpTo(NavRoute.Transactions) {
+                        inclusive = true
+                    }
+                }
+            }
+
+            Label.BackTo -> {
+                navController.popBackStack()
+            }
+
             is Label.ShowToast -> {
                 toastMessage = currentLabel.message
+            }
+
+            is Label.NavigateToSubCurrency -> {
+                navController.navigate(
+                    NavRoute.SubCurrencyList
+                )
             }
 
             null -> {}

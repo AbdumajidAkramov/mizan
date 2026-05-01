@@ -38,6 +38,10 @@ class AddNewTransactionExchangeRateExecutor @Inject constructor(
                 syncExchangeRateFromCBU()
             }
 
+            is Intent.OnAddSubCategory -> {
+                publish(Label.NavigateToSubCurrency)
+            }
+
             else -> Unit
         }
     }
@@ -53,11 +57,11 @@ class AddNewTransactionExchangeRateExecutor @Inject constructor(
 
                 // Fetch latest rate from repository
                 val updatedCurrency = currencyRepository.getCurrencyByCode(currencyCode)
-                
+
                 if (updatedCurrency != null) {
                     // Update manual rate with the synced rate
                     dispatch(Message.UpdateManualExchangeRate(updatedCurrency.exchangeRate))
-                    
+
                     // Show success toast
                     publish(Label.ShowToast("Exchange rate updated from CBU"))
                 } else {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +29,7 @@ fun AddTransactionCurrencySelector(
     currencies: List<Currency>,
     selectedCurrency: Currency?,
     onCurrencySelected: (Currency) -> Unit,
+    onAddNewSubCurrency: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Sort: Main currency first, then others by order index
@@ -37,20 +38,31 @@ fun AddTransactionCurrencySelector(
         compareByDescending<Currency> { it.isMainCurrency }
             .thenBy { it.orderIndex }
     )
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs),
-        contentPadding = PaddingValues(horizontal = MizanTheme.premium.spacing.sm),
-        verticalAlignment = Alignment.CenterVertically
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
-        items(sortedCurrencies) { currency ->
-            CurrencyChip(
-                label = currency.code,
-                isSelected = currency == selectedCurrency,
-                isMain = currency.isMainCurrency,
-                onClick = { onCurrencySelected(currency) }
-            )
+        LazyRow(
+            modifier = modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs),
+            contentPadding = PaddingValues(horizontal = MizanTheme.premium.spacing.sm),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(sortedCurrencies) { currency ->
+                CurrencyChip(
+                    label = currency.code,
+                    isSelected = currency == selectedCurrency,
+                    isMain = currency.isMainCurrency,
+                    onClick = { onCurrencySelected(currency) }
+                )
+            }
         }
+        CurrencyChip(
+            label = "+",
+            isSelected = false,
+            isMain = false,
+            onClick = onAddNewSubCurrency
+        )
     }
 }
 
@@ -73,15 +85,15 @@ fun CurrencyChip(
     } else {
         Brush.linearGradient(
             colors = listOf(
-                Color.White.copy(alpha = 0.15f),
-                Color.White.copy(alpha = 0.08f)
+                MizanTheme.premium.colors.surface2.copy(alpha = 0.15f),
+                MizanTheme.premium.colors.surface2.copy(alpha = 0.08f)
             )
         )
     }
     val borderColor = if (isSelected) {
         MizanTheme.premium.colors.emerald.copy(alpha = 0.5f)
     } else {
-        Color.White.copy(alpha = 0.2f)
+        MizanTheme.premium.colors.surface2.copy(alpha = 0.2f)
     }
 
     Box(
@@ -108,7 +120,7 @@ fun CurrencyChip(
             color = if (isSelected) {
                 MizanTheme.premium.colors.emerald
             } else {
-                Color.White.copy(alpha = 0.8f)
+                MizanTheme.premium.text.primary.copy(alpha = 0.8f)
             }
         )
     }

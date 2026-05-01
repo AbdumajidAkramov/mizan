@@ -175,6 +175,7 @@ interface AddNewTransactionStore :
         data object CloseExchangeRateBottomSheet : Intent
         data class UpdateManualExchangeRate(val rate: BigDecimal) : Intent
         data object SyncExchangeRateFromCBU : Intent
+        data object OnAddSubCategory : Intent
     }
 
     sealed interface Label {
@@ -188,6 +189,7 @@ interface AddNewTransactionStore :
 
         object TransactionSaved : Label
         object TransactionDeleted : Label
+        object NavigateToSubCurrency : Label
     }
 
     sealed interface Message {
