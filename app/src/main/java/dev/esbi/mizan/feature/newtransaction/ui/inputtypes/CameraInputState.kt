@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.inputtypes
+package dev.esbi.mizan.feature.newtransaction.ui.inputtypes
 
 data class CameraInputState(
     val isScanning: Boolean = false,

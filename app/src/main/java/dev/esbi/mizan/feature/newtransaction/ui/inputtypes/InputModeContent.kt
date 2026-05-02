@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.inputtypes
+package dev.esbi.mizan.feature.newtransaction.ui.inputtypes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

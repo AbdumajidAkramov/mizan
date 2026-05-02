@@ -61,4 +61,7 @@ sealed class NavRoute() {
     @Serializable
     data object UserDefinedCurrency : NavRoute()
 
+    @Serializable
+    data object Calculator : NavRoute()
+
 }

@@ -14,6 +14,7 @@ import dev.esbi.mizan.feature.accounts.AccountsScreen
 import dev.esbi.mizan.feature.accountselector.AccountSelectionScreen
 import dev.esbi.mizan.feature.addaccount.AddNewAccountScreen
 import dev.esbi.mizan.feature.budget.presentation.ui.BudgetScreen
+import dev.esbi.mizan.feature.calc.MizanCalculatorScreen
 import dev.esbi.mizan.feature.currencymanagement.CurrencyPickerScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencyListScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencySettingScreen
@@ -301,6 +302,12 @@ internal fun MizanNavHost(
             UserDefinedCurrencyScreen(
                 store = store,
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+        composable<NavRoute.Calculator> {
+            val component = remember { appComponent.mizanCalculatorComponent().create() }
+            MizanCalculatorScreen(
+                viewModel = component.viewModel
             )
         }
     }

@@ -1,4 +1,4 @@
-package dev.esbi.mizan.feature.newtransaction.inputtypes
+package dev.esbi.mizan.feature.newtransaction.ui.inputtypes
 
 import android.Manifest
 import androidx.compose.animation.core.LinearOutSlowInEasing
