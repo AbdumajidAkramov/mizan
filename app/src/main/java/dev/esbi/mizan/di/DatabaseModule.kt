@@ -6,8 +6,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dev.esbi.mizan.data.local.DatabaseSeedingManager
-import dev.esbi.mizan.data.util.MockCurrencyConverter
-import dev.esbi.mizan.domain.util.CurrencyConverter
 import dev.esbi.mizan.data.local.MizanDatabase
 import dev.esbi.mizan.data.local.dao.AccountDao
 import dev.esbi.mizan.data.local.dao.AccountGroupDao
@@ -15,6 +13,7 @@ import dev.esbi.mizan.data.local.dao.BudgetDao
 import dev.esbi.mizan.data.local.dao.CategoryDao
 import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
+import dev.esbi.mizan.data.local.dao.FinanceDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.GoalDao
 import dev.esbi.mizan.data.local.dao.SubCurrencyDao
@@ -22,6 +21,8 @@ import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
 import dev.esbi.mizan.data.local.seeder.MockDataSeeder
+import dev.esbi.mizan.data.util.MockCurrencyConverter
+import dev.esbi.mizan.domain.util.CurrencyConverter
 import javax.inject.Singleton
 
 @Module
@@ -213,6 +214,15 @@ class DatabaseModule {
     @Singleton
     fun provideSubCurrencyDao(database: MizanDatabase): SubCurrencyDao {
         return database.subCurrencyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFinanceDao(
+        transactionsDao: TransactionsDao,
+        accountDao: AccountDao
+    ): FinanceDao {
+        return FinanceDao(transactionsDao, accountDao)
     }
 
     @Provides

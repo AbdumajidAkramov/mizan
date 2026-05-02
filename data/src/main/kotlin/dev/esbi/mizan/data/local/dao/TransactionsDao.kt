@@ -65,4 +65,25 @@ interface TransactionsDao {
 
     @Query("DELETE FROM transaction_details")
     suspend fun clearAllTransactionDetails()
+
+    // --- Account-specific filtering queries ---
+    
+    /**
+     * Get all transactions where the specified account is either source or target.
+     * Supports future feature: "Show all transactions for Account A1"
+     */
+    @Query("""
+        SELECT * FROM transactions 
+        WHERE accountId = :accountId OR targetAccountId = :accountId 
+        ORDER BY date DESC
+    """)
+    fun observeTransactionsByAccountId(accountId: Long): Flow<List<TransactionEntity>>
+
+    @Transaction
+    @Query("""
+        SELECT * FROM transactions 
+        WHERE accountId = :accountId OR targetAccountId = :accountId 
+        ORDER BY date DESC
+    """)
+    fun observeTransactionsByAccountIdWithCurrency(accountId: Long): Flow<List<TransactionWithCurrencyEntity>>
 }
