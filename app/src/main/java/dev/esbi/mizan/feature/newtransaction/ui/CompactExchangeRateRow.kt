@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Currency
@@ -65,14 +67,14 @@ fun CompactExchangeRateRow(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.12f),
-                        Color.White.copy(alpha = 0.06f)
+                        MizanTheme.premium.colors.surface1.copy(alpha = 0.12f),
+                        MizanTheme.premium.colors.surface1.copy(alpha = 0.06f)
                     )
                 )
             )
             .border(
                 width = 0.5.dp,
-                color = Color.White.copy(alpha = 0.15f),
+                color = MizanTheme.premium.colors.surface1.copy(alpha = 0.15f),
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable(onClick = onClick)
@@ -142,4 +144,56 @@ private fun formatAmount(amount: BigDecimal): String {
     val rounded = amount.setScale(2, RoundingMode.HALF_UP)
     return String.format("%,.2f", rounded.toDouble())
         .replace(",", " ")
+}
+
+@Preview(name = "Fully Populated", showBackground = true)
+@Composable
+private fun CompactExchangeRateRowPreview() {
+    val mainCurrency = Currency.TMP_USD
+    val selectedCurrency = Currency.UZS
+
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        Surface {
+            CompactExchangeRateRow(
+                selectedCurrency = selectedCurrency,
+                mainCurrency = mainCurrency,
+                manualExchangeRate = BigDecimal("0.92"),
+                equivalentAmount = BigDecimal("92.00"),
+                onClick = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "No Manual Rate (Null)", showBackground = true)
+@Composable
+private fun CompactExchangeRateRowNoManualRatePreview() {
+
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        Surface {
+            CompactExchangeRateRow(
+                selectedCurrency = Currency.TMP_USD,
+                mainCurrency = Currency.UZS,
+                manualExchangeRate = null,
+                equivalentAmount = BigDecimal("79.50"),
+                onClick = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "Missing Currencies (Null)", showBackground = true)
+@Composable
+private fun CompactExchangeRateRowNullCurrenciesPreview() {
+    dev.esbi.mizan.ui.theme.MizanTheme  {
+        Surface {
+            CompactExchangeRateRow(
+                selectedCurrency = null,
+                mainCurrency = null,
+                manualExchangeRate = BigDecimal("1.00"),
+                equivalentAmount = BigDecimal("0.00"),
+                onClick = { }
+            )
+        }
+    }
 }

@@ -136,19 +136,6 @@ interface AddNewTransactionStore :
         // Number pad actions
         class OnNumberClick(val key: Keypad) : Intent
 
-        //        Confirm & Save
-        class UpdateNote(val note: String) : Intent
-        class UpdateDate(val date: Long) : Intent
-        class UpdateTime(val hour: Int, val minute: Int) : Intent
-        class UpdateSaveAsTemplate(val value: Boolean) : Intent
-        data object Back : Intent
-        data object OnCloseConfirmSave : Intent
-        data object SaveTransaction : Intent
-        data object DeleteTransaction : Intent
-
-        // Pad actions
-        data object Next : Intent
-
         // Selector navigation intents
         data object NavigateToAccountSelector : Intent
         data class OnAccountSelected(val account: Account) : Intent
@@ -160,6 +147,19 @@ interface AddNewTransactionStore :
         data class UpdateManualExchangeRate(val rate: BigDecimal) : Intent
         data object SyncExchangeRateFromCBU : Intent
         data object OnAddSubCategory : Intent
+
+        // Pad actions
+        data object Next : Intent
+
+        //        Confirm & Save
+        class UpdateNote(val note: String) : Intent
+        class UpdateDate(val date: Long) : Intent
+        class UpdateTime(val hour: Int, val minute: Int) : Intent
+        class UpdateSaveAsTemplate(val value: Boolean) : Intent
+        data object Back : Intent
+        data object OnCloseConfirmSave : Intent
+        data object DeleteTransaction : Intent
+        data object SaveTransaction : Intent
     }
 
     sealed interface Label {

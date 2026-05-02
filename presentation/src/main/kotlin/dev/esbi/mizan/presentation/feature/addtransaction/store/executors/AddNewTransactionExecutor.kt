@@ -133,9 +133,4 @@ class AddNewTransactionExecutor @Inject constructor(
             }
         }
     }
-
-    private fun checkPadState() {
-        dispatch(Message.UpdateStep(State.Step.CONFIRMATION))
-    }
-
 }

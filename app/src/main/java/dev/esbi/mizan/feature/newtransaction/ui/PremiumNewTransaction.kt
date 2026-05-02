@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.newtransaction.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -87,16 +88,8 @@ fun PremiumNewTransaction(
             AmountContent(
                 modifier = Modifier,
                 state = state,
-                accept = accept
-            )
-
-            // Compact Exchange Rate + Equivalent Display (single row, minimal space)
-            CompactExchangeRateRow(
-                selectedCurrency = state.selectedCurrency,
-                mainCurrency = state.currencies.firstOrNull { it.isMainCurrency },
-                manualExchangeRate = state.manualExchangeRate,
-                equivalentAmount = state.equivalentInMainCurrency,
-                onClick = {
+                onClick = {},
+                onExchangeRateClick = {
                     accept(Intent.OpenExchangeRateBottomSheet)
                 }
             )
@@ -328,7 +321,22 @@ fun PremiumNewTransaction(
 
 @Preview(
     showBackground = true,
-    uiMode = UI_MODE_NIGHT_YES
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "PremiumNewTransactionPreviewNight"
+)
+@Composable
+fun PremiumNewTransactionPreviewNight() {
+    MizanTheme {
+        PremiumNewTransaction(
+            state = State(),
+            accept = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_NO
 )
 @Composable
 fun PremiumNewTransactionPreview() {

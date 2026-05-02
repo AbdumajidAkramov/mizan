@@ -25,5 +25,16 @@ data class Currency(
             isMainCurrency = true,
             isUserDefined = false
         )
+        val TMP_USD = Currency(
+            code = "USD",
+            name = "USD",
+            symbol = "USD",
+            exchangeRate = BigDecimal.ONE,
+            unitPosition = UnitPosition.END,
+            decimalDigits = 0,
+            orderIndex = 0,
+            isMainCurrency = false,
+            isUserDefined = false
+        )
     }
 }

@@ -86,6 +86,7 @@ fun ExchangeRateBottomSheet(
             modifier = modifier
         ) {
             ExchangeRateContent(
+                modifier = Modifier.padding(16.dp),
                 currencyCode = currencyCode,
                 mainCurrencyCode = mainCurrencyCode,
                 rateInput = rateInput,
@@ -129,7 +130,8 @@ private fun ExchangeRateContent(
     transactionAmount: BigDecimal,
     onRateInputChange: (String) -> Unit,
     onSyncRate: () -> Unit,
-    onApply: () -> Unit
+    onApply: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -143,7 +145,7 @@ private fun ExchangeRateContent(
                     )
                 )
             )
-            .padding(24.dp)
+            .then(modifier)
     ) {
         // Header
         Text(
