@@ -25,7 +25,6 @@ class AddNewTransactionStoreImpl @Inject constructor(
             isEditMode = transactionId != null
         ),
         bootstrapper = SimpleBootstrapper(
-            AddNewTransactionStore.Action.InitPad,
             AddNewTransactionStore.Action.InitAccounts,
             AddNewTransactionStore.Action.InitCategories,
             AddNewTransactionStore.Action.InitCurrencies,

@@ -29,16 +29,6 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
     private val templateRepository: TemplateRepository
 ) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
-    override fun executeAction(action: Action) {
-        when (action) {
-            is Action.CheckAndConfirm -> {
-                checkPadState()
-            }
-
-            else -> Unit
-        }
-    }
-
     override fun executeIntent(intent: Intent) {
         when (intent) {
             is Intent.UpdateNote -> {
@@ -170,7 +160,6 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                         dispatch(Message.UpdateLoading(false))
                     }
                 }
-//                checkPadState()
             }
 
             else -> Unit
@@ -209,38 +198,4 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
             }
         }
     }
-
-    private fun checkPadState() {
-        val state = state()
-        when {
-            state.amount.value.compareTo(BigDecimal.ZERO) == 0 -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.AmountInput)
-                )
-            }
-
-            state.selectedCategory == null -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.CategorySelector)
-                )
-            }
-
-            state.selectedAccount == null -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.AccountSelector)
-                )
-            }
-
-            state.transactionType == Transaction.Type.TRANSFER && state.targetAccount == null -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.TargetAccountSelector)
-                )
-            }
-
-            else -> {
-                dispatch(Message.UpdateStep(State.Step.CONFIRMATION))
-            }
-        }
-    }
-
 }

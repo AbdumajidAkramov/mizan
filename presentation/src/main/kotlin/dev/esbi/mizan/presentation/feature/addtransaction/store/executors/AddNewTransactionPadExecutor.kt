@@ -25,42 +25,6 @@ class AddNewTransactionPadExecutor @Inject constructor(
 
     override fun executeIntent(intent: Intent) {
         when (intent) {
-            is Intent.OnClosePad -> {
-                dispatch(
-                    Message.UpdatePad(pad = null)
-                )
-            }
-
-            is Intent.ShowTypeSelector -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.TypeSelector)
-                )
-            }
-
-            is Intent.ShowCategorySelector -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.CategorySelector)
-                )
-            }
-
-            is Intent.ShowSelectAccountSelector -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.AccountSelector)
-                )
-            }
-
-            is Intent.ShowTargetAccountSelector -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.TargetAccountSelector)
-                )
-            }
-
-            is Intent.ShowAmountInputPad -> {
-                dispatch(
-                    Message.UpdatePad(pad = State.Pad.AmountInput)
-                )
-            }
-
             else -> Unit
         }
     }

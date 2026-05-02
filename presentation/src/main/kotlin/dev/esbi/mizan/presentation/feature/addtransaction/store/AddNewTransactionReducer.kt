@@ -23,7 +23,7 @@ object AddNewTransactionReducer :
             )
 
             is Message.UpdateTemplateVisible -> copy(showTemplates = msg.isVisible)
-            is Message.UpdatePad -> copy(pad = msg.pad)
+//            is Message.UpdatePad -> copy(pad = msg.pad)
             is Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
             is Message.UpdateCurrencies -> copy(

@@ -1,5 +1,6 @@
 package dev.esbi.mizan.ui.components.currency
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -17,11 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.ui.kit.icon.IconValue
+import dev.esbi.mizan.ui.kit.icon.MizanIcon
+import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.ui.utils.Icons
 
 /**
  * Custom numeric keypad for exchange rate input.
@@ -39,6 +44,17 @@ import androidx.compose.ui.unit.sp
  * Row 3: [ 7 ] [ 8 ] [ 9 ] [   ]
  * Row 4: [ . ] [ 0 ] [   ] [   ]
  */
+
+private const val DEL_KEY = "DEL"
+private const val CLEAR_KEY = "C"
+private const val EQUAL_KEY = "="
+private const val DIVIDE = "÷"
+private const val MULTIPLY = "×"
+private const val MINUS = "-"
+private const val PLUS = "+"
+private const val DOT = "."
+private const val EMPTY_KEY = ""
+
 @Composable
 fun ExchangeRateNumericKeypad(
     onNumberClick: (String) -> Unit,
@@ -47,100 +63,72 @@ fun ExchangeRateNumericKeypad(
     onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val haptic = LocalHapticFeedback.current
-
-    // Define 4x4 grid data structure
-    val keypadLayout = listOf(
-        // Row 1: 1, 2, 3, C
-        listOf(
-            KeypadKey.Number("1"),
-            KeypadKey.Number("2"),
-            KeypadKey.Number("3"),
-            KeypadKey.Clear
-        ),
-        // Row 2: 4, 5, 6, Backspace
-        listOf(
-            KeypadKey.Number("4"),
-            KeypadKey.Number("5"),
-            KeypadKey.Number("6"),
-            KeypadKey.Backspace
-        ),
-        // Row 3: 7, 8, 9, Empty
-        listOf(
-            KeypadKey.Number("7"),
-            KeypadKey.Number("8"),
-            KeypadKey.Number("9"),
-            KeypadKey.Empty
-        ),
-        // Row 4: Decimal, 0, Empty, Empty
-        listOf(
-            KeypadKey.Decimal,
-            KeypadKey.Number("0"),
-            KeypadKey.Empty,
-            KeypadKey.Empty
-        )
+    val keys = listOf(
+        "7", "8", "9", DEL_KEY,
+        "4", "5", "6", CLEAR_KEY,
+        "1", "2", "3", EMPTY_KEY,
+        DOT, "0", EMPTY_KEY, EMPTY_KEY
     )
 
     Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs)
     ) {
-        keypadLayout.forEach { row ->
+        // Grid layout manually using Rows for simplicity or LazyVerticalGrid
+        // Simple manual grid for strict 4-column layout like React code
+        val rows = keys.chunked(4)
+
+        rows.forEach { rowKeys ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                row.forEach { key ->
-                    when (key) {
-                        is KeypadKey.Number -> {
-                            KeypadButton(
-                                text = key.value,
-                                onClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onNumberClick(key.value)
-                                },
-                                modifier = Modifier.weight(1f)
+                rowKeys.forEach { key ->
+                    // Determine styling
+                    val isOperator = listOf(PLUS, MINUS, MULTIPLY, DIVIDE, EQUAL_KEY).contains(key)
+                    val isDelete = key == DEL_KEY || key == CLEAR_KEY
+                    val isEquals = key == EQUAL_KEY
+                    val isZero = key == "0"
+
+                    val bgColor = when {
+                        isEquals -> MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) // Emerald
+                        isOperator -> MizanTheme.premium.colors.emerald.copy(alpha = 0.2f)
+                        isDelete -> MizanTheme.premium.colors.error.copy(alpha = 0.2f)
+                        else -> MizanTheme.premium.colors.surface2
+                    }
+
+                    val textColor = when {
+                        isEquals -> MizanTheme.premium.colors.emerald
+                        isOperator -> MizanTheme.premium.colors.emerald
+                        isDelete -> MizanTheme.premium.colors.error
+                        else -> MizanTheme.premium.text.primary
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .weight(if (isZero && rowKeys.size < 4) 2f else 1f) // Span logic mockup
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
+                            .background(bgColor)
+                            .clickable {
+                                when (key) {
+                                    DEL_KEY -> onBackspaceClick()
+                                    CLEAR_KEY -> onClear()
+                                    EMPTY_KEY -> Unit
+                                    DOT -> onDecimalClick()
+                                    else -> onNumberClick(key)
+                                }
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (key == DEL_KEY) {
+                            MizanIcon(
+                                icon = IconValue(Icons.ic_backspace),
+                                modifier = Modifier,
+                                tint = textColor
                             )
-                        }
-                        is KeypadKey.Decimal -> {
-                            KeypadButton(
-                                text = ".",
-                                onClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onDecimalClick()
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        is KeypadKey.Clear -> {
-                            KeypadButton(
-                                text = "C",
-                                isClear = true,
-                                onClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onClear()
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        is KeypadKey.Backspace -> {
-                            KeypadButton(
-                                text = "⌫",
-                                isBackspace = true,
-                                onClick = {
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    onBackspaceClick()
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        is KeypadKey.Empty -> {
-                            // Empty slot - maintains grid alignment
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1.5f)
-                            )
+                        } else {
+                            Text(key, style = MizanTheme.typography.headingMd, color = textColor)
                         }
                     }
                 }
@@ -212,5 +200,44 @@ private fun KeypadButton(
                 Color.White.copy(alpha = 0.9f)
             }
         )
+    }
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+private fun PreviewExchangeRateNumericKeypadLight() {
+    // Mizan loyihasidagi asosiy tema (AnorPrimaryTheme)
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        Box(
+            modifier = Modifier
+                .background(MizanTheme.premium.background.primary)
+                .padding(16.dp)
+        ) {
+            ExchangeRateNumericKeypad(
+                onNumberClick = { /* Preview uchun bo'sh qoldiramiz */ },
+                onDecimalClick = { },
+                onBackspaceClick = { },
+                onClear = { }
+            )
+        }
+    }
+}
+
+@Preview(name = "Dark Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewExchangeRateNumericKeypadDark() {
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        Box(
+            modifier = Modifier
+                .background(MizanTheme.premium.background.primary)
+                .padding(16.dp)
+        ) {
+            ExchangeRateNumericKeypad(
+                onNumberClick = { },
+                onDecimalClick = { },
+                onBackspaceClick = { },
+                onClear = { }
+            )
+        }
     }
 }

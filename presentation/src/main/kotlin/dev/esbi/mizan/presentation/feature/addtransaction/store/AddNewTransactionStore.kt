@@ -59,13 +59,11 @@ interface AddNewTransactionStore :
         val isLoading: Boolean = false,
         val error: String? = null,
 
-        val pad: Pad? = null,
-
         val isSelectAccountsBottomSheetVisible: Boolean = false,
         val isTargetAccountsBottomSheetVisible: Boolean = false,
         val isCategoriesBottomSheetVisible: Boolean = false,
         val isExchangeRateBottomSheetVisible: Boolean = false,
-        
+
         val manualExchangeRate: BigDecimal? = null,
     ) {
 
@@ -89,15 +87,11 @@ interface AddNewTransactionStore :
                 if (selectedCurrency == null || selectedCurrency.isMainCurrency) {
                     return amountDecimal
                 }
-                
+
                 val effectiveRate = manualExchangeRate ?: selectedCurrency.exchangeRate
                 return amountDecimal.multiply(effectiveRate)
                     .setScale(12, java.math.RoundingMode.HALF_EVEN)
             }
-
-        enum class Pad {
-            TypeSelector, CategorySelector, AccountSelector, TargetAccountSelector, AmountInput
-        }
 
         enum class Step {
             INPUT, CONFIRMATION
@@ -113,7 +107,6 @@ interface AddNewTransactionStore :
         data object CloseToast : Intent
         class OnUpdateCurrency(val currency: Currency?) : Intent
 
-        data object OnClosePad : Intent
         data object ToggleTemplates : Intent
         class OnSelectedTemplate(val template: QuickTemplate) : Intent
         data object OpenTemplateManage : Intent
@@ -154,21 +147,13 @@ interface AddNewTransactionStore :
         data object DeleteTransaction : Intent
 
         // Pad actions
-        data object ShowTypeSelector : Intent
-        data object ShowCategorySelector : Intent
-        data object ShowSelectAccountSelector : Intent
-        data object ShowTargetAccountSelector : Intent
-        data object ShowAmountInputPad : Intent
-
-        data object ShowTransactionDetails : Intent
-
         data object Next : Intent
 
         // Selector navigation intents
         data object NavigateToAccountSelector : Intent
         data class OnAccountSelected(val account: Account) : Intent
         data class OnCategorySelected(val category: Category) : Intent
-        
+
         // Exchange Rate Bottom Sheet
         data object OpenExchangeRateBottomSheet : Intent
         data object CloseExchangeRateBottomSheet : Intent
@@ -191,7 +176,6 @@ interface AddNewTransactionStore :
     }
 
     sealed interface Message {
-        class UpdatePad(val pad: State.Pad?) : Message
         class UpdateTemplateVisible(val isVisible: Boolean) : Message
         class UpdateTransactionType(val type: Transaction.Type) : Message
         class UpdateAccounts(val accounts: List<Account>) : Message
@@ -250,7 +234,6 @@ interface AddNewTransactionStore :
         data object InitAccounts : Action
         data object InitCategories : Action
         data object InitCurrencies : Action
-        data object InitPad : Action
         data object CheckAndConfirm : Action
         data object LoadTransaction : Action
     }

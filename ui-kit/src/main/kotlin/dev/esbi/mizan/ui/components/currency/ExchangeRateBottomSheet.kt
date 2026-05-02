@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
@@ -72,7 +73,7 @@ fun ExchangeRateBottomSheet(
     modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    
+
     var rateInput by remember(currentRate) {
         mutableStateOf(currentRate.toPlainString())
     }
@@ -186,7 +187,7 @@ private fun ExchangeRateContent(
                 mainCurrencyCode = mainCurrencyCode,
                 rateInput = rateInput
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
         }
 
@@ -258,14 +259,14 @@ private fun RateInputSection(
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color.White.copy(alpha = 0.12f),
-                        Color.White.copy(alpha = 0.06f)
+                        MizanTheme.premium.colors.surface2.copy(alpha = 0.12f),
+                        MizanTheme.premium.colors.surface2.copy(alpha = 0.06f)
                     )
                 )
             )
             .border(
                 width = 1.dp,
-                color = Color.White.copy(alpha = 0.15f),
+                color = MizanTheme.premium.colors.surface2.copy(alpha = 0.15f),
                 shape = RoundedCornerShape(16.dp)
             )
             .padding(16.dp),
@@ -277,7 +278,8 @@ private fun RateInputSection(
             text = "1 $currencyCode =",
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.White.copy(alpha = 0.8f)
+            color = MizanTheme.premium.text.primary
+                .copy(alpha = 0.9f)
         )
 
         // Center: Rate Input Display
@@ -299,7 +301,8 @@ private fun RateInputSection(
                 text = mainCurrencyCode,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.8f)
+                color = MizanTheme.premium.text.primary
+                    .copy(alpha = 0.8f)
             )
 
             // Sync Button
@@ -340,14 +343,14 @@ private fun ConversionPreview(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.08f))
+            .background(MizanTheme.premium.colors.surface2.copy(alpha = 0.08f))
             .padding(16.dp)
     ) {
         Text(
             text = "Conversion Preview",
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.White.copy(alpha = 0.6f)
+            color = MizanTheme.premium.text.secondary.copy(alpha = 0.6f)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -361,7 +364,9 @@ private fun ConversionPreview(
                 text = "${formatAmount(transactionAmount)} $currencyCode",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.9f)
+                color = MizanTheme.premium.text.primary
+                    .copy(alpha = 0.9f)
+
             )
 
             Text(
@@ -394,8 +399,57 @@ private fun formatAmount(amount: BigDecimal): String {
  */
 private fun isValidRateInput(input: String): Boolean {
     if (input.isEmpty()) return true
-    
+
     // Check if it's a valid number format
     val regex = Regex("^\\d*\\.?\\d{0,8}$")
     return regex.matches(input)
+}
+
+@Preview(name = "Light Mode", showBackground = true)
+@Composable
+private fun PreviewExchangeRateContentLight() {
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        // Using the background color from your semantic implementation
+        Box(
+            modifier = Modifier
+                .background(MizanTheme.premium.background.primary)
+                .padding(16.dp)
+        ) {
+            ExchangeRateContent(
+                currencyCode = "USD",
+                mainCurrencyCode = "UZS",
+                rateInput = "12850.00",
+                transactionAmount = BigDecimal("100.00"),
+                onRateInputChange = {},
+                onSyncRate = {},
+                onApply = {}
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Dark Mode",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PreviewExchangeRateContentDark() {
+    dev.esbi.mizan.ui.theme.MizanTheme {
+        Box(
+            modifier = Modifier
+                .background(MizanTheme.premium.background.primary)
+                .padding(16.dp)
+        ) {
+            ExchangeRateContent(
+                currencyCode = "EUR",
+                mainCurrencyCode = "UZS",
+                rateInput = "14200.50",
+                transactionAmount = BigDecimal("50.00"),
+                onRateInputChange = {},
+                onSyncRate = {},
+                onApply = {}
+            )
+        }
+    }
 }

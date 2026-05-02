@@ -48,7 +48,7 @@ class AddNewTransactionAccountSelectorExecutor @Inject constructor(
                 publish(Label.NavigateToAccountManage)
             }
             is Intent.OpenAccountsBottomSheet -> {
-                dispatch(Message.UpdatePad(State.Pad.AccountSelector))
+//                dispatch(Message.UpdatePad(State.Pad.AccountSelector))
             }
 
             else -> Unit

@@ -1,5 +1,7 @@
 package dev.esbi.mizan.feature.newtransaction.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -141,7 +143,11 @@ private fun TransactionTypeButton(
 
     // Matn rangi animatsiyasi (Active bo'lsa Oq, bo'lmasa kulrang)
     val contentColor by animateColorAsState(
-        targetValue = MizanTheme.premium.colors.white,
+        targetValue = if (isActive) {
+            MizanTheme.premium.colors.white
+        } else {
+            MizanTheme.premium.text.secondary
+        },
         animationSpec = tween(300),
         label = "textColor"
     )
@@ -199,14 +205,39 @@ private fun TransactionTypeButton(
 }
 
 // 4. PREVIEW
-@Preview(showBackground = true, backgroundColor = 0xFF111827)
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF111827,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "UI_MODE_NIGHT_YES"
+)
+@Composable
+private fun SelectorPreviewNight() {
+    MizanTheme {
+        Box(modifier = Modifier.padding(24.dp)) {
+            TransactionTypeSelector(
+                modifier = Modifier.fillMaxWidth(),
+                selectedType = TransactionType.INCOME,
+                onTypeSelect = {}
+            )
+        }
+    }
+}
+
+// 4. PREVIEW
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF111827,
+    uiMode = UI_MODE_NIGHT_NO,
+    name = "UI_MODE_NIGHT_NO"
+)
 @Composable
 private fun SelectorPreview() {
     MizanTheme {
         Box(modifier = Modifier.padding(24.dp)) {
             TransactionTypeSelector(
                 modifier = Modifier.fillMaxWidth(),
-                selectedType = TransactionType.INCOME,
+                selectedType = TransactionType.EXPENSE,
                 onTypeSelect = {}
             )
         }
