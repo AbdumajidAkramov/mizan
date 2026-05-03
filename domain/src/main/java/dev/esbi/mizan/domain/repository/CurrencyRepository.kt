@@ -13,6 +13,7 @@ interface CurrencyRepository {
 
     // Sub-currency management
     fun observeSubCurrencies(): Flow<List<Currency>>
+    fun observeMainCurrency(): Flow<Currency?>
     suspend fun getSubCurrency(code: String): Currency?
     suspend fun saveSubCurrency(config: Currency)
     suspend fun deleteSubCurrency(code: String)
@@ -23,7 +24,8 @@ interface CurrencyRepository {
         unitPosition: UnitPosition,
         decimalDigits: Int
     )
+
     suspend fun syncExchangeRates(): Result<Unit>
-    
+
     suspend fun isCurrencyCodeUnique(code: String): Boolean
 }

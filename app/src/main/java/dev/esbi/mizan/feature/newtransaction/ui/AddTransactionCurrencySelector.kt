@@ -5,10 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,13 +40,13 @@ fun AddTransactionCurrencySelector(
             .thenBy { it.orderIndex }
     )
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         LazyRow(
             modifier = modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.xs),
-            contentPadding = PaddingValues(horizontal = MizanTheme.premium.spacing.sm),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(sortedCurrencies) { currency ->
@@ -56,13 +57,18 @@ fun AddTransactionCurrencySelector(
                     onClick = { onCurrencySelected(currency) }
                 )
             }
+            item {
+                Row(modifier = Modifier) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    CurrencyChip(
+                        label = "+",
+                        isMain = false,
+                        isSelected = false,
+                        onClick = onAddNewSubCurrency,
+                    )
+                }
+            }
         }
-        CurrencyChip(
-            label = "+",
-            isSelected = false,
-            isMain = false,
-            onClick = onAddNewSubCurrency
-        )
     }
 }
 
@@ -106,7 +112,7 @@ fun CurrencyChip(
                 shape = RoundedCornerShape(20.dp)
             )
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = 12.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(

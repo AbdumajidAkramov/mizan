@@ -51,13 +51,23 @@ fun AmountContent(
                 currency = state.selectedCurrency?.code,
                 color = state.transactionType.color(),
             )
+            manualExchangeRate?.let {
+                Text(
+                    modifier = Modifier.clickable(
+                        enabled = true,
+                        onClick = onExchangeRateClick
+                    ),
+                    text = "Preview: ${formatAmount(manualExchangeRate)}",
+                    color = MizanTheme.premium.text.tertiary
+                )
+            }
             if ((selectedCurrency == null || mainCurrency == null || selectedCurrency.isMainCurrency).not()) {
                 Text(
                     modifier = Modifier.clickable(
                         enabled = true,
                         onClick = onExchangeRateClick
                     ),
-                    text = "Exchange rate: ${formatAmount(state.equivalentInMainCurrency)}",
+                    text = "Exchange rate: ${formatAmount(equivalentAmount)}",
                     color = MizanTheme.premium.text.tertiary
                 )
             }

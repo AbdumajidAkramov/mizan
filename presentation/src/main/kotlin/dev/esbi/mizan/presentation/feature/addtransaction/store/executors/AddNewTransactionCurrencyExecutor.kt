@@ -10,6 +10,7 @@ import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactio
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -37,17 +38,23 @@ class AddNewTransactionCurrencyExecutor @Inject constructor(
     }
 
     private fun fetchCurrencies() {
-        currencyRepository.observeCurrencies()
+        combine(
+            currencyRepository.observeMainCurrency(),
+            currencyRepository.observeSubCurrencies()
+        ) { mainCurrency, subCurrencies ->
+            listOf(mainCurrency) + subCurrencies
+        }
             .onStart {
                 dispatch(Message.UpdateLoading(true))
             }
             .onEach { currencies ->
-                dispatch(Message.UpdateCurrencies(currencies))
+                val filteredList = currencies.filterNotNull()
+                dispatch(Message.UpdateCurrencies(filteredList))
                 dispatch(Message.UpdateLoading(false))
 
                 // Auto-select base currency if available
-                if (state().selectedCurrency == null && currencies.isNotEmpty()) {
-                    val baseCurrency = currencies.find { it.isMainCurrency }
+                if (state().selectedCurrency == null && filteredList.isNotEmpty()) {
+                    val baseCurrency = filteredList.find { it.isMainCurrency }
                     baseCurrency?.let {
                         dispatch(Message.UpdateCurrency(it))
                     }

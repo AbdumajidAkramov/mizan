@@ -23,6 +23,12 @@ class CurrencyRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeMainCurrency(): Flow<Currency?> {
+        return currencyDao.observeBaseCurrency().map {
+            it?.toDomain()
+        }
+    }
+
     override suspend fun setBaseCurrency(code: String) {
         currencyDao.setBaseCurrency(code)
     }

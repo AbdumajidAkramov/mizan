@@ -19,6 +19,9 @@ interface CurrencyDao {
     @Query("SELECT * FROM currencies WHERE isBaseCurrency = 1 LIMIT 1")
     suspend fun getBaseCurrency(): CurrencyEntity?
 
+    @Query("SELECT * FROM currencies WHERE isBaseCurrency = 1 LIMIT 1")
+    fun observeBaseCurrency(): Flow<CurrencyEntity?>
+
     @Query("SELECT * FROM currencies WHERE code = :code LIMIT 1")
     suspend fun getCurrencyByCode(code: String): CurrencyEntity?
 

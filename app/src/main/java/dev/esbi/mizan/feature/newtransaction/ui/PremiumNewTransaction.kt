@@ -200,6 +200,7 @@ fun PremiumNewTransaction(
                     }
                 )
                 PremiumCalculatorKeypad(
+                    modifier = Modifier.padding(top = 8.dp),
                     onNumberClick = {
                         accept(Intent.OnNumberClick(it))
                     }
