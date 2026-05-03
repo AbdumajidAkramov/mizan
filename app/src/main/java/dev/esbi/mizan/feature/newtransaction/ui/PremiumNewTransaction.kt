@@ -3,9 +3,7 @@ package dev.esbi.mizan.feature.newtransaction.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.feature.newtransaction.color
 import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectionContentSimple
 import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategoryChooserState
 import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategorySelectorBottomSheet
@@ -38,7 +35,6 @@ import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactio
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.ui.theme.MizanTheme
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @UiComposable
@@ -205,45 +201,6 @@ fun PremiumNewTransaction(
                         accept(Intent.OnNumberClick(it))
                     }
                 )
-
-                // Save Button
-                Box(
-                    modifier = Modifier
-                        .padding(top = 24.dp)
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        // Glow Shadow
-                        .premiumShadow(
-                            shadowInfo = MizanTheme.premium.shadows.glowPrimary
-                                .copy(
-                                    color = state.transactionType.color()
-                                        .copy(
-                                            alpha = 0.3f
-                                        )
-                                ),
-                            borderRadius = MizanTheme.premium.radius.md
-                        )
-                        // Gradient Background
-                        .background(
-                            color = state.transactionType.color(),
-                            shape = RoundedCornerShape(MizanTheme.premium.radius.full)
-                        )
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {
-                                accept(Intent.Next)
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Next to Confirm",
-                        style = MizanTheme.premium.typography.headingSm,
-                        color = MizanTheme.premium.colors.white
-                    )
-                }
-
             }
         }
     }

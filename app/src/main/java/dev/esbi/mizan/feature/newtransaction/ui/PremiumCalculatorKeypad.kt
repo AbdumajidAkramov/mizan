@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.presentation.feature.addtransaction.model.APPLY_KEY
 import dev.esbi.mizan.presentation.feature.addtransaction.model.CLEAR_KEY
 import dev.esbi.mizan.presentation.feature.addtransaction.model.DEL_KEY
 import dev.esbi.mizan.presentation.feature.addtransaction.model.DIVIDE
@@ -39,8 +40,8 @@ fun PremiumCalculatorKeypad(
         CLEAR_KEY, MULTIPLY, DIVIDE, DEL_KEY,
         "7", "8", "9", MINUS,
         "4", "5", "6", PLUS,
-        "1", "2", "3", DOT,
-        "00", "0", "000", EQUAL_KEY
+        "1", "2", "3", EQUAL_KEY,
+        "000", "0", DOT, APPLY_KEY
     )
 
     Column(
@@ -61,11 +62,13 @@ fun PremiumCalculatorKeypad(
                     val isOperator = listOf(PLUS, MINUS, MULTIPLY, DIVIDE, EQUAL_KEY).contains(key)
                     val isDelete = key == DEL_KEY || key == CLEAR_KEY
                     val isEquals = key == EQUAL_KEY
+                    val isApply = key == APPLY_KEY
                     val isZero = key == "0"
 
                     val bgColor = when {
                         isEquals -> MizanTheme.premium.colors.emerald.copy(alpha = 0.2f) // Emerald
                         isOperator -> MizanTheme.premium.colors.emerald.copy(alpha = 0.2f)
+                        isApply -> MizanTheme.premium.colors.emerald.copy(alpha = 0.2f)
                         isDelete -> MizanTheme.premium.colors.error.copy(alpha = 0.2f)
                         else -> MizanTheme.premium.colors.surface2
                     }
@@ -73,6 +76,7 @@ fun PremiumCalculatorKeypad(
                     val textColor = when {
                         isEquals -> MizanTheme.premium.colors.emerald
                         isOperator -> MizanTheme.premium.colors.emerald
+                        isApply -> MizanTheme.premium.colors.emerald
                         isDelete -> MizanTheme.premium.colors.error
                         else -> MizanTheme.premium.text.primary
                     }

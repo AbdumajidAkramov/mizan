@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Mizan</string>
+    
+    <!-- Exchange Rate & Preview -->
+    <string name="exchange_rate_format">1 %1$s ≈ %2$s %3$s</string>
+    <string name="preview_amount_label">Preview: %1$s</string>
 </resources>

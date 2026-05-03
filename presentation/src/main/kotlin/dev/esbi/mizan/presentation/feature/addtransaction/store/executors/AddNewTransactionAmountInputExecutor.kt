@@ -32,13 +32,17 @@ class AddNewTransactionAmountInputExecutor @Inject constructor() :
 
     private fun handleKeypadClick(key: Keypad) {
         with(state()) {
-            when {
-                key in Keypad.numbers -> handleNumberKey(key)
-                key == Keypad.DOT -> handleDotKey()
-                key in Keypad.operators -> handleOperatorKey(key)
-                key == Keypad.EQUAL -> handleEqualsKey()
-                key == Keypad.CLEAR -> handleClearKey()
-                key == Keypad.DELETE -> handleDeleteKey()
+            when (key) {
+                in Keypad.numbers -> handleNumberKey(key)
+                Keypad.DOT -> handleDotKey()
+                in Keypad.operators -> handleOperatorKey(key)
+                Keypad.EQUAL -> handleEqualsKey()
+                Keypad.CLEAR -> handleClearKey()
+                Keypad.DELETE -> handleDeleteKey()
+                Keypad.APPLY -> {
+                    forward(Action.CheckAndConfirm)
+                }
+                else -> {}
             }
         }
     }

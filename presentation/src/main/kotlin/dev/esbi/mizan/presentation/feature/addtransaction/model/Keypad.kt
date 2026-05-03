@@ -3,6 +3,7 @@ package dev.esbi.mizan.presentation.feature.addtransaction.model
 const val DEL_KEY = "DEL"
 const val CLEAR_KEY = "C"
 const val EQUAL_KEY = "="
+const val APPLY_KEY = "Next"
 const val DIVIDE = "÷"
 const val MULTIPLY = "×"
 const val MINUS = "-"
@@ -13,6 +14,7 @@ enum class Keypad {
     DELETE,
     CLEAR,
     EQUAL,
+    APPLY,
 
     DIV,
     MULTI,
@@ -57,6 +59,7 @@ enum class Keypad {
                 CLEAR_KEY -> CLEAR
                 DEL_KEY -> DELETE
                 EQUAL_KEY -> EQUAL
+                APPLY_KEY -> APPLY
                 "÷" -> DIV
                 "×" -> MULTI
                 "-" -> MINUS
