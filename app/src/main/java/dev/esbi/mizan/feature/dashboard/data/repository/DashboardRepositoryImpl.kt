@@ -41,7 +41,7 @@ class DashboardRepositoryImpl @Inject constructor(
         val totalBalanceBase = accounts
             .filter { !it.account.excludeFromTotal }
             .fold(java.math.BigDecimal.ZERO) { acc, it -> 
-                acc.add(it.account.balance.multiply(it.currency.rateToBase))
+                acc.add(it.account.balance.multiply(it.currency.exchangeRate))
             }
 
         val existing = dashboardDao.observeDashboardSummary().first()

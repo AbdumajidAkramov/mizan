@@ -16,7 +16,6 @@ import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinanceDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.GoalDao
-import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionsDao
@@ -125,6 +124,38 @@ class DatabaseModule {
         }
     }
 
+    private val migration8to9 = object : androidx.room.migration.Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            // Step 1: Add new columns to currencies table
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `exchange_rate` TEXT NOT NULL DEFAULT '1'")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `unit_position` TEXT NOT NULL DEFAULT 'END'")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `decimal_digits` INTEGER NOT NULL DEFAULT 2")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `order_index` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `is_main_currency` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `is_secondary` INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE `currencies` ADD COLUMN `is_user_defined` INTEGER NOT NULL DEFAULT 0")
+            
+            // Step 2: Migrate data from sub_currencies to currencies
+            // Insert all sub_currencies that don't exist in currencies
+            db.execSQL("""
+                INSERT OR REPLACE INTO currencies (
+                    code, name, symbol, exchange_rate, unit_position, decimal_digits, 
+                    order_index, is_main_currency, is_secondary, is_user_defined, isBaseCurrency
+                )
+                SELECT 
+                    code, name, symbol, exchange_rate, unit_position, decimal_digits,
+                    order_index, is_main_currency, 1, is_user_defined, is_main_currency
+                FROM sub_currencies
+            """)
+            
+            // Step 3: Sync isBaseCurrency with is_main_currency
+            db.execSQL("UPDATE currencies SET is_main_currency = 1 WHERE isBaseCurrency = 1")
+            
+            // Step 4: Drop sub_currencies table
+            db.execSQL("DROP TABLE IF EXISTS `sub_currencies`")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(context: Context): MizanDatabase {
@@ -134,7 +165,7 @@ class DatabaseModule {
             "mizan_database"
         )
 //            .createFromAsset("mizan.db") // Assets papkasidagi fayl nomi
-            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5, migration5to6, migration6to7, migration7to8)
+            .addMigrations(migration1to2, migration2to3, migration3to4, migration4to5, migration5to6, migration6to7, migration7to8, migration8to9)
 //            .addCallback(object : RoomDatabase.Callback() {
 //                override fun onCreate(db: SupportSQLiteDatabase) {
 //                    super.onCreate(db)
@@ -212,12 +243,6 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideSubCurrencyDao(database: MizanDatabase): SubCurrencyDao {
-        return database.subCurrencyDao()
-    }
-
-    @Provides
-    @Singleton
     fun provideFinanceDao(
         transactionsDao: TransactionsDao,
         accountDao: AccountDao
@@ -241,7 +266,6 @@ class DatabaseModule {
     @Singleton
     fun provideMockDataSeeder(
         currencyDao: CurrencyDao,
-        subCurrencyDao: SubCurrencyDao,
         accountDao: AccountDao,
         accountGroupDao: AccountGroupDao,
         categoryDao: CategoryDao,
@@ -249,7 +273,6 @@ class DatabaseModule {
     ): MockDataSeeder {
         return MockDataSeeder(
             currencyDao,
-            subCurrencyDao,
             accountDao,
             accountGroupDao,
             categoryDao,

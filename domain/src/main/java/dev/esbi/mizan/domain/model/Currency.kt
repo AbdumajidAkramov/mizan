@@ -11,6 +11,7 @@ data class Currency(
     val decimalDigits: Int = 2,
     val orderIndex: Int = 0,
     val isMainCurrency: Boolean = false,
+    val isSecondary: Boolean = false,
     val isUserDefined: Boolean = false
 ) {
     companion object {

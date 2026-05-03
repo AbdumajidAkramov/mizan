@@ -57,17 +57,17 @@ fun AmountContent(
                         enabled = true,
                         onClick = onExchangeRateClick
                     ),
-                    text = "Preview: ${formatAmount(manualExchangeRate)}",
+                    text = "Preview: ${formatAmount(equivalentAmount)}",
                     color = MizanTheme.premium.text.tertiary
                 )
             }
-            if ((selectedCurrency == null || mainCurrency == null || selectedCurrency.isMainCurrency).not()) {
+            manualExchangeRate?.let {
                 Text(
                     modifier = Modifier.clickable(
                         enabled = true,
                         onClick = onExchangeRateClick
                     ),
-                    text = "Exchange rate: ${formatAmount(equivalentAmount)}",
+                    text = "Exchange rate: ${formatAmount(manualExchangeRate)}",
                     color = MizanTheme.premium.text.tertiary
                 )
             }
