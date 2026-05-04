@@ -92,8 +92,8 @@ class CurrencyRepositoryImpl @Inject constructor(
     }
     
     override suspend fun updateCurrencyOrder(currencies: List<Currency>) {
-        currencies.forEachIndexed { index, currency ->
-            currencyDao.updateOrderIndex(currency.code, index)
+        currencies.forEach { currency ->
+            currencyDao.updateOrderIndex(currency.code, currency.orderIndex)
         }
     }
     

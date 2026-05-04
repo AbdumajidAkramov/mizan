@@ -14,6 +14,8 @@ interface CurrencyManagementStore : Store<
         data class AddCurrency(val config: Currency) : Intent
         data class RemoveCurrency(val code: String) : Intent
         data class Reorder(val configs: List<Currency>) : Intent
+        data class ReorderCurrencies(val fromIndex: Int, val toIndex: Int) : Intent
+        data class SaveCurrencyOrder(val currencies: List<Currency>) : Intent
         data class UpdateSettings(
             val code: String,
             val exchangeRate: BigDecimal,
@@ -56,6 +58,7 @@ interface CurrencyManagementStore : Store<
         data class SubCurrenciesLoaded(val configs: List<Currency>) : Message
         data class MainCurrencyLoaded(val config: Currency?) : Message
         data class CurrencySelected(val code: String?) : Message
+        data class CurrenciesReordered(val currencies: List<Currency>) : Message
         data class Loading(val isLoading: Boolean) : Message
         data class Syncing(val isSyncing: Boolean) : Message
         data class Error(val message: String?) : Message

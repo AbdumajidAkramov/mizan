@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,16 +14,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -36,15 +38,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
+import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
@@ -54,6 +68,7 @@ import dev.esbi.mizan.ui.components.PremiumCardVariant
 import dev.esbi.mizan.ui.kit.icon.IconValue
 import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import kotlin.math.roundToInt
 import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +88,7 @@ fun SubCurrencyListScreen(
                 is CurrencyManagementStore.Label.ShowMessage ->
                     Toast.makeText(context, label.message, Toast.LENGTH_SHORT).show()
                 is CurrencyManagementStore.Label.CurrencyRemoved ->
-                    Toast.makeText(context, "Currency removed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.currency_removed), Toast.LENGTH_SHORT).show()
                 else -> {}
             }
         }
@@ -109,7 +124,7 @@ fun SubCurrencyListScreen(
                 contentColor = Color.White,
                 shape = CircleShape
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Currency")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_currency))
             }
         },
         containerColor = MizanTheme.premium.background.primary
@@ -137,7 +152,7 @@ fun SubCurrencyListScreen(
                     state.mainCurrency?.let { main ->
                         item {
                             Text(
-                                text = "Main Currency",
+                                text = stringResource(R.string.main_currency),
                                 style = MizanTheme.typography.bodyMd,
                                 color = MizanTheme.premium.text.secondary,
                                 fontWeight = FontWeight.Medium,
@@ -155,7 +170,7 @@ fun SubCurrencyListScreen(
                     if (subs.isNotEmpty()) {
                         item {
                             Text(
-                                text = "Sub-Currencies",
+                                text = stringResource(R.string.sub_currencies),
                                 style = MizanTheme.typography.bodyMd,
                                 color = MizanTheme.premium.text.secondary,
                                 fontWeight = FontWeight.Medium,
@@ -163,17 +178,24 @@ fun SubCurrencyListScreen(
                             )
                         }
 
-                        itemsIndexed(
-                            items = subs,
-                            key = { _, item -> item.code }
-                        ) { _, config ->
-                            SubCurrencyRow(
-                                config = config,
+                        item {
+                            ReorderableCurrencyList(
+                                currencies = subs,
                                 mainCurrency = state.mainCurrency,
-                                onClick = { onCurrencySettingsClick(config.code) },
-                                onDelete = {
+                                onCurrencyClick = onCurrencySettingsClick,
+                                onDelete = { code ->
                                     store.accept(
-                                        CurrencyManagementStore.Intent.RemoveCurrency(config.code)
+                                        CurrencyManagementStore.Intent.RemoveCurrency(code)
+                                    )
+                                },
+                                onReorder = { fromIndex, toIndex ->
+                                    store.accept(
+                                        CurrencyManagementStore.Intent.ReorderCurrencies(fromIndex, toIndex)
+                                    )
+                                },
+                                onReorderEnd = { currencies ->
+                                    store.accept(
+                                        CurrencyManagementStore.Intent.SaveCurrencyOrder(currencies)
                                     )
                                 }
                             )
@@ -201,7 +223,7 @@ fun SubCurrencyListScreen(
                         CircularProgressIndicator(color = MizanTheme.premium.colors.emerald)
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "Syncing rates...",
+                            stringResource(R.string.syncing_rates),
                             color = Color.White,
                             fontWeight = FontWeight.Medium
                         )
@@ -276,11 +298,94 @@ private fun MainCurrencyCard(config: Currency) {
 }
 
 @Composable
+private fun ReorderableCurrencyList(
+    currencies: List<Currency>,
+    mainCurrency: Currency?,
+    onCurrencyClick: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    onReorder: (Int, Int) -> Unit,
+    onReorderEnd: (List<Currency>) -> Unit
+) {
+    var draggedIndex by remember { mutableIntStateOf(-1) }
+    var targetIndex by remember { mutableIntStateOf(-1) }
+    var dragOffset by remember { mutableFloatStateOf(0f) }
+    val itemHeight = 88.dp
+    val itemHeightPx = with(LocalDensity.current) { itemHeight.toPx() }
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        currencies.forEachIndexed { index, currency ->
+            val isDragging = index == draggedIndex
+            val isTarget = index == targetIndex
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zIndex(if (isDragging) 1f else 0f)
+                    .offset {
+                        if (isDragging) {
+                            IntOffset(0, dragOffset.roundToInt())
+                        } else {
+                            IntOffset.Zero
+                        }
+                    }
+                    .graphicsLayer {
+                        if (isDragging) {
+                            scaleX = 1.02f
+                            scaleY = 1.02f
+                            alpha = 0.9f
+                        }
+                    }
+                    .shadow(
+                        elevation = if (isDragging) 8.dp else 0.dp,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            ) {
+                SubCurrencyRow(
+                    config = currency,
+                    mainCurrency = mainCurrency,
+                    onClick = { onCurrencyClick(currency.code) },
+                    onDelete = { onDelete(currency.code) },
+                    onDragStart = {
+                        draggedIndex = index
+                        dragOffset = 0f
+                    },
+                    onDrag = { delta ->
+                        if (draggedIndex == index) {
+                            dragOffset += delta
+                            
+                            // Calculate target index based on drag offset
+                            val newTargetIndex = (index + (dragOffset / itemHeightPx).roundToInt())
+                                .coerceIn(0, currencies.size - 1)
+                            
+                            if (newTargetIndex != targetIndex && newTargetIndex != index) {
+                                targetIndex = newTargetIndex
+                                onReorder(index, newTargetIndex)
+                            }
+                        }
+                    },
+                    onDragEnd = {
+                        if (draggedIndex >= 0) {
+                            onReorderEnd(currencies)
+                        }
+                        draggedIndex = -1
+                        targetIndex = -1
+                        dragOffset = 0f
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun SubCurrencyRow(
     config: Currency,
     mainCurrency: Currency?,
     onClick: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onDragStart: () -> Unit = {},
+    onDrag: (Float) -> Unit = {},
+    onDragEnd: () -> Unit = {}
 ) {
     PremiumCard(
         variant = PremiumCardVariant.Glass,
@@ -292,6 +397,28 @@ private fun SubCurrencyRow(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Drag handle
+            Icon(
+                Icons.Default.Menu,
+                contentDescription = stringResource(R.string.drag_to_reorder),
+                tint = MizanTheme.premium.text.tertiary,
+                modifier = Modifier
+                    .size(24.dp)
+                    .pointerInput(Unit) {
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = { onDragStart() },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                onDrag(dragAmount.y)
+                            },
+                            onDragEnd = { onDragEnd() },
+                            onDragCancel = { onDragEnd() }
+                        )
+                    }
+            )
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
             // Currency symbol badge
             Box(
                 modifier = Modifier
@@ -369,7 +496,7 @@ private fun SubCurrencyRow(
             ) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Remove",
+                    contentDescription = stringResource(R.string.remove_currency),
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(20.dp)
                 )

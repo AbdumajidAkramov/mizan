@@ -40,10 +40,43 @@ internal class CurrencyManagementExecutor(
             is Intent.AddCurrency -> addCurrency(intent.config)
             is Intent.RemoveCurrency -> removeCurrency(intent.code)
             is Intent.Reorder -> reorder(intent.configs)
+            is Intent.ReorderCurrencies -> reorderCurrencies(intent.fromIndex, intent.toIndex)
+            is Intent.SaveCurrencyOrder -> saveCurrencyOrder(intent.currencies)
             is Intent.UpdateSettings -> updateSettings(intent)
             is Intent.CreateCustomCurrency -> createCustomCurrency(intent)
             is Intent.SyncRates -> syncRates()
             is Intent.SelectCurrency -> dispatch(Message.CurrencySelected(intent.code))
+        }
+    }
+    
+    private fun reorderCurrencies(fromIndex: Int, toIndex: Int) {
+        val currentList = state().subCurrencies.filter { !it.isMainCurrency }.toMutableList()
+        
+        if (fromIndex in currentList.indices && toIndex in currentList.indices) {
+            val item = currentList.removeAt(fromIndex)
+            currentList.add(toIndex, item)
+            
+            // Update orderIndex to match new positions
+            val reindexedList = currentList.mapIndexed { index, currency ->
+                currency.copy(orderIndex = index)
+            }
+            
+            // Optimistic UI update with correct orderIndex
+            dispatch(Message.CurrenciesReordered(reindexedList))
+        }
+    }
+    
+    private fun saveCurrencyOrder(currencies: List<dev.esbi.mizan.domain.model.Currency>) {
+        scope.launch {
+            try {
+                // CRITICAL FIX: Re-index currencies to match their new physical positions
+                val updatedCurrencies = currencies.mapIndexed { index, currency ->
+                    currency.copy(orderIndex = index)
+                }
+                currencyRepository.updateCurrencyOrder(updatedCurrencies)
+            } catch (e: Exception) {
+                publish(Label.ShowMessage(e.message ?: "Failed to save currency order"))
+            }
         }
     }
 

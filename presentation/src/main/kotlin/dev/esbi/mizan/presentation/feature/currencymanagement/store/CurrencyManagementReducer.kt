@@ -10,6 +10,7 @@ internal class CurrencyManagementReducer : Reducer<State, Message> {
             is Message.SubCurrenciesLoaded -> copy(subCurrencies = msg.configs)
             is Message.MainCurrencyLoaded -> copy(mainCurrency = msg.config)
             is Message.CurrencySelected -> copy(selectedCurrencyCode = msg.code)
+            is Message.CurrenciesReordered -> copy(subCurrencies = msg.currencies)
             is Message.Loading -> copy(isLoading = msg.isLoading)
             is Message.Syncing -> copy(isSyncing = msg.isSyncing)
             is Message.Error -> copy(error = msg.message)
