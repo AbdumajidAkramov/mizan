@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Mizan</string>
+    
+    <!-- Exchange Rate & Preview -->
+    <string name="exchange_rate_format">1 %1$s ≈ %2$s %3$s</string>
+    <string name="preview_amount_label">Preview: %1$s</string>
+    
+    <!-- Currency Management -->
+    <string name="drag_to_reorder">Drag to reorder</string>
+    <string name="currency_list_reorder_hint">Long press and drag to reorder currencies</string>
+    <string name="add_currency">Add Currency</string>
+    <string name="remove_currency">Remove</string>
+    <string name="main_currency">Main Currency</string>
+    <string name="sub_currencies">Sub-Currencies</string>
+    <string name="syncing_rates">Syncing rates…</string>
+    <string name="currency_removed">Currency removed</string>
 </resources>

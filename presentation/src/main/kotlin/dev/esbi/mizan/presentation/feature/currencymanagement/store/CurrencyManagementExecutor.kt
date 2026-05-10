@@ -25,11 +25,11 @@ internal class CurrencyManagementExecutor(
     }
 
     private fun loadSubCurrencies() {
-        currencyRepository.observeSubCurrencies()
-            .onEach { configs ->
-                val main = configs.find { it.isMainCurrency }
-                val subs = configs.filter { it.isMainCurrency.not() }
-                dispatch(Message.SubCurrenciesLoaded(subs))
+        currencyRepository.observeAllCurrencies()
+            .onEach { currencies ->
+                val main = currencies.find { it.isMainCurrency }
+                val secondary = currencies.filter { !it.isMainCurrency }
+                dispatch(Message.SubCurrenciesLoaded(secondary))
                 dispatch(Message.MainCurrencyLoaded(main))
             }
             .launchIn(scope)
@@ -40,10 +40,43 @@ internal class CurrencyManagementExecutor(
             is Intent.AddCurrency -> addCurrency(intent.config)
             is Intent.RemoveCurrency -> removeCurrency(intent.code)
             is Intent.Reorder -> reorder(intent.configs)
+            is Intent.ReorderCurrencies -> reorderCurrencies(intent.fromIndex, intent.toIndex)
+            is Intent.SaveCurrencyOrder -> saveCurrencyOrder(intent.currencies)
             is Intent.UpdateSettings -> updateSettings(intent)
             is Intent.CreateCustomCurrency -> createCustomCurrency(intent)
             is Intent.SyncRates -> syncRates()
             is Intent.SelectCurrency -> dispatch(Message.CurrencySelected(intent.code))
+        }
+    }
+    
+    private fun reorderCurrencies(fromIndex: Int, toIndex: Int) {
+        val currentList = state().subCurrencies.filter { !it.isMainCurrency }.toMutableList()
+        
+        if (fromIndex in currentList.indices && toIndex in currentList.indices) {
+            val item = currentList.removeAt(fromIndex)
+            currentList.add(toIndex, item)
+            
+            // Update orderIndex to match new positions
+            val reindexedList = currentList.mapIndexed { index, currency ->
+                currency.copy(orderIndex = index)
+            }
+            
+            // Optimistic UI update with correct orderIndex
+            dispatch(Message.CurrenciesReordered(reindexedList))
+        }
+    }
+    
+    private fun saveCurrencyOrder(currencies: List<dev.esbi.mizan.domain.model.Currency>) {
+        scope.launch {
+            try {
+                // CRITICAL FIX: Re-index currencies to match their new physical positions
+                val updatedCurrencies = currencies.mapIndexed { index, currency ->
+                    currency.copy(orderIndex = index)
+                }
+                currencyRepository.updateCurrencyOrder(updatedCurrencies)
+            } catch (e: Exception) {
+                publish(Label.ShowMessage(e.message ?: "Failed to save currency order"))
+            }
         }
     }
 
@@ -52,7 +85,7 @@ internal class CurrencyManagementExecutor(
             dispatch(Message.Loading(true))
             try {
                 val nextOrder = state().subCurrencies.maxOfOrNull { it.orderIndex }?.plus(1) ?: 0
-                currencyRepository.saveSubCurrency(config.copy(orderIndex = nextOrder))
+                currencyRepository.saveCurrency(config.copy(orderIndex = nextOrder, isSecondary = true))
                 dispatch(Message.Loading(false))
                 publish(Label.CurrencyAdded)
             } catch (e: Exception) {
@@ -72,7 +105,7 @@ internal class CurrencyManagementExecutor(
         scope.launch {
             dispatch(Message.Loading(true))
             try {
-                currencyRepository.deleteSubCurrency(code)
+                currencyRepository.deleteCurrency(code)
                 dispatch(Message.Loading(false))
                 publish(Label.CurrencyRemoved)
             } catch (e: Exception) {
@@ -85,7 +118,7 @@ internal class CurrencyManagementExecutor(
     private fun reorder(configs: List<dev.esbi.mizan.domain.model.Currency>) {
         scope.launch {
             try {
-                currencyRepository.updateSubCurrencyOrder(configs)
+                currencyRepository.updateCurrencyOrder(configs)
             } catch (e: Exception) {
                 publish(Label.ShowMessage(e.message ?: "Failed to reorder"))
             }
@@ -96,7 +129,7 @@ internal class CurrencyManagementExecutor(
         scope.launch {
             dispatch(Message.Loading(true))
             try {
-                currencyRepository.updateSubCurrencySettings(
+                currencyRepository.updateCurrencySettings(
                     code = intent.code,
                     exchangeRate = intent.exchangeRate,
                     unitPosition = intent.unitPosition,
@@ -167,7 +200,7 @@ internal class CurrencyManagementExecutor(
                     isUserDefined = true
                 )
 
-                currencyRepository.saveSubCurrency(config)
+                currencyRepository.saveCurrency(config)
                 dispatch(Message.Loading(false))
                 publish(Label.CurrencyAdded)
                 publish(Label.ShowMessage("Custom currency '${intent.name}' created"))

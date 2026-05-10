@@ -1,12 +1,13 @@
 package dev.esbi.mizan.presentation.feature.transactionshub.store
 
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
-import dev.esbi.mizan.presentation.di.MainDispatcher
 import dev.esbi.mizan.domain.repository.AccountRepository
+import dev.esbi.mizan.domain.repository.CategoryRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
-import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
+import dev.esbi.mizan.presentation.di.MainDispatcher
+import dev.esbi.mizan.presentation.feature.transactionshub.store.executors.TransactionsHubExecutor
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
@@ -23,10 +24,13 @@ class TransactionsHubStoreFactory @Inject constructor(
 
     fun create(): TransactionsHubStore =
         object : TransactionsHubStore,
-            Store<TransactionsHubStore.Intent, TransactionsHubStore.State, TransactionsHubStore.Label> by storeFactory.create(
+            Store<TransactionsHubStore.Intent, TransactionsHubStore.State, TransactionsHubStore.Label> by
+            storeFactory.create(
                 name = "TransactionsHubStore",
                 initialState = TransactionsHubStore.State(),
-                bootstrapper = CoroutineBootstrapperImpl(),
+                bootstrapper = SimpleBootstrapper(
+                    TransactionsHubStore.Action.LoadData
+                ),
                 executorFactory = {
                     TransactionsHubExecutor(
                         mainDispatcher = mainDispatcher,
@@ -37,10 +41,4 @@ class TransactionsHubStoreFactory @Inject constructor(
                 },
                 reducer = TransactionsHubReducer()
             ) {}
-
-    private class CoroutineBootstrapperImpl : CoroutineBootstrapper<Unit>() {
-        override fun invoke() {
-            dispatch(Unit)
-        }
-    }
 }

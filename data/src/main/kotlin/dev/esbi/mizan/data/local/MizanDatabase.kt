@@ -1,6 +1,5 @@
 package dev.esbi.mizan.data.local
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -12,7 +11,6 @@ import dev.esbi.mizan.data.local.dao.CurrencyDao
 import dev.esbi.mizan.data.local.dao.DashboardDao
 import dev.esbi.mizan.data.local.dao.FinancialMirrorDao
 import dev.esbi.mizan.data.local.dao.GoalDao
-import dev.esbi.mizan.data.local.dao.SubCurrencyDao
 import dev.esbi.mizan.data.local.dao.SubscriptionDao
 import dev.esbi.mizan.data.local.dao.TemplateDao
 import dev.esbi.mizan.data.local.dao.TransactionItemDao
@@ -32,7 +30,6 @@ import dev.esbi.mizan.data.local.entity.account.AccountEntity
 import dev.esbi.mizan.data.local.entity.account.AccountGroupEntity
 import dev.esbi.mizan.data.local.entity.category.CategoryEntity
 import dev.esbi.mizan.data.local.entity.currency.CurrencyEntity
-import dev.esbi.mizan.data.local.entity.currency.SubCurrencyEntity
 import dev.esbi.mizan.data.local.entity.template.TemplateEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionEntity
 import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
@@ -56,10 +53,9 @@ import dev.esbi.mizan.data.local.entity.transaction.TransactionItemEntity
         AccountGroupEntity::class,
         TemplateEntity::class,
         GoalEntity::class,
-        SubscriptionEntity::class,
-        SubCurrencyEntity::class
+        SubscriptionEntity::class
     ],
-    version = 8,
+    version = 9,
     autoMigrations = [],
     exportSchema = true
 )
@@ -77,5 +73,4 @@ abstract class MizanDatabase : RoomDatabase() {
     abstract fun templateDao(): TemplateDao
     abstract fun goalDao(): GoalDao
     abstract fun subscriptionDao(): SubscriptionDao
-    abstract fun subCurrencyDao(): SubCurrencyDao
 }

@@ -3,8 +3,8 @@ package dev.esbi.mizan.presentation.feature.managecategories.store
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
+import dev.esbi.mizan.domain.repository.CategoryRepository
 import dev.esbi.mizan.presentation.di.MainDispatcher
-import dev.esbi.mizan.presentation.feature.addtransaction.domain.repository.CategoryRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 

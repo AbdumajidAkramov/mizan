@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Transaction
-import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.model.TransactionType
 import dev.esbi.mizan.ui.kit.glass.PremiumCard
 import dev.esbi.mizan.ui.theme.Cyan
 import dev.esbi.mizan.ui.theme.Orange

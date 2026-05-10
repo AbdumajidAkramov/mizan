@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
+import dev.esbi.mizan.ui.kit.text.MizanResizableAmount
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.math.BigDecimal
 import java.math.RoundingMode

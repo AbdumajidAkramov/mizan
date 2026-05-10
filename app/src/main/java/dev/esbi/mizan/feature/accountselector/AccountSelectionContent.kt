@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.accountselector
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,15 +34,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
+import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSectionHeader
+import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectorCard
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
 import dev.esbi.mizan.ui.components.accounts.AddAccountButton
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
 import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
 import dev.esbi.mizan.ui.utils.Icons
 import java.math.BigDecimal
-import java.text.NumberFormat
-import java.util.Locale
 
 /**
  * Account Selection Bottom Sheet Content
@@ -63,7 +59,6 @@ fun AccountSelectionContent(
         onIntent(AccountSelectorStore.Intent.LoadAccounts)
     }
     val premiumSystem = LocalPremiumSystem.current
-    val currencyFormat = remember { NumberFormat.getCurrencyInstance(Locale.US) }
 
     // Handle loading state
     if (state.isLoading) {
@@ -142,7 +137,6 @@ fun AccountSelectionContent(
                     AccountSelectorCard(
                         account = account,
                         isSelected = account.id == state.selectedAccountId,
-                        currencyFormat = currencyFormat,
                         onClick = { onIntent(AccountSelectorStore.Intent.SelectAccount(account)) }
                     )
                 }
@@ -191,135 +185,6 @@ internal fun AccountSelectionHeader(onClose: () -> Unit) {
                 tint = premiumSystem.text.secondary,
                 modifier = Modifier.size(18.dp)
             )
-        }
-    }
-}
-
-@Composable
-internal fun AccountSectionHeader(
-    title: String,
-    iconRes: Int
-) {
-    val premiumSystem = LocalPremiumSystem.current
-    Row(
-        modifier = Modifier.padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = premiumSystem.text.tertiary,
-            modifier = Modifier.size(16.dp)
-        )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelSmall,
-            color = premiumSystem.text.tertiary,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-internal fun AccountSelectorCard(
-    account: Account,
-    isSelected: Boolean,
-    currencyFormat: NumberFormat,
-    onClick: () -> Unit
-) {
-    val premiumSystem = LocalPremiumSystem.current
-    val accountColor = getAccountColor(account)
-
-    // Glassmorphism effect
-    val backgroundColor = if (isSelected) {
-        premiumSystem.glass.bg.copy(alpha = 0.9f)
-    } else {
-        premiumSystem.glass.bg
-    }
-    val borderColor = if (isSelected) {
-        premiumSystem.colors.emerald
-    } else {
-        premiumSystem.glass.border
-    }
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(premiumSystem.radius.xl))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        premiumSystem.colors.primary.copy(alpha = 0.1f),
-                        premiumSystem.colors.primary.copy(alpha = 0.05f)
-                    )
-                )
-            )
-            .border(
-                width = 1.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(premiumSystem.radius.xl)
-            )
-            .clickable { onClick() },
-        color = Color.Transparent,
-        shape = RoundedCornerShape(premiumSystem.radius.xl)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            // Account Icon (first letter)
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(accountColor.copy(alpha = 0.2f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = account.name.take(1).uppercase(),
-                    color = accountColor,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            // Account Info
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = account.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (isSelected) premiumSystem.colors.emerald
-                    else premiumSystem.text.primary,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = formatBalance(account.balance, account.currency.symbol),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = premiumSystem.text.tertiary
-                )
-            }
-
-            // Selection Indicator
-            if (isSelected) {
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(premiumSystem.colors.emerald),
-                    contentAlignment = Alignment.Center
-                ) {
-                    MizanIcon(
-                        icon = IconValue(Icons.ic_check),
-                        contentDescription = "Selected",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
         }
     }
 }
@@ -387,23 +252,6 @@ internal fun AddAccountButton(onClick: () -> Unit) {
 }
 */
 
-// Helper functions
-private fun getAccountColor(account: Account): Color {
-    return Color(0xFF667EEA) // Default primary color
-}
-
-private fun formatBalance(balance: BigDecimal, currencySymbol: String): String {
-    val formatted = NumberFormat.getNumberInstance(Locale.US).apply {
-        minimumFractionDigits = 2
-        maximumFractionDigits = 2
-    }.format(balance)
-
-    return if (balance < BigDecimal.ZERO) {
-        "-$formatted $currencySymbol"
-    } else {
-        "$formatted $currencySymbol"
-    }
-}
 
 @Preview(showBackground = false)
 @Composable

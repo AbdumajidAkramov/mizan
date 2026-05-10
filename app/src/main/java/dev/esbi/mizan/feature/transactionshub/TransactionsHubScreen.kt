@@ -29,9 +29,9 @@ fun TransactionsHubScreen(
             when (label) {
                 is TransactionsHubStore.Label.NavigateBack -> onBackClick()
                 is TransactionsHubStore.Label.NavigateToAddTransaction -> onAddTransactionClick()
-                is TransactionsHubStore.Label.NavigateToEditTransaction -> {
-                    onEditTransactionClick(label.transaction.id)
-                }
+                is TransactionsHubStore.Label.NavigateToEditTransaction -> onEditTransactionClick(
+                    label.transaction.id
+                )
             }
         }
     }

@@ -92,11 +92,13 @@ fun MizanToast(
     message: String,
     status: MizanToastStatus,
     isVisible: Boolean,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (color, icon, title) = getToastAssets(status)
 
     AnimatedVisibility(
+        modifier = modifier,
         visible = isVisible,
         enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut()
@@ -112,7 +114,10 @@ fun MizanToast(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(MizanTheme.premium.spacing.lg)
-                .graphicsLayer(shadowElevation = 8f, shape = RoundedCornerShape(MizanTheme.premium.radius.lg)),
+                .graphicsLayer(
+                    shadowElevation = 8f,
+                    shape = RoundedCornerShape(MizanTheme.premium.radius.lg)
+                ),
             shape = RoundedCornerShape(MizanTheme.premium.radius.lg),
             color = MizanTheme.premium.background.primary,
             border = BorderStroke(1.dp, color.copy(alpha = 0.2f))

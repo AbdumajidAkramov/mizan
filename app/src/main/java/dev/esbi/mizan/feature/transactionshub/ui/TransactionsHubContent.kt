@@ -1,19 +1,35 @@
 package dev.esbi.mizan.feature.transactionshub.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.transactionshub.ui.components.DailyTransactionGroup
@@ -44,6 +60,26 @@ fun TransactionsHubContent(
     onIntent: (TransactionsHubStore.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // 1. Karta ko'rinishi uchun holat
+    var isSummaryVisible by remember { mutableStateOf(true) }
+
+    // 2. Scroll eventlarini ushlab olish uchun NestedScrollConnection
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = available.y
+                // Ro'yxat pastga tushganda (barmoq tepaga surilganda)
+                if (delta < -15f) {
+                    isSummaryVisible = false
+                }
+                // Ro'yxat tepaga chiqqanda (barmoq pastga surilganda)
+                else if (delta > 15f) {
+                    isSummaryVisible = true
+                }
+                return Offset.Zero
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TransactionsHubHeader(
@@ -58,24 +94,42 @@ fun TransactionsHubContent(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(MizanTheme.premium.background.primary)
+                .nestedScroll(nestedScrollConnection) // Scrollni butun ekranga ulaymiz
         ) {
             // ── Fixed header sections ────────────────────────────
+            // 3. Animatsiya bilan yashirinadigan Summary Cards
+            AnimatedVisibility(
+                visible = isSummaryVisible,
+                enter = expandVertically(animationSpec = tween(300)) + fadeIn(
+                    animationSpec = tween(
+                        300
+                    )
+                ),
+                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(
+                    animationSpec = tween(
+                        300
+                    )
+                )
+            ) {
+                // Summary Cards (Income / Expense / Total)
+                SummaryCardsSection(
+                    summary = state.summary,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MizanTheme.premium.spacing.md)
 
-            // Summary Cards (Income / Expense / Total)
-            SummaryCardsSection(
-                summary = state.summary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = MizanTheme.premium.spacing.md)
-                    .padding(vertical = MizanTheme.premium.spacing.md)
-            )
+                )
+            }
 
             // Global Time Selector (← Month Year →)
             GlobalTimeSelector(
                 currentMonth = state.currentMonth,
                 daysWithTransactions = state.daysWithTransactions,
                 onPreviousMonth = { onIntent(TransactionsHubStore.Intent.PreviousMonth) },
-                onNextMonth = { onIntent(TransactionsHubStore.Intent.NextMonth) }
+                onNextMonth = { onIntent(TransactionsHubStore.Intent.NextMonth) },
+                onMonthSelected = {
+                    onIntent(TransactionsHubStore.Intent.OnChangeTransactionMonth(it))
+                }
             )
 
             // Tab Row
@@ -87,7 +141,7 @@ fun TransactionsHubContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = MizanTheme.premium.spacing.lg)
-                    .padding(vertical = MizanTheme.premium.spacing.sm)
+                    .padding(vertical = MizanTheme.premium.spacing.md)
             )
 
             HorizontalDivider(
@@ -96,130 +150,269 @@ fun TransactionsHubContent(
             )
 
             // ── Scrollable tab content ───────────────────────────
+            // 1. Swipe masofasini saqlash uchun state
+            var swipeOffset by remember { mutableFloatStateOf(0f) }
+            val swipeThreshold = 150f // Swipe sezgirligi (qancha masofaga surilganda ishlashi)
+            // 2. Barcha tab contentlarini o'rab turadigan Box va unga ulanadigan Swipe Modifier
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f) // Ekranning qolgan barcha qismini egallaydi
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onDragEnd = {
+                                when {
+                                    swipeOffset > swipeThreshold -> {
+                                        // O'ngga swipe -> Oldingi oy (Previous Month)
+                                        onIntent(TransactionsHubStore.Intent.PreviousMonth)
+                                    }
 
-            when {
-                state.isLoading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(
-                            color = MizanTheme.premium.colors.emerald
+                                    swipeOffset < -swipeThreshold -> {
+                                        // Chapga swipe -> Keyingi oy (Next Month)
+                                        onIntent(TransactionsHubStore.Intent.NextMonth)
+                                    }
+                                }
+                                swipeOffset = 0f // Har swipe tugaganda qiymatni tozalaymiz
+                            },
+                            onHorizontalDrag = { change, dragAmount ->
+                                // Barmog'ing bilan qancha surilganini yig'ib boramiz
+                                swipeOffset += dragAmount
+                            }
+                        )
+                    }
+            ) {
+                when (state.selectedTab) {
+                    TransactionsHubStore.Tab.Daily -> {
+                        DailyTransactionsList(
+                            dailyGroups = state.dailyGroups,
+                            accounts = state.accounts,
+                            categories = state.categories,
+                            onTransactionClick = { transaction ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.TransactionClicked(
+                                        transaction
+                                    )
+                                )
+                            },
+                            modifier = Modifier
+                        )
+                    }
+
+                    TransactionsHubStore.Tab.Calendar -> {
+                        TransactionsHubCalendarTab(
+                            calendarDays = state.calendarDays,
+                            selectedDate = state.selectedDate,
+                            transactions = state.transactions,
+                            accounts = state.accounts,
+                            categories = state.categories,
+                            onDateSelected = { date ->
+                                onIntent(TransactionsHubStore.Intent.SelectDate(date))
+                            },
+                            onTransactionClick = { transaction ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.TransactionClicked(
+                                        transaction
+                                    )
+                                )
+                            },
+                            modifier = Modifier
+                        )
+                    }
+
+                    TransactionsHubStore.Tab.Monthly -> {
+                        TransactionsHubMonthlyTab(
+                            weeklySummaries = state.weeklySummaries,
+                            accounts = state.accounts,
+                            categories = state.categories,
+                            onToggleWeek = { weekNumber ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.ToggleWeekExpansion(
+                                        weekNumber
+                                    )
+                                )
+                            },
+                            onTransactionClick = { transaction ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.TransactionClicked(
+                                        transaction
+                                    )
+                                )
+                            },
+                            modifier = Modifier
+                        )
+                    }
+
+                    TransactionsHubStore.Tab.Summary -> {
+                        TransactionsHubSummaryTab(
+                            summary = state.summary,
+                            expenseCategorySummaries = state.expenseCategorySummaries,
+                            incomeCategorySummaries = state.incomeCategorySummaries,
+                            weeklySummaries = state.weeklySummaries,
+                            expenseAccountSummaries = state.expenseAccountSummaries,
+                            incomeAccountSummaries = state.incomeAccountSummaries,
+                            savingsRate = state.savingsRate,
+                            transactionCount = state.transactions.size,
+                            modifier = Modifier
+                        )
+                    }
+
+                    TransactionsHubStore.Tab.Description -> {
+                        TransactionsHubDescriptionTab(
+                            descriptionGroups = state.descriptionGroups,
+                            searchQuery = state.descriptionSearchQuery,
+                            isAllExpanded = state.isAllDescriptionsExpanded,
+                            totalTransactionCount = state.transactions.size,
+                            accounts = state.accounts,
+                            categories = state.categories,
+                            onSearchQueryChanged = { query ->
+                                onIntent(TransactionsHubStore.Intent.SearchDescription(query))
+                            },
+                            onToggleGroup = { description ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.ToggleDescriptionGroup(
+                                        description
+                                    )
+                                )
+                            },
+                            onToggleExpandAll = {
+                                onIntent(TransactionsHubStore.Intent.ToggleExpandAllDescriptions)
+                            },
+                            onTransactionClick = { transaction ->
+                                onIntent(
+                                    TransactionsHubStore.Intent.TransactionClicked(
+                                        transaction
+                                    )
+                                )
+                            },
+                            modifier = Modifier
                         )
                     }
                 }
 
-                else -> {
-                    when (state.selectedTab) {
-                        TransactionsHubStore.Tab.Daily -> {
-                            DailyTransactionsList(
-                                dailyGroups = state.dailyGroups,
-                                accounts = state.accounts,
-                                categories = state.categories,
-                                onTransactionClick = { transaction ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.TransactionClicked(
-                                            transaction
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                /*
+                                when {
+                                    state.isLoading -> {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator(
+                                                color = MizanTheme.premium.colors.emerald
+                                            )
+                                        }
+                                    }
 
-                        TransactionsHubStore.Tab.Calendar -> {
-                            TransactionsHubCalendarTab(
-                                calendarDays = state.calendarDays,
-                                selectedDate = state.selectedDate,
-                                transactions = state.transactions,
-                                accounts = state.accounts,
-                                categories = state.categories,
-                                onDateSelected = { date ->
-                                    onIntent(TransactionsHubStore.Intent.SelectDate(date))
-                                },
-                                onTransactionClick = { transaction ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.TransactionClicked(
-                                            transaction
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                                    else -> {
+                                        when (state.selectedTab) {
+                                            TransactionsHubStore.Tab.Daily -> {
+                                                DailyTransactionsList(
+                                                    dailyGroups = state.dailyGroups,
+                                                    accounts = state.accounts,
+                                                    categories = state.categories,
+                                                    onTransactionClick = { transaction ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.TransactionClicked(
+                                                                transaction
+                                                            )
+                                                        )
+                                                    },
+                                                    modifier = Modifier
+                                                )
+                                            }
 
-                        TransactionsHubStore.Tab.Monthly -> {
-                            TransactionsHubMonthlyTab(
-                                weeklySummaries = state.weeklySummaries,
-                                accounts = state.accounts,
-                                categories = state.categories,
-                                onToggleWeek = { weekNumber ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.ToggleWeekExpansion(
-                                            weekNumber
-                                        )
-                                    )
-                                },
-                                onTransactionClick = { transaction ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.TransactionClicked(
-                                            transaction
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                                            TransactionsHubStore.Tab.Calendar -> {
+                                                TransactionsHubCalendarTab(
+                                                    calendarDays = state.calendarDays,
+                                                    selectedDate = state.selectedDate,
+                                                    transactions = state.transactions,
+                                                    accounts = state.accounts,
+                                                    categories = state.categories,
+                                                    onDateSelected = { date ->
+                                                        onIntent(TransactionsHubStore.Intent.SelectDate(date))
+                                                    },
+                                                    onTransactionClick = { transaction ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.TransactionClicked(
+                                                                transaction
+                                                            )
+                                                        )
+                                                    },
+                                                    modifier = Modifier
+                                                )
+                                            }
 
-                        TransactionsHubStore.Tab.Summary -> {
-                            TransactionsHubSummaryTab(
-                                summary = state.summary,
-                                expenseCategorySummaries = state.expenseCategorySummaries,
-                                incomeCategorySummaries = state.incomeCategorySummaries,
-                                weeklySummaries = state.weeklySummaries,
-                                expenseAccountSummaries = state.expenseAccountSummaries,
-                                incomeAccountSummaries = state.incomeAccountSummaries,
-                                savingsRate = state.savingsRate,
-                                transactionCount = state.transactions.size,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                                            TransactionsHubStore.Tab.Monthly -> {
+                                                TransactionsHubMonthlyTab(
+                                                    weeklySummaries = state.weeklySummaries,
+                                                    accounts = state.accounts,
+                                                    categories = state.categories,
+                                                    onToggleWeek = { weekNumber ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.ToggleWeekExpansion(
+                                                                weekNumber
+                                                            )
+                                                        )
+                                                    },
+                                                    onTransactionClick = { transaction ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.TransactionClicked(
+                                                                transaction
+                                                            )
+                                                        )
+                                                    },
+                                                    modifier = Modifier
+                                                )
+                                            }
 
-                        TransactionsHubStore.Tab.Description -> {
-                            TransactionsHubDescriptionTab(
-                                descriptionGroups = state.descriptionGroups,
-                                searchQuery = state.descriptionSearchQuery,
-                                isAllExpanded = state.isAllDescriptionsExpanded,
-                                totalTransactionCount = state.transactions.size,
-                                accounts = state.accounts,
-                                categories = state.categories,
-                                onSearchQueryChanged = { query ->
-                                    onIntent(TransactionsHubStore.Intent.SearchDescription(query))
-                                },
-                                onToggleGroup = { description ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.ToggleDescriptionGroup(
-                                            description
-                                        )
-                                    )
-                                },
-                                onToggleExpandAll = {
-                                    onIntent(TransactionsHubStore.Intent.ToggleExpandAllDescriptions)
-                                },
-                                onTransactionClick = { transaction ->
-                                    onIntent(
-                                        TransactionsHubStore.Intent.TransactionClicked(
-                                            transaction
-                                        )
-                                    )
-                                },
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                    }
-                }
+                                            TransactionsHubStore.Tab.Summary -> {
+                                                TransactionsHubSummaryTab(
+                                                    summary = state.summary,
+                                                    expenseCategorySummaries = state.expenseCategorySummaries,
+                                                    incomeCategorySummaries = state.incomeCategorySummaries,
+                                                    weeklySummaries = state.weeklySummaries,
+                                                    expenseAccountSummaries = state.expenseAccountSummaries,
+                                                    incomeAccountSummaries = state.incomeAccountSummaries,
+                                                    savingsRate = state.savingsRate,
+                                                    transactionCount = state.transactions.size,
+                                                    modifier = Modifier
+                                                )
+                                            }
+
+                                            TransactionsHubStore.Tab.Description -> {
+                                                TransactionsHubDescriptionTab(
+                                                    descriptionGroups = state.descriptionGroups,
+                                                    searchQuery = state.descriptionSearchQuery,
+                                                    isAllExpanded = state.isAllDescriptionsExpanded,
+                                                    totalTransactionCount = state.transactions.size,
+                                                    accounts = state.accounts,
+                                                    categories = state.categories,
+                                                    onSearchQueryChanged = { query ->
+                                                        onIntent(TransactionsHubStore.Intent.SearchDescription(query))
+                                                    },
+                                                    onToggleGroup = { description ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.ToggleDescriptionGroup(
+                                                                description
+                                                            )
+                                                        )
+                                                    },
+                                                    onToggleExpandAll = {
+                                                        onIntent(TransactionsHubStore.Intent.ToggleExpandAllDescriptions)
+                                                    },
+                                                    onTransactionClick = { transaction ->
+                                                        onIntent(
+                                                            TransactionsHubStore.Intent.TransactionClicked(
+                                                                transaction
+                                                            )
+                                                        )
+                                                    },
+                                                    modifier = Modifier
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                */
             }
         }
     }

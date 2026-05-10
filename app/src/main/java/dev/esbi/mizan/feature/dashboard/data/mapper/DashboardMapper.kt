@@ -9,7 +9,7 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.model.dashboard.CategorySpending
 import dev.esbi.mizan.domain.model.dashboard.DashboardSummary
 import dev.esbi.mizan.domain.model.dashboard.WeeklySpendingPoint
-import dev.esbi.mizan.presentation.feature.addtransaction.presentation.models.TransactionType
+import dev.esbi.mizan.presentation.feature.addtransaction.model.TransactionType
 
 fun DashboardSummaryEntity.toDomain(
     categories: List<CategorySpending>,

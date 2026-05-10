@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.calc.mvikotlin.CalculatorStore.Intent
-import dev.esbi.mizan.feature.premiumaddtransaction.part2.MizanResizableAmount
+import dev.esbi.mizan.ui.kit.text.MizanResizableAmount
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.math.BigDecimal
 

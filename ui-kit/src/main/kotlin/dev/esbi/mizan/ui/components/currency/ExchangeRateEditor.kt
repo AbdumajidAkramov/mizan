@@ -30,9 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 /**
  * Exchange rate editor with real-time conversion preview.
@@ -48,8 +48,8 @@ import java.math.BigDecimal
  */
 @Composable
 fun ExchangeRateEditor(
-    selectedCurrency: Currency,
-    mainCurrency: Currency,
+    selectedCurrency: CurrencyModel,
+    mainCurrency: CurrencyModel,
     enteredAmount: BigDecimal,
     manualExchangeRate: BigDecimal,
     equivalentAmount: BigDecimal,
@@ -170,7 +170,7 @@ fun ExchangeRateEditor(
  * Format BigDecimal amount with thousand separators.
  */
 private fun formatAmount(amount: BigDecimal): String {
-    val rounded = amount.setScale(2, java.math.RoundingMode.HALF_UP)
+    val rounded = amount.setScale(2, RoundingMode.HALF_UP)
     return String.format("%,.2f", rounded.toDouble())
         .replace(",", " ")
 }
