@@ -26,7 +26,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,8 +40,6 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 /**
@@ -442,7 +439,11 @@ private fun DescriptionGroupCard(
             // Right: Total Amount
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "${if (group.netAmount >= java.math.BigDecimal.ZERO) "+" else ""}${formatCompactAmountDescription(group.netAmount.abs().toDouble())}",
+                    text = "${if (group.netAmount >= java.math.BigDecimal.ZERO) "+" else ""}${
+                        formatCompactAmountDescription(
+                            group.netAmount.abs().toDouble()
+                        )
+                    }",
                     style = MizanTheme.typography.headingLg,
                     color = if (isPositive) MizanTheme.premium.colors.emerald else Color(0xFFF5576C),
                     fontWeight = FontWeight.Bold
@@ -473,13 +474,6 @@ private fun DescriptionGroupCard(
 
                 Column(modifier = Modifier.padding(MizanTheme.premium.spacing.sm)) {
                     group.transactions.forEachIndexed { index, transaction ->
-                        // TODO: Implement DescriptionTransactionRow component
-                        // DescriptionTransactionRow(
-                        //     transaction = transaction,
-                        //     accounts = accounts,
-                        //     categories = categories,
-                        //     onClick = { onTransactionClick(transaction) }
-                        // )
                         if (index < group.transactions.size - 1) {
                             Spacer(modifier = Modifier.height(4.dp))
                         }
@@ -499,8 +493,8 @@ private fun formatDescriptionAmount(amount: Double): String {
         amount >= 1000000 -> "${
             (amount / 1000000).let {
                 if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
-                    "%.1f",
-                    it
+                    Locale.US,
+                    "%.1f", it
                 )
             }
         }M"
@@ -508,24 +502,21 @@ private fun formatDescriptionAmount(amount: Double): String {
         amount >= 10000 -> "${
             (amount / 1000).let {
                 if (it == it.toLong().toDouble()) it.toLong().toString() else String.format(
+                    Locale.US,
                     "%.1f",
                     it
                 )
             }
         }k"
 
-        amount >= 1000 -> String.format("%,.0f", amount)
-        else -> String.format("%.2f", amount)
-    }
-}
+        amount >= 1000 -> String.format(
+            Locale.US,
+            "%,.0f", amount
+        )
 
-private fun getCategoryIconDescription(iconName: String?): Int {
-    return when (iconName?.lowercase()) {
-        "utensils", "food" -> Icons.ic_utensils
-        "car", "transport" -> Icons.ic_car
-        "shopping", "bag" -> Icons.ic_shopping_bag
-        "coffee" -> Icons.ic_coffee
-        "heart", "health" -> Icons.ic_heart
-        else -> Icons.ic_list
+        else -> String.format(
+            Locale.US,
+            "%.2f", amount
+        )
     }
 }

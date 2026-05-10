@@ -136,15 +136,19 @@ interface TransactionsHubStore :
         val error: String? = null
     )
 
+    sealed interface Action {
+        data object LoadData : Action
+    }
+
     /**
      * User intents
      */
     sealed interface Intent {
         data class SelectTab(val tab: Tab) : Intent
         data class ChangeMonth(val month: YearMonth) : Intent
-        data object LoadData : Intent
         data object PreviousMonth : Intent
         data object NextMonth : Intent
+        data class OnChangeTransactionMonth(val month: YearMonth) : Intent
         data class TransactionClicked(val transaction: Transaction) : Intent
         data object AddTransactionClicked : Intent
         data object BackClicked : Intent
@@ -173,6 +177,7 @@ interface TransactionsHubStore :
             val calendarDays: List<CalendarDaySummary?>,
             val daysWithTransactions: Int
         ) : Message
+
         data class WeeklySummariesCalculated(val summaries: List<WeeklySummary>) : Message
         data class WeekExpansionToggled(val weekNumber: Int) : Message
         data class CategorySummariesCalculated(
@@ -180,10 +185,12 @@ interface TransactionsHubStore :
             val incomeSummaries: List<CategorySummary>,
             val savingsRate: Float
         ) : Message
+
         data class AccountSummariesCalculated(
             val expenseAccountSummaries: List<AccountSummary>,
             val incomeAccountSummaries: List<AccountSummary>
         ) : Message
+
         data class DescriptionGroupsCalculated(val groups: List<DescriptionGroup>) : Message
         data class DescriptionSearchQueryChanged(val query: String) : Message
         data class DescriptionGroupToggled(val description: String) : Message

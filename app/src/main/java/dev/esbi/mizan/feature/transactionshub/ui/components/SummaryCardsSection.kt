@@ -1,7 +1,6 @@
 package dev.esbi.mizan.feature.transactionshub.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import dev.esbi.mizan.ui.theme.colors.MizanTheme
 import dev.esbi.mizan.ui.utils.Icons
-import java.text.NumberFormat
-import java.util.Locale
 
 /**
  * Summary cards section showing Income, Expense, and Total balance
@@ -37,8 +33,6 @@ fun SummaryCardsSection(
     summary: TransactionsHubStore.MonthlySummary,
     modifier: Modifier = Modifier
 ) {
-    val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.sm)
@@ -82,17 +76,10 @@ private fun SummaryCard(
     iconResId: Int,
     modifier: Modifier = Modifier
 ) {
-    val numberFormat = NumberFormat.getCurrencyInstance(Locale.US)
-
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(MizanTheme.premium.radius.lg))
             .background(color.copy(alpha = 0.1f))
-            .border(
-                width = 1.dp,
-                color = color.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(MizanTheme.premium.radius.lg)
-            )
             .padding(MizanTheme.premium.spacing.md)
     ) {
         // Icon and Label Row

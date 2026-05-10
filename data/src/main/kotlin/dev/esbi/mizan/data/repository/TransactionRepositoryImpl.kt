@@ -8,6 +8,8 @@ import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.YearMonth
+import java.time.ZoneId
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
@@ -18,6 +20,30 @@ class TransactionRepositoryImpl @Inject constructor(
     override fun observeTransactions(): Flow<List<Transaction>> {
         return transactionsDao.observeAllTransactionsWithCurrency().map { rows ->
             rows.map { it.toDomain() }
+        }
+    }
+
+    // Avvalgi metod o'rniga shu metodni yozasiz
+    override suspend fun observeTransactionsByMonth(yearMonth: YearMonth): Result<List<Transaction>> {
+        // 1. Oyning birinchi kuni soat 00:00:00.000 (Millisekundda)
+        val startDate = yearMonth.atDay(1)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        // 2. Oyning oxirgi kuni soat 23:59:59.999 (Millisekundda)
+        val endDate = yearMonth.atEndOfMonth()
+            .atTime(23, 59, 59, 999)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        // 3. Dao orqali shu oraliqdagi ma'lumotlarni so'rash
+        return runCatching {
+            transactionsDao.observeTransactionsByDateRangeWithCurrency(startDate, endDate)
+                .map { rows ->
+                    rows.toDomain()
+                }
         }
     }
 

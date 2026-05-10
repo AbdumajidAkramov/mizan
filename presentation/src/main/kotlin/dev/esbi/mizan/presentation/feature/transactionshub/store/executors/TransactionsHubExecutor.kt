@@ -1,13 +1,15 @@
-package dev.esbi.mizan.presentation.feature.transactionshub.store
+package dev.esbi.mizan.presentation.feature.transactionshub.store.executors
 
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.domain.repository.AccountRepository
 import dev.esbi.mizan.domain.repository.CategoryRepository
 import dev.esbi.mizan.domain.repository.TransactionRepository
+import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -28,15 +30,19 @@ class TransactionsHubExecutor(
     private val accountRepository: AccountRepository
 ) : CoroutineExecutor<
         TransactionsHubStore.Intent,
-        Unit,
+        TransactionsHubStore.Action,
         TransactionsHubStore.State,
         TransactionsHubStore.Message,
         TransactionsHubStore.Label>(
     mainContext = mainDispatcher
 ) {
 
-    override fun executeAction(action: Unit) {
-        loadData()
+    override fun executeAction(action: TransactionsHubStore.Action) {
+        when (action) {
+            is TransactionsHubStore.Action.LoadData -> {
+                loadData()
+            }
+        }
     }
 
     override fun executeIntent(intent: TransactionsHubStore.Intent) {
@@ -47,23 +53,24 @@ class TransactionsHubExecutor(
 
             is TransactionsHubStore.Intent.ChangeMonth -> {
                 dispatch(TransactionsHubStore.Message.MonthChanged(intent.month))
-                recalculateDataForMonth(intent.month)
+                loadTransactions(intent.month)
             }
 
             is TransactionsHubStore.Intent.PreviousMonth -> {
                 val newMonth = state().currentMonth.minusMonths(1)
                 dispatch(TransactionsHubStore.Message.MonthChanged(newMonth))
-                recalculateDataForMonth(newMonth)
+                loadTransactions(newMonth)
             }
 
             is TransactionsHubStore.Intent.NextMonth -> {
                 val newMonth = state().currentMonth.plusMonths(1)
                 dispatch(TransactionsHubStore.Message.MonthChanged(newMonth))
-                recalculateDataForMonth(newMonth)
+                loadTransactions(newMonth)
             }
 
-            is TransactionsHubStore.Intent.LoadData -> {
-                loadData()
+            is TransactionsHubStore.Intent.OnChangeTransactionMonth -> {
+                dispatch(TransactionsHubStore.Message.MonthChanged(intent.month))
+                loadTransactions(intent.month)
             }
 
             is TransactionsHubStore.Intent.TransactionClicked -> {
@@ -102,16 +109,27 @@ class TransactionsHubExecutor(
         }
     }
 
+    private fun loadTransactions(month: YearMonth) {
+        // Observe transactions
+        scope.launch {
+            dispatch(TransactionsHubStore.Message.LoadingChanged(true))
+            transactionRepository.observeTransactionsByMonth(month)
+                .fold(
+                    onSuccess = { transactions ->
+                        dispatch(TransactionsHubStore.Message.TransactionsLoaded(transactions))
+                        recalculateDataForMonth(month)
+                        dispatch(TransactionsHubStore.Message.LoadingChanged(false))
+                    },
+                    onFailure = {
+                        dispatch(TransactionsHubStore.Message.LoadingChanged(false))
+                    }
+                )
+        }
+    }
+
     private fun loadData() {
         dispatch(TransactionsHubStore.Message.LoadingChanged(true))
-
-        // Observe transactions
-        transactionRepository.observeTransactions()
-            .onEach { transactions ->
-                dispatch(TransactionsHubStore.Message.TransactionsLoaded(transactions))
-                recalculateDataForMonth(state().currentMonth, transactions)
-            }
-            .launchIn(scope)
+        loadTransactions(YearMonth.now())
 
         // Observe accounts
         accountRepository.observeAccounts()
@@ -130,17 +148,9 @@ class TransactionsHubExecutor(
     }
 
     private fun recalculateDataForMonth(
-        month: YearMonth,
-        transactions: List<Transaction> = state().transactions
+        month: YearMonth
     ) {
-        // Filter transactions for the selected month
-        val monthTransactions = transactions.filter { txn ->
-            val txnDate = Instant.ofEpochMilli(txn.date)
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
-            YearMonth.from(txnDate) == month
-        }
-
+        val monthTransactions: List<Transaction> = state().transactions
         // Calculate summary
         val totalIncome = monthTransactions
             .filter { it.type == Transaction.Type.INCOME }
@@ -196,7 +206,7 @@ class TransactionsHubExecutor(
         dispatch(TransactionsHubStore.Message.DailyGroupsCalculated(grouped))
 
         // Generate calendar data
-        calculateCalendarData(month, transactions)
+        calculateCalendarData(month, monthTransactions)
 
         // Generate weekly summaries for Monthly view
         calculateWeeklySummaries(month, monthTransactions)
@@ -409,7 +419,8 @@ class TransactionsHubExecutor(
 
         // Calculate savings rate
         val netSavings = totalIncome.subtract(totalExpense)
-        val savingsRate = if (totalIncome > BigDecimal.ZERO) (netSavings.toFloat() / totalIncome.toFloat() * 100) else 0f
+        val savingsRate =
+            if (totalIncome > BigDecimal.ZERO) (netSavings.toFloat() / totalIncome.toFloat() * 100) else 0f
 
         dispatch(
             TransactionsHubStore.Message.CategorySummariesCalculated(
