@@ -1,12 +1,8 @@
 [versions]
-agp = "8.13.2"
-kotlin = "2.0.21"
 coreKtx = "1.10.1"
 
 # Firebase
 firebaseBom = "33.7.0"
-googleServices = "4.4.2"
-firebaseCrashlytics = "3.0.2"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
@@ -18,7 +14,6 @@ kotlinxSerialization = "1.7.3"
 mvikotlin = "4.2.0"
 dagger = "2.52"
 room = "2.6.1"
-ksp = "2.0.21-1.0.28"
 vico = "2.0.0-alpha.28"
 coroutines = "1.9.0"
 coil = "2.6.0"
@@ -102,16 +97,3 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-
-
-[plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
-room = { id = "androidx.room", version.ref = "room" }

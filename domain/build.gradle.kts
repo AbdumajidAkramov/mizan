@@ -1,15 +1,6 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.serialization)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-kotlin {
-    jvmToolchain(11)
+    alias(deps.plugins.kotlin.jvm)
+    alias(deps.plugins.kotlin.serialization)
 }
 
 dependencies {

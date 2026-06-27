@@ -1,26 +1,10 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
+    id("convention-android-library")
+    alias(deps.plugins.google.ksp)
 }
 
 android {
     namespace = "dev.esbi.mizan.data"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 28
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = "11"
-    }
 }
 
 ksp {
@@ -28,20 +12,20 @@ ksp {
 }
 
 dependencies {
-    implementation(project(":domain"))
+    implementation(projects.domain)
 
     // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    implementation(deps.androidx.room.runtime)
+    implementation(deps.androidx.room.ktx)
+    ksp(deps.androidx.room.compiler)
 
     // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(deps.kotlinx.coroutines.core)
+    implementation(deps.kotlinx.coroutines.android)
 
     // Dagger2 (for @Inject annotations on RepositoryImpl and Seeder)
     implementation(libs.dagger.core)
 
     // Gson (for Room TypeConverters)
-    implementation(libs.gson)
+    implementation(deps.gson)
 }

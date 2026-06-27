@@ -1,18 +1,9 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
-kotlin {
-    jvmToolchain(11)
+    alias(deps.plugins.kotlin.jvm)
 }
 
 dependencies {
-    implementation(project(":domain"))
+    implementation(projects.domain)
 
     // Coroutines (pure Kotlin, no Android)
     implementation(libs.kotlinx.coroutines.core)

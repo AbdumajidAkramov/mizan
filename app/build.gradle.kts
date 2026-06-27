@@ -1,26 +1,21 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
+    id("convention-android-app")
+    alias(deps.plugins.android.application)
+    alias(deps.plugins.compose.compiler)
+    alias(deps.plugins.kotlin.serialization)
+    alias(deps.plugins.google.ksp)
+    alias(deps.plugins.google.services)
+    alias(deps.plugins.firebase.crashlytics)
 }
 
 android {
     namespace = "dev.esbi.mizan"
-    compileSdk {
-        version = release(36)
-    }
 
     defaultConfig {
         applicationId = "dev.esbi.mizan"
-        minSdk = 28
-        targetSdk = 36
-        versionCode = 3
-        versionName = "1.1.0"
-
+        multiDexEnabled = true
+        versionCode = property("app.version.code")?.toString()?.toInt()
+        versionName = property("app.version.name")?.toString()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -33,13 +28,6 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
     }
 
     bundle {
@@ -57,10 +45,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":data"))
-    implementation(project(":presentation"))
-    implementation(project(":ui-kit"))
+    implementation(projects.domain)
+    implementation(projects.data)
+    implementation(projects.presentation)
+    implementation(projects.uiKit)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

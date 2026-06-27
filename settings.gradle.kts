@@ -1,27 +1,24 @@
+apply(pathDir = "gradle/include")
+rootProject.name = "Mizan"
+
+includeBuild("build-logic")
+
 pluginManagement {
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
+    apply(from = "build-logic/gradle/plugin-management-settings.gradle.kts")
 }
 
-rootProject.name = "Mizan"
-include(":app")
-include(":domain")
-include(":data")
-include(":presentation")
-include(":ui-kit")
+dependencyResolutionManagement {
+    apply(from = "build-logic/gradle/dependency-resolution-management-settings.gradle.kts")
+}
+
+fun apply(pathDir: String) {
+    val files = File(pathDir).listFiles() ?: return
+    for (file in files) {
+        if (file.isDirectory) {
+            apply(pathDir = file.path)
+        }
+        if (file.isFile && file.name.endsWith(suffix = ".gradle")) {
+            apply(from = file.path)
+        }
+    }
+}
