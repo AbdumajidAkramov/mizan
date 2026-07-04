@@ -3,7 +3,10 @@ package dev.esbi.mizan.feature.newtransaction.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -202,6 +205,31 @@ fun PremiumNewTransaction(
                     }
                 )
             }
+
+            if (state.isEditMode.not()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = MizanTheme.premium.spacing.md,
+                            vertical = MizanTheme.premium.spacing.md
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    EditActionButton(
+                        bgColor = MizanTheme.premium.colors.error.copy(alpha = 0.2f),
+                        text = "Delete",
+                        modifier = Modifier.weight(1f),
+                        onClick = {}
+                    )
+                    EditActionButton(
+                        bgColor =  MizanTheme.premium.colors.emerald.copy(alpha = 0.2f),
+                        text = "Copy",
+                        modifier = Modifier.weight(1f),
+                        onClick = {}
+                    )
+                }
+            }
         }
     }
 
@@ -274,6 +302,28 @@ fun PremiumNewTransaction(
             }
         }
 
+    }
+}
+
+@Composable
+internal fun EditActionButton(
+    text: String,
+    bgColor: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(48.dp)
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.md))
+            .background(bgColor)
+            .clickable {
+                onClick()
+            }
+            .then(modifier)
+    ) {
+        Text(text = text)
     }
 }
 

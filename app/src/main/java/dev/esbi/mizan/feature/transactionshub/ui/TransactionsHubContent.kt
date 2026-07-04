@@ -85,7 +85,9 @@ fun TransactionsHubContent(
             TransactionsHubHeader(
                 currentMonth = state.currentMonth,
                 onBackClick = { onIntent(TransactionsHubStore.Intent.BackClicked) },
-                onAddClick = { onIntent(TransactionsHubStore.Intent.AddTransactionClicked) }
+                onAddClick = {
+                    onIntent(TransactionsHubStore.Intent.AddTransactionClicked)
+                }
             )
         }
     ) { paddingValues ->

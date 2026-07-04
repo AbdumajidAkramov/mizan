@@ -160,6 +160,8 @@ interface AddNewTransactionStore :
         data object OnCloseConfirmSave : Intent
         data object DeleteTransaction : Intent
         data object SaveTransaction : Intent
+        data object EditTransaction : Intent
+        data object CopyTransaction : Intent
     }
 
     sealed interface Label {
@@ -221,6 +223,7 @@ interface AddNewTransactionStore :
         class UpdateSaveAsTemplate(val saveAsTemplate: Boolean) : Message
 
         class UpdateStep(val step: State.Step) : Message
+        class UpdateEditMode(val isEdit: Boolean) : Message
 
         data class TransactionLoaded(
             val transaction: Transaction,

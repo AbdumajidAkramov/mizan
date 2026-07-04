@@ -59,6 +59,14 @@ class AddNewTransactionConfirmExecutor @Inject constructor(
                 deleteTransaction()
             }
 
+            is Intent.EditTransaction -> {
+                dispatch(Message.UpdateEditMode(isEdit = false))
+            }
+
+            is Intent.CopyTransaction -> {
+                
+            }
+
             is Intent.SaveTransaction -> {
                 scope.launch {
                     dispatch(Message.UpdateLoading(true))

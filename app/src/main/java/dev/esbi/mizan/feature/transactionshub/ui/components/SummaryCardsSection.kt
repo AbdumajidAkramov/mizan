@@ -83,16 +83,13 @@ private fun SummaryCard(
             .padding(MizanTheme.premium.spacing.md)
     ) {
         // Icon and Label Row
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = iconResId),
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+        Row {
+//            Icon(
+//                painter = painterResource(id = iconResId),
+//                contentDescription = null,
+//                tint = color,
+//                modifier = Modifier.size(16.dp)
+//            )
             Text(
                 text = label,
                 style = MizanTheme.typography.labelSm,

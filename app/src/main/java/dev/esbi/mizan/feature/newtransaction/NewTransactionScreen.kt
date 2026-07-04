@@ -104,8 +104,8 @@ internal fun NewTransactionScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        when (state.step) {
-            State.Step.CONFIRMATION -> {
+        when {
+            state.isEditMode || state.step == State.Step.CONFIRMATION -> {
                 ConfirmTransactionContent(
                     state = ConfirmTransactionUiState(
                         amount = state.amount,
@@ -141,11 +141,17 @@ internal fun NewTransactionScreen(
                     isEditMode = state.isEditMode,
                     onDeleteClick = {
                         showDeleteConfirmation = true
+                    },
+                    onEditClick = {
+                        accept(Intent.EditTransaction)
+                    },
+                    onCopyClick = {
+                        accept(Intent.CopyTransaction)
                     }
                 )
             }
 
-            State.Step.INPUT -> {
+            state.step == State.Step.INPUT -> {
                 PremiumNewTransaction(
                     state = state,
                     accept = accept

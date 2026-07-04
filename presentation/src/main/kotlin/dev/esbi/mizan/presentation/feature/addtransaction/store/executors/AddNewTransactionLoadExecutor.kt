@@ -18,21 +18,22 @@ class AddNewTransactionLoadExecutor @Inject constructor(
     @param:MainDispatcher private val mainDispatcher: CoroutineDispatcher,
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
+    private val transactionId: Long? = null
 ) : CoroutineExecutor<Intent, Action, State, Message, Label>(mainDispatcher) {
 
     override fun executeAction(action: Action) {
         when (action) {
             is Action.LoadTransaction -> {
-                loadTransaction()
+                loadTransaction(transactionId)
             }
 
             else -> Unit
         }
     }
 
-    private fun loadTransaction() {
-        val transactionId = state().editingTransactionId ?: return
-
+    private fun loadTransaction(transactionId: Long? = null) {
+//        val transactionId = state().editingTransactionId ?: return
+        transactionId ?: return
         scope.launch {
             dispatch(Message.UpdateLoading(true))
             dispatch(Message.UpdateError(null))

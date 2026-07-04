@@ -23,12 +23,13 @@ object AddNewTransactionReducer :
             )
 
             is Message.UpdateTemplateVisible -> copy(showTemplates = msg.isVisible)
-//            is Message.UpdatePad -> copy(pad = msg.pad)
             is Message.UpdateAccounts -> copy(accounts = msg.accounts)
             is Message.UpdateAllCategories -> copy(allCategories = msg.categories)
             is Message.UpdateCurrencies -> copy(
                 currencies = msg.currencies,
-                selectedCurrency = msg.currencies.firstOrNull { it.isMainCurrency }?:msg.currencies.firstOrNull())
+                selectedCurrency = msg.currencies.firstOrNull { it.isMainCurrency }
+                    ?: msg.currencies.firstOrNull()
+            )
 
             is Message.UpdateSelectedAccount -> copy(selectedAccount = msg.account)
             is Message.UpdateTargetAccount -> copy(targetAccount = msg.account)
@@ -58,6 +59,7 @@ object AddNewTransactionReducer :
                 }
                 copy(transactionDate = calendar.timeInMillis)
             }
+
             is Message.UpdateSaveAsTemplate -> copy(saveAsTemplate = msg.saveAsTemplate)
             is Message.UpdateStep -> copy(step = msg.step)
             is Message.TransactionLoaded -> copy(
@@ -75,6 +77,7 @@ object AddNewTransactionReducer :
                 isEditMode = true,
                 editingTransactionId = msg.transaction.id
             )
+
             is Message.UpdateError -> copy(error = msg.error)
             is Message.UpdateLoading -> copy(isLoading = msg.loading)
             is Message.UpdateCurrency -> copy(selectedCurrency = msg.currency)
@@ -84,5 +87,6 @@ object AddNewTransactionReducer :
             is Message.UpdateExchangeRateBottomSheet -> copy(isExchangeRateBottomSheetVisible = msg.isVisible)
             is Message.UpdateManualExchangeRate -> copy(manualExchangeRate = msg.rate)
             is Message.CloseToast -> copy(error = null)
+            is Message.UpdateEditMode -> copy(isEditMode = msg.isEdit)
         }
 }

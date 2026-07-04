@@ -15,7 +15,7 @@ internal fun DeleteConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = MizanTheme.premium.colors.surface2,
+        containerColor = MizanTheme.premium.background.primary.copy(1f),
         title = {
             Text(
                 text = "Delete Transaction",

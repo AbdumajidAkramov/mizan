@@ -74,10 +74,14 @@ fun TransactionsHubHeader(
             Box(
                 modifier = Modifier
                     .padding(end = 16.dp)
-                    .size(48.dp)
+                    .size(44.dp)
                     .clip(CircleShape)
                     .background(MizanTheme.premium.colors.emerald)
-                    .clickable { onAddClick() },
+                    .clickable(
+                        onClick = {
+                            onAddClick()
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

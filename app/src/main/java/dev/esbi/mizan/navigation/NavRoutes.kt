@@ -26,7 +26,9 @@ sealed class NavRoute() {
     data class CategoryDetail(val categoryId: String) : NavRoute()
 
     @Serializable
-    data object AddTransaction : NavRoute()
+    data class AddTransaction(
+        val transactionId: Long? = null
+    ) : NavRoute()
 
     @Serializable
     data object ManageCategories : NavRoute()

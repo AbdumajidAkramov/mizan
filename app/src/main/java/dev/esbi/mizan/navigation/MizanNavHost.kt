@@ -95,10 +95,10 @@ internal fun MizanNavHost(
                     navController.popBackStack()
                 },
                 onAddTransactionClick = {
-                    navController.navigate(NavRoute.AddTransaction)
+                    navController.navigate(NavRoute.AddTransaction())
                 },
                 onEditTransactionClick = { transactionId ->
-                    // TODO: Navigate to edit transaction screen
+                    navController.navigate(NavRoute.AddTransaction(transactionId))
                 }
             )
         }
@@ -133,8 +133,16 @@ internal fun MizanNavHost(
             val route = backStackEntry.toRoute<NavRoute.CategoryDetail>()
             // TODO: Implement CategoryDetailScreen when needed
         }
-        composable<NavRoute.AddTransaction> {
-            val component = remember { appComponent.amountInputComponent().create() }
+
+        composable<NavRoute.AddTransaction> {backStackEntry ->
+            // Navigatsiyadan kelgan parametrni olish
+            val route = backStackEntry.toRoute<NavRoute.AddTransaction>()
+
+            // transactionId ni component factory-ga berib yuborish
+            val component = remember(route.transactionId) {
+                appComponent.amountInputComponent().create(route.transactionId)
+            }
+
             val viewModel = component.viewModel
 
             NewTransactionScreen(
@@ -195,8 +203,9 @@ internal fun MizanNavHost(
             }
 
             // Get the AmountInput component from previous entry if it exists
-            val amountInputViewModel = previousEntry?.let {
-                remember { appComponent.amountInputComponent().create().viewModel }
+            val amountInputViewModel = previousEntry?.let { backStackEntry ->
+                val route = backStackEntry.toRoute<NavRoute.AddTransaction>()
+                remember { appComponent.amountInputComponent().create(route.transactionId).viewModel }
             }
 
             AccountSelectionScreen(

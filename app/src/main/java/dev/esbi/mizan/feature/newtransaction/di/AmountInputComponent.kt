@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.newtransaction.di
 
+import dagger.BindsInstance
 import dagger.Subcomponent
 import dev.esbi.mizan.di.ScreenScope
 import dev.esbi.mizan.feature.newtransaction.AmountInputViewModel
@@ -17,6 +18,8 @@ internal interface AmountInputComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(): AmountInputComponent
+        fun create(
+            @BindsInstance transactionId: Long? = null
+        ): AmountInputComponent
     }
 }

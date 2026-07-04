@@ -134,7 +134,7 @@ fun PremiumBottomNavigation(
         // --- FLOATING ACTION BUTTON (Markazda alohida qatlamda) ---
         PremiumFab(
             onClick = {
-                navController.navigate(NavRoute.AddTransaction)
+                navController.navigate(NavRoute.AddTransaction())
             },
             modifier = Modifier
                 .align(Alignment.Center)

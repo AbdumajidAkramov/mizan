@@ -13,8 +13,9 @@ internal object AmountInputModule {
     @Provides
     @ScreenScope
     fun provideAmountInputViewModel(
-        addNewTransactionStoreFactory: AddNewTransactionStoreFactory
+        addNewTransactionStoreFactory: AddNewTransactionStoreFactory,
+        transactionId: Long?
     ): AmountInputViewModel {
-        return AmountInputViewModel(addNewTransactionStoreFactory)
+        return AmountInputViewModel(addNewTransactionStoreFactory, transactionId)
     }
 }

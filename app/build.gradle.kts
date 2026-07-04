@@ -120,6 +120,12 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
 
+    // app core-modules
+    implementation(projects.core.dagger)
+    implementation(projects.core.mviKotlin)
+    implementation(projects.core.model)
+    implementation(projects.core.design)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

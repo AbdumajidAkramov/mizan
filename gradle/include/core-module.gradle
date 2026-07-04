@@ -1,0 +1,6 @@
+include(":core:mvi-kotlin")
+include(":core:dagger")
+include(":core:model")
+include(":core:design")
+include(":core:ocr-scanner")
+include(":core:voice-recognition")

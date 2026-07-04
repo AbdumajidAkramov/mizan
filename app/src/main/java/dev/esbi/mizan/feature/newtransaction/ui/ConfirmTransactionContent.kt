@@ -1,6 +1,5 @@
 package dev.esbi.mizan.feature.newtransaction.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -61,7 +59,9 @@ fun ConfirmTransactionContent(
     onBackClick: () -> Unit,
     onSaveAsTemplateChange: (Boolean) -> Unit = {},
     isEditMode: Boolean = false,
-    onDeleteClick: () -> Unit = {}
+    onDeleteClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onCopyClick: () -> Unit = {},
 ) {
     val typeColor = when (state.transactionType) {
         Transaction.Type.INCOME -> MizanTheme.premium.colors.emerald
@@ -83,6 +83,7 @@ fun ConfirmTransactionContent(
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
                 .padding(horizontal = MizanTheme.premium.spacing.lg)
+                .padding(bottom = 16.dp)
         ) {
             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.lg))
 
@@ -127,23 +128,42 @@ fun ConfirmTransactionContent(
             )
 
             Spacer(modifier = Modifier.weight(1f))
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
 
             // Delete Button (only in edit mode)
             if (isEditMode) {
-                DeleteButton(
-                    onClick = onDeleteClick
-                )
-                Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TransactionEditButton(
+                        text = "Delete",
+                        bgColor = MizanTheme.premium.colors.error.copy(alpha = 0.3f),
+                        textColor = MizanTheme.premium.colors.error,
+                        modifier = Modifier.weight(1f),
+                        onClick = onDeleteClick
+                    )
+                    TransactionEditButton(
+                        text = "Edit",
+                        bgColor = MizanTheme.premium.colors.emerald.copy(alpha = 0.3f),
+                        textColor = MizanTheme.premium.colors.emerald,
+                        modifier = Modifier.weight(1f),
+                        onClick = onEditClick
+                    )
+                    TransactionEditButton(
+                        text = "Copy",
+                        bgColor = MizanTheme.premium.colors.warning.copy(alpha = 0.3f),
+                        textColor = MizanTheme.premium.colors.warning,
+                        modifier = Modifier.weight(1f),
+                        onClick = onCopyClick
+                    )
+                }
             }
-
+            Spacer(modifier = Modifier.height(16.dp))
             // Save Button
             SaveButton(
                 isLoading = state.isLoading,
                 onClick = onConfirmClick
             )
-
-            Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.xl))
         }
     }
 
@@ -425,38 +445,30 @@ private fun SaveAsTemplateCard(
 }
 
 @Composable
-internal fun DeleteButton(
+internal fun TransactionEditButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    textColor: Color,
+    bgColor: Color,
     onClick: () -> Unit
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(28.dp))
-            .clickable { onClick() },
-        color = Color(0xFFF5576C).copy(alpha = 0.15f),
-        shape = RoundedCornerShape(28.dp),
-        border = BorderStroke(1.dp, Color(0xFFF5576C).copy(alpha = 0.3f))
+            .height(36.dp)
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
+            .background(color = bgColor)
+            .clickable { onClick() }
+            .padding(8.dp)
+            .then(modifier),
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = Icons.ic_delete),
-                contentDescription = "Delete",
-                tint = Color(0xFFF5576C),
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Delete Transaction",
-                style = MizanTheme.typography.bodyLg,
-                color = Color(0xFFF5576C),
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+        Text(
+            text = text,
+            style = MizanTheme.typography.bodyLg,
+            color = textColor,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
 
@@ -469,10 +481,10 @@ internal fun SaveButton(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .clip(RoundedCornerShape(28.dp))
+            .clip(RoundedCornerShape(MizanTheme.premium.radius.xl))
             .clickable(enabled = !isLoading) { onClick() },
         color = MizanTheme.premium.colors.emerald,
-        shape = RoundedCornerShape(28.dp)
+        shape = RoundedCornerShape(MizanTheme.premium.radius.xl)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
