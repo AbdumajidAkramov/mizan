@@ -40,17 +40,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.toast.MizanToast
+import dev.esbi.mizan.design.toast.MizanToastStatus
+import dev.esbi.mizan.design.utils.IconRes as MizanIcons
 import dev.esbi.mizan.presentation.feature.accounts.store.AccountsStore
-import dev.esbi.mizan.ui.components.account.AccountGroupHeader
-import dev.esbi.mizan.ui.components.account.AccountRow
-import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
-import dev.esbi.mizan.ui.components.accounts.AddAccountButton
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.toast.MizanToast
-import dev.esbi.mizan.ui.toast.MizanToastStatus
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 /**
  * Account Management Screen
@@ -136,7 +132,7 @@ fun AccountsScreenContent(
 
                         // Total Balance Card
                         item {
-                            PremiumTotalBalanceCard(
+                            _root_ide_package_.dev.esbi.mizan.design.components.account.PremiumTotalBalanceCard(
                                 balance = state.totalBalance,
                                 monthlyChange = state.monthlyChange,
                                 monthlyChangePercent = state.monthlyChangePercent,
@@ -161,7 +157,7 @@ fun AccountsScreenContent(
                         groupedAccounts.forEach { group ->
                             // Group Header (from :ui-kit)
                             item(key = "group_${group.id}") {
-                                AccountGroupHeader(
+                                _root_ide_package_.dev.esbi.mizan.design.components.account.AccountGroupHeader(
                                     title = group.name,
                                     count = group.accounts.size
                                 )
@@ -172,7 +168,7 @@ fun AccountsScreenContent(
                                 items = group.accounts,
                                 key = { it.id }
                             ) { account ->
-                                AccountRow(
+                                _root_ide_package_.dev.esbi.mizan.design.components.account.AccountRow(
                                     id = account.id,
                                     name = account.name,
                                     balance = account.balance,
@@ -187,7 +183,7 @@ fun AccountsScreenContent(
                         // Add New Account Button
                         item {
                             Spacer(modifier = Modifier.height(MizanTheme.premium.spacing.md))
-                            AddAccountButton(
+                            _root_ide_package_.dev.esbi.mizan.design.components.accounts.AddAccountButton(
                                 onClick = {
                                     accept(AccountsStore.Intent.OpenAddNewAccount())
                                 }
@@ -359,7 +355,7 @@ private fun EmptyState(
 @Preview(showBackground = true)
 @Composable
 fun EmptyStatePreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    dev.esbi.mizan.design.theme.MizanTheme {
         Box(modifier = Modifier.padding(16.dp)) {
             EmptyState(
                 onAddNew = {}

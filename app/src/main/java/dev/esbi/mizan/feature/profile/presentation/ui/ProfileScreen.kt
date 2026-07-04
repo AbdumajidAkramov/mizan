@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.domain.model.profile.AppSettings
 import dev.esbi.mizan.domain.model.profile.SettingAction
 import dev.esbi.mizan.domain.model.profile.SettingIcon
@@ -39,17 +38,17 @@ import dev.esbi.mizan.feature.profile.presentation.ui.widgets.ProfileHeaderCard
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.SettingsSection
 import dev.esbi.mizan.feature.profile.presentation.ui.widgets.StatsGrid
 import dev.esbi.mizan.presentation.feature.profile.presentation.store.ProfileStore
-import dev.esbi.mizan.ui.animation.FadeInUpAnimation
-import dev.esbi.mizan.ui.animation.StaggeredFadeInUp
-import dev.esbi.mizan.ui.components.ErrorState
-import dev.esbi.mizan.ui.components.LoadingSkeleton
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.theme.PremiumColors
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
-import dev.esbi.mizan.ui.utils.Strings
+import dev.esbi.mizan.design.animation.FadeInUpAnimation
+import dev.esbi.mizan.design.animation.StaggeredFadeInUp
+import dev.esbi.mizan.design.components.ErrorState
+import dev.esbi.mizan.design.components.LoadingSkeleton
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.theme.PremiumColors
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
+import dev.esbi.mizan.design.utils.Strings
 
 @Composable
 fun ProfileScreen(
@@ -194,7 +193,7 @@ internal fun ProfileContent(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    painter = painterResource(Icons.ic_logout),
+                                    painter = painterResource(IconRes.ic_logout),
                                     contentDescription = null,
                                     tint = MizanTheme.premium.colors.primary,
                                     modifier = Modifier.size(20.dp)
@@ -258,26 +257,26 @@ internal fun LoadingContent(modifier: Modifier = Modifier) {
 
 internal fun getIconResource(icon: SettingIcon): Int {
     return when (icon) {
-        SettingIcon.BUDGET_MANAGEMENT -> Icons.ic_dollar
-        SettingIcon.FINANCIAL_GOALS -> Icons.ic_trend_up
-        SettingIcon.USER -> Icons.ic_profile
-        SettingIcon.MAIL -> Icons.ic_mail
-        SettingIcon.PHONE -> Icons.ic_phone
-        SettingIcon.BELL -> Icons.ic_bell
-        SettingIcon.PALETTE -> Icons.ic_palette
-        SettingIcon.GLOBE -> Icons.ic_globe
-        SettingIcon.LOCK -> Icons.ic_lock
-        SettingIcon.SHIELD -> Icons.ic_shield
-        SettingIcon.DOWNLOAD -> Icons.ic_download
-        SettingIcon.FILE -> Icons.ic_file
-        SettingIcon.HELP -> Icons.ic_help
-        SettingIcon.SHARE -> Icons.ic_share
-        SettingIcon.STAR -> Icons.ic_star
-        SettingIcon.DOLLAR -> Icons.ic_dollar
-        SettingIcon.TRENDING -> Icons.ic_trend_up
-        SettingIcon.PRIVACY_POLICY -> Icons.ic_file
-        SettingIcon.TERMS_AND_SERVICE -> Icons.ic_file
-        SettingIcon.WALLET -> Icons.ic_wallet
+        SettingIcon.BUDGET_MANAGEMENT -> IconRes.ic_dollar
+        SettingIcon.FINANCIAL_GOALS -> IconRes.ic_trend_up
+        SettingIcon.USER -> IconRes.ic_profile
+        SettingIcon.MAIL -> IconRes.ic_mail
+        SettingIcon.PHONE -> IconRes.ic_phone
+        SettingIcon.BELL -> IconRes.ic_bell
+        SettingIcon.PALETTE -> IconRes.ic_palette
+        SettingIcon.GLOBE -> IconRes.ic_globe
+        SettingIcon.LOCK -> IconRes.ic_lock
+        SettingIcon.SHIELD -> IconRes.ic_shield
+        SettingIcon.DOWNLOAD -> IconRes.ic_download
+        SettingIcon.FILE -> IconRes.ic_file
+        SettingIcon.HELP -> IconRes.ic_help
+        SettingIcon.SHARE -> IconRes.ic_share
+        SettingIcon.STAR -> IconRes.ic_star
+        SettingIcon.DOLLAR -> IconRes.ic_dollar
+        SettingIcon.TRENDING -> IconRes.ic_trend_up
+        SettingIcon.PRIVACY_POLICY -> IconRes.ic_file
+        SettingIcon.TERMS_AND_SERVICE -> IconRes.ic_file
+        SettingIcon.WALLET -> IconRes.ic_wallet
     }
 }
 

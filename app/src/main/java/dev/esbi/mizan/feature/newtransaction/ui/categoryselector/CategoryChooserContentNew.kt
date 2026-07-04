@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -55,13 +55,13 @@ fun CategoryList(
 internal fun getCategoryIcon(categoryName: String): Int {
     val name = categoryName.lowercase()
     return when {
-        name.contains("food") || name.contains("dining") -> Icons.ic_home
-        name.contains("shopping") -> Icons.ic_home
-        name.contains("bill") || name.contains("utilit") -> Icons.ic_home
-        name.contains("entertainment") -> Icons.ic_home
-        name.contains("health") || name.contains("fitness") -> Icons.ic_home
-        name.contains("travel") -> Icons.ic_home
-        name.contains("tech") -> Icons.ic_home
-        else -> Icons.ic_home
+        name.contains("food") || name.contains("dining") -> IconRes.ic_home
+        name.contains("shopping") -> IconRes.ic_home
+        name.contains("bill") || name.contains("utilit") -> IconRes.ic_home
+        name.contains("entertainment") -> IconRes.ic_home
+        name.contains("health") || name.contains("fitness") -> IconRes.ic_home
+        name.contains("travel") -> IconRes.ic_home
+        name.contains("tech") -> IconRes.ic_home
+        else -> IconRes.ic_home
     }
 }

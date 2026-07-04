@@ -126,6 +126,8 @@ dependencies {
     implementation(projects.core.model)
     implementation(projects.core.design)
 
+    implementation(projects.features.addTransaction)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

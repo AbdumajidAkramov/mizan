@@ -1,5 +1,6 @@
 package dev.esbi.mizan.feature.budget.presentation.ui
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,13 +38,13 @@ import dev.esbi.mizan.feature.budget.presentation.BudgetViewModel
 import dev.esbi.mizan.feature.budget.presentation.store.BudgetStore
 import dev.esbi.mizan.feature.budget.presentation.ui.components.CategoryBudgetItem
 import dev.esbi.mizan.feature.budget.presentation.ui.components.OverallBudgetCard
-import dev.esbi.mizan.ui.animation.FadeInUpAnimation
-import dev.esbi.mizan.ui.animation.StaggeredFadeInUp
-import dev.esbi.mizan.ui.components.ErrorState
-import dev.esbi.mizan.ui.components.LoadingSkeleton
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.utils.Strings
+import dev.esbi.mizan.design.animation.FadeInUpAnimation
+import dev.esbi.mizan.design.animation.StaggeredFadeInUp
+import dev.esbi.mizan.design.components.ErrorState
+import dev.esbi.mizan.design.components.LoadingSkeleton
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.utils.Strings
 
 @Composable
 fun BudgetScreen(
@@ -207,7 +208,7 @@ private fun BudgetContent(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
-                                        painter = painterResource(android.R.drawable.ic_input_add),
+                                        painter = painterResource(R.drawable.ic_input_add),
                                         contentDescription = null,
                                         tint = Color(0xFF667EEA),
                                         modifier = Modifier.size(20.dp)

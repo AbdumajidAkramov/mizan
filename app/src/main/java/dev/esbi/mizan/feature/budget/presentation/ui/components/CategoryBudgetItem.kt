@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.budget.domain.model.BudgetStatus
 import dev.esbi.mizan.feature.budget.domain.model.CategoryBudget
-import dev.esbi.mizan.ui.animation.animateProgressAsState
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.utils.Strings
+import dev.esbi.mizan.design.animation.animateProgressAsState
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 

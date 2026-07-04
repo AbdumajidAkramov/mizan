@@ -20,13 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.balance.BalanceAmount
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Red
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.balance.BalanceAmount
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.Red
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
 
 @Composable
@@ -52,7 +52,7 @@ fun SubCard(
                     .background(if (isIncome) Color(0xFF047750) else Red), Alignment.Center
             ) {
                 MizanIcon(
-                    icon = IconValue(if (isIncome) Icons.ic_trend_up else Icons.ic_down_trend),
+                    icon = IconValue(if (isIncome) IconRes.ic_trend_up else IconRes.ic_down_trend),
                     modifier = Modifier.size(14.dp),
                     tint = Color.White
                 )

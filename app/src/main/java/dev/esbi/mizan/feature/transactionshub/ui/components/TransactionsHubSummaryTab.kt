@@ -36,10 +36,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Summary Tab for TransactionsHub
@@ -99,7 +98,7 @@ fun TransactionsHubSummaryTab(
                     subtitle = "This month",
                     amount = summary.totalIncome.toDouble(),
                     color = MizanTheme.premium.colors.emerald,
-                    iconResId = Icons.ic_trending_up
+                    iconResId = IconRes.ic_trending_up
                 )
 
                 // Expense Card
@@ -108,7 +107,7 @@ fun TransactionsHubSummaryTab(
                     subtitle = "This month",
                     amount = summary.totalExpense.toDouble(),
                     color = Color(0xFFF5576C),
-                    iconResId = Icons.ic_trending_down
+                    iconResId = IconRes.ic_trending_down
                 )
 
                 // Net Savings Card
@@ -443,7 +442,7 @@ private fun NetSavingsCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = Icons.ic_wallet),
+                        painter = painterResource(id = IconRes.ic_wallet),
                         contentDescription = null,
                         tint = color,
                         modifier = Modifier.size(24.dp)
@@ -603,7 +602,7 @@ private fun CategoryLegendItem(
         Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.xs))
 
         Icon(
-            painter = painterResource(id = Icons.ic_chevron_right),
+            painter = painterResource(id = IconRes.ic_chevron_right),
             contentDescription = null,
             tint = MizanTheme.premium.text.tertiary,
             modifier = Modifier.size(20.dp)
@@ -709,7 +708,7 @@ private fun TopCategoryItem(
             )
             Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.xs))
             Icon(
-                painter = painterResource(id = Icons.ic_chevron_right),
+                painter = painterResource(id = IconRes.ic_chevron_right),
                 contentDescription = null,
                 tint = MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(20.dp)
@@ -751,7 +750,7 @@ private fun AccountUsageItem(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = Icons.ic_wallet),
+                        painter = painterResource(id = IconRes.ic_wallet),
                         contentDescription = null,
                         tint = MizanTheme.premium.colors.emerald,
                         modifier = Modifier.size(24.dp)
@@ -792,7 +791,7 @@ private fun AccountUsageItem(
                 }
                 Spacer(modifier = Modifier.width(MizanTheme.premium.spacing.xs))
                 Icon(
-                    painter = painterResource(id = Icons.ic_chevron_right),
+                    painter = painterResource(id = IconRes.ic_chevron_right),
                     contentDescription = null,
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(20.dp)

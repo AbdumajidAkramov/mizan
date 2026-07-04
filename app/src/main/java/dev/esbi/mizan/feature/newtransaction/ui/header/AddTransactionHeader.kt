@@ -7,10 +7,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +33,7 @@ fun AddTransactionHeader(
         navigationIcon = {
             IconButton(onClick = onClose) {
                 MizanIcon(
-                    icon = IconValue(Icons.ic_arrow_back),
+                    icon = IconValue(IconRes.ic_arrow_back),
                     contentDescription = "Back",
                     tint = MizanTheme.premium.text.primary
                 )
@@ -59,7 +59,7 @@ fun AddTransactionHeader(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = Icons.ic_wand_sparkles),
+                        painter = painterResource(id = MizanIcons.ic_wand_sparkles),
                         contentDescription = "Templates",
                         tint = if (showTemplates) Color.White
                         else MizanTheme.premium.text.secondary,

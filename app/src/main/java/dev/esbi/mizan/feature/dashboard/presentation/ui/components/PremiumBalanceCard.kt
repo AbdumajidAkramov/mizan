@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.utils.Strings
+import dev.esbi.mizan.design.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 

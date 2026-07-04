@@ -38,8 +38,8 @@ import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Monthly Tab for TransactionsHub
@@ -143,7 +143,7 @@ private fun WeekSection(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (week.isExpanded) Icons.ic_chevron_down else Icons.ic_chevron_right
+                        id = if (week.isExpanded) IconRes.ic_chevron_down else IconRes.ic_chevron_right
                     ),
                     contentDescription = if (week.isExpanded) "Collapse" else "Expand",
                     tint = MizanTheme.premium.text.tertiary,
@@ -336,13 +336,13 @@ private fun formatCompactAmountMonthly(amount: Double): String {
 
 private fun getCategoryIconMonthly(iconName: String?): Int {
     return when (iconName?.lowercase()) {
-        "food", "food-dining", "restaurant", "utensils" -> Icons.ic_utensils
-        "transport", "transportation", "car" -> Icons.ic_car
-        "shopping", "shop", "bag" -> Icons.ic_shopping_bag
-        "bills", "bills-utilities", "home" -> Icons.ic_home
-        "entertainment", "coffee" -> Icons.ic_coffee
-        "health", "healthcare" -> Icons.ic_heart
-        "income", "salary", "trending-up" -> Icons.ic_trending_up
-        else -> Icons.ic_wallet
+        "food", "food-dining", "restaurant", "utensils" -> IconRes.ic_utensils
+        "transport", "transportation", "car" -> IconRes.ic_car
+        "shopping", "shop", "bag" -> IconRes.ic_shopping_bag
+        "bills", "bills-utilities", "home" -> IconRes.ic_home
+        "entertainment", "coffee" -> IconRes.ic_coffee
+        "health", "healthcare" -> IconRes.ic_heart
+        "income", "salary", "trending-up" -> IconRes.ic_trending_up
+        else -> IconRes.ic_wallet
     }
 }

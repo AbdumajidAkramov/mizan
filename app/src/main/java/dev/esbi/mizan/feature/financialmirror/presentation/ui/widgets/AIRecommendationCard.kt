@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.AIRecommendation
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun AIRecommendationCard(recommendation: AIRecommendation) {

@@ -22,9 +22,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -63,7 +64,7 @@ fun TransactionsHubHeader(
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 MizanIcon(
-                    icon = IconValue(dev.esbi.mizan.ui.utils.Icons.ic_arrow_back),
+                    icon = IconValue(IconRes.ic_arrow_back),
                     contentDescription = "Back",
                     tint = MizanTheme.premium.text.primary
                 )

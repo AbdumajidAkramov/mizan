@@ -25,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Quick Actions Section for Dashboard
@@ -45,7 +45,7 @@ fun QuickActionsSection(
     ) {
         // Add Transaction - Primary Action
         QuickActionButton(
-            icon = Icons.ic_add,
+            icon = IconRes.ic_add,
             label = "Add",
             isPrimary = true,
             onClick = onAddTransactionClick,
@@ -54,7 +54,7 @@ fun QuickActionsSection(
 
         // Transfer - Secondary Action
         QuickActionButton(
-            icon = Icons.ic_swap,
+            icon = IconRes.ic_swap,
             label = "Transfer",
             isPrimary = false,
             onClick = onTransferClick,
@@ -63,7 +63,7 @@ fun QuickActionsSection(
 
         // View History - Secondary Action
         QuickActionButton(
-            icon = Icons.ic_list,
+            icon = IconRes.ic_list,
             label = "History",
             isPrimary = false,
             onClick = onViewHistoryClick,
@@ -180,7 +180,7 @@ fun DashboardFAB(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            painter = painterResource(id = Icons.ic_add),
+            painter = painterResource(id = IconRes.ic_add),
             contentDescription = "Add Transaction",
             tint = Color.White,
             modifier = Modifier.size(28.dp)

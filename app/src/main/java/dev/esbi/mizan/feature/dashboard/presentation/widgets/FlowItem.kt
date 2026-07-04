@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.Red
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.Red
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.utils.IconRes as Icons
 import java.text.NumberFormat
 import java.util.Locale
 

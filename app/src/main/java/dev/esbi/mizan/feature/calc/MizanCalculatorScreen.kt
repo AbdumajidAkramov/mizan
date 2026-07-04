@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.calc.mvikotlin.CalculatorStore.Intent
-import dev.esbi.mizan.ui.kit.text.MizanResizableAmount
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.text.MizanResizableAmount
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.math.BigDecimal
 
 @Composable

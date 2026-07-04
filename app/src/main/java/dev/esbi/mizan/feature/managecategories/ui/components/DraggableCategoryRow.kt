@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.managecategories.store.ManageCategoriesStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Draggable Category Row Component
@@ -104,7 +104,7 @@ fun DraggableCategoryRow(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(Icons.ic_drag_handle),
+                        painter = androidx.compose.ui.res.painterResource(IconRes.ic_drag_handle),
                         contentDescription = "Drag to reorder",
                         tint = MizanTheme.premium.text.tertiary,
                         modifier = Modifier.size(20.dp)
@@ -168,7 +168,7 @@ fun DraggableCategoryRow(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(Icons.ic_chevron_right),
+                            painter = androidx.compose.ui.res.painterResource(IconRes.ic_chevron_right),
                             contentDescription = if (isExpanded) "Collapse" else "Expand",
                             tint = MizanTheme.premium.text.secondary,
                             modifier = Modifier
@@ -188,7 +188,7 @@ fun DraggableCategoryRow(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(Icons.ic_edit),
+                        painter = androidx.compose.ui.res.painterResource(IconRes.ic_edit),
                         contentDescription = "Edit",
                         tint = MizanTheme.premium.text.secondary,
                         modifier = Modifier.size(16.dp)
@@ -205,7 +205,7 @@ fun DraggableCategoryRow(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(Icons.ic_delete),
+                        painter = androidx.compose.ui.res.painterResource(IconRes.ic_delete),
                         contentDescription = "Delete",
                         tint = MizanTheme.premium.text.secondary,
                         modifier = Modifier.size(16.dp)
@@ -285,7 +285,7 @@ private fun SubcategoryRow(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(Icons.ic_edit),
+                painter = androidx.compose.ui.res.painterResource(IconRes.ic_edit),
                 contentDescription = "Edit",
                 tint = MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(14.dp)

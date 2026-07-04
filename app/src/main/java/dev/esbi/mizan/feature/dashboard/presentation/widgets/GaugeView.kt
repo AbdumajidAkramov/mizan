@@ -33,13 +33,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Orange
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.Red
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.Orange
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.Red
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import kotlin.math.cos
 import kotlin.math.sin
 

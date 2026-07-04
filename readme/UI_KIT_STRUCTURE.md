@@ -112,8 +112,8 @@ Shadcn-style primitives awaiting implementation.
 
 ## Usage Example
 ```kotlin
-import dev.esbi.mizan.ui.kit.atoms.*
-import dev.esbi.mizan.ui.kit.premium.*
+import dev.esbi.mizan.design.kit.atoms.*
+import dev.esbi.mizan.design.kit.premium.*
 
 // Atoms
 AmountText(amount = 1234.56, type = TransactionType.INCOME, showSign = true)

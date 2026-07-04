@@ -21,20 +21,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ScenarioIconType
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMachineScenario
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 internal fun ScenarioCard(scenario: TimeMachineScenario) {
     val iconRes = when (scenario.iconType) {
-        ScenarioIconType.TARGET -> Icons.ic_ai_insight
-        ScenarioIconType.TRENDING_UP -> Icons.ic_trend_up
-        ScenarioIconType.SPARKLES -> Icons.ic_ai_insight
-        ScenarioIconType.DOLLAR_SIGN -> Icons.ic_wallet
-        ScenarioIconType.PIGGY_BANK -> Icons.ic_wallet
+        ScenarioIconType.TARGET -> IconRes.ic_ai_insight
+        ScenarioIconType.TRENDING_UP -> IconRes.ic_trend_up
+        ScenarioIconType.SPARKLES -> IconRes.ic_ai_insight
+        ScenarioIconType.DOLLAR_SIGN -> IconRes.ic_wallet
+        ScenarioIconType.PIGGY_BANK -> IconRes.ic_wallet
     }
 
     GlassCard {
@@ -103,7 +103,7 @@ internal fun ScenarioCard(scenario: TimeMachineScenario) {
             }
 
             MizanIcon(
-                icon = IconValue(Icons.ic_arrow_right),
+                icon = IconValue(IconRes.ic_arrow_right),
                 modifier = Modifier.size(20.dp),
                 tint = MizanTheme.premium.text.tertiary
             )

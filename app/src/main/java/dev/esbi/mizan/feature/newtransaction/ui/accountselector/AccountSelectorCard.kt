@@ -26,10 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.LocalPremiumSystem
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
@@ -125,7 +125,7 @@ internal fun AccountSelectorCard(
                     contentAlignment = Alignment.Center
                 ) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_check),
+                        icon = IconValue(IconRes.ic_check),
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)

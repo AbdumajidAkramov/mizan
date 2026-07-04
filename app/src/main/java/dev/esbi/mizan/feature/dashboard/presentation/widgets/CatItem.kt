@@ -20,11 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.dashboard.CategorySpending
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.Orange
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextGray
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.Orange
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.TextGray
+import dev.esbi.mizan.design.theme.TextWhite
 import java.text.NumberFormat
 import java.util.Locale
 

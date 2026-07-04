@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.theme.GradientAvatar
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.GradientAvatar
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 fun HeaderSection() {

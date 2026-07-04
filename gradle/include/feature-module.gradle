@@ -1,3 +1,4 @@
+include(":features:add-transaction")
 include(":features:add-transaction:domain")
 include(":features:add-transaction:data")
 include(":features:add-transaction:presentation")

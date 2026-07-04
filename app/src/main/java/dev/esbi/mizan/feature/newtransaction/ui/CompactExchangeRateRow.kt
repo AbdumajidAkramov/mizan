@@ -25,8 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.esbi.mizan.design.theme.MizanTheme
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -152,7 +153,7 @@ private fun CompactExchangeRateRowPreview() {
     val mainCurrency = Currency.TMP_USD
     val selectedCurrency = Currency.UZS
 
-    dev.esbi.mizan.ui.theme.MizanTheme {
+    MizanTheme {
         Surface {
             CompactExchangeRateRow(
                 selectedCurrency = selectedCurrency,
@@ -169,7 +170,7 @@ private fun CompactExchangeRateRowPreview() {
 @Composable
 private fun CompactExchangeRateRowNoManualRatePreview() {
 
-    dev.esbi.mizan.ui.theme.MizanTheme {
+    MizanTheme {
         Surface {
             CompactExchangeRateRow(
                 selectedCurrency = Currency.TMP_USD,
@@ -185,7 +186,7 @@ private fun CompactExchangeRateRowNoManualRatePreview() {
 @Preview(name = "Missing Currencies (Null)", showBackground = true)
 @Composable
 private fun CompactExchangeRateRowNullCurrenciesPreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme  {
+    MizanTheme {
         Surface {
             CompactExchangeRateRow(
                 selectedCurrency = null,

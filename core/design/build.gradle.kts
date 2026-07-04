@@ -1,6 +1,7 @@
 plugins {
     id("convention-android-library")
-    alias(deps.plugins.google.ksp)
+    alias(deps.plugins.kotlin.android)
+    alias(deps.plugins.compose.compiler)
 }
 android {
     namespace = "dev.esbi.mizan.design"
@@ -11,6 +12,7 @@ android {
 
 }
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -20,5 +22,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

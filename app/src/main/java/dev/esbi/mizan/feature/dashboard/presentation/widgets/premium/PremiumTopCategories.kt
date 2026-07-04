@@ -24,12 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.components.PremiumDonutChart
-import dev.esbi.mizan.ui.components.PremiumDonutChartComponent
-import dev.esbi.mizan.ui.components.PremiumDonutChartComponent.Pie
-import dev.esbi.mizan.ui.kit.glass.CardVariant
-import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.PremiumDonutChart
+import dev.esbi.mizan.design.components.PremiumDonutChartComponent
+import dev.esbi.mizan.design.components.PremiumDonutChartComponent.Pie
+import dev.esbi.mizan.design.kit.glass.CardVariant
+import dev.esbi.mizan.design.kit.glass.PremiumCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
 

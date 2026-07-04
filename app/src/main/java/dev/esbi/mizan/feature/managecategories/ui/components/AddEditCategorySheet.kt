@@ -40,8 +40,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.managecategories.store.ManageCategoriesStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import androidx.core.graphics.toColorInt
 
 /**
@@ -325,7 +325,7 @@ private fun IconSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(Icons.ic_category),
+                    painter = androidx.compose.ui.res.painterResource(IconRes.ic_category),
                     contentDescription = null,
                     tint = if (selectedIcon == icon) MizanTheme.premium.colors.emerald
                     else MizanTheme.premium.text.secondary,
@@ -375,7 +375,7 @@ private fun ColorSelector(
             ) {
                 if (selectedColor == color) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(Icons.ic_check),
+                        painter = androidx.compose.ui.res.painterResource(IconRes.ic_check),
                         contentDescription = "Selected",
                         tint = Color.White,
                         modifier = Modifier.size(16.dp)

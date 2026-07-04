@@ -13,8 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Account
-import dev.esbi.mizan.ui.components.accounts.AddAccountButton
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.accounts.AddAccountButton
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 /**
  * Simple version of AccountSelectionContent for use in bottom sheets

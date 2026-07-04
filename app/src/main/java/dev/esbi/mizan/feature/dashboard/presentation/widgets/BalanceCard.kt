@@ -27,14 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.balance.BalanceAmount
-import dev.esbi.mizan.ui.kit.card.GradientColorCard
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.balance.BalanceAmount
+import dev.esbi.mizan.design.kit.card.GradientColorCard
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
 
 @Composable
@@ -60,7 +60,7 @@ fun BalanceCard(
                                 .background(Color.White.copy(0.2f)), Alignment.Center
                         ) {
                             MizanIcon(
-                                icon = IconValue(Icons.ic_wallet),
+                                icon = IconValue(IconRes.ic_wallet),
                                 modifier = Modifier.size(20.dp),
                                 tint = Color.White
                             )
@@ -75,7 +75,7 @@ fun BalanceCard(
                     IconButton({ show = !show }) {
                         MizanIcon(
 
-                            icon = IconValue(if (show) Icons.ic_visibility else Icons.ic_visibility_off),
+                            icon = IconValue(if (show) IconRes.ic_visibility else IconRes.ic_visibility_off),
                             modifier = Modifier.size(20.dp),
                             tint = Color.White.copy(0.8f)
                         )

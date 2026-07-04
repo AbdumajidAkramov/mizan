@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.glass.PremiumCard
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 fun InsightItem(icon: String, title: String, sub: String, hl: String?, hlCol: Color) {

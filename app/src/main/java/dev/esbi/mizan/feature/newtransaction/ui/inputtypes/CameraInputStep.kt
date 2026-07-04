@@ -45,8 +45,8 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import dev.esbi.mizan.presentation.feature.temp.AddTransactionStore
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalPermissionsApi::class)

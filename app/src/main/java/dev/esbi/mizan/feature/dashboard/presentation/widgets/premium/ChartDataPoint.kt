@@ -26,13 +26,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.glass.CardVariant
-import dev.esbi.mizan.ui.kit.glass.PremiumCard
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.CardVariant
+import dev.esbi.mizan.design.kit.glass.PremiumCard
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -71,7 +71,7 @@ fun PremiumNetWorthCard(
                     contentAlignment = Alignment.Center
                 ) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_attach_money),
+                        icon = IconValue(IconRes.ic_attach_money),
                         contentDescription = null,
                         tint = Color.White, // Icon doim oq bo'lishi ma'qul gradient ustida
                         modifier = Modifier.size(20.dp)
@@ -109,7 +109,7 @@ fun PremiumNetWorthCard(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         MizanIcon(
-                            icon = IconValue(if (isPositive) Icons.ic_trend_up else Icons.ic_down_trend),
+                            icon = IconValue(if (isPositive) IconRes.ic_trend_up else IconRes.ic_down_trend),
                             contentDescription = null,
                             tint = pillColor,
                             modifier = Modifier.size(14.dp)

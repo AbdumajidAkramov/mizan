@@ -23,10 +23,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import kotlinx.coroutines.delay
 
 @Composable
@@ -69,9 +69,9 @@ fun PremiumEnhancedVoiceInput(
         ) {
             MizanIcon(
                 icon = if (isListening) {
-                    IconValue(Icons.ic_micoff)
+                    IconValue(IconRes.ic_micoff)
                 } else {
-                    IconValue(Icons.ic_mic)
+                    IconValue(IconRes.ic_mic)
                 },
                 tint = if (isListening) Color.White else MizanTheme.premium.text.primary,
                 modifier = Modifier.size(40.dp)
@@ -129,7 +129,7 @@ fun PremiumEnhancedVoiceInput(
 @Preview
 @Composable
 fun PremiumEnhancedVoiceInputPreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    dev.esbi.mizan.design.theme.MizanTheme() {
         PremiumEnhancedVoiceInput(
             isListening = true,
             onStartListening = {},

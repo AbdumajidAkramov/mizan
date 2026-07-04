@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

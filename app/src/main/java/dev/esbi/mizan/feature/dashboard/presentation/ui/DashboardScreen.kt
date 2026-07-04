@@ -45,9 +45,9 @@ import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.PremiumTopC
 import dev.esbi.mizan.feature.dashboard.presentation.widgets.premium.SpendingPoint
 import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
 import dev.esbi.mizan.presentation.feature.dashboard.store.DashboardStore
-import dev.esbi.mizan.ui.animation.AnimSection
-import dev.esbi.mizan.ui.components.ErrorState
-import dev.esbi.mizan.ui.components.account.PremiumTotalBalanceCard
+import dev.esbi.mizan.design.animation.AnimSection
+import dev.esbi.mizan.design.components.ErrorState
+import dev.esbi.mizan.design.components.account.PremiumTotalBalanceCard
 import java.math.BigDecimal
 
 

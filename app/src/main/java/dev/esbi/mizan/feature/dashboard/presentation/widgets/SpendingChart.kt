@@ -24,9 +24,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.dashboard.WeeklySpendingPoint
-import dev.esbi.mizan.ui.theme.CardBorderColor
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextMuted
+import dev.esbi.mizan.design.theme.CardBorderColor
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.TextMuted
 
 @Composable
 fun SpendingChart(data: List<WeeklySpendingPoint>, modifier: Modifier) {

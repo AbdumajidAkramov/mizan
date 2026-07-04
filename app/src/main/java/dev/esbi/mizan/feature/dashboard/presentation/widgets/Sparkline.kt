@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.Purple2
+import dev.esbi.mizan.design.theme.Purple2
 
 @Composable
 fun Sparkline(modifier: Modifier) {

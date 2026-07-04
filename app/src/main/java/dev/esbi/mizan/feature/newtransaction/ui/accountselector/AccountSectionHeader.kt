@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
+import dev.esbi.mizan.design.theme.colors.LocalPremiumSystem
 
 @Composable
 internal fun AccountSectionHeader(

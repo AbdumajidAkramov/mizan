@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -160,14 +160,14 @@ private fun VoiceInputStepContent(
             ) {
                 if (state.isListening) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_micoff),
+                        icon = IconValue(IconRes.ic_micoff),
                         contentDescription = "Stop listening",
                         tint = Color.White,
                         modifier = Modifier.size(40.dp)
                     )
                 } else {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_mic),
+                        icon = IconValue(IconRes.ic_mic),
                         contentDescription = "Start voice input",
                         tint = Color.White,
                         modifier = Modifier.size(40.dp)

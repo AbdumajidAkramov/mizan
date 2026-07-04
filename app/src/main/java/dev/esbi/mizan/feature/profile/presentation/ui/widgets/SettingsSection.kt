@@ -21,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.profile.SettingAction
 import dev.esbi.mizan.domain.model.profile.SettingItem
 import dev.esbi.mizan.feature.profile.presentation.ui.getIconResource
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.components.PremiumThemeToggle
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.components.PremiumThemeToggle
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.shadows.premiumShadow
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 internal fun SettingsSection(
@@ -137,7 +137,7 @@ internal fun SettingItemRow(
                     )
                 } else if (item.showChevron) {
                     Icon(
-                        painter = painterResource(Icons.ic_chevron_right),
+                        painter = painterResource(IconRes.ic_chevron_right),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.muted,
                         modifier = Modifier.size(20.dp)

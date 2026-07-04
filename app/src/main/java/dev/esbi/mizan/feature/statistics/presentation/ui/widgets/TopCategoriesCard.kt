@@ -11,13 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.statistics.domain.model.CategoryData
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun TopCategoriesCard(

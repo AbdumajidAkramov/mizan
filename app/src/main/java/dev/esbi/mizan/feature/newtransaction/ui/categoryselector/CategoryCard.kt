@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Category
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -111,7 +111,7 @@ internal fun CategoryCard(
                 if (subCategories.isNotEmpty()) {
                     Icon(
                         painter = painterResource(
-                            id = if (isExpanded) Icons.ic_chevron_left else Icons.ic_chevron_right
+                            id = if (isExpanded) IconRes.ic_chevron_left else IconRes.ic_chevron_right
                         ),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary,

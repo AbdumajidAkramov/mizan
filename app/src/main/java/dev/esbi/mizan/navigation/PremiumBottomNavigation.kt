@@ -48,12 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.shadows.premiumShadow
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 fun PremiumBottomNavigation(
@@ -272,7 +272,7 @@ private fun PremiumFab(
                 )
         ) {
             MizanIcon(
-                icon = IconValue(Icons.ic_add),
+                icon = IconValue(IconRes.ic_add),
                 contentDescription = "Add Expense",
                 tint = MizanTheme.premium.colors.white,
                 modifier = Modifier.size(28.dp)

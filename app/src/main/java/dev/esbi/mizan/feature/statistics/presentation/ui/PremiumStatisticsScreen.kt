@@ -34,9 +34,9 @@ import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.MonthlyTrendCha
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.PeriodSelector
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.StatsHeader
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.TopCategoriesCard
-import dev.esbi.mizan.ui.components.ErrorState
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.components.ErrorState
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 fun PremiumStatisticsScreen(
@@ -126,7 +126,7 @@ internal fun StatisticsContent(
                     change = "+12.5%",
                     isPositive = true,
                     gradientColors = listOf(Color(0xFF00F2FE), Color(0xFF4FACFE)),
-                    icon = IconValue(Icons.ic_trend_up)
+                    icon = IconValue(IconRes.ic_trend_up)
                 )
                 ComparisonCard(
                     modifier = Modifier.weight(1f),
@@ -135,7 +135,7 @@ internal fun StatisticsContent(
                     change = "-8.3%",
                     isPositive = false,
                     gradientColors = listOf(Color(0xFFFF6B6B), Color(0xFFF5576C)),
-                    icon = IconValue(Icons.ic_down_trend)
+                    icon = IconValue(IconRes.ic_down_trend)
                 )
             }
         }

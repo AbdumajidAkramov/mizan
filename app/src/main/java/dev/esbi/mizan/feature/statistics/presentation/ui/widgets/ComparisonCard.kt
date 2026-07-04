@@ -21,10 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun ComparisonCard(
@@ -55,7 +56,7 @@ internal fun ComparisonCard(
                             .background(Brush.linearGradient(gradientColors)),
                         contentAlignment = Alignment.Center
                     ) {
-                        dev.esbi.mizan.ui.kit.icon.MizanIcon(
+                        MizanIcon(
                             icon = icon,
                             contentDescription = null,
                             tint = Color.White,

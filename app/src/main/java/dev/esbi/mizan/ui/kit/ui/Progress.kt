@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.design.theme.PremiumColors
 
 @Composable
 fun Progress(

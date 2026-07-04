@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentOpportunity
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.InvestmentType
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 internal fun InvestmentOpportunitiesSection(opportunities: List<InvestmentOpportunity>) {
@@ -167,7 +167,7 @@ internal fun InvestmentCard(opportunity: InvestmentOpportunity) {
                     )
                     Spacer(Modifier.width(MizanTheme.premium.spacing.sm))
                     MizanIcon(
-                        icon = IconValue(Icons.ic_trend_up),
+                        icon = IconValue(IconRes.ic_trend_up),
                         modifier = Modifier.size(18.dp),
                         tint = Color.White
                     )

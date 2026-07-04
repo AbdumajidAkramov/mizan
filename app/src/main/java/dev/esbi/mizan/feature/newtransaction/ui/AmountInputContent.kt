@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 fun TransactionTypeChip(
@@ -54,7 +54,7 @@ fun TransactionTypeChip(
         )
         // Dropdown chevron indicator
         Icon(
-            painter = painterResource(id = Icons.ic_chevron_down),
+            painter = painterResource(id = IconRes.ic_chevron_down),
             contentDescription = null,
             tint = color,
             modifier = Modifier.size(14.dp)

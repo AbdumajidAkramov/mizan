@@ -186,7 +186,7 @@ Use `PremiumColors` object for custom brand colors and design system colors that
 ### **Brand Colors**
 
 ```kotlin
-import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.design.theme.PremiumColors
 
 @Composable
 fun PremiumBrandButton() {

@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.domain.model.profile.AppSettings
 import dev.esbi.mizan.main.MainAppScreen
-import dev.esbi.mizan.ui.theme.MizanTheme
+import dev.esbi.mizan.design.theme.MizanTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val state = settingState.collectAsState()
-            MizanTheme(darkTheme = state.value.isDarkMode) {
+            _root_ide_package_.dev.esbi.mizan.design.theme.MizanTheme(darkTheme = state.value.isDarkMode) {
                 MainAppScreen(
                     modifier = Modifier
                         .fillMaxSize()

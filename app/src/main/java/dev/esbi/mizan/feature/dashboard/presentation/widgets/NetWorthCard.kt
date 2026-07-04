@@ -22,15 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.Purple2
-import dev.esbi.mizan.ui.theme.TextGray
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.Purple2
+import dev.esbi.mizan.design.theme.TextGray
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.utils.IconRes
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -76,7 +76,7 @@ fun NetWorthCard(worth: Double, change: Double, pct: Double) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         MizanIcon(
-                            icon = IconValue(Icons.ic_trend_up),
+                            icon = IconValue(IconRes.ic_trend_up),
                             modifier = Modifier.size(14.dp),
                             tint = Cyan
                         )

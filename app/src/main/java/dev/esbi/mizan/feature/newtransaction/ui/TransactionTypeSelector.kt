@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.color
 import dev.esbi.mizan.presentation.feature.addtransaction.model.TransactionType
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.shadows.premiumShadow
+import dev.esbi.mizan.design.utils.IconRes
 
 
 internal data class TypeConfig(
@@ -58,21 +58,21 @@ internal fun getTypeConfig(type: TransactionType): TypeConfig {
         TransactionType.EXPENSE -> TypeConfig(
             label = "Expense",
             color = Color(0xFFF5576C), // PremiumDesignSystem.colors.secondary
-            icon = IconValue(Icons.ic_arrow_up),
+            icon = IconValue(IconRes.ic_arrow_up),
             caption = "Track your spending"
         )
 
         TransactionType.INCOME -> TypeConfig(
             label = "Income",
             color = Color(0xFF4FACFE), // PremiumDesignSystem.colors.success (variant)
-            icon = IconValue(Icons.ic_arrow_down),
+            icon = IconValue(IconRes.ic_arrow_down),
             caption = "Record money received"
         )
 
         TransactionType.TRANSFER -> TypeConfig(
             label = "Transfer",
             color = Color(0xFF10B981), // PremiumDesignSystem.colors.success (emerald)
-            icon = IconValue(Icons.ic_swap_horizontal),
+            icon = IconValue(IconRes.ic_swap_horizontal),
             caption = "Move money between accounts"
         )
     }

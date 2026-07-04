@@ -23,17 +23,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.theme.CardBg
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.Orange
-import dev.esbi.mizan.ui.theme.Red
-import dev.esbi.mizan.ui.theme.TextGray
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.theme.CardBg
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.Orange
+import dev.esbi.mizan.design.theme.Red
+import dev.esbi.mizan.design.theme.TextGray
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
@@ -52,7 +52,7 @@ fun StatsRow(budget: Double, spent: BigDecimal, limit: Double, savings: BigDecim
                             .background(Brush.linearGradient(listOf(Orange, Red))), Alignment.Center
                     ) {
                         MizanIcon(
-                            icon = IconValue(Icons.ic_trend_up),
+                            icon = IconValue(IconRes.ic_trend_up),
                             modifier = Modifier.size(16.dp),
                             tint = TextWhite
                         )
@@ -104,7 +104,7 @@ fun StatsRow(budget: Double, spent: BigDecimal, limit: Double, savings: BigDecim
                             .background(Cyan), Alignment.Center
                     ) {
                         MizanIcon(
-                            icon = IconValue(Icons.ic_calendar_month),
+                            icon = IconValue(IconRes.ic_calendar_month),
                             modifier = Modifier.size(16.dp),
                             tint = TextWhite
                         )

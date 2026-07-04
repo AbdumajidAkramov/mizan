@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Red
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.Red
 
 @Composable
 fun MiniBarChart() {

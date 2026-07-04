@@ -41,14 +41,14 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.domain.model.Currency
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.components.input.MizanTextField
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.components.input.MizanTextField
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.math.BigDecimal
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * All available world currencies for selection.
@@ -142,7 +142,7 @@ fun CurrencyPickerScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         MizanIcon(
-                            icon = IconValue(MizanIcons.ic_arrow_back),
+                            icon = IconValue(IconRes.ic_arrow_back),
                             tint = MizanTheme.premium.text.primary
                         )
                     }
@@ -196,7 +196,7 @@ fun CurrencyPickerScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 MizanIcon(
-                                    icon = IconValue(MizanIcons.ic_add),
+                                    icon = IconValue(IconRes.ic_add),
                                     tint = Color.White,
                                     modifier = Modifier.size(24.dp)
                                 )
@@ -220,7 +220,7 @@ fun CurrencyPickerScreen(
                             }
 
                             MizanIcon(
-                                icon = IconValue(MizanIcons.ic_chevron_right),
+                                icon = IconValue(IconRes.ic_chevron_right),
                                 tint = Color.White,
                                 modifier = Modifier.size(20.dp)
                             )
@@ -338,7 +338,7 @@ private fun PickerCurrencyRow(
 
             // Add icon
             MizanIcon(
-                icon = IconValue(MizanIcons.ic_add),
+                icon = IconValue(IconRes.ic_add),
                 tint = MizanTheme.premium.colors.emerald,
                 modifier = Modifier.size(24.dp)
             )

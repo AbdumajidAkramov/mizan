@@ -40,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.feature.newtransaction.state.ConfirmTransactionUiState
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
-import dev.esbi.mizan.ui.utils.formatMizanAmount
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
+import dev.esbi.mizan.design.utils.formatMizanAmount
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -97,7 +97,7 @@ fun ConfirmTransactionContent(
 
             // Date Selector Card
             ActionCard(
-                icon = Icons.ic_calendar_month,
+                icon = IconRes.ic_calendar_month,
                 text = formatDate(state.date),
                 onClick = onDateClick
             )
@@ -106,7 +106,7 @@ fun ConfirmTransactionContent(
 
             // Time Selector Card
             ActionCard(
-                icon = Icons.outline_access_time_24,
+                icon = IconRes.outline_access_time_24,
                 text = formatTime(state.date),
                 onClick = onTimeClick
             )
@@ -221,9 +221,9 @@ private fun ReceiptCard(
                     Icon(
                         painter = painterResource(
                             id = when (state.transactionType) {
-                                Transaction.Type.INCOME -> Icons.ic_trend_up
-                                Transaction.Type.EXPENSE -> Icons.ic_down_trend
-                                Transaction.Type.TRANSFER -> Icons.ic_swap_horizontal
+                                Transaction.Type.INCOME -> IconRes.ic_trend_up
+                                Transaction.Type.EXPENSE -> IconRes.ic_down_trend
+                                Transaction.Type.TRANSFER -> IconRes.ic_swap_horizontal
                             }
                         ),
                         contentDescription = null,
@@ -290,7 +290,7 @@ private fun ReceiptCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = Icons.ic_arrow_right),
+                        painter = painterResource(id = IconRes.ic_arrow_right),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary,
                         modifier = Modifier.size(16.dp)
@@ -362,7 +362,7 @@ private fun NoteInputCard(
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
         ) {
             MizanIcon(
-                icon = IconValue(Icons.ic_file),
+                icon = IconValue(IconRes.ic_file),
                 contentDescription = null,
                 tint = MizanTheme.premium.text.secondary,
                 modifier = Modifier.size(24.dp)
@@ -418,7 +418,7 @@ private fun SaveAsTemplateCard(
             horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
         ) {
             MizanIcon(
-                icon = IconValue(Icons.ic_star),
+                icon = IconValue(IconRes.ic_star),
                 contentDescription = null,
                 tint = MizanTheme.premium.text.secondary,
                 modifier = Modifier.size(24.dp)
@@ -525,7 +525,7 @@ private fun ConfirmSaveHeader(
         navigationIcon = {
             IconButton(onClick = onClose) {
                 MizanIcon(
-                    icon = IconValue(Icons.ic_arrow_back),
+                    icon = IconValue(IconRes.ic_arrow_back),
                     contentDescription = "Back",
                     tint = MizanTheme.premium.text.primary
                 )

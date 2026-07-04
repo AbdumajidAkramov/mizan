@@ -18,10 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.dashboard.WeeklySpendingPoint
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.TextWhite
 
 @Preview
 @Composable

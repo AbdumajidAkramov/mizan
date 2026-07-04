@@ -33,12 +33,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
-import dev.esbi.mizan.ui.utils.dashedBorder
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
+import dev.esbi.mizan.design.utils.dashedBorder
 
 @Composable
 fun PremiumScanInput(
@@ -63,7 +63,7 @@ fun PremiumScanInput(
                     contentAlignment = Alignment.Center
                 ) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_camera_alt),
+                        icon = IconValue(IconRes.ic_camera_alt),
                         modifier = Modifier.size(48.dp),
                         tint = MizanTheme.premium.text.primary
                     )
@@ -228,7 +228,7 @@ private fun DocScanner(
 @Preview
 @Composable
 fun PremiumScanInputPreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    dev.esbi.mizan.design.theme.MizanTheme() {
         PremiumScanInput(
             isScanning = true,
             onStartScan = {},

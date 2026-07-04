@@ -27,10 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.R
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Custom pill-shaped tab row for TransactionsHub
@@ -76,11 +75,11 @@ private fun TabItem(
     )
 
     val iconResId = when (tab) {
-        TransactionsHubStore.Tab.Daily -> Icons.ic_list
-        TransactionsHubStore.Tab.Calendar -> Icons.ic_calendar
-        TransactionsHubStore.Tab.Monthly -> Icons.ic_chart_bar
-        TransactionsHubStore.Tab.Summary -> Icons.ic_chart_bar
-        TransactionsHubStore.Tab.Description -> Icons.ic_list
+        TransactionsHubStore.Tab.Daily -> IconRes.ic_list
+        TransactionsHubStore.Tab.Calendar -> IconRes.ic_calendar
+        TransactionsHubStore.Tab.Monthly -> IconRes.ic_chart_bar
+        TransactionsHubStore.Tab.Summary -> IconRes.ic_chart_bar
+        TransactionsHubStore.Tab.Description -> IconRes.ic_list
     }
 
     val label = when (tab) {

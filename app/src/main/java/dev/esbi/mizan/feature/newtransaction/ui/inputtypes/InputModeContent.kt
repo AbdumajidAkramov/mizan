@@ -16,10 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.addtransaction.model.InputMode
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 internal fun InputModeContent(
@@ -37,9 +37,9 @@ internal fun InputModeContent(
         horizontalArrangement = Arrangement.spacedBy(MizanTheme.premium.spacing.md)
     ) {
         listOf(
-            InputMode.Manual to IconValue(Icons.ic_calculate),
-            InputMode.Voice to IconValue(Icons.ic_mic),
-            InputMode.Scan to IconValue(Icons.ic_camera_alt)
+            InputMode.Manual to IconValue(IconRes.ic_calculate),
+            InputMode.Voice to IconValue(IconRes.ic_mic),
+            InputMode.Scan to IconValue(IconRes.ic_camera_alt)
         ).forEach { (mode, icon) ->
             val isSelected = inputMode == mode
             Box(

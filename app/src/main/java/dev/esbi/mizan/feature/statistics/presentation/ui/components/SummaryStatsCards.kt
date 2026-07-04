@@ -24,10 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.statistics.domain.model.PeriodComparison
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.theme.PremiumColors
-import dev.esbi.mizan.ui.utils.Strings
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.theme.PremiumColors
+import dev.esbi.mizan.design.utils.Strings
 import java.text.NumberFormat
 import java.util.Locale
 

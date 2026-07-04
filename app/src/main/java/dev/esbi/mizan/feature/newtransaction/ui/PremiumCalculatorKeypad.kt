@@ -26,10 +26,10 @@ import dev.esbi.mizan.presentation.feature.addtransaction.model.Keypad
 import dev.esbi.mizan.presentation.feature.addtransaction.model.MINUS
 import dev.esbi.mizan.presentation.feature.addtransaction.model.MULTIPLY
 import dev.esbi.mizan.presentation.feature.addtransaction.model.PLUS
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 fun PremiumCalculatorKeypad(
@@ -94,7 +94,7 @@ fun PremiumCalculatorKeypad(
                     ) {
                         if (key == DEL_KEY) {
                             MizanIcon(
-                                icon = IconValue(Icons.ic_backspace),
+                                icon = IconValue(IconRes.ic_backspace),
                                 modifier = Modifier,
                                 tint = textColor
                             )
@@ -113,7 +113,7 @@ fun PremiumCalculatorKeypad(
 )
 @Composable
 fun PremiumCalculatorKeypadPreview() {
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    dev.esbi.mizan.design.theme.MizanTheme() {
         PremiumCalculatorKeypad(
             onNumberClick = {},
         )

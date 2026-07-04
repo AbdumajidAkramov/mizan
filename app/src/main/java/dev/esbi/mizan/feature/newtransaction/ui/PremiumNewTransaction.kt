@@ -36,8 +36,8 @@ import dev.esbi.mizan.feature.newtransaction.ui.categoryselector.CategorySelecto
 import dev.esbi.mizan.feature.newtransaction.ui.header.AddTransactionHeader
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @UiComposable

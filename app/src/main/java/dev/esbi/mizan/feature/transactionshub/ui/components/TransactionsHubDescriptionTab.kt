@@ -38,8 +38,8 @@ import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Category
 import dev.esbi.mizan.domain.model.Transaction
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.util.Locale
 
 /**
@@ -140,7 +140,7 @@ fun TransactionsHubDescriptionTab(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = Icons.ic_list),
+                            painter = painterResource(id = IconRes.ic_list),
                             contentDescription = null,
                             tint = MizanTheme.premium.text.secondary,
                             modifier = Modifier.size(14.dp)
@@ -166,7 +166,7 @@ fun TransactionsHubDescriptionTab(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
-                        painter = painterResource(id = Icons.ic_search),
+                        painter = painterResource(id = IconRes.ic_search),
                         contentDescription = null,
                         tint = MizanTheme.premium.text.tertiary.copy(alpha = 0.4f),
                         modifier = Modifier.size(48.dp)
@@ -235,7 +235,7 @@ private fun DescriptionSearchBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = Icons.ic_search),
+            painter = painterResource(id = IconRes.ic_search),
             contentDescription = null,
             tint = MizanTheme.premium.text.tertiary,
             modifier = Modifier.size(20.dp)
@@ -276,7 +276,7 @@ private fun DescriptionSearchBar(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = Icons.ic_close),
+                    painter = painterResource(id = IconRes.ic_close),
                     contentDescription = "Clear",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(16.dp)
@@ -324,7 +324,7 @@ private fun DescriptionGroupCard(
                 // Chevron
                 Icon(
                     painter = painterResource(
-                        id = if (group.isExpanded) Icons.ic_chevron_down else Icons.ic_chevron_right
+                        id = if (group.isExpanded) IconRes.ic_chevron_down else IconRes.ic_chevron_right
                     ),
                     contentDescription = null,
                     tint = MizanTheme.premium.text.secondary,
@@ -378,7 +378,7 @@ private fun DescriptionGroupCard(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Icon(
-                                painter = painterResource(id = Icons.ic_calendar),
+                                painter = painterResource(id = IconRes.ic_calendar),
                                 contentDescription = null,
                                 tint = MizanTheme.premium.text.tertiary,
                                 modifier = Modifier.size(12.dp)
@@ -403,7 +403,7 @@ private fun DescriptionGroupCard(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = Icons.ic_trending_up),
+                                    painter = painterResource(id = IconRes.ic_trending_up),
                                     contentDescription = null,
                                     tint = MizanTheme.premium.colors.emerald,
                                     modifier = Modifier.size(12.dp)
@@ -420,7 +420,7 @@ private fun DescriptionGroupCard(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
-                                    painter = painterResource(id = Icons.ic_trending_down),
+                                    painter = painterResource(id = IconRes.ic_trending_down),
                                     contentDescription = null,
                                     tint = Color(0xFFF5576C),
                                     modifier = Modifier.size(12.dp)

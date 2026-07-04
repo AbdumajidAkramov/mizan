@@ -23,8 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 fun AccountChip(
@@ -70,7 +70,7 @@ fun AccountChip(
     ) {
         if (!isPlaceholder) {
             Icon(
-                painter = painterResource(id = Icons.ic_wallet),
+                painter = painterResource(id = IconRes.ic_wallet),
                 contentDescription = null,
                 tint = MizanTheme.premium.colors.emerald,
                 modifier = Modifier.size(14.dp)

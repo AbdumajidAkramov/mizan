@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.esbi.mizan.ui.components.LoadingSkeleton
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.LoadingSkeleton
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun LoadingContent() {

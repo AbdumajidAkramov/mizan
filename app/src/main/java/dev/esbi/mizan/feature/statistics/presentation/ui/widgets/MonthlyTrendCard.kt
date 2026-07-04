@@ -11,11 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.components.charts.AreaChart
-import dev.esbi.mizan.ui.components.charts.MizanAreaChart
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.charts.AreaChart
+import dev.esbi.mizan.design.components.charts.MizanAreaChart
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 // 1. Data Model
 data class ChartData(

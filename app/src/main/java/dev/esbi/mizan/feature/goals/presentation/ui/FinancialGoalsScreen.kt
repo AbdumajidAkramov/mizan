@@ -51,8 +51,8 @@ import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.feature.goals.presentation.GoalsViewModel
 import dev.esbi.mizan.presentation.feature.goals.domain.model.Goal
 import dev.esbi.mizan.presentation.feature.goals.presentation.store.GoalsStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -201,7 +201,7 @@ private fun GoalsHeader(onBack: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(Icons.ic_notification),
+                painter = painterResource(IconRes.ic_notification),
                 contentDescription = "Back",
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)

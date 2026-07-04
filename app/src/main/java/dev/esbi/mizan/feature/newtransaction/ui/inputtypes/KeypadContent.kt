@@ -25,9 +25,10 @@ import dev.esbi.mizan.feature.newtransaction.ui.PremiumCalculatorKeypad
 import dev.esbi.mizan.feature.newtransaction.utils.AutoResizingText
 import dev.esbi.mizan.presentation.feature.addtransaction.model.Keypad
 import dev.esbi.mizan.presentation.utils.currency.HorizontalCurrencySelector
-import dev.esbi.mizan.ui.components.currency.CurrencyModel
-import dev.esbi.mizan.ui.components.currency.ExchangeRateEditor
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.currency.CurrencyModel
+import dev.esbi.mizan.design.components.currency.ExchangeRateEditor
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import dev.esbi.mizan.utils.annotatedString
 import java.math.BigDecimal
 
@@ -194,7 +195,7 @@ private fun KeypadContentPreview() {
     )
     val availableCurrencies = listOf(uzs, usd)
 
-    dev.esbi.mizan.ui.theme.MizanTheme {
+    MizanTheme {
         KeypadContent(
             state = KeypadState(
                 leftNumber = BigDecimal("150000"),

@@ -24,18 +24,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.theme.CardBg
-import dev.esbi.mizan.ui.theme.CardBorderColor
-import dev.esbi.mizan.ui.theme.Cyan
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextGray
-import dev.esbi.mizan.ui.theme.TextMuted
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.theme.CardBg
+import dev.esbi.mizan.design.theme.CardBorderColor
+import dev.esbi.mizan.design.theme.Cyan
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.TextGray
+import dev.esbi.mizan.design.theme.TextMuted
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.utils.IconRes
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -55,7 +55,7 @@ fun EmergencyCard(current: Double, goal: Double, months: Int) {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_shield),
+                        icon = IconValue(IconRes.ic_shield),
                         modifier = Modifier.size(24.dp),
                         tint = Purple
                     )
@@ -128,7 +128,7 @@ fun EmergencyCard(current: Double, goal: Double, months: Int) {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MizanIcon(
-                        icon = IconValue(Icons.ic_trend_up),
+                        icon = IconValue(IconRes.ic_trend_up),
                         modifier = Modifier.size(20.dp),
                         tint = Purple
                     )

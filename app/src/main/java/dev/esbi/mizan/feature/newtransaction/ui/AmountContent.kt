@@ -20,8 +20,8 @@ import dev.esbi.mizan.R
 import dev.esbi.mizan.feature.newtransaction.color
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
 import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
-import dev.esbi.mizan.ui.kit.text.MizanResizableAmount
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.text.MizanResizableAmount
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.math.BigDecimal
 import java.math.RoundingMode
 

@@ -18,9 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.esbi.mizan.domain.model.dashboard.CategorySpending
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.theme.Purple
-import dev.esbi.mizan.ui.theme.TextWhite
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.theme.Purple
+import dev.esbi.mizan.design.theme.TextWhite
 
 @Composable
 fun CategoriesSection(cats: List<CategorySpending>, onClick: (String) -> Unit) {

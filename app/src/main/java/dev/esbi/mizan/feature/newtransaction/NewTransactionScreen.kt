@@ -26,9 +26,9 @@ import dev.esbi.mizan.navigation.NavRoute
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Intent
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.Label
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore.State
-import dev.esbi.mizan.ui.components.currency.ExchangeRateBottomSheet
-import dev.esbi.mizan.ui.toast.MizanToast
-import dev.esbi.mizan.ui.toast.MizanToastStatus
+import dev.esbi.mizan.design.components.currency.ExchangeRateBottomSheet
+import dev.esbi.mizan.design.toast.MizanToast
+import dev.esbi.mizan.design.toast.MizanToastStatus
 
 
 @OptIn(ExperimentalMaterial3Api::class)

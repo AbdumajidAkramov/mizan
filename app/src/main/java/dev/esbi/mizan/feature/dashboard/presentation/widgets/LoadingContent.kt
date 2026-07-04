@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.components.LoadingSkeleton
+import dev.esbi.mizan.design.components.LoadingSkeleton
 
 @Composable
 fun LoadingContent() {
