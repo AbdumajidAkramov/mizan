@@ -47,6 +47,10 @@
             <option value="$PROJECT_DIR$/features/add-transaction/data" />
             <option value="$PROJECT_DIR$/features/add-transaction/domain" />
             <option value="$PROJECT_DIR$/features/add-transaction/presentation" />
+            <option value="$PROJECT_DIR$/features/dashboard" />
+            <option value="$PROJECT_DIR$/features/dashboard/data" />
+            <option value="$PROJECT_DIR$/features/dashboard/domain" />
+            <option value="$PROJECT_DIR$/features/dashboard/presentation" />
             <option value="$PROJECT_DIR$/presentation" />
             <option value="$PROJECT_DIR$/ui-kit" />
           </set>

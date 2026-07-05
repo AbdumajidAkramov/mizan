@@ -4,20 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "dev.esbi.mizan.data"
+    namespace = "dev.esbi.mizan.addtransaction.data"
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
 
 dependencies {
-    implementation(projects.domain)
-
-    // Room
-    implementation(deps.androidx.room.runtime)
-    implementation(deps.androidx.room.ktx)
-    ksp(deps.androidx.room.compiler)
+    implementation(projects.features.addTransaction.domain)
 
     // Coroutines
     implementation(deps.kotlinx.coroutines.core)

@@ -3,22 +3,21 @@ plugins {
     alias(deps.plugins.google.ksp)
 }
 android {
-    namespace = "dev.esbi.mizan.transactions.add"
+    namespace = "dev.esbi.mizan.addtransactions.presentation"
 }
 dependencies {
-    implementation(projects.domain)
+    implementation(projects.core.design)
+    implementation(projects.features.addTransaction.domain)
 
     // Coroutines (pure Kotlin, no Android)
     implementation(libs.kotlinx.coroutines.core)
 
     // MVIKotlin (pure Kotlin, KMP-ready)
-    implementation(libs.mvikotlin.core)
-    implementation(libs.mvikotlin.main)
-    implementation(libs.mvikotlin.coroutines)
+    implementation(deps.decompose.core)
+    implementation(deps.decompose.compose)
+    implementation(deps.decompose.android)
+    implementation(deps.bundles.compose)
 
     // javax.inject for @Inject annotations (pure Java/Kotlin, no Android)
     implementation(libs.dagger.core)
-
-    implementation(projects.core.mviKotlin)
-    implementation(projects.core.dagger)
 }

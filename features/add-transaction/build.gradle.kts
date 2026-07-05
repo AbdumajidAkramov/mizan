@@ -3,7 +3,7 @@ plugins {
     alias(deps.plugins.google.ksp)
 }
 android {
-    namespace = "dev.esbi.mizan.transactions"
+    namespace = "dev.esbi.mizan.addtransactions"
 }
 dependencies {
     implementation(projects.features.addTransaction.domain)

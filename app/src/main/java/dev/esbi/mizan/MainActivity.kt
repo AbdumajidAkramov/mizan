@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
 
         lifecycleScope.launch {
-            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
+//            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
             settingsManager.settings.collect {
                 settingState.value = it
             }
