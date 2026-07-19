@@ -37,8 +37,8 @@ import dev.esbi.mizan.design.theme.colors.LocalPremiumSystem
 import dev.esbi.mizan.design.utils.IconRes
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSectionHeader
-import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectorCard
+import dev.esbi.mizan.features.addtransaction.ui.accountselector.AccountSectionHeader
+import dev.esbi.mizan.features.addtransaction.ui.accountselector.AccountSelectorCard
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
 import java.math.BigDecimal
 

@@ -211,6 +211,10 @@
     <string name="profile_app_version">Mizan v1.0.0</string>
     <string name="profile_copyright">© 2026 All rights reserved</string>
 
+    <!-- Exchange Rate & Preview -->
+    <string name="exchange_rate_format">1 %1$s ≈ %2$s %3$s</string>
+    <string name="preview_amount_label">Preview: %1$s</string>
+
     <!-- Bottom Navigation -->
     <string name="nav_dashboard">Dashboard</string>
     <string name="nav_home">Home</string>

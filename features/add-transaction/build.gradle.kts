@@ -21,4 +21,17 @@ dependencies {
     implementation(deps.bundles.decompose)
     implementation(deps.dagger.core)
     implementation(deps.kotlinx.coroutines.core)
+    implementation(deps.androidx.lifecycle.viewmodel.compose)
+
+    // CameraX
+    implementation(deps.camera.core)
+    implementation(deps.camera.camera2)
+    implementation(deps.camera.lifecycle)
+    implementation(deps.camera.view)
+
+    // ML Kit
+    implementation(deps.mlkit.barcode.scanning)
+
+    // Permissions
+    implementation(deps.accompanist.permissions)
 }
