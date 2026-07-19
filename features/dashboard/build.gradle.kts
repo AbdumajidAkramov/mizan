@@ -4,9 +4,12 @@ plugins {
 }
 android {
     namespace = "dev.esbi.mizan.dashboard"
+
+    buildFeatures {
+        compose = true
+    }
 }
 dependencies {
-    implementation(projects.features.addTransaction.domain)
-    implementation(projects.features.addTransaction.data)
-    implementation(projects.features.addTransaction.presentation)
+    implementation(deps.bundles.compose)
+    implementation(deps.bundles.decompose)
 }
