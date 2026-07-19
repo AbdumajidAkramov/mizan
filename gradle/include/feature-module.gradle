@@ -1,9 +1,0 @@
-include(":features:add-transaction")
-include(":features:add-transaction:domain")
-include(":features:add-transaction:data")
-include(":features:add-transaction:presentation")
-
-include(":features:dashboard")
-include(":features:dashboard:domain")
-include(":features:dashboard:data")
-include(":features:dashboard:presentation")

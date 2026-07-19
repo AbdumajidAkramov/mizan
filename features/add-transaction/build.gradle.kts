@@ -1,12 +1,24 @@
 plugins {
     id("convention-android-library")
+    alias(deps.plugins.compose.compiler)
     alias(deps.plugins.google.ksp)
 }
+
 android {
-    namespace = "dev.esbi.mizan.addtransactions"
+    namespace = "dev.esbi.mizan.features.addtransaction"
+
+    buildFeatures {
+        compose = true
+    }
 }
+
 dependencies {
-    implementation(projects.features.addTransaction.domain)
-    implementation(projects.features.addTransaction.data)
-    implementation(projects.features.addTransaction.presentation)
+    implementation(projects.core)
+    implementation(projects.ui)
+
+    implementation(platform(deps.compose.bom))
+    implementation(deps.bundles.compose)
+    implementation(deps.bundles.decompose)
+    implementation(deps.dagger.core)
+    implementation(deps.kotlinx.coroutines.core)
 }

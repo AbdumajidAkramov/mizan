@@ -87,7 +87,6 @@ compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
 
-androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }

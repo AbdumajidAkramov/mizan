@@ -1,2 +1,5 @@
 include(":app")
-include(":ui-kit")
+include(":core")
+include(":ui")
+include(":features:dashboard")
+include(":features:add-transaction")

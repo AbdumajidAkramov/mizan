@@ -34,25 +34,10 @@
             <option value="$PROJECT_DIR$/build-logic/ksp" />
             <option value="$PROJECT_DIR$/build-logic/utils" />
             <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/core/dagger" />
-            <option value="$PROJECT_DIR$/core/design" />
-            <option value="$PROJECT_DIR$/core/model" />
-            <option value="$PROJECT_DIR$/core/mvi-kotlin" />
-            <option value="$PROJECT_DIR$/core/ocr-scanner" />
-            <option value="$PROJECT_DIR$/core/voice-recognition" />
-            <option value="$PROJECT_DIR$/data" />
-            <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/add-transaction" />
-            <option value="$PROJECT_DIR$/features/add-transaction/data" />
-            <option value="$PROJECT_DIR$/features/add-transaction/domain" />
-            <option value="$PROJECT_DIR$/features/add-transaction/presentation" />
             <option value="$PROJECT_DIR$/features/dashboard" />
-            <option value="$PROJECT_DIR$/features/dashboard/data" />
-            <option value="$PROJECT_DIR$/features/dashboard/domain" />
-            <option value="$PROJECT_DIR$/features/dashboard/presentation" />
-            <option value="$PROJECT_DIR$/presentation" />
-            <option value="$PROJECT_DIR$/ui-kit" />
+            <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
       </GradleProjectSettings>
