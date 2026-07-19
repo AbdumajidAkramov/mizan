@@ -24,7 +24,7 @@ dependencies {
     implementation(deps.kotlinx.coroutines.android)
 
     // Dagger2 (for @Inject annotations on RepositoryImpl and Seeder)
-    implementation(libs.dagger.core)
+    implementation(deps.dagger.core)
 
     // Gson (for Room TypeConverters)
     implementation(deps.gson)

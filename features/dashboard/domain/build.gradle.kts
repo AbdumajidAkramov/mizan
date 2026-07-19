@@ -4,6 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.dagger.core)
+    implementation(deps.kotlinx.coroutines.core)
+    implementation(deps.dagger.core)
 }

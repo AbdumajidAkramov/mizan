@@ -11,6 +11,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
+/configs
 /build
 /captures
 .externalNativeBuild

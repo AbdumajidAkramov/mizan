@@ -5,13 +5,13 @@ plugins {
 dependencies {
 
     // Coroutines (pure Kotlin, no Android)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(deps.kotlinx.coroutines.core)
 
     // MVIKotlin (pure Kotlin, KMP-ready)
-    implementation(libs.mvikotlin.core)
-    implementation(libs.mvikotlin.main)
-    implementation(libs.mvikotlin.coroutines)
+    implementation(deps.mvikotlin.core)
+    implementation(deps.mvikotlin.main)
+    implementation(deps.mvikotlin.coroutines)
 
     // javax.inject for @Inject annotations (pure Java/Kotlin, no Android)
-    implementation(libs.dagger.core)
+    implementation(deps.dagger.core)
 }

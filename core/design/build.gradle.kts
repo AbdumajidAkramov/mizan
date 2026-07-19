@@ -13,15 +13,17 @@ android {
 }
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
+    implementation(deps.core.ktx)
+    implementation(platform(deps.androidx.compose.bom))
+    implementation(deps.androidx.compose.ui)
+    implementation(deps.androidx.compose.ui.graphics)
+    implementation(deps.androidx.compose.ui.tooling.preview)
+    implementation(deps.androidx.compose.material3)
+    implementation(deps.androidx.compose.foundation.layout)
+    implementation(deps.material.icons.core)
+    implementation(deps.material.icons.extended)
+    implementation(deps.coil)
+    implementation(deps.coil.compose)
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(deps.androidx.compose.ui.tooling)
 }

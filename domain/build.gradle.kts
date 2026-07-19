@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.dagger.core)
+    implementation(deps.kotlinx.coroutines.core)
+    implementation(deps.kotlinx.serialization.json)
+    implementation(deps.dagger.core)
 }

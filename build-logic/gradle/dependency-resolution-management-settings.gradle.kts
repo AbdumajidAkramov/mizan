@@ -5,12 +5,6 @@ dependencyResolutionManagement {
         create("deps") {
             from(files("../../gradle/deps.versions.toml"))
         }
-
-        if (rootProject.name.contains(other = "build-logic")) {
-            create("libs") {
-                from(files("../../gradle/libs.versions.toml"))
-            }
-        }
     }
 
     repositories {

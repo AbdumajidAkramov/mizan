@@ -8,8 +8,8 @@ android {
 dependencies {
 
     // Coroutines (pure Kotlin, no Android)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(deps.kotlinx.coroutines.core)
 
     // javax.inject for @Inject annotations (pure Java/Kotlin, no Android)
-    implementation(libs.dagger.core)
+    implementation(deps.dagger.core)
 }

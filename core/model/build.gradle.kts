@@ -5,6 +5,6 @@ plugins {
 dependencies {
 
     // Coroutines (pure Kotlin, no Android)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation(deps.kotlinx.coroutines.core)
 
 }
