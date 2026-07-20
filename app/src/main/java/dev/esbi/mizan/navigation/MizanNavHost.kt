@@ -19,7 +19,6 @@ import dev.esbi.mizan.feature.currencymanagement.CurrencyPickerScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencyListScreen
 import dev.esbi.mizan.feature.currencymanagement.SubCurrencySettingScreen
 import dev.esbi.mizan.feature.currencymanagement.UserDefinedCurrencyScreen
-import dev.esbi.mizan.feature.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.feature.financialmirror.presentation.ui.FinancialMirrorScreen
 import dev.esbi.mizan.feature.goals.presentation.ui.FinancialGoalsScreen
 import dev.esbi.mizan.feature.managecategories.ui.ManageCategoriesContent
@@ -28,6 +27,7 @@ import dev.esbi.mizan.feature.statistics.presentation.ui.PremiumStatisticsScreen
 import dev.esbi.mizan.feature.subscriptions.presentation.ui.SubscriptionTrackerScreen
 import dev.esbi.mizan.feature.transactionshub.TransactionsHubScreen
 import dev.esbi.mizan.features.addtransaction.NewTransactionScreen
+import dev.esbi.mizan.features.dashboard.presentation.ui.DashboardScreen
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStoreFactory
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStoreFactory
 import dev.esbi.mizan.presentation.feature.addtransaction.store.AddNewTransactionStore

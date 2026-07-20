@@ -21,4 +21,5 @@ dependencies {
     implementation(deps.bundles.decompose)
     implementation(deps.dagger.core)
     implementation(deps.kotlinx.coroutines.core)
+    implementation(deps.androidx.lifecycle.viewmodel.compose)
 }

@@ -19,7 +19,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.feature.dashboard.presentation.widgets.LoadingContent
+import dev.esbi.mizan.design.components.ErrorState
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.utils.IconRes
 import dev.esbi.mizan.feature.statistics.domain.model.CategoryData
 import dev.esbi.mizan.feature.statistics.domain.model.ChartDataPoint
 import dev.esbi.mizan.feature.statistics.domain.model.StatisticsSummary
@@ -34,9 +36,7 @@ import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.MonthlyTrendCha
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.PeriodSelector
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.StatsHeader
 import dev.esbi.mizan.feature.statistics.presentation.ui.widgets.TopCategoriesCard
-import dev.esbi.mizan.design.components.ErrorState
-import dev.esbi.mizan.design.kit.icon.IconValue
-import dev.esbi.mizan.design.utils.IconRes
+import dev.esbi.mizan.features.dashboard.presentation.widgets.LoadingContent
 
 @Composable
 fun PremiumStatisticsScreen(

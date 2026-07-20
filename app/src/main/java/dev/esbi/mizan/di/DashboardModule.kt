@@ -3,7 +3,7 @@ package dev.esbi.mizan.di
 import dagger.Binds
 import dagger.Module
 import dev.esbi.mizan.domain.repository.DashboardRepository
-import dev.esbi.mizan.feature.dashboard.data.repository.DashboardRepositoryImpl
+import dev.esbi.mizan.features.dashboard.data.repository.DashboardRepositoryImpl
 import javax.inject.Singleton
 
 @Module

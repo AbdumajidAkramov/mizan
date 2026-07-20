@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import dev.esbi.mizan.data.settings.AppSettingsManager
 import dev.esbi.mizan.domain.model.profile.AppSettings
 import dev.esbi.mizan.main.MainAppScreen
-import dev.esbi.mizan.design.theme.MizanTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,7 +32,7 @@ class MainActivity : ComponentActivity() {
         val settingState: MutableStateFlow<AppSettings> = MutableStateFlow(AppSettings())
 
         lifecycleScope.launch {
-//            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
+            mockDataSeeder.seedData() // Ensure basic entities explicitly exist
             settingsManager.settings.collect {
                 settingState.value = it
             }
