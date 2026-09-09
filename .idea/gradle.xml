@@ -37,6 +37,8 @@
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/add-transaction" />
             <option value="$PROJECT_DIR$/features/dashboard" />
+            <option value="$PROJECT_DIR$/features/domain" />
+            <option value="$PROJECT_DIR$/features/new-feature" />
             <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
