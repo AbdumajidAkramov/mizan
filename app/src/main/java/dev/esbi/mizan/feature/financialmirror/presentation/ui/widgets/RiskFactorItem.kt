@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskFactor
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.RiskStatus
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun RiskFactorItem(risk: RiskFactor) {
@@ -123,7 +123,7 @@ private fun RiskFactorItemPreview() {
 
     // Agar sizda Theme bo'lsa, uni shu yerda o'rab qo'yishingiz mumkin.
     // Masalan: MizanTheme { ... }
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    dev.esbi.mizan.design.theme.MizanTheme() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

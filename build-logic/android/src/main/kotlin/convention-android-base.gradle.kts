@@ -14,7 +14,7 @@ configure<BaseExtension> {
 
         @Suppress("UnstableApiUsage")
         composeOptions {
-            kotlinCompilerExtensionVersion = deps.versions.compose.compiler.get()
+            kotlinCompilerExtensionVersion = deps.versions.compose.bom.get()
         }
     }
 

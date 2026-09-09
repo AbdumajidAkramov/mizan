@@ -42,7 +42,7 @@ import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubMonth
 import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubSummaryTab
 import dev.esbi.mizan.feature.transactionshub.ui.components.TransactionsHubTabRow
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 /**
  * Main content composable for TransactionsHub screen
@@ -85,7 +85,9 @@ fun TransactionsHubContent(
             TransactionsHubHeader(
                 currentMonth = state.currentMonth,
                 onBackClick = { onIntent(TransactionsHubStore.Intent.BackClicked) },
-                onAddClick = { onIntent(TransactionsHubStore.Intent.AddTransactionClicked) }
+                onAddClick = {
+                    onIntent(TransactionsHubStore.Intent.AddTransactionClicked)
+                }
             )
         }
     ) { paddingValues ->

@@ -11,6 +11,7 @@ androidx-compose = "1.9.3"
 androidx-lifecycle = "2.9.4"
 androidx-room = "2.8.2"
 androidx-paging-ktx = "3.3.6"
+cameraX = "1.4.1"
 coil = "2.7.0"
 crashlytics = "3.0.6"
 dagger = "2.57.2"
@@ -21,6 +22,7 @@ kotlin = "2.2.0"
 compose-bom = "2025.10.00"
 compose-compiler = "1.5.15"
 kotlinx-coroutines = "1.10.2"
+navigationCompose = "2.8.5"
 okhttp = "5.2.0"
 myid-capture = "3.1.1"
 espresso-core = "3.7.0"
@@ -30,6 +32,11 @@ robolectric = "4.16"
 junit4 = "4.13.2"
 junit5 = "5.10.0"
 chucker = "4.2.0"
+vico = "2.0.0-alpha.28"
+mlkit = "16.0.1"
+datastore = "1.1.7"
+
+firebase-bom-ver = "34.2.0"
 
 koin = "4.1.1"
 decompose = "3.4.0"
@@ -80,7 +87,6 @@ compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version = "1.9.0" }
 
-androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
@@ -104,7 +110,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 easyAdapter = "ru.surfstudio.android:easyadapter:7.0.1"
 easyAdapter-recycler-decorator = "ru.surfstudio.android:recycler-decorator-easyadapter:1.0.1"
 facebook-android-sdk = "com.facebook.android:facebook-android-sdk:18.1.3"
-firebase-remote-config = "com.google.firebase:firebase-config-ktx:22.1.2"
+firebase-remote-config = "com.google.firebase:firebase-config:22.1.2"
 google-android-material = "com.google.android.material:material:1.13.0"
 google-ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "google-ksp" }
 google-referrer = "com.android.installreferrer:installreferrer:2.2"
@@ -204,16 +210,8 @@ adapterDelegates = { module = "com.hannesdorfmann:adapterdelegates4", version.re
 adapterDelegates-pagination = { module = "com.hannesdorfmann:adapterdelegates4-pagination", version.ref = "adapterDelegates" }
 swipereveallayout = { group = "com.github.Android-library-copy-dependencies", name = "SwipeRevealLayout", version = "1.5.2" }
 
-# Firebase
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version = "34.2.0" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version = "25.0.0" }
-firebase-dynamic = { group = "com.google.firebase", name = "firebase-dynamic-links-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
-firebase-perf = { group = "com.google.firebase", name = "firebase-perf" }
-firebase-config = { group = "com.google.firebase", name = "firebase-config" }
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+# Firebase (individual libs are BOM-managed — declared inline in build files)
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-ver" }
 google-android-play = { group = "com.google.android.play", name = "app-update-ktx", version = "2.1.0" }
 
 #Glide
@@ -238,6 +236,49 @@ gsm-play-services-auth = { group = "com.google.android.gms", name = "play-servic
 # Play
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+
+# Navigation
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+
+# Lifecycle (BOM-managed additions)
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+
+# Compose (BOM-managed additions for app module)
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+# Dagger (alias for existing `dagger` so `deps.dagger.core` accessor works)
+dagger-core = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+
+# Vico Charts
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+
+# DataStore
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+datastore-core-okio = { module = "androidx.datastore:datastore-core-okio", version.ref = "datastore" }
+
+# CameraX
+camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraX" }
+camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "cameraX" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }
+camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
+
+# ML Kit
+mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkit" }
+mlkit-common = { group = "com.google.mlkit", name = "common", version.ref = "mlkit" }
+mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning", version = "17.3.0" }
+
+# Test
+androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [bundles]
 easyAdapter = ["easyAdapter", "easyAdapter-recycler-decorator", "recycler-decorator"]

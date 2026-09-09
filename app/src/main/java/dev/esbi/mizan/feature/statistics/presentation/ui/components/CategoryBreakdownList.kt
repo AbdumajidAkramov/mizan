@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import dev.esbi.mizan.feature.statistics.domain.model.CategoryBreakdown
-import dev.esbi.mizan.ui.theme.MizanTheme
-import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.PremiumColors
 import java.text.NumberFormat
 import java.util.Locale
 

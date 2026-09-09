@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +24,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -52,14 +50,14 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.components.input.MizanTextField
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.premium.PremiumButton
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.components.input.MizanTextField
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.premium.PremiumButton
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -112,7 +110,7 @@ fun SubCurrencySettingScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         MizanIcon(
-                            icon = IconValue(MizanIcons.ic_arrow_back),
+                            icon = IconValue(IconRes.ic_arrow_back),
                             tint = MizanTheme.premium.text.primary
                         )
                     }
@@ -130,7 +128,7 @@ fun SubCurrencySettingScreen(
                 shape = CircleShape
             ) {
                 MizanIcon(
-                    icon = IconValue(MizanIcons.ic_download),
+                    icon = IconValue(IconRes.ic_download),
                     tint = Color.White
                 )
             }
@@ -365,7 +363,7 @@ private fun DecimalDigitsSelector(
                     color = MizanTheme.premium.text.primary
                 )
                 MizanIcon(
-                    icon = IconValue(MizanIcons.ic_chevron_down),
+                    icon = IconValue(IconRes.ic_chevron_down),
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(20.dp)
                 )

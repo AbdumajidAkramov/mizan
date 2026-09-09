@@ -33,10 +33,13 @@
             <option value="$PROJECT_DIR$/build-logic/kotlin" />
             <option value="$PROJECT_DIR$/build-logic/ksp" />
             <option value="$PROJECT_DIR$/build-logic/utils" />
-            <option value="$PROJECT_DIR$/data" />
-            <option value="$PROJECT_DIR$/domain" />
-            <option value="$PROJECT_DIR$/presentation" />
-            <option value="$PROJECT_DIR$/ui-kit" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/add-transaction" />
+            <option value="$PROJECT_DIR$/features/dashboard" />
+            <option value="$PROJECT_DIR$/features/domain" />
+            <option value="$PROJECT_DIR$/features/new-feature" />
+            <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
       </GradleProjectSettings>

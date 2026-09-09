@@ -30,10 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -89,7 +89,7 @@ fun GlobalTimeSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = Icons.ic_chevron_left),
+                    painter = androidx.compose.ui.res.painterResource(id = IconRes.ic_chevron_left),
                     contentDescription = "Previous month",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(18.dp)
@@ -131,7 +131,7 @@ fun GlobalTimeSelector(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = Icons.ic_chevron_right),
+                    painter = androidx.compose.ui.res.painterResource(id = IconRes.ic_chevron_right),
                     contentDescription = "Next month",
                     tint = MizanTheme.premium.text.secondary,
                     modifier = Modifier.size(18.dp)
@@ -164,7 +164,7 @@ fun GlobalTimeSelector(
                 ) {
                     IconButton(onClick = { popupDisplayedYear-- }) {
                         MizanIcon(
-                            icon = IconValue(Icons.ic_chevron_left),
+                            icon = IconValue(IconRes.ic_chevron_left),
                             contentDescription = "Oldingi yil",
                             tint = MizanTheme.premium.text.primary
                         )
@@ -177,7 +177,7 @@ fun GlobalTimeSelector(
                     )
                     IconButton(onClick = { popupDisplayedYear++ }) {
                         MizanIcon(
-                            icon = IconValue(Icons.ic_chevron_right),
+                            icon = IconValue(IconRes.ic_chevron_right),
                             contentDescription = "Keyingi yil",
                             tint = MizanTheme.premium.text.primary
                         )

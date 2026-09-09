@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 /**
  * Custom Donut Chart composable using Canvas

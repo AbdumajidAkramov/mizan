@@ -30,8 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import dev.esbi.mizan.domain.model.AccountGroupType
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

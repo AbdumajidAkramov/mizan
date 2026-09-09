@@ -8,22 +8,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Summary cards section showing Income, Expense, and Total balance
@@ -42,7 +37,7 @@ fun SummaryCardsSection(
             label = "INCOME",
             amount = summary.totalIncome.toDouble(),
             color = MizanTheme.premium.colors.emerald,
-            iconResId = Icons.ic_trending_up,
+            iconResId = IconRes.ic_trending_up,
             modifier = Modifier.weight(1f)
         )
 
@@ -51,7 +46,7 @@ fun SummaryCardsSection(
             label = "EXPENSE",
             amount = summary.totalExpense.toDouble(),
             color = Color(0xFFF5576C), // Red/Pink
-            iconResId = Icons.ic_trending_down,
+            iconResId = IconRes.ic_trending_down,
             modifier = Modifier.weight(1f)
         )
 
@@ -62,7 +57,7 @@ fun SummaryCardsSection(
             color = if (summary.balance >= java.math.BigDecimal.ZERO) MizanTheme.premium.colors.emerald else Color(
                 0xFFF5576C
             ),
-            iconResId = Icons.ic_wallet,
+            iconResId = IconRes.ic_wallet,
             modifier = Modifier.weight(1f)
         )
     }
@@ -83,16 +78,13 @@ private fun SummaryCard(
             .padding(MizanTheme.premium.spacing.md)
     ) {
         // Icon and Label Row
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = iconResId),
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
+        Row {
+//            Icon(
+//                painter = painterResource(id = iconResId),
+//                contentDescription = null,
+//                tint = color,
+//                modifier = Modifier.size(16.dp)
+//            )
             Text(
                 text = label,
                 style = MizanTheme.typography.labelSm,

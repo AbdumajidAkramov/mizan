@@ -45,86 +45,69 @@ android {
 }
 
 dependencies {
-    implementation(projects.domain)
-    implementation(projects.data)
-    implementation(projects.presentation)
-    implementation(projects.uiKit)
+    implementation(projects.core)
+    implementation(projects.ui)
+    implementation(projects.features.dashboard)
+    implementation(projects.features.addTransaction)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-
-    implementation(libs.gson)
+    // Compose
+    implementation(deps.core.ktx)
+    implementation(deps.androidx.lifecycle.runtime.ktx)
+    implementation(deps.androidx.activity.compose)
+    implementation(platform(deps.androidx.compose.bom))
+    implementation(deps.androidx.compose.ui)
+    implementation(deps.androidx.compose.ui.graphics)
+    implementation(deps.androidx.compose.ui.tooling.preview)
+    implementation(deps.androidx.compose.material3)
+    implementation(deps.androidx.compose.foundation.layout)
+    implementation(deps.material.icons.core)
+    implementation(deps.material.icons.extended)
 
     // Navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation(deps.androidx.navigation.compose)
 
     // Kotlin Serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    // MVIKotlin
-    implementation(libs.mvikotlin.core)
-    implementation(libs.mvikotlin.main)
-    implementation(libs.mvikotlin.coroutines)
+    implementation(deps.kotlinx.serialization.json)
 
     // Dagger2
-    implementation(libs.dagger.core)
-    implementation(libs.androidx.compose.foundation.layout)
-    ksp(libs.dagger.compiler)
-
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    implementation(deps.dagger.core)
+    ksp(deps.dagger.compiler)
 
     // Vico Charts
-    implementation(libs.vico.compose)
-    implementation(libs.vico.compose.m3)
-    implementation(libs.vico.core)
-
-    // Coroutines
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.datastore)
-    implementation(libs.datastore.core.okio)
-
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
+    implementation(deps.vico.compose)
+    implementation(deps.vico.compose.m3)
+    implementation(deps.vico.core)
 
     // ViewModel
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(deps.androidx.lifecycle.viewmodel.compose)
 
     // CameraX
-    implementation(libs.camera.core)
-    implementation(libs.camera.camera2)
-    implementation(libs.camera.lifecycle)
-    implementation(libs.camera.view)
+    implementation(deps.camera.core)
+    implementation(deps.camera.camera2)
+    implementation(deps.camera.lifecycle)
+    implementation(deps.camera.view)
 
     // ML Kit
-//    implementation(libs.mlkit.text.recognition)
-    implementation(libs.mlkit.barcode.scanning)
-//    implementation(libs.mlkit.common)
+    implementation(deps.mlkit.barcode.scanning)
 
     // Permissions
-    implementation(libs.accompanist.permissions)
+    implementation(deps.accompanist.permissions)
 
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.messaging)
+    // DataStore
+    implementation(deps.datastore)
+    implementation(deps.datastore.core.okio)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    // Firebase (versions managed by BOM)
+    implementation(platform(deps.firebase.bom))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-messaging")
+
+    testImplementation(deps.junit4)
+    androidTestImplementation(deps.androidx.junit)
+    androidTestImplementation(deps.androidx.espresso.core)
+    androidTestImplementation(platform(deps.androidx.compose.bom))
+    androidTestImplementation(deps.androidx.compose.ui.test.junit4)
+    debugImplementation(deps.androidx.compose.ui.tooling)
+    debugImplementation(deps.androidx.compose.ui.test.manifest)
 }

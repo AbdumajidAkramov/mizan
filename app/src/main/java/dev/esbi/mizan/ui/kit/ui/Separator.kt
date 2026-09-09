@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.PremiumColors
+import dev.esbi.mizan.design.theme.PremiumColors
 
 @Composable
 fun Separator(

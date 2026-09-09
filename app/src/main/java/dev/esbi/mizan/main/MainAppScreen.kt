@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import dev.esbi.mizan.navigation.MizanNavHost
 import dev.esbi.mizan.navigation.PremiumBottomNavigation
 import dev.esbi.mizan.navigation.bottomNavItems
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun MainAppScreen(

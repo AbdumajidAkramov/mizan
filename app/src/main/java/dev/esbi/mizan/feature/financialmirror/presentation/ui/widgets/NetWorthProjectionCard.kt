@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.FinancialProjection
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.ProjectionData
 import dev.esbi.mizan.presentation.feature.financialmirror.presentation.store.FinancialMirrorStore
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import java.text.NumberFormat
 import java.util.Locale
 

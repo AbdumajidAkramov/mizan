@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.esbi.mizan.ui.theme.TextWhite
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.TextWhite
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 @Composable
 internal fun InfoBadge(

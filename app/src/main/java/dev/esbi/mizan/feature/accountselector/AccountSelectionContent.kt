@@ -32,14 +32,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.esbi.mizan.design.theme.MizanTheme
+import dev.esbi.mizan.design.theme.colors.LocalPremiumSystem
+import dev.esbi.mizan.design.utils.IconRes
 import dev.esbi.mizan.domain.model.Account
 import dev.esbi.mizan.domain.model.Currency
-import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSectionHeader
-import dev.esbi.mizan.feature.newtransaction.ui.accountselector.AccountSelectorCard
+import dev.esbi.mizan.features.addtransaction.ui.accountselector.AccountSectionHeader
+import dev.esbi.mizan.features.addtransaction.ui.accountselector.AccountSelectorCard
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
-import dev.esbi.mizan.ui.components.accounts.AddAccountButton
-import dev.esbi.mizan.ui.theme.colors.LocalPremiumSystem
-import dev.esbi.mizan.ui.utils.Icons
 import java.math.BigDecimal
 
 /**
@@ -130,7 +130,7 @@ fun AccountSelectionContent(
                 item {
                     AccountSectionHeader(
                         title = "ACCOUNTS",
-                        iconRes = Icons.ic_attach_money
+                        iconRes = IconRes.ic_attach_money
                     )
                 }
                 items(accounts, key = { it.id }) { account ->
@@ -146,7 +146,7 @@ fun AccountSelectionContent(
         // Add Account Button
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            AddAccountButton(onClick = onAddAccountClick)
+            _root_ide_package_.dev.esbi.mizan.design.components.accounts.AddAccountButton(onClick = onAddAccountClick)
         }
     }
 }
@@ -180,7 +180,7 @@ internal fun AccountSelectionHeader(onClose: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = Icons.ic_close),
+                painter = painterResource(id = IconRes.ic_close),
                 contentDescription = "Close",
                 tint = premiumSystem.text.secondary,
                 modifier = Modifier.size(18.dp)
@@ -234,7 +234,7 @@ internal fun AddAccountButton(onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = Icons.ic_add),
+                    painter = painterResource(id = MizanIcons.ic_add),
                     contentDescription = null,
                     tint = premiumSystem.colors.emerald,
                     modifier = Modifier.size(20.dp)
@@ -314,7 +314,7 @@ fun AccountSelectionContentPreview() {
         )
     )
 
-    dev.esbi.mizan.ui.theme.MizanTheme() {
+    MizanTheme() {
         AccountSelectionContent(
             state = AccountSelectorStore.State(
                 isLoading = false,

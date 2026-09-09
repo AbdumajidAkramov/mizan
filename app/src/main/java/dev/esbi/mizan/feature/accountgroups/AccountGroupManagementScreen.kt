@@ -26,15 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.arkivanov.mvikotlin.extensions.coroutines.states
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.utils.IconRes as MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 import dev.esbi.mizan.domain.model.AccountGroup.Companion.copy
 import dev.esbi.mizan.domain.model.AccountGroupType
 import dev.esbi.mizan.feature.accountgroups.components.AddEditAccountGroupSheet
 import dev.esbi.mizan.presentation.feature.accountgroups.store.AccountGroupStore
-import dev.esbi.mizan.ui.components.account.AccountGroupListItem
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +50,7 @@ fun AccountGroupManagementScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         MizanIcon(
-                            icon = IconValue(MizanIcons.ic_arrow_back),
+                            icon = IconValue(MizanIcon.ic_arrow_back),
                             tint = MizanTheme.premium.text.primary
                         )
                     }
@@ -85,7 +84,7 @@ fun AccountGroupManagementScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(state.groups, key = { it.id }) { group ->
-                        AccountGroupListItem(
+                        _root_ide_package_.dev.esbi.mizan.design.components.account.AccountGroupListItem(
                             name = group.name,
                             typeLabel = when (group.type) {
                                 AccountGroupType.DEFAULT -> "General"

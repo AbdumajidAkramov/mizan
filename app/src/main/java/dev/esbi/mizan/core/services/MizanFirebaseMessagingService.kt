@@ -12,7 +12,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dev.esbi.mizan.MainActivity
 import dev.esbi.mizan.R
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Firebase Cloud Messaging Service for handling push notifications.
@@ -141,7 +141,7 @@ class MizanFirebaseMessagingService : FirebaseMessagingService() {
 
         // Build the notification
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(Icons.ic_notification)
+            .setSmallIcon(IconRes.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)

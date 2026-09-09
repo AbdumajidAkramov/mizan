@@ -43,18 +43,18 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorBottomSheet
 import dev.esbi.mizan.feature.accounts.components.AccountGroupSelectorRow
 import dev.esbi.mizan.presentation.feature.addaccount.store.AddAccountStore
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.components.input.CurrencyScrollSelector
-import dev.esbi.mizan.ui.components.input.MizanTextField
-import dev.esbi.mizan.ui.components.input.SelectorCurrency
-import dev.esbi.mizan.ui.kit.dialogs.PremiumConfirmDialog
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.kit.premium.PremiumButton
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.theme.shadows.premiumShadow
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.components.input.CurrencyScrollSelector
+import dev.esbi.mizan.design.components.input.MizanTextField
+import dev.esbi.mizan.design.components.input.SelectorCurrency
+import dev.esbi.mizan.design.kit.dialogs.PremiumConfirmDialog
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.kit.premium.PremiumButton
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.theme.shadows.premiumShadow
+import dev.esbi.mizan.design.utils.IconRes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,7 +108,7 @@ fun AddNewAccountScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         MizanIcon(
-                            icon = IconValue(MizanIcons.ic_arrow_back),
+                            icon = IconValue(IconRes.ic_arrow_back),
                             tint = MizanTheme.premium.text.primary
                         )
                     }
@@ -124,7 +124,7 @@ fun AddNewAccountScreen(
                             },
                             content = {
                                 MizanIcon(
-                                    icon = IconValue(MizanIcons.ic_delete),
+                                    icon = IconValue(IconRes.ic_delete),
                                     tint = MizanTheme.premium.text.primary
                                 )
                             }

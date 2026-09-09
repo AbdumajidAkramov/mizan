@@ -38,10 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.esbi.mizan.feature.managecategories.ManageCategoriesViewModel
 import dev.esbi.mizan.feature.managecategories.ui.components.DraggableCategoryRow
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 /**
  * Manage Categories Screen
@@ -165,7 +165,7 @@ private fun ManageCategoriesHeader(
         navigationIcon = {
             IconButton(onClick = onBack) {
                 MizanIcon(
-                    icon = IconValue(Icons.ic_arrow_back),
+                    icon = IconValue(IconRes.ic_arrow_back),
                     contentDescription = "Back",
                     tint = MizanTheme.premium.text.primary
                 )
@@ -232,7 +232,7 @@ private fun EmptyState(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(Icons.ic_add),
+                painter = androidx.compose.ui.res.painterResource(IconRes.ic_add),
                 contentDescription = null,
                 tint = MizanTheme.premium.text.tertiary,
                 modifier = Modifier.size(32.dp)

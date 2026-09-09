@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.esbi.mizan.presentation.feature.accountselector.store.AccountSelectorStore
-import dev.esbi.mizan.ui.theme.MizanTheme
+import dev.esbi.mizan.design.theme.MizanTheme
 
 @Composable
 fun AccountSelectionScreen(

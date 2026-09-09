@@ -53,14 +53,14 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import dev.esbi.mizan.domain.model.UnitPosition
 import dev.esbi.mizan.presentation.feature.currencymanagement.CurrencyFormatter
 import dev.esbi.mizan.presentation.feature.currencymanagement.store.CurrencyManagementStore
-import dev.esbi.mizan.ui.components.PremiumCard
-import dev.esbi.mizan.ui.components.PremiumCardVariant
-import dev.esbi.mizan.ui.components.input.MizanTextField
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.PremiumCard
+import dev.esbi.mizan.design.components.PremiumCardVariant
+import dev.esbi.mizan.design.components.input.MizanTextField
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 import java.math.BigDecimal
-import dev.esbi.mizan.ui.utils.Icons as MizanIcons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +104,7 @@ fun UserDefinedCurrencyScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         MizanIcon(
-                            icon = IconValue(MizanIcons.ic_arrow_back),
+                            icon = IconValue(IconRes.ic_arrow_back),
                             tint = MizanTheme.premium.text.primary
                         )
                     }
@@ -390,7 +390,7 @@ private fun DecimalDigitsSelector(
                     color = MizanTheme.premium.text.primary
                 )
                 MizanIcon(
-                    icon = IconValue(MizanIcons.ic_chevron_down),
+                    icon = IconValue(IconRes.ic_chevron_down),
                     tint = MizanTheme.premium.text.tertiary,
                     modifier = Modifier.size(20.dp)
                 )

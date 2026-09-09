@@ -18,17 +18,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.presentation.feature.financialmirror.domain.model.TimeMachineScenario
-import dev.esbi.mizan.ui.kit.icon.IconValue
-import dev.esbi.mizan.ui.kit.icon.MizanIcon
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
-import dev.esbi.mizan.ui.utils.Icons
+import dev.esbi.mizan.design.kit.icon.IconValue
+import dev.esbi.mizan.design.kit.icon.MizanIcon
+import dev.esbi.mizan.design.theme.colors.MizanTheme
+import dev.esbi.mizan.design.utils.IconRes
 
 @Composable
 internal fun TimeMachineSection(scenarios: List<TimeMachineScenario>) {
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             MizanIcon(
-                icon = IconValue(Icons.ic_schedule),
+                icon = IconValue(IconRes.ic_schedule),
                 modifier = Modifier.size(24.dp),
                 tint = MizanTheme.premium.colors.primary
             )

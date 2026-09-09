@@ -21,12 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.esbi.mizan.feature.statistics.domain.model.CategoryData
-import dev.esbi.mizan.ui.components.PremiumDonutChart
-import dev.esbi.mizan.ui.components.PremiumDonutChartComponent
-import dev.esbi.mizan.ui.components.PremiumDonutChartComponent.Pie
-import dev.esbi.mizan.ui.kit.glass.GlassCard
-import dev.esbi.mizan.ui.kit.glass.PressCard
-import dev.esbi.mizan.ui.theme.colors.MizanTheme
+import dev.esbi.mizan.design.components.PremiumDonutChart
+import dev.esbi.mizan.design.components.PremiumDonutChartComponent
+import dev.esbi.mizan.design.components.PremiumDonutChartComponent.Pie
+import dev.esbi.mizan.design.kit.glass.GlassCard
+import dev.esbi.mizan.design.kit.glass.PressCard
+import dev.esbi.mizan.design.theme.colors.MizanTheme
 
 
 @Composable

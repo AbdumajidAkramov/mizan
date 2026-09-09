@@ -5,6 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import dev.esbi.mizan.feature.transactionshub.ui.TransactionsHubContent
 import dev.esbi.mizan.presentation.feature.transactionshub.store.TransactionsHubStore
 
@@ -23,17 +25,21 @@ fun TransactionsHubScreen(
     val state by viewModel.state.collectAsState()
     val labels = viewModel.labels
 
-    // Handle labels (side effects)
-    LaunchedEffect(Unit) {
-        labels.collect { label ->
-            when (label) {
-                is TransactionsHubStore.Label.NavigateBack -> onBackClick()
-                is TransactionsHubStore.Label.NavigateToAddTransaction -> onAddTransactionClick()
-                is TransactionsHubStore.Label.NavigateToEditTransaction -> onEditTransactionClick(
-                    label.transaction.id
-                )
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // Labellarni xavfsiz eshitish (Lifecycle-ga sezgir holatda)
+    LaunchedEffect(viewModel.labels, lifecycleOwner) {
+        viewModel.labels
+            .flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { label ->
+                when (label) {
+                    is TransactionsHubStore.Label.NavigateBack -> onBackClick()
+                    is TransactionsHubStore.Label.NavigateToAddTransaction -> onAddTransactionClick()
+                    is TransactionsHubStore.Label.NavigateToEditTransaction -> onEditTransactionClick(
+                        label.transaction.id
+                    )
+                }
             }
-        }
     }
 
     TransactionsHubContent(
